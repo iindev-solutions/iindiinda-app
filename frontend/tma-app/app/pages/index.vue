@@ -13,16 +13,16 @@
 						<p>Быстрый заказ такси в вашем городе</p>
 					</div>
 				</UCard>
-				<UCard class="service-card">
-					<nuxt-link to="/otpravka">
+				<nuxt-link to="/otpravka">
+					<UCard class="service-card">
 						<template #header>
 							<div class="service-icon">👨</div>
 						</template>
 						<div class="service-content">
 							<h3>отправка</h3>
 						</div>
-					</nuxt-link>
-				</UCard>
+					</UCard>
+				</nuxt-link>
 
 				<UCard class="service-card service-card--disabled">
 					<template #header>
