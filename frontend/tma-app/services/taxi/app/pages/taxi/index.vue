@@ -11,7 +11,7 @@ const goBack = () => {
 		<div class="taxi-header">
 			<UButton 
 				icon="i-heroicons-arrow-left" 
-				color="gray" 
+				color="neutral" 
 				variant="ghost"
 				@click="goBack"
 			/>

@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	extends: ['./services/taxi', './services/otpravka'],
-	modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/i18n'],
+	modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/i18n', '@nuxt/fonts'],
 	ssr: false,
 
 	// components: [
@@ -29,6 +29,17 @@ export default defineNuxtConfig({
 
 	css: ['~/assets/css/main.css'],
 
+	ui: {
+		theme: {
+			colors: ['cyan', 'gray']
+		}
+	},
+
+	colorMode: {
+		preference: 'dark',
+		fallback: 'dark'
+	},
+
 	// spa loader
 	spaLoadingTemplate: 'spa-loader.html',
 
@@ -51,6 +62,13 @@ export default defineNuxtConfig({
 				braceStyle: '1tbs'
 			}
 		}
+	},
+
+	fonts: {
+		families: [
+			{ name: 'Geist', provider: 'bunny' },
+			{ name: 'Inter', provider: 'bunny' }
+		]
 	}
 
 	// i18n: {

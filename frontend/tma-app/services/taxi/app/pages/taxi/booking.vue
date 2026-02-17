@@ -7,7 +7,7 @@ const router = useRouter()
 		<div class="booking-header">
 			<UButton 
 				icon="i-heroicons-arrow-left" 
-				color="gray" 
+				color="neutral" 
 				variant="ghost"
 				@click="router.back()"
 			/>

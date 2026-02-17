@@ -3,6 +3,14 @@
 		<div class="services-container">
 			<h1 class="title">Выберите сервис</h1>
 
+			<!-- Color test buttons -->
+			<div class="mb-8 flex flex-col gap-3">
+				<UButton color="primary" size="lg" block>Primary Button (Cyan)</UButton>
+				<UButton color="primary" variant="outline" size="lg" block>Outline Primary</UButton>
+				<UButton color="primary" variant="soft" size="lg" block>Soft Primary</UButton>
+				<UButton color="primary" variant="ghost" size="lg" block>Ghost Primary</UButton>
+			</div>
+
 			<div class="services-grid">
 				<UCard class="service-card" @click="navigateTo('/taxi')">
 					<template #header>
@@ -10,7 +18,7 @@
 					</template>
 					<div class="service-content">
 						<h3>Такси</h3>
-						<p>Быстрый заказ такси в вашем городе</p>
+						<p class="text-gray-400">Быстрый заказ такси в вашем городе</p>
 					</div>
 				</UCard>
 				<nuxt-link to="/otpravka">
@@ -30,7 +38,7 @@
 					</template>
 					<div class="service-content">
 						<h3>Мастера</h3>
-						<p>Скоро появится</p>
+						<p class="text-gray-400">Скоро появится</p>
 					</div>
 				</UCard>
 			</div>
@@ -97,6 +105,5 @@
 
 .service-content p {
 	font-size: 14px;
-	color: var(--color-gray-500);
 }
 </style>

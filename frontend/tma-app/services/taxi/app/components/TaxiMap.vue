@@ -32,7 +32,7 @@ defineProps<Props>()
 .map-placeholder {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-surface) 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -45,7 +45,7 @@ defineProps<Props>()
 }
 
 .map-text {
-  color: white;
+  color: var(--color-text-primary);
   font-size: 14px;
   text-align: center;
   padding: 0 20px;

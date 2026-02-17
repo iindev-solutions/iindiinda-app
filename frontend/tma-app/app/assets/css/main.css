@@ -1,10 +1,70 @@
-:root {
-  --tg-theme-bg-color: #ffffff;
-  --tg-theme-text-color: #000000;
-  --tg-theme-hint-color: #999999;
-  --tg-theme-link-color: #2481cc;
-  --tg-theme-button-color: #2481cc;
-  --tg-theme-button-text-color: #ffffff;
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme {
+  /* Cyan color scale - Terminal cyan palette */
+  --color-cyan-50: #EFF3F5;   /* Primary text - cold white */
+  --color-cyan-100: #D9E5E9;
+  --color-cyan-200: #B3CBD3;
+  --color-cyan-300: #A0F0E2;  /* Accent - cyan ice */
+  --color-cyan-400: #7FE5D4;
+  --color-cyan-500: #5EDAC6;  /* Primary accent */
+  --color-cyan-600: #4BB09F;
+  --color-cyan-700: #388377;
+  --color-cyan-800: #2A3A42;  /* Lines/borders - dark arctic teal */
+  --color-cyan-900: #0F1113;  /* Terminal surface */
+  --color-cyan-950: #0A0C0E;  /* Background - absolute black */
+
+  /* Gray color scale - Terminal grayscale */
+  --color-gray-50: #EFF3F5;
+  --color-gray-100: #D9E5E9;
+  --color-gray-200: #B3CBD3;
+  --color-gray-300: #8DA3AD;
+  --color-gray-400: #7D8D95;  /* Secondary - frozen platinum */
+  --color-gray-500: #6D7D85;
+  --color-gray-600: #5D6D75;
+  --color-gray-700: #4D5D65;
+  --color-gray-800: #2A3A42;
+  --color-gray-900: #0F1113;
+  --color-gray-950: #0A0C0E;
+  
+  /* Background colors */
+  --color-background: #0A0C0E;
+  --color-surface: #0F1113;
+  
+  /* Typography */
+  --font-sans: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-size-base: 15px;
+  --font-size-sm: 13px;
+  --font-size-lg: 17px;
+  --font-size-heading: 19px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --letter-spacing-tight: -0.01em;
+  --letter-spacing-heading: 0.05em;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  
+  /* Border */
+  --border-width: 0.5px;
+  --border-radius: 6px;
+  
+  /* Transitions */
+  --transition-duration: 150ms;
+  --transition-timing: ease-out;
+  
+  /* Atmospheric Effects */
+  --noise-opacity: 0.015;
+  --ambient-gradient-opacity: 0.02;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html, body {
@@ -13,4 +73,12 @@ html, body {
   width: 100%;
   height: 100%;
   overflow-x: hidden;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--letter-spacing-tight);
+  background-color: var(--color-background);
+  color: var(--color-cyan-50);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
