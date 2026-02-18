@@ -3,14 +3,6 @@
 		<div class="services-container">
 			<h1 class="title">Выберите сервис</h1>
 
-			<!-- Color test buttons -->
-			<div class="mb-8 flex flex-col gap-3">
-				<UButton color="primary" size="lg" block>Primary Button (Cyan)</UButton>
-				<UButton color="primary" variant="outline" size="lg" block>Outline Primary</UButton>
-				<UButton color="primary" variant="soft" size="lg" block>Soft Primary</UButton>
-				<UButton color="primary" variant="ghost" size="lg" block>Ghost Primary</UButton>
-			</div>
-
 			<div class="services-grid">
 				<UCard class="service-card" @click="navigateTo('/taxi')">
 					<template #header>
