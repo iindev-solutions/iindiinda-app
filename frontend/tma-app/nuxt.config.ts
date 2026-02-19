@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-	extends: ['./services/taxi', './services/otpravka'],
+	extends: ['./services/agal', './services/ayan', './services/tal', './services/uus'],
 	modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/i18n', '@nuxt/fonts'],
 	ssr: false,
 

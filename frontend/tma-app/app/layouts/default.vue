@@ -1,11 +1,3 @@
-<template>
-	<div class="tma-layout">
-		eto header
-		<pre>{{ isLoading }}</pre>
-		<slot />
-	</div>
-</template>
-
 <script setup lang="ts">
 const { isLoading } = useLoadingIndicator()
 // const { themeParams, safeAreaInsets } = useTg()
@@ -18,6 +10,14 @@ const { isLoading } = useLoadingIndicator()
 // 	minHeight: '100vh'
 // }))
 </script>
+
+<template>
+	<div class="tma-layout">
+		eto header
+		<pre>{{ isLoading }}</pre>
+		<slot />
+	</div>
+</template>
 
 <style>
 body {
