@@ -5,12 +5,7 @@ const router = useRouter()
 <template>
 	<div class="booking-page">
 		<div class="booking-header">
-			<UButton 
-				icon="i-heroicons-arrow-left" 
-				color="neutral" 
-				variant="ghost"
-				@click="router.back()"
-			/>
+			<UButton icon="i-heroicons-arrow-left" color="neutral" variant="ghost" @click="router.back()" />
 			<h1>Заказ такси</h1>
 		</div>
 

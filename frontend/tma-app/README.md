@@ -43,26 +43,33 @@ npm run dev:core
 ## Layers
 
 ### Core Layer
+
 Базовый слой с общими компонентами и утилитами:
+
 - Компоненты: TmaButton, TmaCard, TmaHeader
 - Composables: useTg(), useBackButton(), useMainButton(), useTheme()
 - Stores: user store (Pinia)
 - Utils: API client
 
 ### Taxi Layer
+
 Сервис заказа такси:
+
 - `/taxi` - главная страница
 - `/taxi/booking` - заказ поездки
 - `/taxi/history` - история поездок
 
 ### Masters Layer
+
 Сервис поиска мастеров:
+
 - `/masters` - главная страница
 - `/masters/catalog` - каталог мастеров
 
 ## Telegram Mini App
 
 Приложение использует Telegram WebApp API:
+
 - Theme params для адаптации под тему Telegram
 - Safe area insets для iPhone
 - BackButton и MainButton

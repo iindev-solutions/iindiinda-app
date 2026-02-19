@@ -29,15 +29,15 @@ export default defineNuxtConfig({
 
 	css: ['~/assets/css/main.css'],
 
+	colorMode: {
+		preference: 'dark',
+		fallback: 'dark'
+	},
+
 	ui: {
 		theme: {
 			colors: ['cyan', 'gray']
 		}
-	},
-
-	colorMode: {
-		preference: 'dark',
-		fallback: 'dark'
 	},
 
 	// spa loader
@@ -62,13 +62,6 @@ export default defineNuxtConfig({
 				braceStyle: '1tbs'
 			}
 		}
-	},
-
-	fonts: {
-		families: [
-			{ name: 'Geist', provider: 'bunny' },
-			{ name: 'Inter', provider: 'bunny' }
-		]
 	}
 
 	// i18n: {

@@ -9,12 +9,7 @@ const goBack = () => {
 <template>
 	<div class="taxi-page">
 		<div class="taxi-header">
-			<UButton 
-				icon="i-heroicons-arrow-left" 
-				color="neutral" 
-				variant="ghost"
-				@click="goBack"
-			/>
+			<UButton icon="i-heroicons-arrow-left" color="neutral" variant="ghost" @click="goBack" />
 			<h1>🚕 Такси</h1>
 		</div>
 
@@ -24,11 +19,9 @@ const goBack = () => {
 					<h3>Добро пожаловать в сервис такси</h3>
 				</template>
 				<p>Здесь будет функционал заказа такси</p>
-				
+
 				<div class="mt-4">
-					<UButton @click="$router.push('/taxi/booking')">
-						Заказать такси
-					</UButton>
+					<UButton @click="$router.push('/taxi/booking')">Заказать такси</UButton>
 				</div>
 			</UCard>
 		</div>
