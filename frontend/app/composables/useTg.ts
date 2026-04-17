@@ -3,6 +3,12 @@
  * Предоставляет доступ к Telegram Mini App API
  */
 export const useTg = () => {
+	// Проверяем, находимся ли мы внутри Telegram WebApp
+	const isInTelegram = computed(() => {
+		if (typeof window === 'undefined') return false
+		return !!window.Telegram?.WebApp?.initData
+	})
+
 	const webApp = computed(() => {
 		if (import.meta.client && window.Telegram?.WebApp) {
 			return window.Telegram.WebApp
@@ -40,20 +46,26 @@ export const useTg = () => {
 	}
 
 	const showBackButton = () => {
-		if (webApp.value?.BackButton) {
-			webApp.value.BackButton.show()
+		try {
+			webApp.value?.BackButton?.show()
+		} catch {
+			console.log('[useTg] BackButton not supported')
 		}
 	}
 
 	const hideBackButton = () => {
-		if (webApp.value?.BackButton) {
-			webApp.value.BackButton.hide()
+		try {
+			webApp.value?.BackButton?.hide()
+		} catch {
+			console.log('[useTg] BackButton not supported')
 		}
 	}
 
 	const onBackButtonClicked = (callback: () => void) => {
-		if (webApp.value?.BackButton) {
-			webApp.value.BackButton.onClick(callback)
+		try {
+			webApp.value?.BackButton?.onClick(callback)
+		} catch {
+			console.log('[useTg] BackButton not supported')
 		}
 	}
 
@@ -72,14 +84,20 @@ export const useTg = () => {
 	}
 
 	const hapticFeedback = (type: 'impact' | 'notification' | 'selection' = 'impact') => {
-		if (webApp.value?.HapticFeedback) {
-			if (type === 'impact') webApp.value.HapticFeedback.impactOccurred('medium')
-			else if (type === 'notification') webApp.value.HapticFeedback.notificationOccurred('success')
-			else webApp.value.HapticFeedback.selectionChanged()
+		try {
+			if (webApp.value?.HapticFeedback?.impactOccurred) {
+				if (type === 'impact') webApp.value.HapticFeedback.impactOccurred('medium')
+				else if (type === 'notification') webApp.value.HapticFeedback.notificationOccurred('success')
+				else webApp.value.HapticFeedback.selectionChanged()
+			}
+		} catch {
+			// HapticFeedback не поддерживается в старых версиях WebApp
+			console.log('[useTg] HapticFeedback not supported')
 		}
 	}
 
 	return {
+		isInTelegram, // true если работаем внутри Telegram
 		webApp,
 		user,
 		initData,
