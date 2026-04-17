@@ -28,3 +28,6 @@ Thumbs.db
 docker-compose.override.yml
 
 .kiro
+.verdent/
+telemetry-id
+brainstorming-skill-audit-report.md
