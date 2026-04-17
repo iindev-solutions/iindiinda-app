@@ -9,7 +9,7 @@ definePageMeta({
 // Composables
 const { t } = useI18n()
 const { hapticFeedback, showBackButton, hideBackButton, onBackButtonClicked } = useTg()
-const { post } = useAPI()
+const { post } = useTaxiAPI() // Используем Taxi API (мок или реальный)
 const toast = useToast()
 const router = useRouter()
 
