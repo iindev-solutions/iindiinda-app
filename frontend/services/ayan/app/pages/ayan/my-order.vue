@@ -8,8 +8,9 @@ definePageMeta({
 
 // Composables
 const { t } = useI18n()
-const { hapticFeedback } = useTg()
+const { hapticFeedback, showBackButton, hideBackButton, onBackButtonClicked } = useTg()
 const { get, post } = useAPI()
+const toast = useToast()
 const router = useRouter()
 
 // Order state
@@ -36,22 +37,29 @@ interface ApiResponse<T> {
 const order = ref<Order | null>(null)
 const isLoading = ref(true)
 const showCancelConfirm = ref(false)
+const fetchError = ref<string | null>(null)
 
 // Polling for order status
-const { pause, resume } = useIntervalFn(
+const { pause, resume, isActive } = useIntervalFn(
 	async () => {
 		if (!order.value) return
 
 		try {
 			const response = await get<ApiResponse<Order>>(`/ayan/orders/${order.value.id}`)
 			order.value = response.data
+			fetchError.value = null
 
 			// Navigate to completed page if trip is done
 			if (order.value && order.value.status === 'completed') {
+				pause()
 				router.push('/ayan/complete')
 			}
-		} catch (error) {
+		} catch (error: any) {
 			console.error('Failed to fetch order status:', error)
+			// Don't show error on first fetch, only on subsequent polling failures
+			if (isActive.value) {
+				fetchError.value = error?.message || t('ayan.order.fetchError')
+			}
 		}
 	},
 	5000, // Poll every 5 seconds
@@ -61,6 +69,8 @@ const { pause, resume } = useIntervalFn(
 // Fetch current active order
 async function fetchActiveOrder() {
 	isLoading.value = true
+	fetchError.value = null
+
 	try {
 		const response = await get<ApiResponse<Order>>('/ayan/orders/me')
 		order.value = response.data
@@ -71,7 +81,7 @@ async function fetchActiveOrder() {
 				resume() // Start polling
 			}
 		}
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to fetch active order:', error)
 		// If no active order, redirect to create page
 		router.push('/ayan/create')
@@ -89,9 +99,17 @@ async function cancelOrder() {
 	try {
 		await post(`/ayan/orders/${order.value.id}/cancel`)
 		pause()
+		toast.add({
+			title: t('ayan.order.cancelSuccess'),
+			color: 'cyan'
+		})
 		router.push('/ayan/create')
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to cancel order:', error)
+		toast.add({
+			title: error?.message || t('ayan.order.cancelError'),
+			color: 'gray'
+		})
 	}
 }
 
@@ -138,10 +156,17 @@ const statusConfig: Record<OrderStatus, { title: string; description: string; co
 // Initialize
 onMounted(() => {
 	fetchActiveOrder()
+
+	// Show back button
+	showBackButton()
+	onBackButtonClicked(() => {
+		router.push('/ayan')
+	})
 })
 
 onUnmounted(() => {
 	pause()
+	hideBackButton()
 })
 </script>
 
@@ -151,6 +176,18 @@ onUnmounted(() => {
 			<!-- Loading State -->
 			<div v-if="isLoading" class="flex h-[60vh] items-center justify-center">
 				<ULoadingIndicator />
+			</div>
+
+			<!-- Error State -->
+			<div v-else-if="fetchError" class="py-12 text-center">
+				<div class="mb-4 flex justify-center">
+					<UIcon name="i-lucide-alert-triangle" class="h-16 w-16 text-yellow-400" />
+				</div>
+				<h3 class="mb-2 text-lg font-medium text-white">{{ t('common.error') }}</h3>
+				<p class="mb-6 text-sm text-gray-400">{{ fetchError }}</p>
+				<UButton color="cyan" @click="fetchActiveOrder">
+					{{ t('common.retry') }}
+				</UButton>
 			</div>
 
 			<!-- Order Display -->
