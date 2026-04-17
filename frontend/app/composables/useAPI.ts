@@ -6,7 +6,7 @@ export const useAPI = () => {
 	const config = useRuntimeConfig()
 	const { initData } = useTg()
 
-	const baseURL = computed(() => config.public.apiBase as string || '/api')
+	const baseURL = computed(() => (config.public.apiBase as string) || '/api')
 
 	const headers = computed(() => {
 		const h: Record<string, string> = {
@@ -55,11 +55,9 @@ export const useAPI = () => {
 	const get = <T>(endpoint: string, params?: Record<string, string>) =>
 		request<T>(endpoint, { method: 'GET', params })
 
-	const post = <T>(endpoint: string, body?: Record<string, unknown>) =>
-		request<T>(endpoint, { method: 'POST', body })
+	const post = <T>(endpoint: string, body?: Record<string, unknown>) => request<T>(endpoint, { method: 'POST', body })
 
-	const put = <T>(endpoint: string, body?: Record<string, unknown>) =>
-		request<T>(endpoint, { method: 'PUT', body })
+	const put = <T>(endpoint: string, body?: Record<string, unknown>) => request<T>(endpoint, { method: 'PUT', body })
 
 	const del = <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' })
 

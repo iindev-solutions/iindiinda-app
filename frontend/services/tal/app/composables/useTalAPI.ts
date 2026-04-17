@@ -5,11 +5,11 @@ export const useTalAPI = () => {
 		return []
 	}
 
-	const fetchMasters = async (serviceId: string): Promise<Master[]> => {
+	const fetchMasters = async (_serviceId: string): Promise<Master[]> => {
 		return []
 	}
 
-	const fetchAvailableSlots = async (masterId: string, date: string): Promise<TimeSlot[]> => {
+	const fetchAvailableSlots = async (_masterId: string, _date: string): Promise<TimeSlot[]> => {
 		return []
 	}
 
@@ -26,7 +26,7 @@ export const useTalAPI = () => {
 		}
 	}
 
-	const cancelBooking = async (bookingId: string): Promise<void> => {
+	const cancelBooking = async (_bookingId: string): Promise<void> => {
 		return
 	}
 

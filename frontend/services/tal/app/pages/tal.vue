@@ -17,7 +17,23 @@ definePageMeta({ layout: 'default' })
 				<div class="rounded-2xl border border-cyan-500/15 bg-[#2a3a42]/30 p-5">
 					<div class="flex items-center gap-3">
 						<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f1113]/60">
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="text-cyan-400"
+							>
+								<rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+								<line x1="16" x2="16" y1="2" y2="6" />
+								<line x1="8" x2="8" y1="2" y2="6" />
+								<line x1="3" x2="21" y1="10" y2="10" />
+							</svg>
 						</div>
 						<div>
 							<h3 class="text-sm font-medium text-[#eff3f5]">Выбери услугу</h3>
@@ -29,7 +45,21 @@ definePageMeta({ layout: 'default' })
 				<div class="rounded-2xl border border-white/10 bg-[#2a3a42]/30 p-5">
 					<div class="flex items-center gap-3">
 						<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f1113]/60">
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="text-cyan-400"
+							>
+								<circle cx="12" cy="12" r="10" />
+								<polyline points="12 6 12 12 16 14" />
+							</svg>
 						</div>
 						<div>
 							<h3 class="text-sm font-medium text-[#eff3f5]">Забронируй слот</h3>
@@ -41,7 +71,21 @@ definePageMeta({ layout: 'default' })
 				<div class="rounded-2xl border border-white/10 bg-[#2a3a42]/30 p-5">
 					<div class="flex items-center gap-3">
 						<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f1113]/60">
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								class="text-cyan-400"
+							>
+								<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+								<path d="m9 11 3 3L22 4" />
+							</svg>
 						</div>
 						<div>
 							<h3 class="text-sm font-medium text-[#eff3f5]">Приходи</h3>
@@ -53,9 +97,7 @@ definePageMeta({ layout: 'default' })
 
 			<div class="space-y-3">
 				<NuxtLink to="/tal-showcase">
-					<UButton block size="lg" variant="outline">
-						Посмотреть демо
-					</UButton>
+					<UButton block size="lg" variant="outline">Посмотреть демо</UButton>
 				</NuxtLink>
 				<p class="text-center text-xs text-gray-500">В разработке</p>
 			</div>
