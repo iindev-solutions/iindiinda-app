@@ -8,8 +8,9 @@ definePageMeta({
 
 // Composables
 const { t } = useI18n()
-const { hapticFeedback } = useTg()
+const { hapticFeedback, showBackButton, hideBackButton, onBackButtonClicked } = useTg()
 const { post } = useAPI()
+const toast = useToast()
 const router = useRouter()
 
 // Form state
@@ -39,10 +40,19 @@ async function onSubmit(event: FormSubmitEvent<OrderForm>) {
 			price: event.data.price
 		})
 
+		toast.add({
+			title: t('ayan.create.success'),
+			color: 'cyan'
+		})
+
 		// Navigate to order tracking page
 		router.push('/ayan/my-order')
-	} catch (error) {
-		console.error('Failed to create order:', error)
+	} catch (err: any) {
+		console.error('Failed to create order:', err)
+		toast.add({
+			title: err?.message || t('ayan.create.error'),
+			color: 'gray'
+		})
 	} finally {
 		isSubmitting.value = false
 	}
@@ -55,6 +65,18 @@ function validatePrice(value: number | null) {
 	}
 	return true
 }
+
+// Initialize back button
+onMounted(() => {
+	showBackButton()
+	onBackButtonClicked(() => {
+		router.push('/ayan')
+	})
+})
+
+onUnmounted(() => {
+	hideBackButton()
+})
 </script>
 
 <template>
