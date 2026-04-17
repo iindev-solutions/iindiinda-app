@@ -96,20 +96,31 @@ const initialState = {
 	myActiveOrder: null as MockOrder | null
 }
 
-// Состояние мока (сохраняется в localStorage)
-const mockState = ref({
-	...initialState,
-	...(getMockState() || {})
-})
+// Глобальное состояние для всего приложения
+const useMockState = () => {
+	const state = useState('mock-api-state', () => ({
+		...initialState
+	}))
 
-// Синхронизация с localStorage при изменениях
-watch(
-	mockState,
-	(newValue) => {
-		saveMockState(newValue)
-	},
-	{ deep: true }
-)
+	// Загружаем из localStorage при инициализации на клиенте
+	if (import.meta.client) {
+		const stored = getMockState()
+		if (stored) {
+			Object.assign(state.value, stored)
+		}
+
+		// Сохраняем в localStorage при изменениях
+		watch(
+			state,
+			(newValue) => {
+				saveMockState(newValue)
+			},
+			{ deep: true }
+		)
+	}
+
+	return state
+}
 
 // Имитация задержки сети
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -120,6 +131,7 @@ const shouldFail = () => Math.random() < MOCK_CONFIG.errorRate
 
 export const useMockAPI = () => {
 	const toast = useToast()
+	const mockState = useMockState() // Получаем глобальное состояние
 
 	// Вспомогательная функция для показа мок-уведомления
 	const showMockToast = (message: string) => {
@@ -265,8 +277,8 @@ export const useMockAPI = () => {
 		if (shouldFail()) throw new Error('Ошибка отмены заказа')
 
 		const orderIndex = mockState.value.orders.findIndex((o: MockOrder) => o.id === orderId)
-		if (orderIndex > -1) {
-			mockState.value.orders[orderIndex].status = 'cancelled'
+		if (orderIndex > -1 && mockState.value.orders[orderIndex]) {
+			mockState.value.orders[orderIndex]!.status = 'cancelled'
 		}
 
 		if (mockState.value.myActiveOrder?.id === orderId) {
