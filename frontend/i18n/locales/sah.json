@@ -1,4 +1,7 @@
 {
+	"common": {
+		"cancel": "Салҕаама"
+	},
 	"app": {
 		"title": "iind.app",
 		"subtitle": "Куорат сэрбиистэрэ биир сиргэ. Судургу.",
@@ -20,7 +23,131 @@
 		"step2": "Водитель ылыа",
 		"step2desc": "Заказыгын көрөр уонна сөбүлэһэр",
 		"step3": "Барабыт",
-		"step3desc": "Комиссията суох. Чэпчэки сыана."
+		"step3desc": "Комиссията суох. Чэпчэки сыана.",
+		"header": {
+			"subtitle": "ТАКСИ"
+		},
+		"create": {
+			"title": "Саҥа айан",
+			"description": "Маршрут уонна эн сыана",
+			"fields": {
+				"pickup": "Хантан",
+				"destination": "Хайдаҕар",
+				"price": "Эн сыана"
+			},
+			"placeholders": {
+				"pickup": "Салгыы аадырыһы суруй",
+				"destination": "Быһыы аадырыһы суруй",
+				"price": "Ханнык сыананы толуйаргын"
+			},
+			"submitButton": "Водитель бул",
+			"validation": {
+				"priceRequired": "Сыананы суруй"
+			}
+		},
+		"order": {
+			"status": {
+				"searching": {
+					"title": "Водитель буттабыт",
+					"description": "Водитель заказы ылбыт кэмни кэтэһэбит"
+				},
+				"matched": {
+					"title": "Водитель табыллыбыт",
+					"description": "Водитель эн кыайар"
+				},
+				"arrived": {
+					"title": "Водитель тиийбит",
+					"description": "Салгыы урататыгар көһү"
+				},
+				"onTrip": {
+					"title": "Ёлкун",
+					"description": "Тойуктааһын кыайар"
+				},
+				"completed": {
+					"title": "Айан бүттүбүт",
+					"description": "Баһылаан аайыҥ"
+				},
+				"cancelled": {
+					"title": "Заказ салҕаныллыбыт",
+					"description": "Эн заказы салҕаампык"
+				}
+			},
+			"details": {
+				"pickup": "Хантан",
+				"destination": "Хайдаҕар",
+				"price": "Сыана"
+			},
+			"cancelButton": "Заказы салҕаан",
+			"cancelConfirm": {
+				"title": "Заказы салҕаан",
+				"message": "Заказы салҕаан кыалларын туһунуҥ",
+				"confirm": "Сөп, салҕаан"
+			}
+		},
+		"driver": {
+			"title": "Водитель режима",
+			"description": "Закасты ылаар уонна акча кыайар",
+			"header": {
+				"subtitle": "ВОДИТЕЛЬ"
+			},
+			"availability": {
+				"title": "Статус",
+				"online": "Онлайн",
+				"offline": "Оффлайн"
+			},
+			"stats": {
+				"completed": "Айаннар",
+				"rating": "Рейтинг"
+			},
+			"instructions": {
+				"title": "Хайаан биэрий",
+				"step1": "\"Онлайн\" статуһу хачайда",
+				"step2": "Тиһиктэн заказы тал",
+				"step3": "Программата инструкцияты кытта дь correspondentс"
+			}
+		},
+		"orders": {
+			"title": "Барыллаах заказтар",
+			"header": {
+				"subtitle": "ЗАКАЗЫ"
+			},
+			"empty": {
+				"title": "Заказ суох",
+				"description": "Билигин кырдьаҕаҕыҥ заказтара суох"
+			},
+			"card": {
+				"pickup": "Хантан",
+				"destination": "Хайдаҕар",
+				"price": "Сыана",
+				"acceptButton": "Ыл"
+			}
+		},
+		"activeRide": {
+			"status": {
+				"matched": {
+					"title": "Закас ыллыбыт",
+					"description": "Пассажиры кыайар"
+				},
+				"arrived": {
+					"title": "Тиийбит",
+					"description": "Пассажиры кэтэһэбит"
+				},
+				"onTrip": {
+					"title": "Ёлкун",
+					"description": "Пассажиры ыйаабыт"
+				}
+			},
+			"details": {
+				"pickup": "Салгыы тутуу",
+				"destination": "Көһүйүү",
+				"price": "Айан сыаната"
+			},
+			"actions": {
+				"markArrived": "Тиийбитим",
+				"startTrip": "Айан саҕаланыын",
+				"completeTrip": "Айан бүтүн"
+			}
+		}
 	},
 	"uus": {
 		"category": "УУСТАР",

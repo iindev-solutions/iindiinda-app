@@ -1,4 +1,7 @@
 {
+	"common": {
+		"cancel": "Отмена"
+	},
 	"app": {
 		"title": "iind.app",
 		"subtitle": "Городские сервисы в одном месте. Просто.",
@@ -20,7 +23,131 @@
 		"step2": "Водитель примет",
 		"step2desc": "Видит твой заказ и соглашается",
 		"step3": "Поехали",
-		"step3desc": "Без комиссий. Честная цена."
+		"step3desc": "Без комиссий. Честная цена.",
+		"header": {
+			"subtitle": "ТАКСИ"
+		},
+		"create": {
+			"title": "Новая поездка",
+			"description": "Укажите маршрут и предложите свою цену",
+			"fields": {
+				"pickup": "Откуда",
+				"destination": "Куда",
+				"price": "Ваша цена"
+			},
+			"placeholders": {
+				"pickup": "Введите адрес отправления",
+				"destination": "Введите адрес назначения",
+				"price": "Сколько готовы заплатить"
+			},
+			"submitButton": "Найти водителя",
+			"validation": {
+				"priceRequired": "Укажите цену"
+			}
+		},
+		"order": {
+			"status": {
+				"searching": {
+					"title": "Ищем водителя",
+					"description": "Ожидаем, когда водитель примет заказ"
+				},
+				"matched": {
+					"title": "Водитель найден",
+					"description": "Водитель едет к вам"
+				},
+				"arrived": {
+					"title": "Водитель приехал",
+					"description": "Ожидайте у места подачи"
+				},
+				"onTrip": {
+					"title": "В пути",
+					"description": "Приятной поездки"
+				},
+				"completed": {
+					"title": "Поездка завершена",
+					"description": "Спасибо за поездку"
+				},
+				"cancelled": {
+					"title": "Заказ отменен",
+					"description": "Вы отменили заказ"
+				}
+			},
+			"details": {
+				"pickup": "Откуда",
+				"destination": "Куда",
+				"price": "Цена"
+			},
+			"cancelButton": "Отменить заказ",
+			"cancelConfirm": {
+				"title": "Отменить заказ?",
+				"message": "Вы уверены, что хотите отменить заказ?",
+				"confirm": "Да, отменить"
+			}
+		},
+		"driver": {
+			"title": "Режим водителя",
+			"description": "Принимайте заказы и зарабатывайте",
+			"header": {
+				"subtitle": "ВОДИТЕЛЬ"
+			},
+			"availability": {
+				"title": "Статус",
+				"online": "На линии",
+				"offline": "Оффлайн"
+			},
+			"stats": {
+				"completed": "Поездок",
+				"rating": "Рейтинг"
+			},
+			"instructions": {
+				"title": "Как это работает",
+				"step1": "Включите статус \"На линии\"",
+				"step2": "Выберите заказ из списка",
+				"step3": "Следуйте инструкциям в приложении"
+			}
+		},
+		"orders": {
+			"title": "Доступные заказы",
+			"header": {
+				"subtitle": "ЗАКАЗЫ"
+			},
+			"empty": {
+				"title": "Нет заказов",
+				"description": "Пока нет доступных заказов в вашем районе"
+			},
+			"card": {
+				"pickup": "Откуда",
+				"destination": "Куда",
+				"price": "Цена",
+				"acceptButton": "Принять"
+			}
+		},
+		"activeRide": {
+			"status": {
+				"matched": {
+					"title": "Заказ принят",
+					"description": "Едьте к пассажиру"
+				},
+				"arrived": {
+					"title": "На месте",
+					"description": "Ожидаете пассажира"
+				},
+				"onTrip": {
+					"title": "В пути",
+					"description": "Везете пассажира"
+				}
+			},
+			"details": {
+				"pickup": "Точка подачи",
+				"destination": "Направление",
+				"price": "Цена поездки"
+			},
+			"actions": {
+				"markArrived": "Я на месте",
+				"startTrip": "Начать поездку",
+				"completeTrip": "Завершить поездку"
+			}
+		}
 	},
 	"uus": {
 		"category": "МАСТЕРА",
