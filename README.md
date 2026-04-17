@@ -19,7 +19,7 @@
 iindiinda-app/
 ├── backend/                    # Laravel API
 │   └── routes/api.php          # API контракты всех сервисов
-├── frontend/tma-app/           # Nuxt 4 TMA
+├── frontend/                   # Nuxt 4 TMA
 │   ├── app/                    # Главное приложение
 │   │   ├── composables/        # useTg, useAPI, useAuth
 │   │   ├── pages/              # index.vue (хаб), ui.vue
@@ -45,7 +45,7 @@ cd iindiinda-app
 cp .env.example .env
 
 # Frontend
-cd frontend/tma-app
+cd frontend
 npm install
 npm run dev
 
