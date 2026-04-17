@@ -1,6 +1,16 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
+/* Cyber-Minimalist Theme - Level System */
+:root {
+	/* Level 0 - Deepest Background */
+	--bg-level-0: #0a0c0e;
+	/* Level 1 - Surface/Cards/Inputs */
+	--bg-level-1: #161a1d;
+	/* Border Color */
+	--border-color: #1f2937;
+}
+
 @theme static {
 	--color-cyan-50: #eff3f5;
 	--color-cyan-100: #d9e5e9;
@@ -26,8 +36,8 @@
 	--color-gray-900: #0f1113;
 	--color-gray-950: #0a0c0e;
 
-	--color-background: #0a0c0e;
-	--color-surface: #0f1113;
+	--color-background: var(--bg-level-0);
+	--color-surface: var(--bg-level-1);
 
 	--font-sans: 'Geist', 'Inter', system-ui, -apple-system, sans-serif;
 	--font-size-base: 15px;
@@ -46,7 +56,7 @@
 	--spacing-xl: 32px; */
 
 	--border-width: 0.5px;
-	--border-radius: 6px;
+	--border-radius: 16px; /* rounded-2xl */
 
 	--transition-duration: 150ms;
 	--transition-timing: ease-out;
@@ -63,8 +73,21 @@ body {
 	font-size: var(--font-size-base);
 	font-weight: var(--font-weight-normal);
 	letter-spacing: var(--letter-spacing-tight);
-	background-color: var(--color-background);
+	background-color: var(--bg-level-0);
 	color: var(--color-cyan-50);
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+/* Utility Classes for Theme */
+.bg-level-0 {
+	background-color: var(--bg-level-0);
+}
+
+.bg-level-1 {
+	background-color: var(--bg-level-1);
+}
+
+.border-theme {
+	border-color: var(--border-color);
 }
