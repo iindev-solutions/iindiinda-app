@@ -24,7 +24,8 @@
 - [[wiki/architecture/api-contract]] — полный API контракт ayan (6 статусов)
 - [[wiki/architecture/data-models]] — TypeScript типы + модели данных
 - [[wiki/architecture/auth-flow]] — авторизация (Telegram + localhost)
-- [[wiki/architecture/ayan-rewrite-design]] — AYAN Vision + Concept + MVP + API endpoints (новый)
+- [[wiki/architecture/ayan-rewrite-design]] — AYAN Vision + Concept + MVP + API endpoints
+- [[wiki/architecture/uus-vision]] — UUS (Уус) Vision + Concept + MVP + монетизация
 - [[wiki/architecture/browser-back-button]] — универсальный компонент BackButton (smart nav + Telegram)
 
 #### Services

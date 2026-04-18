@@ -1,4 +1,5 @@
 # Changelog — iindev-vault
+add time and date
 
 ## 2026-04-18 — Vault Population
 
@@ -32,6 +33,35 @@
 ### Updated
 - `vault/master_index.md` — все новые статьи + роадмап
 
+## 2026-04-18 — AYAN Vision Updated with Monetization
+
+### Updated
+- `vault/wiki/architecture/ayan-rewrite-design.md` — добавлены секции:
+  - **Потенциал и монетизация** — 4 модели: платное размещение, подписка, платные отклики, реклама
+  - **Роль в экосистеме** — AYAN как трафик-генератор, не revenue-генератор
+  - **Сравнение AYAN vs UUS** — таблица по частоте, контролю оплаты, монетизации, LTV
+  - **Потенциал дохода** — оценка 100-300 поездок/день
+  - **Обновлён Decision Log** — добавлены решения про роль в экосистеме и монетизацию
+
+## 2026-04-18 — UUS Vision Document
+
+### Added
+- `vault/wiki/architecture/uus-vision.md` — полный vision-документ для сервиса UUS (Уус)
+  - Updated terminology: "исполнитель" вместо "мастер" (шире аудитория)
+  - 4 категории задач: 🏠 Дом, 🔧 Ремонт, 📦 Доставка, 🌿 Другое
+  - Key mechanics: лимит откликов (3–5), выбор исполнителя, авто-закрытие заявки
+  - 3 сценария: разовая задача, постоянный исполнитель, удалённая/офисная задача
+  - Trust & Safety минимум (без усложнения)
+  - Потенциал и монетизация: плата за отклик, подписка, премиум-размещение
+  - MVP scope: создать заявку → лента → отклик → выбор → контакт
+
+### Next Steps
+- [ ] Создать API endpoints документ для UUS
+- [ ] Создать data models для UUS (аналогично AYAN)
+- [ ] Update routing.md с навигационными флоу UUS
+- [ ] Начать Phase 0: Foundation для UUS
+- [ ] Добавить сырые данные в /raw при необходимости
+
 ## 2026-04-18 — Browser Back Button Component Implementation
 
 ### Added
@@ -48,11 +78,5 @@
 - **Same Section Detection**: если предыдущий роут в той же секции (/ayan/*) — использует router.back()
 - **Smart Fallback**: если нет истории — navigateTo(fallbackRoute || '/')
 - **Hooks**: beforeNavigate (can cancel), onNavigate (custom logic)
-- **Telegram Mode**: в TMA показывает нативный BackButton, UI кнопка скрывается
+- **Telegram Mode**: в TMA показывает нативный BackButton, UI кнопка скрывается автоматически
 - **Debug Mode**: forceUi=true показывает UI кнопку даже в Telegram
-
-### Next Steps
-- [ ] Update routing.md with BackButton usage examples
-- [ ] Review с командой
-- [ ] Начать Phase 0: Foundation
-- [ ] Добавить сырые данные в /raw при необходимости
