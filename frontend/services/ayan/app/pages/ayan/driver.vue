@@ -7,8 +7,7 @@ definePageMeta({
 // Composables
 const { t } = useI18n()
 const { hapticFeedback, showBackButton, hideBackButton, onBackButtonClicked } = useTg()
-const { get, post } = useTaxiAPI() // Используем Taxi API (мок или реальный)
-const router = useRouter()
+const { get, post } = useTaxiAPI()
 
 // Types
 interface DriverStatus {
@@ -65,7 +64,7 @@ async function toggleAvailability() {
 
 		if (isAvailable.value) {
 			// Navigate to orders page when becoming available
-			router.push('/ayan/orders')
+			navigateTo('/ayan/orders')
 		}
 	} catch (error) {
 		console.error('Failed to toggle availability:', error)
@@ -84,7 +83,7 @@ onMounted(() => {
 	// Show back button and handle navigation
 	showBackButton()
 	onBackButtonClicked(() => {
-		router.push('/ayan')
+		navigateTo('/ayan')
 	})
 })
 

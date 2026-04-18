@@ -7,8 +7,7 @@ definePageMeta({
 // Composables
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
-const { get, post } = useTaxiAPI() // Используем Taxi API (мок или реальный)
-const router = useRouter()
+const { get, post } = useTaxiAPI()
 
 // Types
 interface Order {
@@ -45,7 +44,7 @@ async function acceptOrder(orderId: number) {
 	try {
 		await post(`/ayan/orders/${orderId}/accept`)
 		// Navigate to active ride page
-		router.push('/ayan/active-ride')
+		navigateTo('/ayan/active-ride')
 	} catch (error) {
 		console.error('Failed to accept order:', error)
 	} finally {

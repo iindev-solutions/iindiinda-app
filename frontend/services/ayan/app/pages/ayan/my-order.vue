@@ -11,7 +11,6 @@ const { t } = useI18n()
 const { hapticFeedback, showBackButton, hideBackButton, onBackButtonClicked } = useTg()
 const { get, post } = useTaxiAPI() // Используем Taxi API (мок или реальный)
 const toast = useToast()
-const router = useRouter()
 
 // Order state
 type OrderStatus = 'searching' | 'matched' | 'arrived' | 'on-trip' | 'completed' | 'cancelled'
@@ -52,7 +51,7 @@ const { pause, resume, isActive } = useIntervalFn(
 			// Navigate to completed page if trip is done
 			if (order.value && order.value.status === 'completed') {
 				pause()
-				router.push('/ayan/complete')
+				navigateTo('/ayan/complete')
 			}
 		} catch (error: any) {
 			console.error('Failed to fetch order status:', error)
@@ -84,7 +83,7 @@ async function fetchActiveOrder() {
 	} catch (error: any) {
 		console.error('Failed to fetch active order:', error)
 		// If no active order, redirect to create page
-		router.push('/ayan/create')
+		navigateTo('/ayan/create')
 	} finally {
 		isLoading.value = false
 	}
@@ -103,7 +102,7 @@ async function cancelOrder() {
 			title: t('ayan.order.cancelSuccess'),
 			color: 'cyan'
 		})
-		router.push('/ayan/create')
+		navigateTo('/ayan/create')
 	} catch (error: any) {
 		console.error('Failed to cancel order:', error)
 		toast.add({
@@ -114,42 +113,51 @@ async function cancelOrder() {
 }
 
 // Status display
-const statusConfig: Record<OrderStatus, { title: string; description: string; color: string; icon: string }> = {
+const statusConfig: Record<
+	OrderStatus,
+	{ title: string; description: string; icon: string; bgClass: string; textClass: string }
+> = {
 	searching: {
 		title: t('ayan.order.status.searching.title'),
 		description: t('ayan.order.status.searching.description'),
-		color: 'cyan',
-		icon: 'i-lucide-search'
+		icon: 'i-lucide-search',
+		bgClass: 'bg-cyan-500/20',
+		textClass: 'text-cyan-400'
 	},
 	matched: {
 		title: t('ayan.order.status.matched.title'),
 		description: t('ayan.order.status.matched.description'),
-		color: 'green',
-		icon: 'i-lucide-check-circle'
+		icon: 'i-lucide-check-circle',
+		bgClass: 'bg-green-500/20',
+		textClass: 'text-green-400'
 	},
 	arrived: {
 		title: t('ayan.order.status.arrived.title'),
 		description: t('ayan.order.status.arrived.description'),
-		color: 'green',
-		icon: 'i-lucide-map-pin'
+		icon: 'i-lucide-map-pin',
+		bgClass: 'bg-green-500/20',
+		textClass: 'text-green-400'
 	},
 	'on-trip': {
 		title: t('ayan.order.status.onTrip.title'),
 		description: t('ayan.order.status.onTrip.description'),
-		color: 'cyan',
-		icon: 'i-lucide-car'
+		icon: 'i-lucide-car',
+		bgClass: 'bg-cyan-500/20',
+		textClass: 'text-cyan-400'
 	},
 	completed: {
 		title: t('ayan.order.status.completed.title'),
 		description: t('ayan.order.status.completed.description'),
-		color: 'green',
-		icon: 'i-lucide-check'
+		icon: 'i-lucide-check',
+		bgClass: 'bg-green-500/20',
+		textClass: 'text-green-400'
 	},
 	cancelled: {
 		title: t('ayan.order.status.cancelled.title'),
 		description: t('ayan.order.status.cancelled.description'),
-		color: 'gray',
-		icon: 'i-lucide-x'
+		icon: 'i-lucide-x',
+		bgClass: 'bg-gray-500/20',
+		textClass: 'text-gray-400'
 	}
 }
 
@@ -160,7 +168,7 @@ onMounted(() => {
 	// Show back button
 	showBackButton()
 	onBackButtonClicked(() => {
-		router.push('/ayan')
+		navigateTo('/ayan')
 	})
 })
 
@@ -197,12 +205,12 @@ onUnmounted(() => {
 					<div class="flex items-center gap-4">
 						<div
 							class="flex h-14 w-14 items-center justify-center rounded-2xl"
-							:class="`bg-${statusConfig[order.status].color}-500/20`"
+							:class="statusConfig[order.status].bgClass"
 						>
 							<UIcon
 								:name="statusConfig[order.status].icon"
 								class="h-7 w-7"
-								:class="`text-${statusConfig[order.status].color}-400`"
+								:class="statusConfig[order.status].textClass"
 							/>
 						</div>
 						<div>

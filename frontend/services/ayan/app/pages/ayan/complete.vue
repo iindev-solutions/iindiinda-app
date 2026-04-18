@@ -7,7 +7,6 @@ definePageMeta({
 // Composables
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
-const router = useRouter()
 
 // State
 const showConfetti = ref(true)
@@ -15,12 +14,12 @@ const showConfetti = ref(true)
 // Navigation handlers
 function goToHome() {
 	hapticFeedback('impact')
-	router.push('/ayan')
+	navigateTo('/ayan')
 }
 
 function goToCreateOrder() {
 	hapticFeedback('impact')
-	router.push('/ayan/create')
+	navigateTo('/ayan/create')
 }
 
 // Hide confetti after animation

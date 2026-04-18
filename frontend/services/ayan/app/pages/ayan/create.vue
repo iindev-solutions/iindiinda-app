@@ -11,7 +11,6 @@ const { t } = useI18n()
 const { hapticFeedback, showBackButton, hideBackButton, onBackButtonClicked } = useTg()
 const { post } = useTaxiAPI() // Используем Taxi API (мок или реальный)
 const toast = useToast()
-const router = useRouter()
 
 // Form state
 interface OrderForm {
@@ -46,7 +45,7 @@ async function onSubmit(event: FormSubmitEvent<OrderForm>) {
 		})
 
 		// Navigate to order tracking page
-		router.push('/ayan/my-order')
+		navigateTo('/ayan/my-order')
 	} catch (err: any) {
 		console.error('Failed to create order:', err)
 		toast.add({
@@ -70,7 +69,7 @@ function validatePrice(value: number | null) {
 onMounted(() => {
 	showBackButton()
 	onBackButtonClicked(() => {
-		router.push('/ayan')
+		navigateTo('/ayan')
 	})
 })
 

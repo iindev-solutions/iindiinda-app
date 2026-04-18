@@ -7,8 +7,7 @@ definePageMeta({
 // Composables
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
-const { get, post } = useTaxiAPI() // Используем Taxi API (мок или реальный)
-const router = useRouter()
+const { get, post } = useTaxiAPI()
 
 // Types
 type ActiveStatus = 'matched' | 'arrived' | 'on-trip'
@@ -39,7 +38,7 @@ async function fetchActiveOrder() {
 	} catch (error) {
 		console.error('Failed to fetch active order:', error)
 		// No active order - go back to orders list
-		router.push('/ayan/orders')
+		navigateTo('/ayan/orders')
 	} finally {
 		isLoading.value = false
 	}
@@ -83,7 +82,7 @@ async function completeTrip() {
 
 	try {
 		await post(`/ayan/orders/${order.value.id}/complete`)
-		router.push('/ayan/complete')
+		navigateTo('/ayan/complete')
 	} catch (error) {
 		console.error('Failed to complete trip:', error)
 	} finally {
@@ -91,25 +90,30 @@ async function completeTrip() {
 	}
 }
 
-// Status display
-const statusConfig: Record<ActiveStatus, { title: string; description: string; color: string; icon: string }> = {
+const statusConfig: Record<
+	ActiveStatus,
+	{ title: string; description: string; icon: string; bgClass: string; textClass: string }
+> = {
 	matched: {
 		title: t('ayan.activeRide.status.matched.title'),
 		description: t('ayan.activeRide.status.matched.description'),
-		color: 'green',
-		icon: 'i-lucide-check-circle'
+		icon: 'i-lucide-check-circle',
+		bgClass: 'bg-green-500/20',
+		textClass: 'text-green-400'
 	},
 	arrived: {
 		title: t('ayan.activeRide.status.arrived.title'),
 		description: t('ayan.activeRide.status.arrived.description'),
-		color: 'cyan',
-		icon: 'i-lucide-map-pin'
+		icon: 'i-lucide-map-pin',
+		bgClass: 'bg-cyan-500/20',
+		textClass: 'text-cyan-400'
 	},
 	'on-trip': {
 		title: t('ayan.activeRide.status.onTrip.title'),
 		description: t('ayan.activeRide.status.onTrip.description'),
-		color: 'cyan',
-		icon: 'i-lucide-car'
+		icon: 'i-lucide-car',
+		bgClass: 'bg-cyan-500/20',
+		textClass: 'text-cyan-400'
 	}
 }
 
@@ -139,12 +143,12 @@ onMounted(() => {
 					<div class="flex items-center gap-4">
 						<div
 							class="flex h-14 w-14 items-center justify-center rounded-2xl"
-							:class="`bg-${statusConfig[order.status].color}-500/20`"
+							:class="statusConfig[order.status].bgClass"
 						>
 							<UIcon
 								:name="statusConfig[order.status].icon"
 								class="h-7 w-7"
-								:class="`text-${statusConfig[order.status].color}-400`"
+								:class="statusConfig[order.status].textClass"
 							/>
 						</div>
 						<div>

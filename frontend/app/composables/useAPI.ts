@@ -36,17 +36,16 @@ export const useAPI = () => {
 	): Promise<T> => {
 		const { method = 'GET', body, params } = options
 
-		const url = new URL(endpoint, baseURL.value)
+		let url = `${baseURL.value}${endpoint.startsWith('/') ? '' : '/'}${endpoint}`
 		if (params) {
-			Object.entries(params).forEach(([key, value]) => {
-				url.searchParams.set(key, value)
-			})
+			const searchParams = new URLSearchParams(params)
+			url += `?${searchParams.toString()}`
 		}
 
-		const response = await $fetch<T>(url.toString(), {
+		const response = await $fetch<T>(url, {
 			method,
 			headers: headers.value,
-			body: body ? JSON.stringify(body) : undefined
+			body: method !== 'GET' ? body : undefined
 		})
 
 		return response

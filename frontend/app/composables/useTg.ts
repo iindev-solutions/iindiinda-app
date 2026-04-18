@@ -1,9 +1,29 @@
 /**
  * useTg - обёртка Telegram WebApp SDK
  * Предоставляет доступ к Telegram Mini App API
+ *
+ * Версии API:
+ *   v6.0: MainButton, basic API
+ *   v6.1: BackButton, HapticFeedback
+ *   v6.2: SettingsButton, Accelerometer, DeviceOrientation
+ *   v6.4: BiometryManager
+ *   v6.7: SecondaryButton
+ *
+ * SDK бросает ошибку при ДОСТУПЕ к свойствам, которых нет в текущей версии,
+ * поэтому проверяем version ДО обращения к HapticFeedback/BackButton/etc.
  */
+
+function compareVersions(v1: string, v2: string): number {
+	const a = v1.split('.').map(Number)
+	const b = v2.split('.').map(Number)
+	for (let i = 0; i < Math.max(a.length, b.length); i++) {
+		const diff = (a[i] || 0) - (b[i] || 0)
+		if (diff !== 0) return diff > 0 ? 1 : -1
+	}
+	return 0
+}
+
 export const useTg = () => {
-	// Проверяем, находимся ли мы внутри Telegram WebApp
 	const isInTelegram = computed(() => {
 		if (typeof window === 'undefined') return false
 		return !!window.Telegram?.WebApp?.initData
@@ -20,6 +40,8 @@ export const useTg = () => {
 
 	const initData = computed(() => webApp.value?.initData || '')
 
+	const version = computed(() => webApp.value?.version || '6.0')
+
 	const themeParams = computed(
 		() =>
 			webApp.value?.themeParams || {
@@ -32,6 +54,8 @@ export const useTg = () => {
 	)
 
 	const isReady = computed(() => !!webApp.value)
+
+	const supportsVersion = (minVersion: string) => compareVersions(version.value, minVersion) >= 0
 
 	const ready = () => {
 		webApp.value?.ready()
@@ -46,63 +70,76 @@ export const useTg = () => {
 	}
 
 	const showBackButton = () => {
+		if (!supportsVersion('6.1')) return
 		try {
 			webApp.value?.BackButton?.show()
 		} catch {
-			console.log('[useTg] BackButton not supported')
+			// ignore
 		}
 	}
 
 	const hideBackButton = () => {
+		if (!supportsVersion('6.1')) return
 		try {
 			webApp.value?.BackButton?.hide()
 		} catch {
-			console.log('[useTg] BackButton not supported')
+			// ignore
 		}
 	}
 
 	const onBackButtonClicked = (callback: () => void) => {
+		if (!supportsVersion('6.1')) return
 		try {
 			webApp.value?.BackButton?.onClick(callback)
 		} catch {
-			console.log('[useTg] BackButton not supported')
+			// ignore
 		}
 	}
 
 	const showMainButton = (text: string, onClick: () => void) => {
-		if (webApp.value?.MainButton) {
-			webApp.value.MainButton.text = text
-			webApp.value.MainButton.onClick(onClick)
-			webApp.value.MainButton.show()
+		if (!webApp.value) return
+		try {
+			if (webApp.value.MainButton) {
+				webApp.value.MainButton.text = text
+				webApp.value.MainButton.onClick(onClick)
+				webApp.value.MainButton.show()
+			}
+		} catch {
+			// ignore
 		}
 	}
 
 	const hideMainButton = () => {
-		if (webApp.value?.MainButton) {
-			webApp.value.MainButton.hide()
+		if (!webApp.value) return
+		try {
+			webApp.value.MainButton?.hide()
+		} catch {
+			// ignore
 		}
 	}
 
 	const hapticFeedback = (type: 'impact' | 'notification' | 'selection' = 'impact') => {
+		if (!supportsVersion('6.1')) return
 		try {
-			if (webApp.value?.HapticFeedback?.impactOccurred) {
+			if (webApp.value?.HapticFeedback) {
 				if (type === 'impact') webApp.value.HapticFeedback.impactOccurred('medium')
 				else if (type === 'notification') webApp.value.HapticFeedback.notificationOccurred('success')
 				else webApp.value.HapticFeedback.selectionChanged()
 			}
 		} catch {
-			// HapticFeedback не поддерживается в старых версиях WebApp
-			console.log('[useTg] HapticFeedback not supported')
+			// ignore
 		}
 	}
 
 	return {
-		isInTelegram, // true если работаем внутри Telegram
+		isInTelegram,
 		webApp,
 		user,
 		initData,
+		version,
 		themeParams,
 		isReady,
+		supportsVersion,
 		ready,
 		expand,
 		close,

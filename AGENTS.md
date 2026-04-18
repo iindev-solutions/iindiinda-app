@@ -145,9 +145,43 @@ JWT_SECRET=xxx
 NUXT_PUBLIC_API_BASE=http://localhost:8000/api
 ```
 
+## Nuxt 4 Page Structure (MANDATORY)
+
+Service pages use **nested directory structure** for file-based routing:
+
+```
+services/ayan/app/pages/
+├── ayan.vue                    → /ayan  (PARENT — just <NuxtPage />, no UI)
+└── ayan/
+    ├── index.vue               → /ayan          (main/landing page)
+    ├── create.vue              → /ayan/create
+    ├── driver.vue              → /ayan/driver
+    ├── orders.vue              → /ayan/orders
+    ├── my-order.vue            → /ayan/my-order
+    ├── active-ride.vue         → /ayan/active-ride
+    └── complete.vue            → /ayan/complete
+```
+
+**Rules**:
+- `ayan.vue` = PARENT WRAPPER, contains ONLY `<NuxtPage />` — no layout, no UI, no logic
+- `ayan/index.vue` = main page at `/ayan` (the landing page with buttons, etc.)
+- Sub-pages = `ayan/{page}.vue` files inside the directory
+- Same pattern for all services: `uus/`, `agal/`, `tal/`
+- **ALWAYS use `navigateTo()`** — NEVER `router.push()` or `useRouter()`
+- `navigateTo()` is Nuxt-native, supports middleware, layers, SSR; `router.push` breaks with layer routes
+
+## Code Rules (MANDATORY)
+
+- **Navigation**: ALWAYS `navigateTo('/path')` — NEVER `router.push()`, NEVER `useRouter()`
+- **Tailwind classes**: NEVER dynamic interpolation like `bg-${color}-500/20` — Tailwind JIT can't detect them. Use full static class names in maps (e.g. `bgClass: 'bg-cyan-500/20'`)
+- **Telegram version checks**: HapticFeedback requires v6.1+, BackButton requires v6.1+. Always check `supportsVersion('6.1')` before accessing these properties — the SDK throws on property access, optional chaining doesn't help
+- **API URL construction**: NEVER use `new URL(endpoint, base)` — it drops path segments when endpoint starts with `/`. Use string concatenation instead
+
 ## Common Mistakes to Avoid
 
 - **Don't create `layers/` folder** — services are in `services/`, legacy scripts reference wrong paths
 - **Don't modify Telegram SDK** — loaded externally via `https://telegram.org/js/telegram-web-app.js`
 - **Don't forget `initData`** — all API calls need it until auth completes
 - **SSR disabled** — `ssr: false` in nuxt.config.ts; this is SPA-only
+- **Don't use `router.push`** — always use `navigateTo()` for navigation
+- **Don't use dynamic Tailwind classes** — JIT won't detect `bg-${var}-500`, use static class maps
