@@ -1,56 +1,71 @@
 {
-	"backButton": {
-		"label": "Назад",
-		"ariaLabel": "Вернуться назад"
+	'backButton': {
+		'label': 'Назад',
+		'ariaLabel': 'Вернуться назад'
 	},
-	"ayan": {
-		"category": "ПОПУТКИ",
-		"name": "AYAN",
-		"desc": "Найди попутку",
-		"badge": "Новое",
-		"rides": "Поездки",
-		"requests": "Запросы",
-		"myRides": "Мои",
-		"createRide": "Создать поездку",
-		"createRequest": "Создать запрос",
-		"findRide": "Найти поездку",
-		"findRequest": "Найти запрос",
-		"noRides": "Нет поездок",
-		"noRequests": "Нет запросов",
-		"noRidesDesc": "Будь первым — создай поездку",
-		"noRequestsDesc": "Будь первым — создай запрос",
-		"ride": {
-			"from": "Откуда",
-			"to": "Куда",
-			"date": "Дата",
-			"time": "Время",
-			"seats": "мест",
-			"price": "Цена",
-			"priceNegotiable": "Договорная",
-			"seatsAvailable": "Свободных мест",
-			"comment": "Комментарий",
-			"create": "Создать поездку",
-			"createDesc": "Расскажи, куда едешь"
+	'common': {
+		'loading': 'Загрузка...',
+		'error': 'Что-то пошло не так',
+		'retry': 'Попробовать снова',
+		'cancel': 'Отмена',
+		'confirm': 'Подтвердить',
+		'save': 'Сохранить',
+		'close': 'Закрыть'
+	},
+	'empty': {
+		'noItems': 'Пока пусто',
+		'noItemsDesc': 'Здесь пока ничего нет',
+		'noResults': 'Ничего не найдено',
+		'noResultsDesc': 'Попробуйте изменить параметры'
+	},
+	ayan: {
+		category: 'ПОПУТКИ',
+		name: 'AYAN',
+		desc: 'Найди попутку',
+		badge: 'Новое',
+		rides: 'Поездки',
+		requests: 'Запросы',
+		myRides: 'Мои',
+		createRide: 'Создать поездку',
+		createRequest: 'Создать запрос',
+		findRide: 'Найти поездку',
+		findRequest: 'Найти запрос',
+		noRides: 'Нет поездок',
+		noRequests: 'Нет запросов',
+		noRidesDesc: 'Будь первым — создай поездку',
+		noRequestsDesc: 'Будь первым — создай запрос',
+		ride: {
+			from: 'Откуда',
+			to: 'Куда',
+			date: 'Дата',
+			time: 'Время',
+			seats: 'мест',
+			price: 'Цена',
+			priceNegotiable: 'Договорная',
+			seatsAvailable: 'Свободных мест',
+			comment: 'Комментарий',
+			create: 'Создать поездку',
+			createDesc: 'Расскажи, куда едешь'
 		},
-		"request": {
-			"from": "Откуда",
-			"to": "Куда",
-			"date": "Когда",
-			"comment": "Комментарий",
-			"create": "Создать запрос",
-			"createDesc": "Расскажи, куда нужно доехать"
+		request: {
+			from: 'Откуда',
+			to: 'Куда',
+			date: 'Когда',
+			comment: 'Комментарий',
+			create: 'Создать запрос',
+			createDesc: 'Расскажи, куда нужно доехать'
 		},
-		"respond": {
-			"button": "Откликнуться",
-			"contact": "Контакт",
-			"contactDesc": "Свяжитесь напрямую",
-			"success": "Отклик отправлен!",
-			"message": "Сообщение (необязательно)",
-			"messagePlaceholder": "Напишите водителю..."
+		respond: {
+			button: 'Откликнуться',
+			contact: 'Контакт',
+			contactDesc: 'Свяжитесь напрямую',
+			success: 'Отклик отправлен!',
+			message: 'Сообщение (необязательно)',
+			messagePlaceholder: 'Напишите водителю...'
 		},
-		"driver": "Водитель",
-		"passenger": "Пассажир",
-		"contactReceived": "Контакт получен",
-		"respondFirst": "Сначала откликнитесь"
+		driver: 'Водитель',
+		passenger: 'Пассажир',
+		contactReceived: 'Контакт получен',
+		respondFirst: 'Сначала откликнитесь'
 	}
 }

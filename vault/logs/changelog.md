@@ -1,5 +1,19 @@
 # Changelog — iindev-vault
 
+## 2026-04-18 — Backend Controllers (Foundation)
+
+### Added
+- `backend/app/Http/Controllers/AuthController.php` — `/auth/telegram` endpoint (mock user)
+- `backend/app/Http/Controllers/UserController.php` — `/user/me`, `/user/switch-role` (mock)
+- `backend/app/Http/Controllers/Ayan/OrderController.php` — all AYAN MVP endpoints (mock data)
+
+### Notes
+- All controllers return mock data for MVP
+- Telegram initData validation skipped (TODO after MVP)
+- Sanctum auth middleware skipped (TODO after MVP)
+
+---
+
 ## 2026-04-18 — Vault Cleanup Round 2
 
 ### Updated

@@ -64,28 +64,55 @@ docker-compose up -d    # Backend (scaffold-only) at http://localhost:8000
 
 ## Vault Workflow
 
-**Start here:** `vault/master_index.md` — карта всей базы знаний, links на все важные файлы.
+### Think First, Code Later
 
-**Workflow:** Vision → Design Doc → Implementation → Changelog
+**Before ANY implementation:**
+1. Read relevant vault doc — understand WHY
+2. Write TODO in chat — what, why, problems to solve
+3. Think 3 times — edge cases, state, API contract
+4. Only then implement
 
-1. **Before coding** — read relevant vision: `vault/wiki/architecture/ayan-vision.md`
-2. **During work** — read service docs: `vault/wiki/architecture/system-design.md`
-3. **After changes** — update `vault/logs/changelog.md` (date, what changed, why)
-4. **Breadcrumb Rule** — cite vault source: `Based on: vault/wiki/architecture/ayan-vision.md`
+**Never start coding without knowing:**
+- What problem does this solve?
+- What happens before/after?
+- What states exist?
 
-**Vault structure:**
+### Workflow Sequence
+
 ```
-vault/
-├── master_index.md        ← start here (links to everything)
-├── CLAUDE.md              ← AI rules, Brainstorming skill
-├── wiki/
-│   └── architecture/      ← vision docs, system design
-├── raw/                   ← raw data, specs, audits
-└── logs/
-    └── changelog.md       ← track structural changes
+1. Read vault/master_index.md → find relevant vision/design
+2. Read vault/wiki/architecture/*.md → understand context
+3. Write TODO in chat:
+   ### TODO: [feature name]
+   - Problem: ...
+   - Solution: ...
+   - Edge cases: ...
+4. Implement
+5. Update vault/logs/changelog.md
+6. Verify: typecheck → lint → test
 ```
 
-**WikiLinks in vault:** `[[wiki/architecture/ayan-vision]]` = file path. OpenCode can read these .md files directly — treat as cross-references, not broken links.
+### TODO Format (MANDATORY)
+
+Every task starts with:
+```
+### TODO: [feature]
+**Problem:** What problem does this solve?
+**Solution:** How will we solve it?
+**Edge cases:** What could go wrong?
+```
+
+Every completed task:
+```
+### DONE: [feature] ✅
+- What changed
+- What to test
+```
+
+### After Changes
+
+- Update `vault/logs/changelog.md` (date, what, why)
+- Cite vault source: `Based on: vault/wiki/architecture/ayan-vision.md`
 
 ## Code Style
 

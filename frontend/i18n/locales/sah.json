@@ -1,56 +1,71 @@
 {
-	"backButton": {
-		"label": "Төннөр",
-		"ariaLabel": "Төннөргө"
+	'backButton': {
+		'label': 'Төннөр',
+		'ariaLabel': 'Төннөргө'
 	},
-	"ayan": {
-		"category": "ПОПУТКИ",
-		"name": "AYAN",
-		"desc": "Попутнай бул",
-		"badge": "Саҥа",
-		"rides": "Айаннар",
-		"requests": "Быһыылар",
-		"myRides": "Миэнээ",
-		"createRide": "Айан оҥор",
-		"createRequest": "Быһыы оҥор",
-		"findRide": "Айаны бул",
-		"findRequest": "Быһыыны бул",
-		"noRides": "Айан суох",
-		"noRequests": "Быһыы суох",
-		"noRidesDesc": "Бастаан оҥор — айан оҥор",
-		"noRequestsDesc": "Бастаан оҥор — быһыы оҥор",
-		"ride": {
-			"from": "Хантан",
-			"to": "Хайдаҕар",
-			"date": "Күнэ",
-			"time": "Чаһа",
-			"seats": "сир",
-			"price": "Сыана",
-			"priceNegotiable": "Договорнай",
-			"seatsAvailable": "Свободнай сир",
-			"comment": "Биллиилээ",
-			"create": "Айаны оҥор",
-			"createDesc": "Хайдаҕар барарыҥ ахтах"
+	'common': {
+		'loading': 'Көһө сылдьалла...',
+		'error': 'Төттөрү туолбат',
+		'retry': 'Эбэтэр көр',
+		'cancel': 'Батарыс',
+		'confirm': 'ОК',
+		'save': 'Сүҥкэн',
+		'close': 'Хап'
+	},
+	'empty': {
+		'noItems': 'Суох',
+		'noItemsDesc': 'Манна эчээҕэ суох',
+		'noResults': 'Булуллаата',
+		'noResultsDesc': 'Көрдөһүүнү уларыт'
+	},
+	ayan: {
+		category: 'ПОПУТКИ',
+		name: 'AYAN',
+		desc: 'Попутнай бул',
+		badge: 'Саҥа',
+		rides: 'Айаннар',
+		requests: 'Быһыылар',
+		myRides: 'Миэнээ',
+		createRide: 'Айан оҥор',
+		createRequest: 'Быһыы оҥор',
+		findRide: 'Айаны бул',
+		findRequest: 'Быһыыны бул',
+		noRides: 'Айан суох',
+		noRequests: 'Быһыы суох',
+		noRidesDesc: 'Бастаан оҥор — айан оҥор',
+		noRequestsDesc: 'Бастаан оҥор — быһыы оҥор',
+		ride: {
+			from: 'Хантан',
+			to: 'Хайдаҕар',
+			date: 'Күнэ',
+			time: 'Чаһа',
+			seats: 'сир',
+			price: 'Сыана',
+			priceNegotiable: 'Договорнай',
+			seatsAvailable: 'Свободнай сир',
+			comment: 'Биллиилээ',
+			create: 'Айаны оҥор',
+			createDesc: 'Хайдаҕар барарыҥ ахтах'
 		},
-		"request": {
-			"from": "Хантан",
-			"to": "Хайдаҕар",
-			"date": "Хаһан",
-			"comment": "Биллиилээ",
-			"create": "Быһыыны оҥор",
-			"createDesc": "Хайдаҕар барарыҥ ахтах"
+		request: {
+			from: 'Хантан',
+			to: 'Хайдаҕар',
+			date: 'Хаһан',
+			comment: 'Биллиилээ',
+			create: 'Быһыыны оҥор',
+			createDesc: 'Хайдаҕар барарыҥ ахтах'
 		},
-		"respond": {
-			"button": "Хоруйдуо",
-			"contact": "Контакт",
-			"contactDesc": "Түһүмэхтигэр сыһыыҥ",
-			"success": "Хоруйдубут!",
-			"message": "Тиһик (нааатыгар)",
-			"messagePlaceholder": "Водительгэ суруй..."
+		respond: {
+			button: 'Хоруйдуо',
+			contact: 'Контакт',
+			contactDesc: 'Түһүмэхтигэр сыһыыҥ',
+			success: 'Хоруйдубут!',
+			message: 'Тиһик (нааатыгар)',
+			messagePlaceholder: 'Водительгэ суруй...'
 		},
-		"driver": "Водитель",
-		"passenger": "Пассажир",
-		"contactReceived": "Контакт тиксибит",
-		"respondFirst": "Бастаан хоруйдуо"
+		driver: 'Водитель',
+		passenger: 'Пассажир',
+		contactReceived: 'Контакт тиксибит',
+		respondFirst: 'Бастаан хоруйдуо'
 	}
 }
