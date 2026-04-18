@@ -1,11 +1,24 @@
 /**
- * iind Backend API Types
- * Описание моделей и ответов для всех сервисов
+ * iind Backend API Types — Foundation
+ *
+ * Базовые типы, используемые ВСЕМИ сервисами.
+ * Сервис-специфичные типы находятся в service layers:
+ * - services/ayan/app/types/
+ * - services/uus/app/types/
+ * - services/tal/app/types/
+ * - services/agal/app/types/
  */
 
 // ==========================================
-// Общие
+// Общие / Base
 // ==========================================
+
+export interface ApiResponse<T> {
+	success: boolean
+	data?: T
+	message?: string
+	errors?: Record<string, string[]>
+}
 
 export interface ApiError {
 	message: string
@@ -31,7 +44,7 @@ export interface User {
 	telegram_id: number
 	username: string | null
 	first_name: string
-	role: 'passenger' | 'driver'
+	role: Role
 	rating?: number
 	completed_orders?: number
 	is_available?: boolean
@@ -39,180 +52,14 @@ export interface User {
 	updated_at: string
 }
 
+export type Role = 'passenger' | 'driver' | 'carrier' | 'master' | 'sender'
+
 export interface AuthResponse {
 	token: string
 	user: User
 }
 
 // ==========================================
-// AYAN (Попутки / Rides Board)
+// Service-specific types
+// See: services/{service}/app/types/
 // ==========================================
-
-export type RideStatus = 'open' | 'closed'
-export type RequestStatus = 'open' | 'fulfilled'
-
-export interface Ride {
-	id: number
-	from: string
-	to: string
-	date: string
-	time: string
-	seats: number
-	price: number | null
-	comment?: string
-	driver_id: number
-	driver?: User
-	status: RideStatus
-	created_at: string
-}
-
-export interface Request {
-	id: number
-	from: string
-	to: string
-	date: string
-	comment?: string
-	passenger_id: number
-	passenger?: User
-	status: RequestStatus
-	created_at: string
-}
-
-export interface Response {
-	id: number
-	ride_id?: number
-	request_id?: number
-	user_id: number
-	user?: User
-	message?: string
-	created_at: string
-}
-
-export interface CreateRideRequest {
-	from: string
-	to: string
-	date: string
-	time: string
-	seats: number
-	price: number | null
-	comment?: string
-}
-
-export interface CreateRequestRequest {
-	from: string
-	to: string
-	date: string
-	comment?: string
-}
-
-export interface RespondRequest {
-	message?: string
-}
-
-// ==========================================
-// TAL (Бронирование)
-// ==========================================
-
-export interface TalService {
-	id: string
-	name: string
-	duration: number
-	price: number
-}
-
-export interface TalMaster {
-	id: string
-	name: string
-	avatar?: string
-	specialization: string
-	rating: number
-	review_count: number
-}
-
-export interface TalTimeSlot {
-	id: string
-	time: string
-	available: boolean
-	date: string
-}
-
-export type BookingStatus = 'pending' | 'confirmed' | 'cancelled'
-
-export interface TalBooking {
-	id: string
-	service_id: string
-	master_id: string
-	time_slot_id: string
-	date: string
-	time: string
-	status: BookingStatus
-}
-
-export interface CreateBookingRequest {
-	service_id: string
-	master_id: string
-	time_slot_id: string
-	date: string
-}
-
-// ==========================================
-// UUS (Мастера)
-// ==========================================
-
-export type TaskStatus = 'open' | 'in_progress' | 'completed' | 'cancelled'
-
-export interface UusTask {
-	id: number
-	user_id: number
-	title: string
-	description: string
-	category: string
-	budget: number | null
-	status: TaskStatus
-	responses_count: number
-	created_at: string
-}
-
-export interface CreateTaskRequest {
-	title: string
-	description: string
-	category: string
-	budget?: number
-}
-
-export interface UusResponse {
-	id: number
-	task_id: number
-	master_id: number
-	message: string
-	price: number
-	master?: User
-	created_at: string
-}
-
-// ==========================================
-// AGAL (Доставка)
-// ==========================================
-
-export type ParcelStatus = 'looking_for_carrier' | 'in_transit' | 'delivered' | 'cancelled'
-
-export interface AgalParcel {
-	id: number
-	sender_id: number
-	carrier_id: number | null
-	from_city: string
-	to_city: string
-	weight_kg: number
-	description: string
-	status: ParcelStatus
-	sender?: User
-	carrier?: User
-	created_at: string
-}
-
-export interface CreateParcelRequest {
-	from_city: string
-	to_city: string
-	weight_kg: number
-	description: string
-}

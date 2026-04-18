@@ -1,5 +1,102 @@
 # Changelog — iindev-vault
 
+## 2026-04-18 — Vault Cleanup Round 2
+
+### Updated
+- `vault/wiki/architecture/ayan-vision.md` — дополнен (User Stories, Types объявлений, Decision Log)
+- `vault/wiki/architecture/system-design.md` — убраны якутские названия из таблицы
+- `vault/master_index.md` — убраны ссылки на raw (Knowledge Ingestion rule)
+
+### Fixed
+- Убрано «Бардыбыт» (оставлены AYAN, UUS, TAL, AGAL)
+- Убрано «сахалар для сахалар»
+- Убраны ссылки на raw из master_index
+
+---
+
+## 2026-04-18 — Visions Balanced
+
+### Updated
+- `vault/wiki/architecture/iind-app-vision.md` — сокращён, добавлена секция для разработки
+- `vault/wiki/architecture/ayan-vision.md` — оптимальный баланс
+
+**AYAN Vision включает:**
+- Проблема + решение (конкретно)
+- Два типа поездок с ценами
+- Unit Economics (реалистичные)
+- Монетизация (подписки + продвижение)
+- Рост (3 этапа)
+- Конкуренты
+- Размер рынка (~66 млн/мес)
+
+**Убрано:**
+- Якутские названия («Бардыбыт», «сахалар для сахалар»)
+- Слишком детальные таблицы
+- Лишние секции
+
+**Сохранено:**
+- Всё что важно для разработки
+- Всё что важно для инвестора
+- Главный инсайт
+
+**Ключевой месседж:**
+> «Мы не создаём рынок. Мы делаем удобнее то, что уже работает через WhatsApp.»
+
+---
+
+## 2026-04-18 — Phase 0.1: Foundation Cleanup ✅
+
+### Deleted
+- `frontend/app/composables/useTaxiAPI.ts` — AYAN-specific, не для foundation
+- `frontend/app/composables/useMockAPI.ts` — старый баговый мок
+
+### Added
+- `frontend/services/ayan/nuxt.config.ts` — чтобы AYAN был полноценным Nuxt layer
+
+### Updated
+- `frontend/nuxt.config.ts` — добавлен `./services/ayan` в extends (было только agal, tal, uus)
+- `frontend/app/types/api.ts` — очищен, оставлены только базовые типы (User, AuthResponse, ApiError), сервис-специфичные типы вынесены в service layers
+
+### Verified
+- `npm run typecheck` — ✅ pass
+- `npm run lint:fix` — ✅ pass
+
+### Foundation Composables (current)
+```
+app/composables/
+├── useTg.ts      ✅
+├── useAuth.ts    ⚠️ needs work
+└── useAPI.ts     ✅
+```
+
+---
+
+## 2026-04-18 — Foundation Phase Start + Audit
+
+### Created
+- `vault/raw/SPEC.md` — полный roadmap: фазы, todos, архитектура сервисов
+- `vault/raw/ayan-api-contract.md` — детальный API contract для AYAN MVP
+
+### Updated
+- `vault/master_index.md` — добавлен roadmap, обновлён статус (Implementation Phase)
+
+### Phase Status
+- Vision Phase: ✅ COMPLETE
+- Implementation Phase: 🔄 START
+
+---
+
+## 2026-04-18 — Vault Audit Cleanup
+
+### Deleted
+- `vault/raw/audit-2026-04-18.md` — технический аудит кода (не relevant для Vision phase)
+
+### Updated
+- `vault/wiki/architecture/system-design.md` — убраны битые ссылки на удалённые docs
+- `vault/master_index.md` — убрана ссылка на удалённый аудит
+
+---
+
 ## 2026-04-18 — Vault Cleanup: Technical Docs Removed
 
 ### Created Structure
