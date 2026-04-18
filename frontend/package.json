@@ -13,10 +13,7 @@
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --check .",
 		"format:fix": "prettier --write .",
-		"typecheck": "nuxt typecheck",
-		"dev:taxi": "cd layers/taxi && nuxt dev",
-		"dev:masters": "cd layers/masters && nuxt dev",
-		"dev:core": "cd layers/core && nuxt dev"
+		"typecheck": "nuxt typecheck"
 	},
 	"dependencies": {
 		"@nuxt/ui": "^4.3.0",
