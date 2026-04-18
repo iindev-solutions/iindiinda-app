@@ -1,4 +1,4 @@
-#iind.app
+# iind.app
 
 iind.app — платформа из 4 сервисов, где саха люди решают повседневные задачи через других людей.
 
@@ -114,6 +114,5 @@ docker-compose up -d
 
 ---
 
-> **iindiinda** — делаем сложные вещи просто. Modern solutions. Simply.
-<img src="sakha-flag.svg" width="48" alt="Флаг Саха" />  
-> **made for sakha peoples.**
+> **iindev** — делаем сложные вещи просто. Modern solutions. Simply Нахноо.
+<img src="sakha-flag.svg" width="48" alt="Флаг Саха" />
