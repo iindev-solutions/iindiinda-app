@@ -25,6 +25,7 @@
 - [[wiki/architecture/data-models]] — TypeScript типы + модели данных
 - [[wiki/architecture/auth-flow]] — авторизация (Telegram + localhost)
 - [[wiki/architecture/ayan-rewrite-design]] — AYAN Vision + Concept + MVP + API endpoints (новый)
+- [[wiki/architecture/browser-back-button]] — универсальный компонент BackButton (smart nav + Telegram)
 
 #### Services
 - [[wiki/services/laravel-api/overview]] — обзор Laravel API + текущий статус

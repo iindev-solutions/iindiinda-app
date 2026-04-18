@@ -1,4 +1,8 @@
 {
+	"backButton": {
+		"label": "Төннөр",
+		"ariaLabel": "Төннөргө"
+	},
 	"ayan": {
 		"category": "ПОПУТКИ",
 		"name": "AYAN",

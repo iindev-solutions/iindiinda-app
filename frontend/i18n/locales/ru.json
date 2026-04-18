@@ -1,4 +1,8 @@
 {
+	"backButton": {
+		"label": "Назад",
+		"ariaLabel": "Вернуться назад"
+	},
 	"ayan": {
 		"category": "ПОПУТКИ",
 		"name": "AYAN",

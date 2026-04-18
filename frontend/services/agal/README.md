@@ -9,16 +9,18 @@
 
 ## API
 
-| Метод | Эндпоинт | Описание |
-|-------|----------|----------|
-| POST | `/api/agal/parcels` | Создать посылку |
-| GET | `/api/agal/parcels/open` | Ищут перевозчика |
-| POST | `/api/agal/parcels/{id}/take` | Взять на доставку |
+| Метод | Эндпоинт                      | Описание          |
+| ----- | ----------------------------- | ----------------- |
+| POST  | `/api/agal/parcels`           | Создать посылку   |
+| GET   | `/api/agal/parcels/open`      | Ищут перевозчика  |
+| POST  | `/api/agal/parcels/{id}/take` | Взять на доставку |
 
 ## Модели
 
 ### Parcel
+
 `{ from_city, to_city, weight_kg, description, status }`
 
 ### Статусы
+
 `looking_for_carrier → in_transit → delivered`

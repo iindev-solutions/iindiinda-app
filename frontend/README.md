@@ -52,10 +52,13 @@ npm run dev
 ## Composables
 
 ### `useTg()`
+
 Обёртка Telegram WebApp SDK — user, initData, themeParams, hapticFeedback, кнопки.
 
 ### `useAPI()`
+
 HTTP клиент с автоматической передачей Telegram initData и Bearer token.
 
 ### `useAuth()`
+
 Авторизация через `POST /api/auth/telegram`. Управление ролями (passenger/driver).
