@@ -1,3 +1,12 @@
+import { USE_MOCK_API } from '~/config/api.config'
+import {
+	mockApiResponses,
+	generateMockOrders,
+	getMockAuthResponse,
+	getMockCurrentUser,
+	type AyaniOrder
+} from '~/config/mockData'
+
 export const useAPI = () => {
 	const config = useRuntimeConfig()
 	const { initData } = useTg()
@@ -21,7 +30,11 @@ export const useAPI = () => {
 		return h
 	})
 
-	const request = async <T>(
+	// ==========================================
+	// Real API Request
+	// ==========================================
+
+	const realRequest = async <T>(
 		endpoint: string,
 		options: {
 			method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
@@ -49,6 +62,103 @@ export const useAPI = () => {
 		})
 
 		return response
+	}
+
+	// ==========================================
+	// Mock API Request
+	// ==========================================
+
+	const mockRequest = async <T>(
+		endpoint: string,
+		options: {
+			method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+			body?: Record<string, unknown>
+			params?: Record<string, string>
+		} = {}
+	): Promise<T> => {
+		// Simulate network delay
+		await new Promise((resolve) => setTimeout(resolve, 200 + Math.random() * 300))
+
+		// Auth endpoints
+		if (endpoint === '/auth/telegram') {
+			return mockApiResponses.post(getMockAuthResponse()) as Promise<T>
+		}
+
+		// User endpoints
+		if (endpoint === '/user') {
+			return mockApiResponses.get(getMockCurrentUser()) as Promise<T>
+		}
+
+		if (endpoint === '/user/switch-role') {
+			const currentUser = getMockCurrentUser()
+			const newRole = (options.body?.role as string) || currentUser.role
+			return mockApiResponses.post({
+				user: { ...currentUser, role: newRole }
+			}) as Promise<T>
+		}
+
+		// AYAN endpoints
+		if (endpoint === '/ayan/orders/open') {
+			return mockApiResponses.get(generateMockOrders(8)) as Promise<T>
+		}
+
+		if (endpoint === '/ayan/orders/my') {
+			return mockApiResponses.get(null) as Promise<T>
+		}
+
+		if (endpoint === '/ayan/orders' && options.method === 'POST') {
+			const order = {
+				id: Math.floor(Math.random() * 10000),
+				...options.body,
+				status: 'open',
+				driver_id: 1,
+				passenger_id: null,
+				created_at: new Date().toISOString(),
+				updated_at: new Date().toISOString()
+			} as AyaniOrder
+			return mockApiResponses.post(order) as Promise<T>
+		}
+
+		if (endpoint.match(/\/ayan\/orders\/\/d+\/accept/)) {
+			const order = {
+				id: parseInt(endpoint.match(/\/ayan\/orders\/(\/d+)\/accept/)?.[1] || '0'),
+				status: 'accepted',
+				passenger_id: 4
+			} as AyaniOrder
+			return mockApiResponses.post(order) as Promise<T>
+		}
+
+		if (endpoint.match(/\/ayan\/orders\/\/d+\/cancel/)) {
+			const order = {
+				id: parseInt(endpoint.match(/\/ayan\/orders\/(\/d+)\/cancel/)?.[1] || '0'),
+				status: 'cancelled'
+			} as AyaniOrder
+			return mockApiResponses.post(order) as Promise<T>
+		}
+
+		// Default: return empty array or null
+		if (options.method === 'GET') {
+			return [] as unknown as Promise<T>
+		}
+		return {} as unknown as Promise<T>
+	}
+
+	// ==========================================
+	// Unified Request
+	// ==========================================
+
+	const request = async <T>(
+		endpoint: string,
+		options: {
+			method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+			body?: Record<string, unknown>
+			params?: Record<string, string>
+		} = {}
+	): Promise<T> => {
+		if (USE_MOCK_API) {
+			return mockRequest<T>(endpoint, options)
+		}
+		return realRequest<T>(endpoint, options)
 	}
 
 	const get = <T>(endpoint: string, params?: Record<string, string>) =>
