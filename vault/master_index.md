@@ -23,9 +23,14 @@
 - [[wiki/architecture/system-design]] — общий системный дизайн платформы
 - [[wiki/architecture/ayan-vision]] — AYAN (Бардыбыт) Vision + Concept + монетизация
 - [[wiki/architecture/uus-vision]] — UUS (Уус) Vision + Concept + монетизация
+- [[wiki/architecture/tal-vision]] — TAL (Тал) Vision + Concept + монетизация
 - [[wiki/architecture/browser-back-button]] — универсальный компонент BackButton
 
 *Implementation docs (API, models, code) — created after vision phase*
+
+#### Services Vision (Pending)
+- AGAL (Аҕал) — Delivery — vision document needed
+- *Implementation phase starts after all 4 service visions are finalized*
 
 ### Logs
 - [[logs/changelog]] — история изменений базы знаний

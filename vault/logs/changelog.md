@@ -67,6 +67,24 @@
 1. **Vision Phase** → концепция, сценарии, механики, монетизация
 2. **Implementation Phase** → код, API, модели (создаём после финализации vision)
 
+## 2026-04-18 — TAL Vision Document Created
+
+### Added
+- `vault/wiki/architecture/tal-vision.md` — полный vision-документ для сервиса TAL (Тал)
+  - 4 сценария: запись "сейчас", запись на время, запрос (fallback), постоянный мастер
+  - 4 статуса мастера: 🟢 сейчас / 🕓 позже / 📅 завтра / 🔴 занят
+  - 3 категории услуг: 💇 Красота / 🏠 Дом / 🔧 Ремонт
+  - Механика: один тап для мастера, мгновенная запись для клиента
+  - Монетизация: подписка мастеров, продвижение, комиссия (позже)
+  - Роль: retention-драйвер экосистемы (регулярный трафик)
+  - Decision Log с архитектурными решениями
+
+### Status
+- ✅ AYAN — vision complete
+- ✅ UUS — vision complete
+- ✅ TAL — vision complete
+- 🔄 AGAL — vision pending
+
 ## 2026-04-18 — Vision Documents Refactored (Clean Architecture)
 
 ### Refactored AYAN
