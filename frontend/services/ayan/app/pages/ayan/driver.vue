@@ -8,6 +8,7 @@ definePageMeta({
 const { t } = useI18n()
 const { hapticFeedback, showBackButton, hideBackButton, onBackButtonClicked } = useTg()
 const { get, post } = useTaxiAPI()
+const toast = useToast()
 
 // Types
 interface DriverStatus {
@@ -40,8 +41,9 @@ async function fetchDriverStatus() {
 			isAvailable.value = data.isAvailable
 			driverStats.value = data.stats
 		}
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to fetch driver status:', error)
+		toast.add({ title: error?.message || t('ayan.driver.fetchError'), color: 'gray' })
 	} finally {
 		isLoading.value = false
 	}
@@ -66,11 +68,10 @@ async function toggleAvailability() {
 			// Navigate to orders page when becoming available
 			navigateTo('/ayan/orders')
 		}
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to toggle availability:', error)
-		// Revert toggle on error
 		isAvailable.value = !isAvailable.value
-		// Show error toast (will add toast system later)
+		toast.add({ title: error?.message || t('ayan.driver.toggleError'), color: 'gray' })
 	} finally {
 		isSwitching.value = false
 	}
@@ -97,7 +98,7 @@ onUnmounted(() => {
 		<div class="mx-auto max-w-[480px]">
 			<!-- Loading State -->
 			<div v-if="isLoading" class="flex h-[60vh] items-center justify-center">
-				<ULoadingIndicator />
+				<UIcon name="i-lucide-loader-circle" class="h-8 w-8 animate-spin text-cyan-400" />
 			</div>
 
 			<template v-else>

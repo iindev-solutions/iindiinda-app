@@ -8,6 +8,7 @@ definePageMeta({
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
 const { get, post } = useTaxiAPI()
+const toast = useToast()
 
 // Types
 type ActiveStatus = 'matched' | 'arrived' | 'on-trip'
@@ -35,9 +36,9 @@ async function fetchActiveOrder() {
 	try {
 		const response = await get<{ data: Order }>('/ayan/orders/active')
 		order.value = response.data
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to fetch active order:', error)
-		// No active order - go back to orders list
+		toast.add({ title: error?.message || t('ayan.activeRide.fetchError'), color: 'gray' })
 		navigateTo('/ayan/orders')
 	} finally {
 		isLoading.value = false
@@ -53,8 +54,9 @@ async function markArrived() {
 	try {
 		await post(`/ayan/orders/${order.value.id}/arrive`)
 		await fetchActiveOrder()
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to mark arrived:', error)
+		toast.add({ title: error?.message || t('ayan.activeRide.actionError'), color: 'gray' })
 	} finally {
 		actionInProgress.value = false
 	}
@@ -68,8 +70,9 @@ async function startTrip() {
 	try {
 		await post(`/ayan/orders/${order.value.id}/start`)
 		await fetchActiveOrder()
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to start trip:', error)
+		toast.add({ title: error?.message || t('ayan.activeRide.actionError'), color: 'gray' })
 	} finally {
 		actionInProgress.value = false
 	}
@@ -83,8 +86,9 @@ async function completeTrip() {
 	try {
 		await post(`/ayan/orders/${order.value.id}/complete`)
 		navigateTo('/ayan/complete')
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to complete trip:', error)
+		toast.add({ title: error?.message || t('ayan.activeRide.actionError'), color: 'gray' })
 	} finally {
 		actionInProgress.value = false
 	}
@@ -133,7 +137,7 @@ onMounted(() => {
 		<div class="mx-auto max-w-[480px]">
 			<!-- Loading State -->
 			<div v-if="isLoading" class="flex h-[60vh] items-center justify-center">
-				<ULoadingIndicator />
+				<UIcon name="i-lucide-loader-circle" class="h-8 w-8 animate-spin text-cyan-400" />
 			</div>
 
 			<!-- Active Ride Display -->

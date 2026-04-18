@@ -183,7 +183,7 @@ onUnmounted(() => {
 		<div class="mx-auto max-w-[480px]">
 			<!-- Loading State -->
 			<div v-if="isLoading" class="flex h-[60vh] items-center justify-center">
-				<ULoadingIndicator />
+				<UIcon name="i-lucide-loader-circle" class="h-8 w-8 animate-spin text-cyan-400" />
 			</div>
 
 			<!-- Error State -->
@@ -291,27 +291,21 @@ onUnmounted(() => {
 		</div>
 
 		<!-- Cancel Confirmation Modal -->
-		<UModal v-model:open="showCancelConfirm">
-			<UCard>
-				<template #header>
-					<h3 class="text-lg font-medium text-white">
-						{{ t('ayan.order.cancelConfirm.title') }}
-					</h3>
-				</template>
-				<p class="text-gray-400">
-					{{ t('ayan.order.cancelConfirm.message') }}
-				</p>
-				<template #footer>
-					<div class="flex gap-3">
-						<UButton variant="ghost" @click="showCancelConfirm = false">
-							{{ t('common.cancel') }}
-						</UButton>
-						<UButton color="gray" @click="cancelOrder">
-							{{ t('ayan.order.cancelConfirm.confirm') }}
-						</UButton>
-					</div>
-				</template>
-			</UCard>
+		<UModal
+			v-model:open="showCancelConfirm"
+			:title="t('ayan.order.cancelConfirm.title')"
+			:description="t('ayan.order.cancelConfirm.message')"
+		>
+			<template #footer>
+				<div class="flex gap-3">
+					<UButton variant="ghost" @click="showCancelConfirm = false">
+						{{ t('common.cancel') }}
+					</UButton>
+					<UButton variant="secondary" color="gray" @click="cancelOrder">
+						{{ t('ayan.order.cancelConfirm.confirm') }}
+					</UButton>
+				</div>
+			</template>
 		</UModal>
 	</div>
 </template>

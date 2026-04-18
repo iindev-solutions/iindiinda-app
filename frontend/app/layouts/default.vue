@@ -2,12 +2,18 @@
 const route = useRoute()
 
 const isHome = computed(() => route.path === '/')
+
+const parentPath = computed(() => {
+	const segments = route.path.split('/').filter(Boolean)
+	if (segments.length <= 1) return '/'
+	return '/' + segments.slice(0, -1).join('/')
+})
 </script>
 
 <template>
 	<div class="tma-layout">
 		<header v-if="!isHome" class="tma-header">
-			<NuxtLink to="/" class="tma-header-back">
+			<NuxtLink :to="parentPath" class="tma-header-back">
 				<svg
 					xmlns="http://www.w3.org/2000/svg"
 					width="20"

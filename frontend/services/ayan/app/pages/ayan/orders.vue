@@ -8,6 +8,7 @@ definePageMeta({
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
 const { get, post } = useTaxiAPI()
+const toast = useToast()
 
 // Types
 interface Order {
@@ -29,8 +30,9 @@ async function fetchOrders() {
 	try {
 		const response = await get<{ data: Order[] }>('/ayan/orders')
 		orders.value = response.data
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to fetch orders:', error)
+		toast.add({ title: error?.message || t('ayan.orders.fetchError'), color: 'gray' })
 	} finally {
 		isLoading.value = false
 	}
@@ -45,8 +47,9 @@ async function acceptOrder(orderId: number) {
 		await post(`/ayan/orders/${orderId}/accept`)
 		// Navigate to active ride page
 		navigateTo('/ayan/active-ride')
-	} catch (error) {
+	} catch (error: any) {
 		console.error('Failed to accept order:', error)
+		toast.add({ title: error?.message || t('ayan.orders.acceptError'), color: 'gray' })
 	} finally {
 		acceptingOrderId.value = null
 	}

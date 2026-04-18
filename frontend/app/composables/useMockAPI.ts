@@ -130,17 +130,7 @@ const randomDelay = () => delay(MOCK_CONFIG.baseDelay + Math.random() * MOCK_CON
 const shouldFail = () => Math.random() < MOCK_CONFIG.errorRate
 
 export const useMockAPI = () => {
-	const toast = useToast()
-	const mockState = useMockState() // Получаем глобальное состояние
-
-	// Вспомогательная функция для показа мок-уведомления
-	const showMockToast = (message: string) => {
-		console.log(`[MockAPI] ${message}`)
-		toast.add({
-			title: `[MOCK] ${message}`,
-			color: 'cyan'
-		})
-	}
+	const mockState = useMockState()
 
 	// ===== AUTH API =====
 	const login = async () => {
@@ -167,14 +157,14 @@ export const useMockAPI = () => {
 		if (role === 'passenger') {
 			mockState.value.currentUser.isAvailable = false
 		}
-		showMockToast(`Роль изменена на: ${role}`)
+		if (import.meta.dev) console.log(`[MockAPI] Роль изменена на: ${role}`)
 		return { success: true }
 	}
 
 	const setAvailability = async (available: boolean) => {
 		await randomDelay()
 		mockState.value.currentUser.isAvailable = available
-		showMockToast(`Статус: ${available ? 'На линии' : 'Оффлайн'}`)
+		if (import.meta.dev) console.log(`[MockAPI] Статус: ${available ? 'На линии' : 'Оффлайн'}`)
 		return { success: true }
 	}
 
@@ -227,7 +217,7 @@ export const useMockAPI = () => {
 		mockState.value.orders.push(newOrder)
 		mockState.value.myActiveOrder = newOrder
 
-		showMockToast('Заказ создан! Ищем водителя...')
+		if (import.meta.dev) console.log('[MockAPI] Заказ создан! Ищем водителя...')
 
 		// Автоматически "найти" водителя через 5 секунд (для демо)
 		setTimeout(() => {
@@ -243,7 +233,7 @@ export const useMockAPI = () => {
 					orderInList.status = 'matched'
 					orderInList.driver = mockState.value.myActiveOrder.driver
 				}
-				showMockToast('Водитель найден! 🚗')
+				if (import.meta.dev) console.log('[MockAPI] Водитель найден!')
 			}
 		}, 5000)
 
@@ -268,7 +258,7 @@ export const useMockAPI = () => {
 			phone: '+7 (999) 123-45-67'
 		}
 
-		showMockToast('Заказ принят! Едьте к пассажиру')
+		if (import.meta.dev) console.log('[MockAPI] Заказ принят! Едьте к пассажиру')
 		return { success: true }
 	}
 
@@ -289,7 +279,7 @@ export const useMockAPI = () => {
 			}, 2000)
 		}
 
-		showMockToast('Заказ отменен')
+		if (import.meta.dev) console.log('[MockAPI] Заказ отменен')
 		return { success: true }
 	}
 
@@ -303,7 +293,7 @@ export const useMockAPI = () => {
 		const order = mockState.value.orders.find((o: MockOrder) => o.id === orderId)
 		if (order) order.status = 'arrived'
 
-		showMockToast('Вы на месте! Ожидайте пассажира')
+		if (import.meta.dev) console.log('[MockAPI] Вы на месте! Ожидайте пассажира')
 		return { success: true }
 	}
 
@@ -317,7 +307,7 @@ export const useMockAPI = () => {
 		const order = mockState.value.orders.find((o: MockOrder) => o.id === orderId)
 		if (order) order.status = 'on-trip'
 
-		showMockToast('Поездка началась! 🚗')
+		if (import.meta.dev) console.log('[MockAPI] Поездка началась!')
 		return { success: true }
 	}
 
@@ -339,7 +329,7 @@ export const useMockAPI = () => {
 			mockState.value.myActiveOrder = null
 		}, 2000)
 
-		showMockToast('Поездка завершена! ⭐')
+		if (import.meta.dev) console.log('[MockAPI] Поездка завершена!')
 		return { success: true }
 	}
 
