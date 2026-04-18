@@ -1,57 +1,59 @@
-# iind.ayan — Бардыбыт (Такси MVP)
+# AYAN (Бардыбыт)
 
-**Версия**: v0.1  
-**Статус**: MVP в разработке
+> Сервис попутных поездок. Люди, которые едут → находят тех, кому по пути.
 
 ## Концепция
 
-Сервис такси внутри @iindapp_bot. Пассажир создаёт заказ и предлагает свою цену. Водители видят список и могут принять.
+AYAN — **доска попуток**, не такси.
 
-## Роли
+- Водитель создаёт поездку (откуда, куда, когда, места, цена)
+- Пассажир создаёт запрос (ищу попутку)
+- Они откликаются и связываются напрямую
+- Без контроля, без статусов, без трекинга
 
-### Пассажир
-- Создать заказ (откуда, куда, цена)
-- Отменить заказ
-- Завершить поездку
-
-### Водитель
-- Видеть открытые заказы
-- Принять заказ
-- Завершить поездку
-
-## Ограничения
-- 1 активный заказ на пользователя
-- Цена: 100–5000 ₽
-- Rate limit: max X заказов/час
-
-## API
-
-| Метод | Эндпоинт | Описание |
-|-------|----------|----------|
-| POST | `/api/ayan/orders` | Создать заказ |
-| GET | `/api/ayan/orders/open` | Список открытых |
-| GET | `/api/ayan/orders/my` | Мой активный заказ |
-| POST | `/api/ayan/orders/{id}/accept` | Принять заказ |
-| POST | `/api/ayan/orders/{id}/complete` | Завершить |
-| POST | `/api/ayan/orders/{id}/cancel` | Отменить |
-
-## Статусы
+## Структура (Nuxt Layer)
 
 ```
-open → accepted → completed
-open → cancelled
-accepted → cancelled (только пассажир)
+frontend/services/ayan/
+├── app/
+│   ├── pages/
+│   │   ├── ayan.vue              → /ayan (parent wrapper)
+│   │   └── ayan/
+│   │       ├── index.vue         → /ayan (hub: rides list)
+│   │       ├── create.vue        → /ayan/create
+│   │       ├── request.vue       → /ayan/request
+│   │       ├── ride/:id.vue      → /ayan/ride/:id
+│   │       └── my-rides.vue     → /ayan/my-rides
+│   ├── components/
+│   │   ├── RideCard.vue
+│   │   ├── RequestCard.vue
+│   │   └── ContactModal.vue
+│   ├── composables/
+│   │   └── useAyanAPI.ts
+│   └── i18n/
+│       └── ... (keys)
+├── nuxt.config.ts
+└── README.md
 ```
 
-## Страницы
+## Дизайн
 
-- `/ayan` — landing + CTA
-- `/ayan/create` — форма заказа (TODO)
-- `/ayan/orders` — список для водителей (TODO)
-- `/ayan/my` — активный заказ (TODO)
+Полный Vision + Concept + MVP → `vault/wiki/architecture/ayan-rewrite-design.md`
 
-## MVP критерии
+## MVP Features
 
-- 50+ заказов/неделю
-- 10+ активных водителей
-- >50% заказов завершаются
+1. Создать поездку
+2. Создать запрос
+3. Список поездок/запросов
+4. Откликнуться → контакт
+
+## Status
+
+**В разработке.** Чистый старт на `front/ayan`.
+
+## Tech
+
+- Nuxt 4 layer
+- useAPI() напрямую (без ITaxiAPI)
+- useIntervalFn для редкого обновления списка
+- i18n обязательно
