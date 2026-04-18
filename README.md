@@ -1,7 +1,7 @@
-# iind.app
+<img src="sakha-flag.svg" width="48" alt="Флаг Саха" />  iind.app
 
 > iindiinda — делаем сложные вещи просто. Modern solutions. Simply.
-> **Сделано сахалар для сахалар.**
+> **made for .**
 
 iind.app — платформа из 4 сервисов, где саха люди решают повседневные задачи через других людей.
 
