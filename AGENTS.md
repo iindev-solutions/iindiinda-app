@@ -15,8 +15,15 @@
 - `vault/wiki/services/` — документация по сервисам (эндпоинты, роутинг, composables)
 - `vault/raw/` — сырые данные (аудиты, спецификации)
 - `vault/logs/changelog.md` — история изменений
+- `vault/CLAUDE.md` — важные правила 
 
 Все решения, дизайн-доки, API детали, статус-флоу → **vault**. AGENTS.md = правила + how-to.
+
+## Branches
+
+- `main` — production, `dev` — разработка
+- `front/ayan` — текущая разработка AYAN
+- `front/taxi` — legacy (не поддерживается)
 
 ## Frontend Path: `frontend/`
 
@@ -24,6 +31,16 @@
 - App code: `frontend/app/` (composables, pages, types, layouts, assets, utils, middleware)
 - Service layers: `frontend/services/{ayan,uus,agal,tal}/`
 - i18n: `frontend/i18n/locales/{ru,sah}.json`
+
+## Nuxt 4 Extends — Service Layers
+
+`nuxt.config.ts` extends services as Nuxt layers (in order):
+```
+services/ayan → services/agal → services/tal → services/uus
+```
+Each service has its own `app/` folder with pages, composables, components.
+- **AYAN** (first) — primary service, must use `useTaxiAPI()` from `app/composables/`, never `useAPI()` directly
+- **AGAL, TAL, UUS** — extended layers, use `useAPI()`
 
 ## Dev Commands (frontend/)
 
@@ -45,11 +62,36 @@ cd frontend && npm install && npm run dev
 docker-compose up -d    # Backend (scaffold-only) at http://localhost:8000
 ```
 
+## Vault Workflow
+
+**Start here:** `vault/master_index.md` — карта всей базы знаний, links на все важные файлы.
+
+**Workflow:** Vision → Design Doc → Implementation → Changelog
+
+1. **Before coding** — read relevant vision: `vault/wiki/architecture/ayan-vision.md`
+2. **During work** — read service docs: `vault/wiki/architecture/system-design.md`
+3. **After changes** — update `vault/logs/changelog.md` (date, what changed, why)
+4. **Breadcrumb Rule** — cite vault source: `Based on: vault/wiki/architecture/ayan-vision.md`
+
+**Vault structure:**
+```
+vault/
+├── master_index.md        ← start here (links to everything)
+├── CLAUDE.md              ← AI rules, Brainstorming skill
+├── wiki/
+│   └── architecture/      ← vision docs, system design
+├── raw/                   ← raw data, specs, audits
+└── logs/
+    └── changelog.md       ← track structural changes
+```
+
+**WikiLinks in vault:** `[[wiki/architecture/ayan-vision]]` = file path. OpenCode can read these .md files directly — treat as cross-references, not broken links.
+
 ## Code Style
 
-- **Prettier**: tabs, `tabWidth: 4`, single quotes, no semicolons, `trailingComma: "none"`, `printWidth: 120`
-- **ESLint**: `@typescript-eslint/no-explicit-any: off`, `vue/no-v-html: off`
-- **TypeScript**: strict, checked via `nuxt typecheck`
+- **ESLint + Prettier**: `printWidth: 120`, `tabWidth: 4`, single quotes, no semicolons, `trailingComma: none`
+- **ESLint overrides**: `@typescript-eslint/no-explicit-any: off`, `vue/no-v-html: off`
+- **TypeScript**: strict, checked via `npm run typecheck`
 - **Composables**: auto-imported from `app/composables/` — no manual imports
 
 ## Nuxt 4 Page Structure (MANDATORY)
