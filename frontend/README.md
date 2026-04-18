@@ -22,7 +22,7 @@ tma-app/
 │   └── assets/css/
 │       └── main.css            # Дизайн-система
 ├── services/                   # Nuxt layers — сервисы
-│   ├── ayan/                   # Бардыбыт (Такси)
+│   ├── ayan/                   # AYAN (Попутки)
 │   ├── uus/                    # Мастера
 │   ├── agal/                   # Доставка
 │   └── tal/                    # Бронирование

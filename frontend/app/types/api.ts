@@ -45,37 +45,69 @@ export interface AuthResponse {
 }
 
 // ==========================================
-// AYAN (Бардыбыт / Такси)
+// AYAN (Попутки / Rides Board)
 // ==========================================
 
-export type TaxiOrderStatus = 'open' | 'accepted' | 'arrived' | 'in_progress' | 'completed' | 'cancelled'
+export type RideStatus = 'open' | 'closed'
+export type RequestStatus = 'open' | 'fulfilled'
 
-export interface TaxiOrder {
+export interface Ride {
 	id: number
-	passenger_id: number
-	driver_id: number | null
-	from_address: string
-	to_address: string
-	price: number
-	status: TaxiOrderStatus
-	passenger?: User
-	driver?: User | null
+	from: string
+	to: string
+	date: string
+	time: string
+	seats: number
+	price: number | null
+	comment?: string
+	driver_id: number
+	driver?: User
+	status: RideStatus
 	created_at: string
-	updated_at: string
 }
 
-export interface CreateTaxiOrderRequest {
-	from_address: string
-	to_address: string
-	price: number
+export interface Request {
+	id: number
+	from: string
+	to: string
+	date: string
+	comment?: string
+	passenger_id: number
+	passenger?: User
+	status: RequestStatus
+	created_at: string
 }
 
-/**
- * Статусы заказов:
- * open → accepted → arrived → in_progress → completed
- * open → cancelled
- * accepted → cancelled (только пассажир)
- */
+export interface Response {
+	id: number
+	ride_id?: number
+	request_id?: number
+	user_id: number
+	user?: User
+	message?: string
+	created_at: string
+}
+
+export interface CreateRideRequest {
+	from: string
+	to: string
+	date: string
+	time: string
+	seats: number
+	price: number | null
+	comment?: string
+}
+
+export interface CreateRequestRequest {
+	from: string
+	to: string
+	date: string
+	comment?: string
+}
+
+export interface RespondRequest {
+	message?: string
+}
 
 // ==========================================
 // TAL (Бронирование)
