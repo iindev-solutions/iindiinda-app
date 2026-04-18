@@ -24,7 +24,7 @@
 - [[wiki/architecture/api-contract]] — полный API контракт ayan (6 статусов)
 - [[wiki/architecture/data-models]] — TypeScript типы + модели данных
 - [[wiki/architecture/auth-flow]] — авторизация (Telegram + localhost)
-- [[wiki/architecture/ayan-rewrite-design]] — дизайн переписывания ayan
+- [[wiki/architecture/ayan-rewrite-design]] — AYAN Vision + Concept + MVP + API endpoints (новый)
 
 #### Services
 - [[wiki/services/laravel-api/overview]] — обзор Laravel API + текущий статус
@@ -44,10 +44,22 @@
 ## Active Branches
 - `main` — production
 - `dev` — разработка
+- `front/taxi` — legacy (старый taxi-код, не поддерживается)
+- `front/ayan` — новый AYAN (доска попуток, чистый старт)
 
-## Roadmap Summary
-1. Phase 0: Foundation (types, ITaxiAPI, useAuth, useTg, usePolling)
-2. Phase 1: Passenger flow (create, my-order, complete)
-3. Phase 2: Driver flow (driver, orders, active-ride)
-4. Phase 3: Shared components & polish
-5. Backend: Controllers, migrations, new endpoints
+## Roadmap Summary — AYAN (доска попуток)
+
+**MVP:**
+1. Создать поездку (откуда, куда, когда, места, цена)
+2. Создать запрос (пассажир ищет попутку)
+3. Список поездок/запросов с фильтром по маршруту
+4. Откликнуться → получить контакт
+
+**No:**
+- Статусы, трекинг, карты, авто-подбор
+
+**After MVP (if needed):**
+- Геокодинг + карты
+- Регулярные маршруты
+- Чат между участниками
+- Рейтинги
