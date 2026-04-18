@@ -1,9 +1,14 @@
 # Master Index — iindev-vault
 
 ## Project Overview
+
+> iindiinda — делаем сложные вещи просто. Modern solutions. Simply.
+
+**iind.app** — слой, который соединяет людей. Один принцип для всех сервисов: заявка → отклик → договор.
+
 Проект: [[https://github.com/iindiinda/iindiinda-app|iindiinda-app]]
 Стек: Nuxt 4 (frontend) + Laravel (backend)
-Статус: MVP — Ayan (такси) в разработке
+Статус: MVP — Ayan (попутки) в разработке, остальные 3 параллельно
 
 ---
 

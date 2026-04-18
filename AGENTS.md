@@ -1,6 +1,10 @@
 # AGENTS.md — iindiinda-app
 
-Telegram Mini App платформа с 4 сервисами (такси, мастера, доставка, бронирование). Монорепозиторий: Nuxt 4 (frontend) + Laravel (backend).
+> iindiinda — делаем сложные вещи просто. Modern solutions. Simply.
+
+**iind.app** — Telegram Mini App платформа. Один принцип для всех сервисов: заявка → отклик → договор. Без посредников. Без сложных систем.
+
+Монорепозиторий: Nuxt 4 (frontend) + Laravel (backend).
 
 ## Vault — единое место документации и имплементации
 
@@ -21,10 +25,9 @@ Telegram Mini App платформа с 4 сервисами (такси, мас
 - Service layers: `frontend/services/{ayan,uus,agal,tal}/`
 - i18n: `frontend/i18n/locales/{ru,sah}.json`
 
-## Dev Commands
+## Dev Commands (frontend/)
 
 ```bash
-cd frontend
 npm run dev          # → http://localhost:3000
 npm run build        # Production build
 npm run typecheck    # nuxt typecheck (vue-tsc)
@@ -33,8 +36,6 @@ npm run lint:fix     # eslint . --fix
 npm run format       # prettier --check .
 npm run format:fix   # prettier --write .
 ```
-
-Broken scripts: `dev:taxi`, `dev:masters`, `dev:core` — do NOT use.
 
 ## Quick Start
 
@@ -74,7 +75,7 @@ services/ayan/app/pages/
 - **Don't modify Telegram SDK** — loaded externally
 - **Don't create `layers/` folder** — services are in `services/`
 - **ITaxiAPI only** — ayan pages must use `useTaxiAPI()` methods, never `useAPI()` directly
-- **usePolling** — all polling must use `usePolling` composable, never raw `setInterval`
+- **Polling** — use `useIntervalFn` from `@vueuse/core` for polling, not raw `setInterval`
 - **Shared components** — extract duplicates into `services/ayan/app/components/`
 - **No hardcoded strings** — all user-visible text must use `t('key')`
 - **i18n keys**: nested only — `ayan.order.status.open` not `ayan.orderStatusOpen`
@@ -88,7 +89,6 @@ services/ayan/app/pages/
 
 ```bash
 NUXT_PUBLIC_API_BASE=http://localhost:8000/api
-NUXT_PUBLIC_USE_MOCK_API=true   # runtime toggle, no restart needed
 ```
 
-Full .env: see root `.env.example`
+Mock/real API toggle: `frontend/app/config/api.config.ts` → `USE_MOCK_API = true/false` (compile-time, requires restart). Full .env: see root `.env.example`
