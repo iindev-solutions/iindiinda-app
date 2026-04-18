@@ -33,20 +33,21 @@ add time and date
 ### Updated
 - `vault/master_index.md` — все новые статьи + роадмап
 
-## 2026-04-18 — AYAN Vision Updated with Monetization
+## 2026-04-18 — Vision Documents Refactored (Clean Architecture)
 
-### Updated
-- `vault/wiki/architecture/ayan-rewrite-design.md` — добавлены секции:
-  - **Потенциал и монетизация** — 4 модели: платное размещение, подписка, платные отклики, реклама
-  - **Роль в экосистеме** — AYAN как трафик-генератор, не revenue-генератор
-  - **Сравнение AYAN vs UUS** — таблица по частоте, контролю оплаты, монетизации, LTV
-  - **Потенциал дохода** — оценка 100-300 поездок/день
-  - **Обновлён Decision Log** — добавлены решения про роль в экосистеме и монетизацию
+### Refactored AYAN
+- **Создано:** `vault/wiki/architecture/ayan-vision.md` — чистый vision без кода
+- **Удалено:** `vault/wiki/architecture/ayan-rewrite-design.md` — содержал технические детали (API, TypeScript, архитектура)
+- **Что осталось:** Vision, сценарии, механики, монетизация, Decision Log
+- **Что убрано:** TypeScript interfaces, API endpoints, file structure, Legacy
 
-## 2026-04-18 — UUS Vision Document
+### Updated UUS
+- `vault/wiki/architecture/uus-vision.md` — добавлен Decision Log
+- Убрано техническое упоминание "polling"
 
-### Added
-- `vault/wiki/architecture/uus-vision.md` — полный vision-документ для сервиса UUS (Уус)
+### Принцип
+Vision документы = концепция, сценарии, механики, монетизация.
+Implementation (код, API, структуры) — в отдельных документах после финализации vision.
   - Updated terminology: "исполнитель" вместо "мастер" (шире аудитория)
   - 4 категории задач: 🏠 Дом, 🔧 Ремонт, 📦 Доставка, 🌿 Другое
   - Key mechanics: лимит откликов (3–5), выбор исполнителя, авто-закрытие заявки
