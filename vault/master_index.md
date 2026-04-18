@@ -19,20 +19,13 @@
 
 ### Wiki (`/wiki`)
 
-#### Architecture
-- [[wiki/architecture/system-design]] — общий системный дизайн + диаграммы
-- [[wiki/architecture/api-contract]] — полный API контракт ayan (6 статусов)
-- [[wiki/architecture/data-models]] — TypeScript типы + модели данных
-- [[wiki/architecture/auth-flow]] — авторизация (Telegram + localhost)
+#### Architecture (Vision Only)
+- [[wiki/architecture/system-design]] — общий системный дизайн платформы
 - [[wiki/architecture/ayan-vision]] — AYAN (Бардыбыт) Vision + Concept + монетизация
 - [[wiki/architecture/uus-vision]] — UUS (Уус) Vision + Concept + монетизация
-- [[wiki/architecture/browser-back-button]] — универсальный компонент BackButton (smart nav + Telegram)
+- [[wiki/architecture/browser-back-button]] — универсальный компонент BackButton
 
-#### Services
-- [[wiki/services/laravel-api/overview]] — обзор Laravel API + текущий статус
-- [[wiki/services/laravel-api/endpoints]] — все эндпоинты ayan + validation
-- [[wiki/services/nuxt-app/overview]] — обзор Nuxt приложения + архитектура
-- [[wiki/services/nuxt-app/routing]] — роутинг + навигационные флоу
+*Implementation docs (API, models, code) — created after vision phase*
 
 ### Logs
 - [[logs/changelog]] — история изменений базы знаний

@@ -1,7 +1,6 @@
 # Changelog — iindev-vault
-add time and date
 
-## 2026-04-18 — Vault Population
+## 2026-04-18 — Vault Cleanup: Technical Docs Removed
 
 ### Created Structure
 - `vault/raw/` — сырые данные
@@ -33,6 +32,41 @@ add time and date
 ### Updated
 - `vault/master_index.md` — все новые статьи + роадмап
 
+## 2026-04-18 — Vault Cleanup: Technical Docs Removed
+
+### Удалено 7 технических файлов
+Принцип: Vision phase ≠ Implementation phase
+
+**Удалены из architecture/:**
+- `api-contract.md` — API endpoints, JSON contracts
+- `data-models.md` — TypeScript interfaces, типы
+- `auth-flow.md` — flow diagrams, middleware, implementation steps
+
+**Удалены из services/:**
+- `nuxt-app/overview.md` — file structure, composables, code conventions
+- `nuxt-app/routing.md` — page paths, file-based routing, middleware
+- `laravel-api/overview.md` — controllers, migrations, backend structure
+- `laravel-api/endpoints.md` — REST API, state machines
+
+**Удалены пустые директории:**
+- `vault/wiki/services/nuxt-app/`
+- `vault/wiki/services/laravel-api/`
+- `vault/wiki/services/`
+
+### Оставлены (Vision only)
+- `system-design.md` — общий vision платформы
+- `ayan-vision.md` — концепция, сценарии, монетизация
+- `uus-vision.md` — концепция, сценарии, монетизация
+- `browser-back-button.md` — UI/UX дизайн компонента
+
+### Обновлено
+- `master_index.md` — убраны ссылки на удалённые файлы
+- `changelog.md` — this entry
+
+### Workflow Established
+1. **Vision Phase** → концепция, сценарии, механики, монетизация
+2. **Implementation Phase** → код, API, модели (создаём после финализации vision)
+
 ## 2026-04-18 — Vision Documents Refactored (Clean Architecture)
 
 ### Refactored AYAN
@@ -45,23 +79,14 @@ add time and date
 - `vault/wiki/architecture/uus-vision.md` — добавлен Decision Log
 - Убрано техническое упоминание "polling"
 
-### Принцип
-Vision документы = концепция, сценарии, механики, монетизация.
-Implementation (код, API, структуры) — в отдельных документах после финализации vision.
-  - Updated terminology: "исполнитель" вместо "мастер" (шире аудитория)
-  - 4 категории задач: 🏠 Дом, 🔧 Ремонт, 📦 Доставка, 🌿 Другое
-  - Key mechanics: лимит откликов (3–5), выбор исполнителя, авто-закрытие заявки
-  - 3 сценария: разовая задача, постоянный исполнитель, удалённая/офисная задача
-  - Trust & Safety минимум (без усложнения)
-  - Потенциал и монетизация: плата за отклик, подписка, премиум-размещение
-  - MVP scope: создать заявку → лента → отклик → выбор → контакт
-
-### Next Steps
-- [ ] Создать API endpoints документ для UUS
-- [ ] Создать data models для UUS (аналогично AYAN)
-- [ ] Update routing.md с навигационными флоу UUS
-- [ ] Начать Phase 0: Foundation для UUS
-- [ ] Добавить сырые данные в /raw при необходимости
+### UUS Vision Details
+- Updated terminology: "исполнитель" вместо "мастер" (шире аудитория)
+- 4 категории задач: 🏠 Дом, 🔧 Ремонт, 📦 Доставка, 🌿 Другое
+- Key mechanics: лимит откликов (3–5), выбор исполнителя, авто-закрытие заявки
+- 3 сценария: разовая задача, постоянный исполнитель, удалённая/офисная задача
+- Trust & Safety минимум (без усложнения)
+- Потенциал и монетизация: плата за отклик, подписка, премиум-размещение
+- MVP scope: создать заявку → лента → отклик → выбор → контакт
 
 ## 2026-04-18 — Browser Back Button Component Implementation
 
