@@ -1,5 +1,28 @@
 # Changelog — iindev-vault
 
+## 2026-04-18 — Production-like Mock Data Layer
+
+### Added
+- `frontend/app/config/mockData.ts` — realistic mock data for AYAN
+  - MOCK_USERS: realistic Yakutsk region names (Вася, Пётр, Иван, etc)
+  - CITY_ROUTES: Марха-Порт, Якутск-Намцы, Сайсары-больница, etc
+  - INTERCITY_ROUTES: Якутск-Хандыга, Якутск-Вилюйск, etc
+  - generateMockOrders(): generates realistic orders with delays
+  - mockApiResponses: async helpers with simulated network delay
+
+### Updated
+- `frontend/app/composables/useAPI.ts` — extended with mock support
+  - Checks `USE_MOCK_API` from `api.config.ts`
+  - Returns mock data when flag is true
+  - Makes real HTTP requests when flag is false
+
+### How to toggle
+- `frontend/app/config/api.config.ts` → `USE_MOCK_API = true/false`
+- true: realistic mock data (no backend needed)
+- false: real API calls to Laravel backend
+
+---
+
 ## 2026-04-18 — Backend Controllers (Foundation)
 
 ### Added
