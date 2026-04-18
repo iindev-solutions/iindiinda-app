@@ -4,7 +4,7 @@
 
 ## Концепция
 
-AYAN — **доска попуток**, не такси.
+AYAN — **доска попуток**.
 
 - Водитель создаёт поездку (откуда, куда, когда, места, цена)
 - Пассажир создаёт запрос (ищу попутку)
@@ -38,7 +38,7 @@ frontend/services/ayan/
 
 ## Дизайн
 
-Полный Vision + Concept + MVP → `vault/wiki/architecture/ayan-rewrite-design.md`
+Полный Vision + Concept + MVP → `vault/wiki/architecture/ayan-vision.md`
 
 ## MVP Features
 

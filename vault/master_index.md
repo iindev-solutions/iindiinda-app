@@ -63,7 +63,7 @@ All 5 vision documents finalized (platform + 4 services). Ready for implementati
 ## Active Branches
 - `main` — production
 - `dev` — разработка
-- `front/taxi` — legacy (старый taxi-код, не поддерживается)
+- `front/ayan` — активная разработка (попутки)
 - `front/ayan` — новый AYAN (доска попуток, чистый старт)
 
 ## Roadmap Summary — AYAN (доска попуток)
