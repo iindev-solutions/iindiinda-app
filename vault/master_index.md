@@ -26,7 +26,7 @@
 - [[wiki/architecture/system-design]] — общий системный дизайн платформы
 
 **Service Visions (4/4 complete):**
-- [[wiki/architecture/ayan-vision]] — AYAN (Бардыбыт) — попутки
+- [[wiki/architecture/ayan-vision]] — AYAN — попутки
 - [[wiki/architecture/uus-vision]] — UUS (Уус) — услуги
 - [[wiki/architecture/tal-vision]] — TAL (Тал) — запись к мастерам
 - [[wiki/architecture/agal-vision]] — AGAL (Аҕал) — доставка через людей
@@ -51,7 +51,7 @@ All 5 vision documents finalized (platform + 4 services). Ready for implementati
 ## Active Branches
 - `main` — production
 - `dev` — разработка
-- `front/taxi` — legacy (старый taxi-код, не поддерживается)
+- `front/ayan` — активная разработка (попутки)
 - `front/ayan` — новый AYAN (доска попуток, чистый старт)
 
 ## Roadmap Summary — AYAN (доска попуток)
