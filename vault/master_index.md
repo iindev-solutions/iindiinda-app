@@ -3,20 +3,32 @@
 ## Project Overview
 
 > iindiinda — делаем сложные вещи просто. Modern solutions. Simply.
-> **Сделано сахалар для сахалар.**
 
-**iind.app** — платформа из 4 сервисов, где саха люди решают повседневные задачи через других людей. Бесплатно для заказчиков. Платят исполнители.
+**iind.app** — платформа из 4 сервисов, где люди решают повседневные задачи через других людей. Бесплатно для заказчиков. Платят исполнители.
 
 Проект: [[https://github.com/iindiinda/iindiinda-app|iindiinda-app]]
 Стек: Nuxt 4 (frontend) + Laravel (backend)
-Статус: MVP — Ayan (попутки) в разработке, остальные 3 параллельно
+Статус: **Implementation Phase** — Vision COMPLETE, roadmap создан
+
+### Roadmap
+
+**Phase 0:** Foundation 🔄 IN PROGRESS
+- 0.1: Очистка старого кода (delete buggy AYAN, useTaxiAPI, useMockAPI)
+- 0.2: Composables (useAuth, useUtils)
+- 0.3: Components (AppHeader, ServiceCard, LoadingSpinner, EmptyState, ErrorMessage)
+- 0.4: Types & i18n (clean api.ts, full i18n keys)
+- 0.5: Layout & Pages (update default.vue, index.vue)
+- 0.6: Mock APIs (auth, user base mocks)
+
+**Phase 1:** AYAN MVP 🔜 Next
+**Phase 2:** Auth & Platform Foundation
+**Phase 3:** UUS MVP
+**Phase 4:** TAL MVP
+**Phase 5:** AGAL MVP
 
 ---
 
 ## Structure
-
-### Raw Data (`/raw`)
-- [[raw/audit-2026-04-18]] — полный аудит проекта (баги, мисматчи, архитектура)
 
 ### Wiki (`/wiki`)
 
@@ -26,10 +38,10 @@
 - [[wiki/architecture/system-design]] — общий системный дизайн платформы
 
 **Service Visions (4/4 complete):**
-- [[wiki/architecture/ayan-vision]] — AYAN (Бардыбыт) — попутки
-- [[wiki/architecture/uus-vision]] — UUS (Уус) — услуги
-- [[wiki/architecture/tal-vision]] — TAL (Тал) — запись к мастерам
-- [[wiki/architecture/agal-vision]] — AGAL (Аҕал) — доставка через людей
+- [[wiki/architecture/ayan-vision]] — AYAN — попутки
+- [[wiki/architecture/uus-vision]] — UUS — услуги
+- [[wiki/architecture/tal-vision]] — TAL — запись к мастерам
+- [[wiki/architecture/agal-vision]] — AGAL — доставка через людей
 
 **UI/UX:**
 - [[wiki/architecture/browser-back-button]] — универсальный компонент BackButton

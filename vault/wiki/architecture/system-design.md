@@ -64,18 +64,19 @@ Telegram Mini App платформа с 4 сервисами. MVP — ayan (по
 ## Service Layers
 Каждый сервис — Nuxt layer, extends базовое приложение. Все разделяют одну идею: заявка + отклик.
 
-| Код | Yakut | English | Описание | Статус |
-|-----|-------|---------|----------|--------|
-| ayan | Бардыбыт | Rides | Попутки между городами и улусами | MVP |
-| uus | Уус | Masters | Поиск мастеров — ремонт, услуги | Активен |
-| agal | Аҕал | Delivery | Отправка посылок через попутчиков | Активен |
-| tal | Тал | Booking | Запись к мастерам — салоны, клиники | Активен |
+| Код | English | Описание | Статус |
+|-----|---------|----------|--------|
+| AYAN | Rides | Попутки между городами и улусами | MVP |
+| UUS | Masters | Поиск мастеров — ремонт, услуги | Активен |
+| AGAL | Delivery | Отправка посылок через попутчиков | Активен |
+| TAL | Booking | Запись к мастерам — салоны, клиники | Активен |
 
 ## Auth Flow
-See: [[wiki/architecture/auth-flow]]
+Telegram WebApp SDK → initData validation → JWT token (Sanctum)
+See: [[wiki/architecture/iind-app-vision]]
 
-## API Contract
-See: [[wiki/architecture/api-contract]]
-
-## Data Models
-See: [[wiki/architecture/data-models]]
+## Implementation Docs
+*Created after Vision Phase completion*
+- API endpoints, contracts → after vision finalized
+- Data models → after vision finalized
+- Auth implementation → after vision finalized
