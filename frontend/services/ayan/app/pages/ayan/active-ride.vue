@@ -1,51 +1,43 @@
 <script setup lang="ts">
-// Page metadata
+import { useIntervalFn } from '@vueuse/core'
+import type { TaxiOrder } from '~/types/api'
+
 definePageMeta({
 	layout: 'default'
 })
 
-// Composables
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
 const { get, post } = useTaxiAPI()
 const toast = useToast()
 
-// Types
-type ActiveStatus = 'matched' | 'arrived' | 'on-trip'
+type ActiveStatus = 'accepted' | 'arrived' | 'in_progress'
 
-interface Order {
-	id: number
-	status: ActiveStatus
-	pickup: string
-	destination: string
-	price: number
-	passenger?: {
-		name: string
-		phone: string
-	}
-}
-
-// State
-const order = ref<Order | null>(null)
+const order = ref<TaxiOrder | null>(null)
 const isLoading = ref(true)
 const actionInProgress = ref(false)
 
-// Fetch current active order
-async function fetchActiveOrder() {
-	isLoading.value = true
+async function fetchActiveOrder(silent = false) {
+	if (!silent) isLoading.value = true
 	try {
-		const response = await get<{ data: Order }>('/ayan/orders/active')
+		const response = await get<{ data: TaxiOrder }>('/ayan/orders/active')
 		order.value = response.data
+		if (order.value?.status === 'cancelled') {
+			pausePolling()
+			toast.add({ title: t('ayan.activeRide.cancelled'), color: 'gray' })
+			navigateTo('/ayan/orders')
+		}
 	} catch (error: any) {
-		console.error('Failed to fetch active order:', error)
-		toast.add({ title: error?.message || t('ayan.activeRide.fetchError'), color: 'gray' })
-		navigateTo('/ayan/orders')
+		if (!silent) {
+			console.error('Failed to fetch active order:', error)
+			toast.add({ title: error?.message || t('ayan.activeRide.fetchError'), color: 'gray' })
+			navigateTo('/ayan/orders')
+		}
 	} finally {
-		isLoading.value = false
+		if (!silent) isLoading.value = false
 	}
 }
 
-// Driver actions
 async function markArrived() {
 	if (!order.value) return
 	actionInProgress.value = true
@@ -98,99 +90,100 @@ const statusConfig: Record<
 	ActiveStatus,
 	{ title: string; description: string; icon: string; bgClass: string; textClass: string }
 > = {
-	matched: {
-		title: t('ayan.activeRide.status.matched.title'),
-		description: t('ayan.activeRide.status.matched.description'),
+	accepted: {
+		title: t('ayan.activeRide.status.accepted'),
+		description: t('ayan.activeRide.status.accepted.description'),
 		icon: 'i-lucide-check-circle',
 		bgClass: 'bg-green-500/20',
 		textClass: 'text-green-400'
 	},
 	arrived: {
-		title: t('ayan.activeRide.status.arrived.title'),
+		title: t('ayan.activeRide.status.arrived'),
 		description: t('ayan.activeRide.status.arrived.description'),
 		icon: 'i-lucide-map-pin',
 		bgClass: 'bg-cyan-500/20',
 		textClass: 'text-cyan-400'
 	},
-	'on-trip': {
-		title: t('ayan.activeRide.status.onTrip.title'),
-		description: t('ayan.activeRide.status.onTrip.description'),
+	in_progress: {
+		title: t('ayan.activeRide.status.inProgress'),
+		description: t('ayan.activeRide.status.inProgress.description'),
 		icon: 'i-lucide-car',
 		bgClass: 'bg-cyan-500/20',
 		textClass: 'text-cyan-400'
 	}
 }
 
-// Format price
 function formatPrice(price: number): string {
 	return new Intl.NumberFormat('ru-RU').format(price)
 }
 
-// Initialize
+const { pause: pausePolling } = useIntervalFn(() => fetchActiveOrder(true), 5000)
+
 onMounted(() => {
 	fetchActiveOrder()
+})
+
+onUnmounted(() => {
+	pausePolling()
 })
 </script>
 
 <template>
 	<div class="min-h-screen px-4 py-6 pb-8">
 		<div class="mx-auto max-w-[480px]">
-			<!-- Loading State -->
 			<div v-if="isLoading" class="flex h-[60vh] items-center justify-center">
 				<UIcon name="i-lucide-loader-circle" class="h-8 w-8 animate-spin text-cyan-400" />
 			</div>
 
-			<!-- Active Ride Display -->
 			<div v-else-if="order" class="space-y-6">
-				<!-- Status Card -->
 				<UCard class="rounded-2xl border-cyan-500/20 bg-level-1">
 					<div class="flex items-center gap-4">
 						<div
 							class="flex h-14 w-14 items-center justify-center rounded-2xl"
-							:class="statusConfig[order.status].bgClass"
+							:class="statusConfig[order.status as ActiveStatus].bgClass"
 						>
 							<UIcon
-								:name="statusConfig[order.status].icon"
+								:name="statusConfig[order.status as ActiveStatus].icon"
 								class="h-7 w-7"
-								:class="statusConfig[order.status].textClass"
+								:class="statusConfig[order.status as ActiveStatus].textClass"
 							/>
 						</div>
 						<div>
 							<h2 class="text-lg font-medium text-white">
-								{{ statusConfig[order.status].title }}
+								{{ statusConfig[order.status as ActiveStatus].title }}
 							</h2>
 							<p class="text-sm text-gray-400">
-								{{ statusConfig[order.status].description }}
+								{{ statusConfig[order.status as ActiveStatus].description }}
 							</p>
 						</div>
 					</div>
 				</UCard>
 
-				<!-- Passenger Info (if available) -->
-				<UCard v-if="order.passenger" class="rounded-2xl border-gray-800 bg-level-1">
+				<UCard v-if="order.driver" class="rounded-2xl border-gray-800 bg-level-1">
 					<div class="flex items-center gap-4">
 						<UAvatar size="lg" icon="i-lucide-user" class="bg-gray-700" />
 						<div>
-							<h3 class="font-medium text-white">{{ order.passenger.name }}</h3>
-							<div class="text-sm text-gray-400">{{ order.passenger.phone }}</div>
+							<h3 class="font-medium text-white">{{ order.driver.first_name }}</h3>
+							<div v-if="order.driver.rating" class="text-sm text-gray-400">
+								{{ order.driver.rating.toFixed(1) }} ★
+							</div>
 						</div>
 					</div>
 				</UCard>
 
-				<!-- Order Details -->
 				<UCard class="rounded-2xl border-gray-800 bg-level-1">
 					<div class="space-y-4">
 						<div>
 							<div class="mb-1 text-xs uppercase tracking-wider text-gray-500">
 								{{ t('ayan.activeRide.details.pickup') }}
 							</div>
-							<div class="text-white">{{ order.pickup }}</div>
+							<div class="text-white">{{ order.from_address }}</div>
 						</div>
 						<div>
 							<div class="mb-1 text-xs uppercase tracking-wider text-gray-500">
 								{{ t('ayan.activeRide.details.destination') }}
 							</div>
-							<div class="text-white">{{ order.destination }}</div>
+							<div class="text-white">{{ order.to_address }}</div>
 						</div>
 						<div class="border-t border-gray-800 pt-4">
 							<div class="mb-1 text-xs uppercase tracking-wider text-gray-500">
@@ -201,11 +194,9 @@ onMounted(() => {
 					</div>
 				</UCard>
 
-				<!-- Action Buttons -->
 				<div class="space-y-3 pt-4">
-					<!-- Mark Arrived -->
 					<UButton
-						v-if="order.status === 'matched'"
+						v-if="order.status === 'accepted'"
 						block
 						size="lg"
 						color="primary"
@@ -216,7 +207,6 @@ onMounted(() => {
 						{{ t('ayan.activeRide.actions.markArrived') }}
 					</UButton>
 
-					<!-- Start Trip -->
 					<UButton
 						v-if="order.status === 'arrived'"
 						block
@@ -229,9 +219,8 @@ onMounted(() => {
 						{{ t('ayan.activeRide.actions.startTrip') }}
 					</UButton>
 
-					<!-- Complete Trip -->
 					<UButton
-						v-if="order.status === 'on-trip'"
+						v-if="order.status === 'in_progress'"
 						block
 						size="lg"
 						color="primary"

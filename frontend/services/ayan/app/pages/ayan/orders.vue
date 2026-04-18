@@ -1,51 +1,41 @@
 <script setup lang="ts">
-// Page metadata
+import { useIntervalFn } from '@vueuse/core'
+import type { TaxiOrder } from '~/types/api'
+
 definePageMeta({
 	layout: 'default'
 })
 
-// Composables
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
 const { get, post } = useTaxiAPI()
 const toast = useToast()
 
-// Types
-interface Order {
-	id: number
-	pickup: string
-	destination: string
-	price: number
-	createdAt: string
-}
-
-// State
-const orders = ref<Order[]>([])
+const orders = ref<TaxiOrder[]>([])
 const isLoading = ref(true)
 const acceptingOrderId = ref<number | null>(null)
 
-// Fetch available orders
-async function fetchOrders() {
-	isLoading.value = true
+async function fetchOrders(silent = false) {
+	if (!silent) isLoading.value = true
 	try {
-		const response = await get<{ data: Order[] }>('/ayan/orders')
+		const response = await get<{ data: TaxiOrder[] }>('/ayan/orders')
 		orders.value = response.data
 	} catch (error: any) {
-		console.error('Failed to fetch orders:', error)
-		toast.add({ title: error?.message || t('ayan.orders.fetchError'), color: 'gray' })
+		if (!silent) {
+			console.error('Failed to fetch orders:', error)
+			toast.add({ title: error?.message || t('ayan.orders.fetchError'), color: 'gray' })
+		}
 	} finally {
-		isLoading.value = false
+		if (!silent) isLoading.value = false
 	}
 }
 
-// Accept order
 async function acceptOrder(orderId: number) {
 	acceptingOrderId.value = orderId
 	hapticFeedback('impact')
 
 	try {
 		await post(`/ayan/orders/${orderId}/accept`)
-		// Navigate to active ride page
 		navigateTo('/ayan/active-ride')
 	} catch (error: any) {
 		console.error('Failed to accept order:', error)
@@ -55,26 +45,28 @@ async function acceptOrder(orderId: number) {
 	}
 }
 
-// Refresh orders
 function refreshOrders() {
 	fetchOrders()
 }
 
-// Format price
 function formatPrice(price: number): string {
 	return new Intl.NumberFormat('ru-RU').format(price)
 }
 
-// Initialize
+const { pause: pausePolling } = useIntervalFn(() => fetchOrders(true), 10000)
+
 onMounted(() => {
 	fetchOrders()
+})
+
+onUnmounted(() => {
+	pausePolling()
 })
 </script>
 
 <template>
 	<div class="min-h-screen px-4 py-6 pb-8">
 		<div class="mx-auto max-w-[480px]">
-			<!-- Header -->
 			<header class="mb-6 pt-2">
 				<div class="flex items-center justify-between">
 					<div>
@@ -91,7 +83,6 @@ onMounted(() => {
 				</div>
 			</header>
 
-			<!-- Loading State -->
 			<div v-if="isLoading" class="space-y-4">
 				<UCard v-for="i in 3" :key="i" class="rounded-2xl border-gray-800 bg-level-1">
 					<USkeleton class="mb-2 h-5 w-3/4" />
@@ -99,7 +90,6 @@ onMounted(() => {
 				</UCard>
 			</div>
 
-			<!-- Empty State -->
 			<div v-else-if="orders.length === 0" class="py-12 text-center">
 				<div class="mb-4 flex justify-center">
 					<div class="flex h-20 w-20 items-center justify-center rounded-full bg-gray-800">
@@ -114,11 +104,9 @@ onMounted(() => {
 				</p>
 			</div>
 
-			<!-- Orders List -->
 			<div v-else class="space-y-4">
 				<UCard v-for="order in orders" :key="order.id" class="rounded-2xl border-gray-800 bg-level-1">
 					<div class="space-y-4">
-						<!-- Route -->
 						<div class="space-y-2">
 							<div class="flex items-start gap-3">
 								<div class="mt-1 flex h-2 w-2 shrink-0 rounded-full bg-green-400"></div>
@@ -126,7 +114,7 @@ onMounted(() => {
 									<div class="mb-0.5 text-xs text-gray-500">
 										{{ t('ayan.orders.card.pickup') }}
 									</div>
-									<div class="text-sm text-white">{{ order.pickup }}</div>
+									<div class="text-sm text-white">{{ order.from_address }}</div>
 								</div>
 							</div>
 							<div class="ml-1 h-4 w-px bg-gray-700"></div>
@@ -136,12 +124,11 @@ onMounted(() => {
 									<div class="mb-0.5 text-xs text-gray-500">
 										{{ t('ayan.orders.card.destination') }}
 									</div>
-									<div class="text-sm text-white">{{ order.destination }}</div>
+									<div class="text-sm text-white">{{ order.to_address }}</div>
 								</div>
 							</div>
 						</div>
 
-						<!-- Price and Accept -->
 						<div class="flex items-center justify-between border-t border-gray-800 pt-4">
 							<div>
 								<div class="mb-0.5 text-xs text-gray-500">

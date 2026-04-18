@@ -1,18 +1,15 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
 
-// Page metadata
 definePageMeta({
 	layout: 'default'
 })
 
-// Composables
 const { t } = useI18n()
-const { hapticFeedback, showBackButton, hideBackButton, onBackButtonClicked } = useTg()
-const { post } = useTaxiAPI() // Используем Taxi API (мок или реальный)
+const { hapticFeedback } = useTg()
+const { post } = useTaxiAPI()
 const toast = useToast()
 
-// Form state
 interface OrderForm {
 	pickup: string
 	destination: string
@@ -27,15 +24,14 @@ const form = ref<OrderForm>({
 
 const isSubmitting = ref(false)
 
-// Form submission
 async function onSubmit(event: FormSubmitEvent<OrderForm>) {
 	isSubmitting.value = true
 	hapticFeedback('impact')
 
 	try {
 		await post('/ayan/orders', {
-			pickup: event.data.pickup,
-			destination: event.data.destination,
+			from_address: event.data.pickup,
+			to_address: event.data.destination,
 			price: event.data.price
 		})
 
@@ -44,7 +40,6 @@ async function onSubmit(event: FormSubmitEvent<OrderForm>) {
 			color: 'cyan'
 		})
 
-		// Navigate to order tracking page
 		navigateTo('/ayan/my-order')
 	} catch (err: any) {
 		console.error('Failed to create order:', err)
@@ -57,31 +52,20 @@ async function onSubmit(event: FormSubmitEvent<OrderForm>) {
 	}
 }
 
-// Validation
 function validatePrice(value: number | null) {
-	if (!value || value <= 0) {
-		return t('ayan.create.validation.priceRequired')
+	if (!value || value < 100) {
+		return t('ayan.create.validation.priceMin')
+	}
+	if (value > 5000) {
+		return t('ayan.create.validation.priceMax')
 	}
 	return true
 }
-
-// Initialize back button
-onMounted(() => {
-	showBackButton()
-	onBackButtonClicked(() => {
-		navigateTo('/ayan')
-	})
-})
-
-onUnmounted(() => {
-	hideBackButton()
-})
 </script>
 
 <template>
 	<div class="min-h-screen px-4 py-6 pb-8">
 		<div class="mx-auto max-w-[480px]">
-			<!-- Header -->
 			<header class="mb-8 pt-2">
 				<div class="mb-1 text-[10px] font-medium uppercase tracking-widest text-gray-400">
 					{{ t('ayan.header.subtitle') }}
@@ -94,9 +78,7 @@ onUnmounted(() => {
 				</p>
 			</header>
 
-			<!-- Form -->
 			<UForm :state="form" class="space-y-4" @submit="onSubmit">
-				<!-- Pickup Location -->
 				<UFormField name="pickup" :label="t('ayan.create.fields.pickup')" required>
 					<UInput
 						v-model="form.pickup"
@@ -107,7 +89,6 @@ onUnmounted(() => {
 					/>
 				</UFormField>
 
-				<!-- Destination -->
 				<UFormField name="destination" :label="t('ayan.create.fields.destination')" required>
 					<UInput
 						v-model="form.destination"
@@ -118,7 +99,6 @@ onUnmounted(() => {
 					/>
 				</UFormField>
 
-				<!-- Price -->
 				<UFormField name="price" :label="t('ayan.create.fields.price')" required :validate="validatePrice">
 					<UInput
 						v-model.number="form.price"
@@ -126,7 +106,7 @@ onUnmounted(() => {
 						type="number"
 						size="lg"
 						class="w-full"
-						min="1"
+						min="100"
 					>
 						<template #trailing>
 							<span class="text-gray-400">₽</span>
@@ -134,7 +114,6 @@ onUnmounted(() => {
 					</UInput>
 				</UFormField>
 
-				<!-- Submit Button -->
 				<UButton
 					type="submit"
 					block

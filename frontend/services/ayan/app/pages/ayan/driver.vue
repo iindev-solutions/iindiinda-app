@@ -1,45 +1,32 @@
 <script setup lang="ts">
-// Page metadata
+import type { User } from '~/types/api'
+
 definePageMeta({
 	layout: 'default'
 })
 
-// Composables
 const { t } = useI18n()
-const { hapticFeedback, showBackButton, hideBackButton, onBackButtonClicked } = useTg()
+const { hapticFeedback } = useTg()
 const { get, post } = useTaxiAPI()
 const toast = useToast()
 
-// Types
-interface DriverStatus {
-	role: 'passenger' | 'driver'
-	isAvailable: boolean
-	stats: {
-		completedOrders: number
-		rating: number
-	}
-}
-
-// State
 const isAvailable = ref(false)
 const isSwitching = ref(false)
 const isLoading = ref(true)
 const driverStats = ref({
-	completedOrders: 0,
+	completed_orders: 0,
 	rating: 5.0
 })
 
-// Fetch driver initial status
 async function fetchDriverStatus() {
 	isLoading.value = true
 	try {
-		const response = await get<{ data: DriverStatus }>('/user/me')
+		const response = await get<{ data: User }>('/user/me')
 		const data = response.data
-
-		// If user is driver and available, set toggle on
 		if (data.role === 'driver') {
-			isAvailable.value = data.isAvailable
-			driverStats.value = data.stats
+			isAvailable.value = data.is_available ?? false
+			driverStats.value.completed_orders = data.completed_orders ?? 0
+			driverStats.value.rating = data.rating ?? 5.0
 		}
 	} catch (error: any) {
 		console.error('Failed to fetch driver status:', error)
@@ -49,60 +36,40 @@ async function fetchDriverStatus() {
 	}
 }
 
-// Switch availability
 async function toggleAvailability() {
 	isSwitching.value = true
 	hapticFeedback('impact')
 
 	try {
-		// First switch role to driver if not already
 		await post('/user/switch-role', { role: 'driver' })
-
-		// Toggle availability
 		const newStatus = !isAvailable.value
-		await post('/user/availability', { available: newStatus })
-
+		await post('/user/availability', { is_available: newStatus })
 		isAvailable.value = newStatus
 
 		if (isAvailable.value) {
-			// Navigate to orders page when becoming available
 			navigateTo('/ayan/orders')
 		}
 	} catch (error: any) {
 		console.error('Failed to toggle availability:', error)
-		isAvailable.value = !isAvailable.value
 		toast.add({ title: error?.message || t('ayan.driver.toggleError'), color: 'gray' })
 	} finally {
 		isSwitching.value = false
 	}
 }
 
-// Initialize back button
 onMounted(() => {
 	fetchDriverStatus()
-
-	// Show back button and handle navigation
-	showBackButton()
-	onBackButtonClicked(() => {
-		navigateTo('/ayan')
-	})
-})
-
-onUnmounted(() => {
-	hideBackButton()
 })
 </script>
 
 <template>
 	<div class="min-h-screen px-4 py-6 pb-8">
 		<div class="mx-auto max-w-[480px]">
-			<!-- Loading State -->
 			<div v-if="isLoading" class="flex h-[60vh] items-center justify-center">
 				<UIcon name="i-lucide-loader-circle" class="h-8 w-8 animate-spin text-cyan-400" />
 			</div>
 
 			<template v-else>
-				<!-- Header -->
 				<header class="mb-8 pt-2">
 					<div class="mb-1 text-[10px] font-medium uppercase tracking-widest text-gray-400">
 						{{ t('ayan.driver.header.subtitle') }}
@@ -115,7 +82,6 @@ onUnmounted(() => {
 					</p>
 				</header>
 
-				<!-- Availability Toggle -->
 				<UCard class="mb-6 rounded-2xl border-gray-800 bg-level-1">
 					<div class="flex items-center justify-between">
 						<div>
@@ -131,14 +97,13 @@ onUnmounted(() => {
 							</p>
 						</div>
 						<USwitch
-							v-model="isAvailable"
+							:model-value="isAvailable"
 							:loading="isSwitching"
 							@update:model-value="toggleAvailability"
 						/>
 					</div>
 				</UCard>
 
-				<!-- Stats Cards -->
 				<div class="mb-6 grid grid-cols-2 gap-4">
 					<UCard class="rounded-2xl border-gray-800 bg-level-1">
 						<div class="text-center">
@@ -146,7 +111,7 @@ onUnmounted(() => {
 								{{ t('ayan.driver.stats.completed') }}
 							</div>
 							<div class="text-2xl font-semibold text-white">
-								{{ driverStats.completedOrders }}
+								{{ driverStats.completed_orders }}
 							</div>
 						</div>
 					</UCard>
@@ -162,7 +127,6 @@ onUnmounted(() => {
 					</UCard>
 				</div>
 
-				<!-- Instructions -->
 				<UCard class="rounded-2xl border-cyan-500/20 bg-level-1">
 					<div class="space-y-4">
 						<h3 class="font-medium text-white">

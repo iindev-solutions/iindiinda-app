@@ -32,6 +32,9 @@ export interface User {
 	username: string | null
 	first_name: string
 	role: 'passenger' | 'driver'
+	rating?: number
+	completed_orders?: number
+	is_available?: boolean
 	created_at: string
 	updated_at: string
 }
@@ -45,7 +48,7 @@ export interface AuthResponse {
 // AYAN (Бардыбыт / Такси)
 // ==========================================
 
-export type TaxiOrderStatus = 'open' | 'accepted' | 'completed' | 'cancelled'
+export type TaxiOrderStatus = 'open' | 'accepted' | 'arrived' | 'in_progress' | 'completed' | 'cancelled'
 
 export interface TaxiOrder {
 	id: number
@@ -53,11 +56,10 @@ export interface TaxiOrder {
 	driver_id: number | null
 	from_address: string
 	to_address: string
-	/** Цена в рублях. Валидация: min 100, max 5000 */
 	price: number
 	status: TaxiOrderStatus
 	passenger?: User
-	driver?: User
+	driver?: User | null
 	created_at: string
 	updated_at: string
 }
@@ -65,15 +67,14 @@ export interface TaxiOrder {
 export interface CreateTaxiOrderRequest {
 	from_address: string
 	to_address: string
-	/** min: 100, max: 5000 */
 	price: number
 }
 
 /**
  * Статусы заказов:
- * open -> accepted -> completed
- * open -> cancelled
- * accepted -> cancelled (только пассажир)
+ * open → accepted → arrived → in_progress → completed
+ * open → cancelled
+ * accepted → cancelled (только пассажир)
  */
 
 // ==========================================
@@ -83,9 +84,7 @@ export interface CreateTaxiOrderRequest {
 export interface TalService {
 	id: string
 	name: string
-	/** Длительность в минутах */
 	duration: number
-	/** Цена в рублях */
 	price: number
 }
 

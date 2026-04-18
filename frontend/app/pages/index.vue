@@ -1,31 +1,32 @@
 <script setup lang="ts">
-const router = useRouter()
+const { t } = useI18n()
+const { hapticFeedback } = useTg()
 
 const services = [
 	{
-		name: 'Бардыбыт',
-		desc: 'Такси',
+		name: t('ayan.name'),
+		desc: t('ayan.desc'),
 		to: '/ayan',
 		icon: 'i-lucide-car',
 		active: true
 	},
 	{
-		name: 'Уус',
-		desc: 'Мастера',
+		name: t('uus.name'),
+		desc: t('uus.desc'),
 		to: '/uus',
 		icon: 'i-lucide-wrench',
 		active: false
 	},
 	{
-		name: 'Аҕал',
-		desc: 'Доставка',
+		name: t('agal.name'),
+		desc: t('agal.desc'),
 		to: '/agal',
 		icon: 'i-lucide-plane',
 		active: false
 	},
 	{
-		name: 'Тал',
-		desc: 'Запись',
+		name: t('tal.name'),
+		desc: t('tal.desc'),
 		to: '/tal',
 		icon: 'i-lucide-calendar',
 		active: false
@@ -34,7 +35,8 @@ const services = [
 
 function navigate(to: string, active: boolean) {
 	if (active) {
-		router.push(to)
+		hapticFeedback('impact')
+		navigateTo(to)
 	}
 }
 </script>

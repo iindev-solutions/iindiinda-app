@@ -1,18 +1,18 @@
 /**
  * useMockAPI - мок-сервис для разработки фронтенда
  *
- * Полностью имитирует работу реального API:
+ * Имитирует работу реального API:
  * - Задержки сети (300-800ms)
  * - Ошибки (10% шанс для тестирования)
  * - Сохранение состояния в localStorage
- * - Те же интерфейсы и типы данных
+ * - Типы данных совпадают с api.ts
  *
- * Для переключения на реальный API: замените useMockAPI на useAPI в компонентах
+ * Для переключения на реальный API: USE_MOCK_API = false в api.config.ts
  */
 
 import { MOCK_CONFIG } from '~/config/api.config'
+import type { User, TaxiOrder } from '~/types/api'
 
-// Простой reactive state через localStorage
 const getMockState = () => {
 	if (typeof localStorage === 'undefined') return null
 	const stored = localStorage.getItem('mock-api-state')
@@ -28,88 +28,83 @@ const saveMockState = (state: any) => {
 	}
 }
 
-// Типы данных (дублируют API типы)
-export interface MockUser {
-	id: number
-	telegramId: string
-	name: string
-	role: 'passenger' | 'driver'
-	isAvailable: boolean
-	stats: {
-		completedOrders: number
-		rating: number
-	}
-}
-
-export interface MockOrder {
-	id: number
-	passengerId: number
-	driverId?: number
-	status: 'searching' | 'matched' | 'arrived' | 'on-trip' | 'completed' | 'cancelled'
-	pickup: string
-	destination: string
-	price: number
-	driver?: {
-		name: string
-		rating: number
-	}
-	passenger?: {
-		name: string
-		phone: string
-	}
-	createdAt: string
-}
-
-// Начальное состояние
 const initialState = {
 	currentUser: {
 		id: 1,
-		telegramId: '123456',
-		name: 'Тестовый Пользователь',
-		role: 'passenger',
-		isAvailable: false,
-		stats: {
-			completedOrders: 12,
-			rating: 4.8
-		}
-	} as MockUser,
+		telegram_id: 123456,
+		username: 'test_user',
+		first_name: 'Тестовый',
+		role: 'passenger' as 'passenger' | 'driver',
+		rating: 4.8,
+		completed_orders: 12,
+		is_available: false,
+		created_at: new Date().toISOString(),
+		updated_at: new Date().toISOString()
+	} as User,
 	orders: [
 		{
 			id: 101,
-			passengerId: 2,
-			status: 'searching',
-			pickup: 'ул. Ленина, 15',
-			destination: 'Аэропорт Якутск',
+			passenger_id: 2,
+			driver_id: null,
+			from_address: 'ул. Ленина, 15',
+			to_address: 'Аэропорт Якутск',
 			price: 350,
-			createdAt: new Date().toISOString()
+			status: 'open',
+			passenger: {
+				id: 2,
+				telegram_id: 2,
+				username: null,
+				first_name: 'Анна',
+				role: 'passenger',
+				rating: 4.5,
+				completed_orders: 8,
+				is_available: false,
+				created_at: '',
+				updated_at: ''
+			},
+			driver: null,
+			created_at: new Date().toISOString(),
+			updated_at: new Date().toISOString()
 		},
 		{
 			id: 102,
-			passengerId: 3,
-			status: 'searching',
-			pickup: 'ТЦ "Туймаада"',
-			destination: 'мкр. Старый город',
+			passenger_id: 3,
+			driver_id: null,
+			from_address: 'ТЦ "Туймаада"',
+			to_address: 'мкр. Старый город',
 			price: 200,
-			createdAt: new Date().toISOString()
+			status: 'open',
+			passenger: {
+				id: 3,
+				telegram_id: 3,
+				username: null,
+				first_name: 'Михаил',
+				role: 'passenger',
+				rating: 4.2,
+				completed_orders: 3,
+				is_available: false,
+				created_at: '',
+				updated_at: ''
+			},
+			driver: null,
+			created_at: new Date().toISOString(),
+			updated_at: new Date().toISOString()
 		}
-	] as MockOrder[],
-	myActiveOrder: null as MockOrder | null
+	] as TaxiOrder[],
+	myActiveOrder: null as TaxiOrder | null
 }
 
-// Глобальное состояние для всего приложения
 const useMockState = () => {
 	const state = useState('mock-api-state', () => ({
 		...initialState
 	}))
 
-	// Загружаем из localStorage при инициализации на клиенте
 	if (import.meta.client) {
 		const stored = getMockState()
 		if (stored) {
 			Object.assign(state.value, stored)
 		}
 
-		// Сохраняем в localStorage при изменениях
 		watch(
 			state,
 			(newValue) => {
@@ -122,11 +117,8 @@ const useMockState = () => {
 	return state
 }
 
-// Имитация задержки сети
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const randomDelay = () => delay(MOCK_CONFIG.baseDelay + Math.random() * MOCK_CONFIG.maxExtraDelay)
-
-// Имитация ошибки (для тестирования обработки ошибок)
 const shouldFail = () => Math.random() < MOCK_CONFIG.errorRate
 
 export const useMockAPI = () => {
@@ -155,15 +147,15 @@ export const useMockAPI = () => {
 		await randomDelay()
 		mockState.value.currentUser.role = role
 		if (role === 'passenger') {
-			mockState.value.currentUser.isAvailable = false
+			mockState.value.currentUser.is_available = false
 		}
 		if (import.meta.dev) console.log(`[MockAPI] Роль изменена на: ${role}`)
-		return { success: true }
+		return { user: mockState.value.currentUser }
 	}
 
 	const setAvailability = async (available: boolean) => {
 		await randomDelay()
-		mockState.value.currentUser.isAvailable = available
+		mockState.value.currentUser.is_available = available
 		if (import.meta.dev) console.log(`[MockAPI] Статус: ${available ? 'На линии' : 'Оффлайн'}`)
 		return { success: true }
 	}
@@ -173,8 +165,7 @@ export const useMockAPI = () => {
 		await randomDelay()
 		if (shouldFail()) throw new Error('Ошибка загрузки заказов')
 
-		// Возвращаем только заказы в статусе searching
-		const availableOrders = mockState.value.orders.filter((o: MockOrder) => o.status === 'searching')
+		const availableOrders = mockState.value.orders.filter((o: TaxiOrder) => o.status === 'open')
 		return { data: availableOrders }
 	}
 
@@ -188,30 +179,34 @@ export const useMockAPI = () => {
 	const getOrder = async (id: number) => {
 		await randomDelay()
 
-		// Ищем в моих заказах
 		if (mockState.value.myActiveOrder?.id === id) {
 			return { data: mockState.value.myActiveOrder }
 		}
 
-		// Ищем в списке доступных
-		const order = mockState.value.orders.find((o: MockOrder) => o.id === id)
+		const order = mockState.value.orders.find((o: TaxiOrder) => o.id === id)
 		if (!order) throw new Error('Заказ не найден')
 
 		return { data: order }
 	}
 
-	const createOrder = async (data: { pickup: string; destination: string; price: number }) => {
+	const createOrder = async (data: { from_address: string; to_address: string; price: number }) => {
 		await randomDelay()
 		if (shouldFail()) throw new Error('Ошибка создания заказа')
+		if (data.price < 100 || data.price > 5000) throw new Error('Цена должна быть от 100 до 5000 ₽')
+		if (mockState.value.myActiveOrder) throw new Error('У вас уже есть активный заказ')
 
-		const newOrder: MockOrder = {
+		const newOrder: TaxiOrder = {
 			id: Date.now(),
-			passengerId: mockState.value.currentUser.id,
-			status: 'searching',
-			pickup: data.pickup,
-			destination: data.destination,
+			passenger_id: mockState.value.currentUser.id,
+			driver_id: null,
+			from_address: data.from_address,
+			to_address: data.to_address,
 			price: data.price,
-			createdAt: new Date().toISOString()
+			status: 'open',
+			passenger: mockState.value.currentUser,
+			driver: null,
+			created_at: new Date().toISOString(),
+			updated_at: new Date().toISOString()
 		}
 
 		mockState.value.orders.push(newOrder)
@@ -219,23 +214,35 @@ export const useMockAPI = () => {
 
 		if (import.meta.dev) console.log('[MockAPI] Заказ создан! Ищем водителя...')
 
-		// Автоматически "найти" водителя через 5 секунд (для демо)
 		setTimeout(() => {
-			if (mockState.value.myActiveOrder?.id === newOrder.id) {
-				mockState.value.myActiveOrder.status = 'matched'
-				mockState.value.myActiveOrder.driver = {
-					name: 'Водитель ' + Math.floor(Math.random() * 100),
-					rating: +(4 + Math.random()).toFixed(1)
+			if (mockState.value.myActiveOrder?.id === newOrder.id && mockState.value.myActiveOrder.status === 'open') {
+				const mockDriver: User = {
+					id: 50,
+					telegram_id: 555,
+					username: 'driver_mock',
+					first_name: 'Водитель ' + Math.floor(Math.random() * 100),
+					role: 'driver',
+					rating: +(4 + Math.random()).toFixed(1),
+					completed_orders: Math.floor(50 + Math.random() * 200),
+					is_available: true,
+					created_at: '',
+					updated_at: ''
 				}
-				// Найти и обновить в общем списке
-				const orderInList = mockState.value.orders.find((o: MockOrder) => o.id === newOrder.id)
+				mockState.value.myActiveOrder.status = 'accepted'
+				mockState.value.myActiveOrder.driver_id = mockDriver.id
+				mockState.value.myActiveOrder.driver = mockDriver
+				mockState.value.myActiveOrder.updated_at = new Date().toISOString()
+
+				const orderInList = mockState.value.orders.find((o: TaxiOrder) => o.id === newOrder.id)
 				if (orderInList) {
-					orderInList.status = 'matched'
-					orderInList.driver = mockState.value.myActiveOrder.driver
+					orderInList.status = 'accepted'
+					orderInList.driver_id = mockDriver.id
+					orderInList.driver = mockDriver
+					orderInList.updated_at = new Date().toISOString()
 				}
 				if (import.meta.dev) console.log('[MockAPI] Водитель найден!')
 			}
-		}, 5000)
+		}, MOCK_CONFIG.autoAcceptDelay)
 
 		return { data: newOrder }
 	}
@@ -243,44 +250,44 @@ export const useMockAPI = () => {
 	const acceptOrder = async (orderId: number) => {
 		await randomDelay()
 		if (shouldFail()) throw new Error('Ошибка принятия заказа')
+		if (mockState.value.currentUser.role !== 'driver') throw new Error('Только водитель может принять заказ')
 
-		const order = mockState.value.orders.find((o: MockOrder) => o.id === orderId)
+		const order = mockState.value.orders.find((o: TaxiOrder) => o.id === orderId)
 		if (!order) throw new Error('Заказ не найден')
+		if (order.status !== 'open') throw new Error('Заказ уже занят')
+		if (mockState.value.myActiveOrder) throw new Error('У вас уже есть активный заказ')
 
-		order.status = 'matched'
-		order.driverId = mockState.value.currentUser.id
-		order.driver = {
-			name: mockState.value.currentUser.name,
-			rating: mockState.value.currentUser.stats.rating
-		}
-		order.passenger = {
-			name: 'Пассажир ' + order.passengerId,
-			phone: '+7 (999) 123-45-67'
-		}
+		order.status = 'accepted'
+		order.driver_id = mockState.value.currentUser.id
+		order.driver = mockState.value.currentUser
+		order.updated_at = new Date().toISOString()
+
+		mockState.value.myActiveOrder = { ...order }
 
 		if (import.meta.dev) console.log('[MockAPI] Заказ принят! Едьте к пассажиру')
-		return { success: true }
+		return { data: order }
 	}
 
 	const cancelOrder = async (orderId: number) => {
 		await randomDelay()
 		if (shouldFail()) throw new Error('Ошибка отмены заказа')
 
-		const orderIndex = mockState.value.orders.findIndex((o: MockOrder) => o.id === orderId)
+		const orderIndex = mockState.value.orders.findIndex((o: TaxiOrder) => o.id === orderId)
 		if (orderIndex > -1 && mockState.value.orders[orderIndex]) {
 			mockState.value.orders[orderIndex]!.status = 'cancelled'
+			mockState.value.orders[orderIndex]!.updated_at = new Date().toISOString()
 		}
 
 		if (mockState.value.myActiveOrder?.id === orderId) {
 			mockState.value.myActiveOrder.status = 'cancelled'
-			// Через 2 секунды очистить активный заказ
+			mockState.value.myActiveOrder.updated_at = new Date().toISOString()
 			setTimeout(() => {
 				mockState.value.myActiveOrder = null
 			}, 2000)
 		}
 
 		if (import.meta.dev) console.log('[MockAPI] Заказ отменен')
-		return { success: true }
+		return { data: { success: true } }
 	}
 
 	const markArrived = async (orderId: number) => {
@@ -288,27 +295,35 @@ export const useMockAPI = () => {
 
 		if (mockState.value.myActiveOrder?.id === orderId) {
 			mockState.value.myActiveOrder.status = 'arrived'
+			mockState.value.myActiveOrder.updated_at = new Date().toISOString()
 		}
 
-		const order = mockState.value.orders.find((o: MockOrder) => o.id === orderId)
-		if (order) order.status = 'arrived'
+		const order = mockState.value.orders.find((o: TaxiOrder) => o.id === orderId)
+		if (order) {
+			order.status = 'arrived'
+			order.updated_at = new Date().toISOString()
+		}
 
 		if (import.meta.dev) console.log('[MockAPI] Вы на месте! Ожидайте пассажира')
-		return { success: true }
+		return { data: { success: true } }
 	}
 
 	const startTrip = async (orderId: number) => {
 		await randomDelay()
 
 		if (mockState.value.myActiveOrder?.id === orderId) {
-			mockState.value.myActiveOrder.status = 'on-trip'
+			mockState.value.myActiveOrder.status = 'in_progress'
+			mockState.value.myActiveOrder.updated_at = new Date().toISOString()
 		}
 
-		const order = mockState.value.orders.find((o: MockOrder) => o.id === orderId)
-		if (order) order.status = 'on-trip'
+		const order = mockState.value.orders.find((o: TaxiOrder) => o.id === orderId)
+		if (order) {
+			order.status = 'in_progress'
+			order.updated_at = new Date().toISOString()
+		}
 
 		if (import.meta.dev) console.log('[MockAPI] Поездка началась!')
-		return { success: true }
+		return { data: { success: true } }
 	}
 
 	const completeTrip = async (orderId: number) => {
@@ -316,30 +331,31 @@ export const useMockAPI = () => {
 
 		if (mockState.value.myActiveOrder?.id === orderId) {
 			mockState.value.myActiveOrder.status = 'completed'
+			mockState.value.myActiveOrder.updated_at = new Date().toISOString()
 		}
 
-		const order = mockState.value.orders.find((o: MockOrder) => o.id === orderId)
-		if (order) order.status = 'completed'
+		const order = mockState.value.orders.find((o: TaxiOrder) => o.id === orderId)
+		if (order) {
+			order.status = 'completed'
+			order.updated_at = new Date().toISOString()
+		}
 
-		// Увеличить счетчик поездок
-		mockState.value.currentUser.stats.completedOrders++
+		mockState.value.currentUser.completed_orders = (mockState.value.currentUser.completed_orders || 0) + 1
 
-		// Очистить активный заказ через 2 секунды
 		setTimeout(() => {
 			mockState.value.myActiveOrder = null
 		}, 2000)
 
 		if (import.meta.dev) console.log('[MockAPI] Поездка завершена!')
-		return { success: true }
+		return { data: { success: true } }
 	}
 
 	// ===== Универсальный метод (для совместимости с useAPI) =====
 	const request = async <T>(endpoint: string, options?: { method?: string; body?: any }): Promise<T> => {
 		const { method = 'GET', body } = options || {}
 
-		console.log(`[MockAPI] ${method} ${endpoint}`, body)
+		if (import.meta.dev) console.log(`[MockAPI] ${method} ${endpoint}`, body)
 
-		// Маршрутизация запросов
 		if (endpoint === '/auth/telegram' || endpoint.includes('/auth')) {
 			const result = await login()
 			return result as T
@@ -357,6 +373,14 @@ export const useMockAPI = () => {
 			return setAvailability(body?.available) as Promise<T>
 		}
 
+		if (endpoint === '/ayan/orders/open') {
+			return getOrders() as Promise<T>
+		}
+
+		if (endpoint === '/ayan/orders/my') {
+			return getMyOrder() as Promise<T>
+		}
+
 		if (endpoint === '/ayan/orders') {
 			if (method === 'POST') {
 				return createOrder(body) as Promise<T>
@@ -364,75 +388,57 @@ export const useMockAPI = () => {
 			return getOrders() as Promise<T>
 		}
 
-		if (endpoint === '/ayan/orders/me') {
-			return getMyOrder() as Promise<T>
-		}
-
-		// /ayan/orders/:id
-		const orderMatch = endpoint.match(/\/ayan\/orders\/(\d+)$/)
-		if (orderMatch?.[1]) {
-			const orderId = parseInt(orderMatch[1])
-			return getOrder(orderId) as Promise<T>
-		}
-
-		// /ayan/orders/:id/cancel
-		const cancelMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/cancel$/)
-		if (cancelMatch?.[1]) {
-			const orderId = parseInt(cancelMatch[1])
-			return cancelOrder(orderId) as Promise<T>
-		}
-
-		// /ayan/orders/:id/accept
-		const acceptMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/accept$/)
-		if (acceptMatch?.[1]) {
-			const orderId = parseInt(acceptMatch[1])
-			return acceptOrder(orderId) as Promise<T>
-		}
-
-		// /ayan/orders/:id/arrive
-		const arriveMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/arrive$/)
-		if (arriveMatch?.[1]) {
-			const orderId = parseInt(arriveMatch[1])
-			return markArrived(orderId) as Promise<T>
-		}
-
-		// /ayan/orders/:id/start
-		const startMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/start$/)
-		if (startMatch?.[1]) {
-			const orderId = parseInt(startMatch[1])
-			return startTrip(orderId) as Promise<T>
-		}
-
-		// /ayan/orders/:id/complete
-		const completeMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/complete$/)
-		if (completeMatch?.[1]) {
-			const orderId = parseInt(completeMatch[1])
-			return completeTrip(orderId) as Promise<T>
-		}
-
 		// /ayan/orders/active
 		if (endpoint === '/ayan/orders/active') {
 			return getMyOrder() as Promise<T>
 		}
 
+		// Specific action routes — check BEFORE generic {id} route
+		const cancelMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/cancel$/)
+		if (cancelMatch?.[1]) {
+			return cancelOrder(parseInt(cancelMatch[1])) as Promise<T>
+		}
+
+		const acceptMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/accept$/)
+		if (acceptMatch?.[1]) {
+			return acceptOrder(parseInt(acceptMatch[1])) as Promise<T>
+		}
+
+		const arriveMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/arrive$/)
+		if (arriveMatch?.[1]) {
+			return markArrived(parseInt(arriveMatch[1])) as Promise<T>
+		}
+
+		const startMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/start$/)
+		if (startMatch?.[1]) {
+			return startTrip(parseInt(startMatch[1])) as Promise<T>
+		}
+
+		const completeMatch = endpoint.match(/\/ayan\/orders\/(\d+)\/complete$/)
+		if (completeMatch?.[1]) {
+			return completeTrip(parseInt(completeMatch[1])) as Promise<T>
+		}
+
+		// /ayan/orders/:id (generic — MUST be last among /ayan/orders/ routes)
+		const orderMatch = endpoint.match(/\/ayan\/orders\/(\d+)$/)
+		if (orderMatch?.[1]) {
+			return getOrder(parseInt(orderMatch[1])) as Promise<T>
+		}
+
 		throw new Error(`[MockAPI] Неизвестный endpoint: ${endpoint}`)
 	}
 
-	// Совместимость с useAPI интерфейсом
-	const get = <T>(endpoint: string) => request<T>(endpoint, { method: 'GET' })
+	const get = <T>(endpoint: string, _params?: Record<string, string>) => request<T>(endpoint, { method: 'GET' })
 	const post = <T>(endpoint: string, body?: any) => request<T>(endpoint, { method: 'POST', body })
 	const put = <T>(endpoint: string, body?: any) => request<T>(endpoint, { method: 'PUT', body })
 	const del = <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' })
 
 	return {
-		// Методы совместимые с useAPI
 		request,
 		get,
 		post,
 		put,
 		del,
-
-		// Прямые методы для удобства
 		login,
 		getUser,
 		switchRole,
@@ -446,8 +452,6 @@ export const useMockAPI = () => {
 		markArrived,
 		startTrip,
 		completeTrip,
-
-		// Доступ к состоянию (для отладки)
 		state: mockState
 	}
 }

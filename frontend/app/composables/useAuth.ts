@@ -1,13 +1,16 @@
-/**
- * useAuth - авторизация через Telegram
- * Работает с backend через POST /api/auth/telegram
- */
+import type { User } from '~/types/api'
+
+export interface AuthResponse {
+	token: string
+	user: User
+}
+
 export const useAuth = () => {
 	const { initData, user: tgUser } = useTg()
 	const api = useAPI()
 
 	const token = useState<string | null>('auth-token', () => null)
-	const user = useState<AuthUser | null>('auth-user', () => null)
+	const user = useState<User | null>('auth-user', () => null)
 	const isAuthenticated = computed(() => !!token.value)
 	const isLoading = ref(false)
 
@@ -23,6 +26,7 @@ export const useAuth = () => {
 			user.value = response.user
 		} catch (error) {
 			console.error('[useAuth] Login failed:', error)
+			throw error
 		} finally {
 			isLoading.value = false
 		}
@@ -34,8 +38,13 @@ export const useAuth = () => {
 	}
 
 	const switchRole = async (role: 'passenger' | 'driver') => {
-		const response = await api.post<{ user: AuthUser }>('/user/switch-role', { role })
-		user.value = response.user
+		try {
+			const response = await api.post<{ user: User }>('/user/switch-role', { role })
+			user.value = response.user
+		} catch (error) {
+			console.error('[useAuth] Switch role failed:', error)
+			throw error
+		}
 	}
 
 	return {
@@ -48,20 +57,4 @@ export const useAuth = () => {
 		logout,
 		switchRole
 	}
-}
-
-// --- Типы ---
-export interface AuthUser {
-	id: number
-	telegram_id: number
-	username: string | null
-	first_name: string
-	role: 'passenger' | 'driver'
-	created_at: string
-	updated_at: string
-}
-
-export interface AuthResponse {
-	token: string
-	user: AuthUser
 }

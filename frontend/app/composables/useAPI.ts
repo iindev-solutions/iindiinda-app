@@ -1,16 +1,12 @@
-/**
- * useAPI - HTTP клиент с Telegram initData
- * Автоматически прокидывает авторизацию через Telegram WebApp
- */
 export const useAPI = () => {
 	const config = useRuntimeConfig()
 	const { initData } = useTg()
+	const token = useState<string | null>('auth-token', () => null)
 
 	const baseURL = computed(() => (config.public.apiBase as string) || '/api')
 
 	const headers = computed(() => {
 		const h: Record<string, string> = {
-			'Content-Type': 'application/json',
 			Accept: 'application/json'
 		}
 
@@ -18,9 +14,8 @@ export const useAPI = () => {
 			h['X-Telegram-Init-Data'] = initData.value
 		}
 
-		const token = useState<string | null>('auth-token', () => null)
 		if (token.value) {
-			h.Authorization = `Bearer ${token.value}`
+			h['Authorization'] = `Bearer ${token.value}`
 		}
 
 		return h
@@ -42,9 +37,14 @@ export const useAPI = () => {
 			url += `?${searchParams.toString()}`
 		}
 
+		const reqHeaders: Record<string, string> = { ...headers.value }
+		if (method !== 'GET' && body) {
+			reqHeaders['Content-Type'] = 'application/json'
+		}
+
 		const response = await $fetch<T>(url, {
 			method,
-			headers: headers.value,
+			headers: reqHeaders,
 			body: method !== 'GET' ? body : undefined
 		})
 
@@ -60,5 +60,5 @@ export const useAPI = () => {
 
 	const del = <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' })
 
-	return { request, get, post, put, del, baseURL, headers }
+	return { request, get, post, put, del, baseURL, headers, token }
 }
