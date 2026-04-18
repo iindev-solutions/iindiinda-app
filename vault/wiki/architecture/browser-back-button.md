@@ -215,4 +215,4 @@ const confirmUnsavedChanges = async () => {
 ---
 
 **Status**: Ready for implementation  
-**Related**: [[wiki/services/nuxt-app/routing]], [[wiki/architecture/ayan-rewrite-design]]
+**Related**: [[wiki/services/nuxt-app/routing]], [[wiki/architecture/ayan-vision]]

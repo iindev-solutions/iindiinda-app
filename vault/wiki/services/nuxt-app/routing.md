@@ -92,4 +92,4 @@ Pages can check role:
 
 For MVP: no hard blocks, just UI-level checks (hide buttons for wrong role).
 
-See also: [[wiki/services/nuxt-app/overview]], [[wiki/architecture/ayan-rewrite-design]]
+See also: [[wiki/services/nuxt-app/overview]], [[wiki/architecture/ayan-vision]]

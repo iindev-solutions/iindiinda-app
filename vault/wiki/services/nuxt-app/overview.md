@@ -55,5 +55,5 @@ See: [[wiki/architecture/api-contract]]
 ## Routing
 See: [[wiki/services/nuxt-app/routing]]
 
-## Rewrite Design
-See: [[wiki/architecture/ayan-rewrite-design]]
+## Service Vision
+See: [[wiki/architecture/ayan-vision]]
