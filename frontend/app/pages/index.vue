@@ -4,86 +4,146 @@ const { hapticFeedback } = useTg()
 
 const services = [
 	{
-		name: t('ayan.name'),
-		desc: t('ayan.desc'),
-		to: '/ayan',
-		icon: 'i-lucide-car',
-		active: true
+		id: 'ayan',
+		name: 'AYAN',
+		icon: 'i-carbon-car',
+		description: t('ayan.desc'),
+		route: '/ayan'
 	},
 	{
-		name: t('uus.name'),
-		desc: t('uus.desc'),
-		to: '/uus',
-		icon: 'i-lucide-wrench',
-		active: false
+		id: 'uus',
+		name: 'UUS',
+		icon: 'i-carbon-tool-kit',
+		description: 'Услуги',
+		route: '/uus'
 	},
 	{
-		name: t('agal.name'),
-		desc: t('agal.desc'),
-		to: '/agal',
-		icon: 'i-lucide-plane',
-		active: false
+		id: 'tal',
+		name: 'TAL',
+		icon: 'i-carbon-calendar',
+		description: 'Запись',
+		route: '/tal'
 	},
 	{
-		name: t('tal.name'),
-		desc: t('tal.desc'),
-		to: '/tal',
-		icon: 'i-lucide-calendar',
-		active: false
+		id: 'agal',
+		name: 'AGAL',
+		icon: 'i-carbon-box',
+		description: 'Посылки',
+		route: '/agal'
 	}
 ]
 
-function navigate(to: string, active: boolean) {
-	if (active) {
-		hapticFeedback('impact')
-		navigateTo(to)
-	}
+function handleServiceClick(service: { route: string }) {
+	hapticFeedback('impact')
+	navigateTo(service.route)
 }
 </script>
 
 <template>
-	<div class="flex min-h-screen flex-col px-5 py-8">
-		<!-- Header -->
-		<div class="mb-10">
-			<h1 class="mb-1 text-3xl font-semibold text-white">iind.app</h1>
-			<p class="text-sm text-gray-400">Городские сервисы</p>
+	<div class="index-page">
+		<div class="index-page__header">
+			<h1 class="index-page__title">iind.app</h1>
+			<p class="index-page__subtitle">Городские сервисы</p>
 		</div>
 
-		<!-- Services Grid -->
-		<div class="mb-auto grid grid-cols-2 gap-3">
-			<button
+		<div class="index-page__services">
+			<ServiceCard
 				v-for="service in services"
-				:key="service.name"
-				class="flex flex-col items-center gap-3 rounded-2xl p-5 transition-transform active:scale-95"
-				:class="
-					service.active
-						? 'bg-cyan-500/20 border border-cyan-500/30'
-						: 'bg-gray-800/50 border border-gray-700/50 opacity-60'
-				"
-				@click="navigate(service.to, service.active)"
-			>
-				<UIcon
-					:name="service.icon"
-					class="h-8 w-8"
-					:class="service.active ? 'text-cyan-400' : 'text-gray-500'"
-				/>
-				<div class="text-center">
-					<div class="font-medium text-white">{{ service.name }}</div>
-					<div class="text-xs text-gray-400">{{ service.desc }}</div>
-				</div>
-			</button>
+				:key="service.id"
+				:service="service"
+				@click="handleServiceClick(service)"
+			/>
 		</div>
 
-		<!-- Partner CTA -->
-		<button
-			class="mt-8 flex items-center gap-3 rounded-xl bg-gray-800/30 p-4 text-left transition-colors active:bg-gray-800/50"
-		>
-			<UIcon name="i-lucide-users" class="h-6 w-6 text-gray-400" />
-			<div class="flex-1">
-				<div class="text-sm font-medium text-white">Стать партнером</div>
-				<div class="text-xs text-gray-500">Для бизнеса</div>
+		<div class="index-page__partner">
+			<div class="index-page__partner-icon">
+				<UIcon name="i-carbon-users" />
 			</div>
-			<UIcon name="i-lucide-chevron-right" class="h-5 w-5 text-gray-500" />
-		</button>
+			<div class="index-page__partner-content">
+				<h3>Стать партнером</h3>
+				<p>Для бизнеса</p>
+			</div>
+			<UIcon name="i-carbon-chevron-right" class="index-page__partner-arrow" />
+		</div>
 	</div>
 </template>
+
+<style scoped>
+.index-page {
+	min-height: 100vh;
+	padding: 32px 16px;
+	display: flex;
+	flex-direction: column;
+}
+
+.index-page__header {
+	text-align: center;
+	margin-bottom: 40px;
+}
+
+.index-page__title {
+	font-size: 32px;
+	font-weight: 700;
+	color: rgb(var(--color-gray-100));
+	margin: 0;
+}
+
+.index-page__subtitle {
+	font-size: 14px;
+	color: rgb(var(--color-gray-400));
+	margin: 8px 0 0;
+}
+
+.index-page__services {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	flex: 1;
+}
+
+.index-page__partner {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	padding: 16px;
+	background: rgb(var(--color-gray-800));
+	border-radius: 12px;
+	border: 1px solid rgb(var(--color-gray-700));
+	margin-top: auto;
+	cursor: pointer;
+}
+
+.index-page__partner-icon {
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgb(var(--color-gray-700));
+	border-radius: 12px;
+	font-size: 24px;
+	color: rgb(var(--color-gray-400));
+}
+
+.index-page__partner-content {
+	flex: 1;
+}
+
+.index-page__partner-content h3 {
+	font-size: 16px;
+	font-weight: 600;
+	color: rgb(var(--color-gray-100));
+	margin: 0;
+}
+
+.index-page__partner-content p {
+	font-size: 14px;
+	color: rgb(var(--color-gray-500));
+	margin: 4px 0 0;
+}
+
+.index-page__partner-arrow {
+	font-size: 20px;
+	color: rgb(var(--color-gray-500));
+}
+</style>
