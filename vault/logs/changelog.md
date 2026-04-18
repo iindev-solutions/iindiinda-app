@@ -1,5 +1,20 @@
 # Changelog — iindev-vault
 
+## 2026-04-18 — Pages + Utils Foundation
+
+### Added
+- `frontend/app/utils/formatters.ts` — utility functions
+  - formatPrice(), formatDate(), formatTime(), formatRelativeTime()
+  - formatDriverName(), getInitials()
+  - isValidPrice(), isValidTime(), isValidAddress()
+  - debounce() helper
+
+### Updated
+- `frontend/app/layouts/default.vue` — uses AppHeader component
+- `frontend/app/pages/index.vue` — uses ServiceCard component, cleaner layout
+
+---
+
 ## 2026-04-18 — Production-like Mock Data Layer
 
 ### Added
