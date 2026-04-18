@@ -1,6 +1,6 @@
 # iind.app
 
-iind.app — платформа из 4 сервисов, где саха люди решают повседневные задачи через других людей.
+iind.app — платформа из 4 сервисов, где люди решают повседневные задачи через других людей.
 
 **Принцип:** заявка → отклик → договор. Без посредников. Бесплатно для заказчиков.
 
@@ -53,7 +53,7 @@ iindiinda-app/
 Прежде чем смотреть код — читай vision:
 
 - 📄 **[iind-app-vision.md](vault/wiki/architecture/iind-app-vision.md)** — главный vision платформы
-- 🚗 **[ayan-vision.md](vault/wiki/architecture/ayan-vision.md)** — попутки (AYAN)
+- 🚗 **[ayan-vision.md](vault/wiki/architecture/ayan-vision.md)** — попутки (Айан)
 - 🔧 **[uus-vision.md](vault/wiki/architecture/uus-vision.md)** — услуги (Уус)
 - 📅 **[tal-vision.md](vault/wiki/architecture/tal-vision.md)** — запись (Тал)
 - 📦 **[agal-vision.md](vault/wiki/architecture/agal-vision.md)** — доставка (Аҕал)
