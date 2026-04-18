@@ -9,16 +9,18 @@
 
 ## API
 
-| Метод | Эндпоинт | Описание |
-|-------|----------|----------|
-| POST | `/api/uus/tasks` | Создать задачу |
-| GET | `/api/uus/tasks/open` | Открытые задачи |
-| POST | `/api/uus/tasks/{id}/respond` | Откликнуться |
+| Метод | Эндпоинт                      | Описание        |
+| ----- | ----------------------------- | --------------- |
+| POST  | `/api/uus/tasks`              | Создать задачу  |
+| GET   | `/api/uus/tasks/open`         | Открытые задачи |
+| POST  | `/api/uus/tasks/{id}/respond` | Откликнуться    |
 
 ## Модели
 
 ### Task
+
 `{ title, description, category, budget, status }`
 
 ### Response
+
 `{ task_id, master_id, message, price }`

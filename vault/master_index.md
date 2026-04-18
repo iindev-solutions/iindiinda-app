@@ -3,8 +3,9 @@
 ## Project Overview
 
 > iindiinda — делаем сложные вещи просто. Modern solutions. Simply.
+> **Сделано сахалар для сахалар.**
 
-**iind.app** — слой, который соединяет людей. Один принцип для всех сервисов: заявка → отклик → договор.
+**iind.app** — платформа из 4 сервисов, где саха люди решают повседневные задачи через других людей. Бесплатно для заказчиков. Платят исполнители.
 
 Проект: [[https://github.com/iindiinda/iindiinda-app|iindiinda-app]]
 Стек: Nuxt 4 (frontend) + Laravel (backend)
@@ -19,18 +20,24 @@
 
 ### Wiki (`/wiki`)
 
-#### Architecture
-- [[wiki/architecture/system-design]] — общий системный дизайн + диаграммы
-- [[wiki/architecture/api-contract]] — полный API контракт ayan (6 статусов)
-- [[wiki/architecture/data-models]] — TypeScript типы + модели данных
-- [[wiki/architecture/auth-flow]] — авторизация (Telegram + localhost)
-- [[wiki/architecture/ayan-rewrite-design]] — AYAN Vision + Concept + MVP + API endpoints (новый)
+#### Architecture (Vision Only)
+**Platform Vision:**
+- [[wiki/architecture/iind-app-vision]] — **Главный vision iind.app** (национальный контекст, экосистема, цели)
+- [[wiki/architecture/system-design]] — общий системный дизайн платформы
 
-#### Services
-- [[wiki/services/laravel-api/overview]] — обзор Laravel API + текущий статус
-- [[wiki/services/laravel-api/endpoints]] — все эндпоинты ayan + validation
-- [[wiki/services/nuxt-app/overview]] — обзор Nuxt приложения + архитектура
-- [[wiki/services/nuxt-app/routing]] — роутинг + навигационные флоу
+**Service Visions (4/4 complete):**
+- [[wiki/architecture/ayan-vision]] — AYAN (Бардыбыт) — попутки
+- [[wiki/architecture/uus-vision]] — UUS (Уус) — услуги
+- [[wiki/architecture/tal-vision]] — TAL (Тал) — запись к мастерам
+- [[wiki/architecture/agal-vision]] — AGAL (Аҕал) — доставка через людей
+
+**UI/UX:**
+- [[wiki/architecture/browser-back-button]] — универсальный компонент BackButton
+
+*Implementation docs (API, models, code) — created after vision phase*
+
+#### Vision Phase — COMPLETE ✅
+All 5 vision documents finalized (platform + 4 services). Ready for implementation phase.
 
 ### Logs
 - [[logs/changelog]] — история изменений базы знаний

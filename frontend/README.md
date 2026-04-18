@@ -22,7 +22,7 @@ tma-app/
 │   └── assets/css/
 │       └── main.css            # Дизайн-система
 ├── services/                   # Nuxt layers — сервисы
-│   ├── ayan/                   # Бардыбыт (Такси)
+│   ├── ayan/                   # AYAN (Попутки)
 │   ├── uus/                    # Мастера
 │   ├── agal/                   # Доставка
 │   └── tal/                    # Бронирование
@@ -52,10 +52,13 @@ npm run dev
 ## Composables
 
 ### `useTg()`
+
 Обёртка Telegram WebApp SDK — user, initData, themeParams, hapticFeedback, кнопки.
 
 ### `useAPI()`
+
 HTTP клиент с автоматической передачей Telegram initData и Bearer token.
 
 ### `useAuth()`
+
 Авторизация через `POST /api/auth/telegram`. Управление ролями (passenger/driver).
