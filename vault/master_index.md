@@ -3,8 +3,9 @@
 ## Project Overview
 
 > iindiinda — делаем сложные вещи просто. Modern solutions. Simply.
+> **Сделано сахалар для сахалар.**
 
-**iind.app** — слой, который соединяет людей. Один принцип для всех сервисов: заявка → отклик → договор.
+**iind.app** — платформа из 4 сервисов, где саха люди решают повседневные задачи через других людей. Бесплатно для заказчиков. Платят исполнители.
 
 Проект: [[https://github.com/iindiinda/iindiinda-app|iindiinda-app]]
 Стек: Nuxt 4 (frontend) + Laravel (backend)
@@ -20,17 +21,23 @@
 ### Wiki (`/wiki`)
 
 #### Architecture (Vision Only)
+**Platform Vision:**
+- [[wiki/architecture/iind-app-vision]] — **Главный vision iind.app** (национальный контекст, экосистема, цели)
 - [[wiki/architecture/system-design]] — общий системный дизайн платформы
-- [[wiki/architecture/ayan-vision]] — AYAN (Бардыбыт) Vision + Concept + монетизация
-- [[wiki/architecture/uus-vision]] — UUS (Уус) Vision + Concept + монетизация
-- [[wiki/architecture/tal-vision]] — TAL (Тал) Vision + Concept + монетизация
-- [[wiki/architecture/agal-vision]] — AGAL (Аҕал) Vision + Concept + монетизация
+
+**Service Visions (4/4 complete):**
+- [[wiki/architecture/ayan-vision]] — AYAN (Бардыбыт) — попутки
+- [[wiki/architecture/uus-vision]] — UUS (Уус) — услуги
+- [[wiki/architecture/tal-vision]] — TAL (Тал) — запись к мастерам
+- [[wiki/architecture/agal-vision]] — AGAL (Аҕал) — доставка через людей
+
+**UI/UX:**
 - [[wiki/architecture/browser-back-button]] — универсальный компонент BackButton
 
 *Implementation docs (API, models, code) — created after vision phase*
 
 #### Vision Phase — COMPLETE ✅
-All 4 service visions are finalized and ready for implementation phase.
+All 5 vision documents finalized (platform + 4 services). Ready for implementation phase.
 
 ### Logs
 - [[logs/changelog]] — история изменений базы знаний
