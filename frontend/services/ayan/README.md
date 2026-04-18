@@ -1,40 +1,59 @@
-# AYAN ( Бардыбыт ) — LEGACY
+# AYAN (Бардыбыт)
 
-> Это старый код такси-сервиса. Архитектура устарела.
+> Сервис попутных поездок. Люди, которые едут → находят тех, кому по пути.
 
-## Статус
+## Концепция
 
-**Больше не поддерживается.** Рекомендуемый код теперь в ветке `front/ayan`.
+AYAN — **доска попуток**, не такси.
 
-## Что было
+- Водитель создаёт поездку (откуда, куда, когда, места, цена)
+- Пассажир создаёт запрос (ищу попутку)
+- Они откликаются и связываются напрямую
+- Без контроля, без статусов, без трекинга
 
-- 7 страниц: create, my-order, driver, orders, active-ride, complete
-- 6 статусов: open → accepted → arrived → in_progress → completed + cancelled
-- Mock API с несовпадающими полями
-- Поллинг 5-10 сек без бэкоффа
-
-## Архитектурные проблемы
-
-- Такси-контроль (водитель управляет статусом) вместо "доски попуток"
-- Endpoint mismatch с Laravel API
-- usePolling composable который не существовал
-- Статусы захардкожены без i18n
-
-## Суть старого подхода
+## Структура (Nuxt Layer)
 
 ```
-Пассажир создаёт заказ → Водитель принимает → Водитель контролирует статус
+frontend/services/ayan/
+├── app/
+│   ├── pages/
+│   │   ├── ayan.vue              → /ayan (parent wrapper)
+│   │   └── ayan/
+│   │       ├── index.vue         → /ayan (hub: rides list)
+│   │       ├── create.vue        → /ayan/create
+│   │       ├── request.vue       → /ayan/request
+│   │       ├── ride/:id.vue      → /ayan/ride/:id
+│   │       └── my-rides.vue     → /ayan/my-rides
+│   ├── components/
+│   │   ├── RideCard.vue
+│   │   ├── RequestCard.vue
+│   │   └── ContactModal.vue
+│   ├── composables/
+│   │   └── useAyanAPI.ts
+│   └── i18n/
+│       └── ... (keys)
+├── nuxt.config.ts
+└── README.md
 ```
 
-## Суть нового подхода (front/ayan)
+## Дизайн
 
-```
-Водитель создаёт поездку → Пассажир откликается → Связываются напрямую
-```
+Полный Vision + Concept + MVP → `vault/wiki/architecture/ayan-rewrite-design.md`
 
-Без контроля. Без статусов. Без трекинга.
+## MVP Features
 
-## Ссылки
+1. Создать поездку
+2. Создать запрос
+3. Список поездок/запросов
+4. Откликнуться → контакт
 
-- Новый код: `front/ayan`
-- Дизайн: `vault/wiki/architecture/ayan-rewrite-design.md` (Concept секция)
+## Status
+
+**В разработке.** Чистый старт на `front/ayan`.
+
+## Tech
+
+- Nuxt 4 layer
+- useAPI() напрямую (без ITaxiAPI)
+- useIntervalFn для редкого обновления списка
+- i18n обязательно
