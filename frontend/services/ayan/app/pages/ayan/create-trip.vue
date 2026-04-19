@@ -57,67 +57,54 @@ async function onSubmit() {
 			</header>
 
 			<UForm :state="state" :validate="validate" @submit="onSubmit">
-				<div class="space-y-5">
-					<UCard variant="outline" class="p-1">
-						<div class="space-y-3">
-							<UFormField name="from_address" required>
-								<UInput
-									v-model="state.from_address"
-									placeholder="Откуда"
-									icon="i-lucide-circle-dot"
-									variant="soft"
-									size="lg"
-								/>
-							</UFormField>
-							<UFormField name="to_address" required>
-								<UInput
-									v-model="state.to_address"
-									placeholder="Куда"
-									icon="i-lucide-map-pin"
-									variant="soft"
-									size="lg"
-								/>
-							</UFormField>
-						</div>
-					</UCard>
+				<div class="space-y-4">
+					<UFormField name="from_address" required>
+						<UInput
+							v-model="state.from_address"
+							placeholder="Откуда"
+							icon="i-lucide-circle-dot"
+							variant="outline"
+							size="lg"
+						/>
+					</UFormField>
 
-					<UCard variant="outline" class="p-1">
-						<div class="grid grid-cols-2 gap-3">
-							<UFormField name="date" required>
-								<UInput
-									v-model="state.date"
-									type="date"
-									icon="i-lucide-calendar"
-									variant="soft"
-									size="lg"
-								/>
-							</UFormField>
-							<UFormField name="time" required>
-								<UInput
-									v-model="state.time"
-									type="time"
-									icon="i-lucide-clock"
-									variant="soft"
-									size="lg"
-								/>
-							</UFormField>
-						</div>
-					</UCard>
+					<UFormField name="to_address" required>
+						<UInput
+							v-model="state.to_address"
+							placeholder="Куда"
+							icon="i-lucide-map-pin"
+							variant="outline"
+							size="lg"
+						/>
+					</UFormField>
+
+					<div class="grid grid-cols-2 gap-3">
+						<UFormField name="date" required>
+							<UInput
+								v-model="state.date"
+								type="date"
+								icon="i-lucide-calendar"
+								variant="outline"
+								size="lg"
+							/>
+						</UFormField>
+						<UFormField name="time" required>
+							<UInput
+								v-model="state.time"
+								type="time"
+								icon="i-lucide-clock"
+								variant="outline"
+								size="lg"
+							/>
+						</UFormField>
+					</div>
 
 					<div class="grid grid-cols-2 gap-3">
 						<UFormField :label="t('ayan.ride.seatsAvailable')" name="seats" required>
-							<UInputNumber v-model="state.seats" :min="1" :max="10" size="lg" variant="soft" />
+							<UInputNumber v-model="state.seats" :min="1" :max="10" size="lg" />
 						</UFormField>
 						<UFormField :label="t('ayan.ride.price')" name="price" required>
-							<UInput
-								v-model="state.price"
-								type="number"
-								inputmode="numeric"
-								placeholder="0"
-								trailing-icon="i-none"
-								variant="soft"
-								size="lg"
-							>
+							<UInput v-model="state.price" type="number" inputmode="numeric" placeholder="0" size="lg">
 								<template #trailing>
 									<span class="text-sm text-gray-400">₽</span>
 								</template>
@@ -129,8 +116,6 @@ async function onSubmit() {
 						<UTextarea
 							v-model="state.comment"
 							placeholder="Комментарий (необязательно)"
-							variant="soft"
-							size="lg"
 							:rows="2"
 							autoresize
 						/>

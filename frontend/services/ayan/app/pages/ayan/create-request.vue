@@ -52,60 +52,53 @@ async function onSubmit() {
 			</header>
 
 			<UForm :state="state" :validate="validate" @submit="onSubmit">
-				<div class="space-y-5">
-					<UCard variant="outline" class="p-1">
-						<div class="space-y-3">
-							<UFormField name="from_address" required>
-								<UInput
-									v-model="state.from_address"
-									placeholder="Откуда"
-									icon="i-lucide-circle-dot"
-									variant="soft"
-									size="lg"
-								/>
-							</UFormField>
-							<UFormField name="to_address" required>
-								<UInput
-									v-model="state.to_address"
-									placeholder="Куда"
-									icon="i-lucide-map-pin"
-									variant="soft"
-									size="lg"
-								/>
-							</UFormField>
-						</div>
-					</UCard>
+				<div class="space-y-4">
+					<UFormField name="from_address" required>
+						<UInput
+							v-model="state.from_address"
+							placeholder="Откуда"
+							icon="i-lucide-circle-dot"
+							variant="outline"
+							size="lg"
+						/>
+					</UFormField>
 
-					<UCard variant="outline" class="p-1">
-						<div class="grid grid-cols-2 gap-3">
-							<UFormField name="date" required>
-								<UInput
-									v-model="state.date"
-									type="date"
-									icon="i-lucide-calendar"
-									variant="soft"
-									size="lg"
-								/>
-							</UFormField>
-							<UFormField name="time">
-								<UInput
-									v-model="state.time"
-									type="time"
-									icon="i-lucide-clock"
-									variant="soft"
-									size="lg"
-									placeholder="--:--"
-								/>
-							</UFormField>
-						</div>
-					</UCard>
+					<UFormField name="to_address" required>
+						<UInput
+							v-model="state.to_address"
+							placeholder="Куда"
+							icon="i-lucide-map-pin"
+							variant="outline"
+							size="lg"
+						/>
+					</UFormField>
+
+					<div class="grid grid-cols-2 gap-3">
+						<UFormField name="date" required>
+							<UInput
+								v-model="state.date"
+								type="date"
+								icon="i-lucide-calendar"
+								variant="outline"
+								size="lg"
+							/>
+						</UFormField>
+						<UFormField name="time">
+							<UInput
+								v-model="state.time"
+								type="time"
+								icon="i-lucide-clock"
+								variant="outline"
+								size="lg"
+								placeholder="--:--"
+							/>
+						</UFormField>
+					</div>
 
 					<UFormField name="description">
 						<UTextarea
 							v-model="state.description"
 							placeholder="Комментарий (необязательно)"
-							variant="soft"
-							size="lg"
 							:rows="2"
 							autoresize
 						/>
