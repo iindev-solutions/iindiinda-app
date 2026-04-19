@@ -9,7 +9,14 @@ export default withNuxt([
 			'prettier/prettier': ['error', { printWidth: 120 }],
 			// 'vue/max-len': ['error', { code: 120 }],
 			'vue/no-v-html': 'off',
-			'@typescript-eslint/no-explicit-any': 'off'
+			'@typescript-eslint/no-explicit-any': 'off',
+			// 'vue/multi-word-component-names': [
+			// 	'error',
+			// 	{
+			// 		ignores: ['index', 'about', 'default', 'error']
+			// 	}
+			// ]
+			'vue/multi-word-component-names': 'off'
 		}
 	}
 ])

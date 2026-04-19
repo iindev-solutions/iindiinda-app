@@ -4,6 +4,48 @@
 
 ---
 
+## 2026-04-19 — Task 1.3: Frontend AYAN Structure ✅
+
+### Added
+- `services/ayan/app/types/ayan.ts` — типы AyanTrip, AyanRequest, AyanResponse, DTO (по API контракту)
+- `services/ayan/app/config/ayanMock.ts` — mock генерация trips/requests/responses + useState store для поиска по ID
+- `services/ayan/app/composables/useAyanTrips.ts` — CRUD поездок через useAPI (fetchTrips, fetchTrip, createTrip, updateTrip)
+- `services/ayan/app/composables/useAyanRequests.ts` — CRUD запросов (fetchRequests, fetchRequest, createRequest)
+- `services/ayan/app/composables/useAyanResponses.ts` — отклики (fetch/create/cancel)
+- `services/ayan/app/composables/useAyanMy.ts` — мои данные
+- `services/ayan/app/pages/ayan.vue` — parent wrapper
+- `services/ayan/app/pages/ayan/index.vue` — лента поездок/запросов/мои с табами
+- `services/ayan/app/pages/ayan/create-trip.vue` — форма создания поездки
+- `services/ayan/app/pages/ayan/create-request.vue` — форма создания запроса
+- `services/ayan/app/pages/ayan/trip/[id].vue` — детали поездки + отклик
+- `services/ayan/app/pages/ayan/request/[id].vue` — детали запроса + отклик
+- i18n: `ayan.validation.*`, `ayan.status.*`, `ayan.responses` (ru + sah)
+
+### Changed (audit fixes)
+- index.vue: UTabs `model-value` static → `:model-value="activeTab"` (reactive)
+- index.vue: `onMounted` → `useAsyncData` (AGENTS.md rule)
+- index.vue: добавлена вкладка "Мои" через `useAyanMy`
+- useAyanTrips: `fetchTrip(id)` mock теперь ищет по ID в useState store, не генерирует рандом
+- useAyanRequests: добавлен `fetchRequest(id)` — 详情 страница больше не грузит все запросы
+- useAyanTrips: `updateTrip` mock сохраняет данные существующей поездки
+- trip/[id].vue, request/[id].vue: `onMounted` → `useAsyncData`
+- trip/[id].vue, request/[id].vue: hardcoded "Отклики" → `t('ayan.responses')`
+- Types: `AyanTripCreate.comment`, `AyanRequestCreate.description`/`time` → `string` (не `null`)
+- i18n: `ayan.respond.messagePlaceholder` → нейтральное "Напишите сообщение..." (не "водителю")
+- useAPI.ts: добавлен `patch` метод, убраны старые AYAN orders mock handlers
+- mockData.ts: удалён мёртвый код (AyaniOrder, generateMockOrders, дублирующиеся константы)
+
+### Design decisions
+- Подход C: AYAN composables в services/ayan, используют корневой useAPI для HTTP
+- Типы строго по API контракту (trips/requests/responses, не orders)
+- Nuxt UI: UForm+UFormField+UInput+UInputNumber+UTextarea+UCard+UTabs+UButton
+- Mock store: useState для стабильных ID при детальном просмотре
+
+### Verified
+- typecheck ✅ lint ✅
+
+---
+
 ## 2026-04-19 14:00 — Vault Audit & Restructure
 
 ### Проблема

@@ -34,11 +34,11 @@ export default defineNuxtConfig({
 		fallback: 'dark'
 	},
 
-	ui: {
-		theme: {
-			colors: ['cyan', 'gray']
-		}
-	},
+	// ui: {
+	// 	theme: {
+	// 		colors: ['cyan', 'gray']
+	// 	}
+	// },
 
 	// spa loader
 	spaLoadingTemplate: 'spa-loader.html',

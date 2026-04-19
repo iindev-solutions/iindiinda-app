@@ -1,25 +1,19 @@
-<script setup lang="ts">
-const route = useRoute()
-
-const isHome = computed(() => route.path === '/')
-</script>
-
 <template>
 	<div class="tma-layout">
-		<AppHeader v-if="!isHome" />
-		<main>
+		<main class="tma-main">
 			<slot />
 		</main>
+		<AppBottomNav />
 	</div>
 </template>
 
 <style>
 .tma-layout {
 	min-height: 100vh;
-	background: rgb(var(--color-gray-950));
+	min-height: 100dvh;
+	background: var(--bg-level-0);
 }
-
-.tma-layout main {
-	padding-bottom: env(safe-area-inset-bottom, 16px);
+.tma-main {
+	padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
 }
 </style>

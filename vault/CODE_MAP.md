@@ -86,11 +86,21 @@
 | Файл | Назначение |
 |------|-----------|
 | `nuxt.config.ts` | Минимальный (compatibilityDate) |
-| `README.md` | Концепция, planned structure |
+| `app/types/ayan.ts` | Типы: AyanTrip, AyanRequest, AyanResponse, DTO |
+| `app/config/ayanMock.ts` | Mock генерация trips/requests/responses |
+| `app/composables/useAyanTrips.ts` | CRUD поездок (fetchTrips, fetchTrip, createTrip, updateTrip) |
+| `app/composables/useAyanRequests.ts` | CRUD запросов (fetchRequests, createRequest) |
+| `app/composables/useAyanResponses.ts` | Отклики (fetch/create/cancel) |
+| `app/composables/useAyanMy.ts` | Мои данные (myTrips, myRequests, myResponses) |
+| `app/pages/ayan.vue` | Parent wrapper → /ayan (только <NuxtPage />) |
+| `app/pages/ayan/index.vue` | Лента поездок/запросов + табы |
+| `app/pages/ayan/create-trip.vue` | Форма создания поездки |
+| `app/pages/ayan/create-request.vue` | Форма создания запроса |
+| `app/pages/ayan/trip/[id].vue` | Детали поездки + отклик |
+| `app/pages/ayan/request/[id].vue` | Детали запроса + отклик |
 
-**Реализация**: `frontend/app/` (composables useAPI, mock данные в mockData.ts)
-**Pages**: Пока нет отдельных AYAN страниц
 **API контракт**: `vault/wiki/services/ayan/api-contract.md`
+**Composables**: используют корневой `useAPI()` для HTTP, mock данные в `ayanMock.ts`
 
 ### TAL (`frontend/services/tal/`) — Запись к мастерам
 
@@ -156,7 +166,7 @@
 
 | Сервис | Backend | Frontend | Mock Data |
 |--------|---------|----------|-----------|
-| AYAN | scaffold (OrderController mock) | нет страниц | mockData.ts |
+| AYAN | scaffold (OrderController mock) | pages + composables + types | ayanMock.ts |
 | TAL | routes only (нет контроллеров) | showcase | нет |
 | UUS | routes only | placeholder | нет |
 | AGAL | routes only | placeholder | нет |
