@@ -4,6 +4,58 @@
 
 ---
 
+## 2026-04-19 — Forms, Validation, Performance
+
+### Forms: Error State + Layout (create-request, create-trip)
+
+**Проблема:** UFormField не показывал error-состояние (красный ring) на инпутах. Причина — `ui.theme.colors: ['cyan', 'gray']` в nuxt.config.ts ограничивала палитру Nuxt UI, убирая `error`/`warning`/`success`/`info`/`secondary` цвета. FormField передаёт `color="error"` инпуту, но без этих цветов в теме — ring не применялся.
+
+**Фикс:**
+- Убрана ограниченная палитра `ui.theme.colors` из `nuxt.config.ts` (закомментирована)
+- Удалён дубликат `frontend/app.config.ts` (конфликтовал с `frontend/app/app.config.ts`)
+- Все UI-оверрайды в одном файле: `frontend/app/app.config.ts` (colors: primary=cyan, neutral=gray)
+- Формы: `eager-validation` на обязательных полях — ошибка видна сразу после первого взаимодействия
+- Формы: `class="w-full"` на UInput/UTextarea/UInputNumber — инпуты растягиваются на всю ширину
+- Формы: `:label` на UFormField — подписи полей вместо placeholder-only
+- Формы: `FormError` + `FormSubmitEvent` типы из `@nuxt/ui`
+- Формы: дата/время и места/цена — `grid grid-cols-2 gap-3`
+- i18n: добавлены `commentPlaceholder`, `time` ключи (ru + sah)
+
+### Performance: Nuxt 4 Best Practices
+
+**Что сделано:**
+
+1. **`useLoadingIndicator().isLoading`** → overlay спиннер в `app.vue` с `backdrop-blur-sm` + `<Transition name="loader-fade">`. Показывается при навигации между страницами, пока данные грузятся.
+
+2. **`useLazyAsyncData`** вместо `await useAsyncData` на всех AYAN страницах (`index.vue`, `trip/[id].vue`, `request/[id].vue`). Навигация мгновенная, данные подгружаются после рендера.
+
+3. **`{ deep: false }`** в `useLazyAsyncData` на `index.vue` — списки не глубоко реактивные (экономия на proxy).
+
+4. **`definePageMeta({ lazy: true })`** на AYAN дочерних страницах — бандлы страниц подгружаются lazy, не блокируют переход.
+
+5. **`prefetchOn: { visibility: true, interaction: true }`** в `experimental.defaults.nuxtLink` — NuxtLink префетчит при видимости/взаимодействии, не грузит всё заранее.
+
+6. **`pageTransition` убран** — конфликтует с `lazy: true` (Vue warning: "non-element root node"). Overlay loader обеспечивает визуальный фидбек вместо page transition.
+
+**Слои загрузки теперь:**
+- `spa-loader.html` — первый холодный рендер (пока JS бандл грузится)
+- `NuxtLoadingIndicator` — тонкая полоска сверху при навигации
+- `useLoadingIndicator().isLoading` → overlay спиннер (полноэкранный)
+- `useLazyAsyncData` — данные не блокируют навигацию
+- `lazy: true` — бандлы подгружаются параллельно
+
+### CSS
+- `main.css`: `.loader-fade-enter/leave` — 200ms fade для overlay
+- `main.css`: `.page-enter/leave` удалены (pageTransition убран)
+
+### TS (pre-existing)
+- `color="cyan"` / `color="gray"` TS errors в BackButton, ErrorMessage, ui.vue — Nuxt UI не включает кастомные цвета в union type. Рантайм работает. TODO: исправить типы.
+
+### Verified
+- lint ✅ (typecheck: pre-existing cyan/gray TS errors)
+
+---
+
 ## 2026-04-19 — Task 1.3: Frontend AYAN Structure ✅
 
 ### Added

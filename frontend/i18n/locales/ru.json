@@ -28,6 +28,14 @@
 		"myRides": "Мои",
 		"createRide": "Создать поездку",
 		"createRequest": "Создать запрос",
+		"create": {
+			"ride": "Поездка",
+			"request": "Запрос",
+			"from": "Откуда",
+			"to": "Куда",
+			"date": "Дата",
+			"time": "Время"
+		},
 		"findRide": "Найти поездку",
 		"findRequest": "Найти запрос",
 		"noRides": "Нет поездок",

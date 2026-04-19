@@ -91,3 +91,13 @@ body {
 .border-theme {
 	border-color: var(--border-color);
 }
+
+/* Loader overlay transition */
+.loader-fade-enter-active,
+.loader-fade-leave-active {
+	transition: opacity 200ms ease-out;
+}
+.loader-fade-enter-from,
+.loader-fade-leave-to {
+	opacity: 0;
+}

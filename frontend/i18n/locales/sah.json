@@ -28,6 +28,14 @@
 		"myRides": "Миэхэ",
 		"createRide": "Поездканы оҥор",
 		"createRequest": "Ыйыыны оҥор",
+		"create": {
+			"ride": "Поездка",
+			"request": "Ыйыы",
+			"from": "Ханнык",
+			"to": "Ханна",
+			"date": "Күнэ",
+			"time": "Кэмэ"
+		},
 		"findRide": "Поездканы көр",
 		"findRequest": "Ыйыыны көр",
 		"noRides": "Поездкалар суохтар",
