@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { AyanResponse } from '../../../types/ayan'
 
+definePageMeta({ lazy: true })
+
 const route = useRoute()
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
@@ -9,7 +11,7 @@ const { fetchTripResponses, createTripResponse } = useAyanResponses()
 
 const tripId = computed(() => Number(route.params.id))
 
-const { data: trip, pending: loading } = await useAsyncData(`ayan-trip-${tripId.value}`, () => fetchTrip(tripId.value))
+const { data: trip, pending: loading } = useLazyAsyncData(`ayan-trip-${tripId.value}`, () => fetchTrip(tripId.value))
 
 const responses = ref<AyanResponse[]>([])
 const responding = ref(false)

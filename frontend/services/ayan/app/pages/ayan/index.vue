@@ -1,4 +1,6 @@
 <script setup lang="ts">
+definePageMeta({ lazy: true })
+
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
 
@@ -10,16 +12,24 @@ const tabs = computed(() => [
 	{ label: t('ayan.myRides'), value: 'my', icon: 'i-lucide-user' }
 ])
 
-const { data: trips, pending: tripsLoading } = await useAsyncData('ayan-trips', () => useAyanTrips().fetchTrips())
+const { data: trips, pending: tripsLoading } = useLazyAsyncData('ayan-trips', () => useAyanTrips().fetchTrips(), {
+	deep: false
+})
 
-const { data: requests, pending: requestsLoading } = await useAsyncData('ayan-requests', () =>
-	useAyanRequests().fetchRequests()
+const { data: requests, pending: requestsLoading } = useLazyAsyncData(
+	'ayan-requests',
+	() => useAyanRequests().fetchRequests(),
+	{ deep: false }
 )
 
-const { data: myTrips, pending: myTripsLoading } = await useAsyncData('ayan-my-trips', () => useAyanMy().fetchMyTrips())
+const { data: myTrips, pending: myTripsLoading } = useLazyAsyncData('ayan-my-trips', () => useAyanMy().fetchMyTrips(), {
+	deep: false
+})
 
-const { data: myRequests, pending: myRequestsLoading } = await useAsyncData('ayan-my-requests', () =>
-	useAyanMy().fetchMyRequests()
+const { data: myRequests, pending: myRequestsLoading } = useLazyAsyncData(
+	'ayan-my-requests',
+	() => useAyanMy().fetchMyRequests(),
+	{ deep: false }
 )
 
 const loading = computed(() => {

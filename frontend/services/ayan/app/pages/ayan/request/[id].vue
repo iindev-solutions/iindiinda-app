@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { AyanResponse } from '../../../types/ayan'
 
+definePageMeta({ lazy: true })
+
 const route = useRoute()
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
@@ -9,7 +11,7 @@ const { fetchRequestResponses, createRequestResponse } = useAyanResponses()
 
 const requestId = computed(() => Number(route.params.id))
 
-const { data: request, pending: loading } = await useAsyncData(`ayan-request-${requestId.value}`, () =>
+const { data: request, pending: loading } = useLazyAsyncData(`ayan-request-${requestId.value}`, () =>
 	fetchRequest(requestId.value)
 )
 

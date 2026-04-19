@@ -1,19 +1,10 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
 	extends: ['./services/ayan', './services/agal', './services/tal', './services/uus'],
 	modules: ['@nuxt/eslint', '@nuxt/ui', '@nuxtjs/i18n', '@nuxt/fonts'],
 	ssr: false,
 
-	// components: [
-	// 	{
-	// 		path: '~/components',
-	// 		pathPrefix: false
-	// 	}
-	// ],
-
 	app: {
 		head: {
-			// title: 'TMA catalog',
 			charset: 'utf-8',
 			viewport: 'width=device-width, initial-scale=1',
 			script: [
@@ -22,7 +13,6 @@ export default defineNuxtConfig({
 				}
 			]
 		},
-		// for static deploy gh-pages need to baseURL: '/<repository-name>/'
 		baseURL: '/',
 		buildAssetsDir: 'assets'
 	},
@@ -34,18 +24,19 @@ export default defineNuxtConfig({
 		fallback: 'dark'
 	},
 
-	// ui: {
-	// 	theme: {
-	// 		colors: ['cyan', 'gray']
-	// 	}
-	// },
-
-	// spa loader
 	spaLoadingTemplate: 'spa-loader.html',
 
 	runtimeConfig: {
 		public: {
 			apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api'
+		}
+	},
+
+	experimental: {
+		defaults: {
+			nuxtLink: {
+				prefetchOn: { visibility: true, interaction: true }
+			}
 		}
 	},
 
