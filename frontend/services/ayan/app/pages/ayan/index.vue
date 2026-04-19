@@ -55,7 +55,7 @@ function handleRequestClick(requestId: number) {
 </script>
 
 <template>
-	<div class="min-h-screen px-4 py-6 pb-8">
+	<div class="min-h-screen px-4 py-6 pb-20">
 		<div class="mx-auto max-w-[480px]">
 			<header class="mb-6">
 				<div class="mb-1 text-[10px] font-medium uppercase tracking-widest text-gray-400">
