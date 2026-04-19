@@ -1,71 +1,71 @@
 {
-	'backButton': {
-		'label': 'Төннөр',
-		'ariaLabel': 'Төннөргө'
+	"backButton": {
+		"label": "Төннөр",
+		"ariaLabel": "Төннөр"
 	},
-	'common': {
-		'loading': 'Көһө сылдьалла...',
-		'error': 'Төттөрү туолбат',
-		'retry': 'Эбэтэр көр',
-		'cancel': 'Батарыс',
-		'confirm': 'ОК',
-		'save': 'Сүҥкэн',
-		'close': 'Хап'
+	"common": {
+		"loading": "Хааллар...",
+		"error": "Алҕас таҕыста",
+		"retry": "Хатылаа",
+		"cancel": "Салҕаама",
+		"confirm": "Бигэргэт",
+		"save": "Бигэргэт",
+		"close": "Сап"
 	},
-	'empty': {
-		'noItems': 'Суох',
-		'noItemsDesc': 'Манна эчээҕэ суох',
-		'noResults': 'Булуллаата',
-		'noResultsDesc': 'Көрдөһүүнү уларыт'
+	"empty": {
+		"noItems": "Билигин суох",
+		"noItemsDesc": "Манна билигин туох да суох",
+		"noResults": "Булуллубата",
+		"noResultsDesc": "Уларытыыны уларыт"
 	},
-	ayan: {
-		category: 'ПОПУТКИ',
-		name: 'AYAN',
-		desc: 'Попутнай бул',
-		badge: 'Саҥа',
-		rides: 'Айаннар',
-		requests: 'Быһыылар',
-		myRides: 'Миэнээ',
-		createRide: 'Айан оҥор',
-		createRequest: 'Быһыы оҥор',
-		findRide: 'Айаны бул',
-		findRequest: 'Быһыыны бул',
-		noRides: 'Айан суох',
-		noRequests: 'Быһыы суох',
-		noRidesDesc: 'Бастаан оҥор — айан оҥор',
-		noRequestsDesc: 'Бастаан оҥор — быһыы оҥор',
-		ride: {
-			from: 'Хантан',
-			to: 'Хайдаҕар',
-			date: 'Күнэ',
-			time: 'Чаһа',
-			seats: 'сир',
-			price: 'Сыана',
-			priceNegotiable: 'Договорнай',
-			seatsAvailable: 'Свободнай сир',
-			comment: 'Биллиилээ',
-			create: 'Айаны оҥор',
-			createDesc: 'Хайдаҕар барарыҥ ахтах'
+	"ayan": {
+		"category": "ПОПУТКИ",
+		"name": "AYAN",
+		"desc": "Попутканы көр",
+		"badge": "Саҥа",
+		"rides": "Поездкалар",
+		"requests": "Ыйыылар",
+		"myRides": "Миэхэ",
+		"createRide": "Поездканы оҥор",
+		"createRequest": "Ыйыыны оҥор",
+		"findRide": "Поездканы көр",
+		"findRequest": "Ыйыыны көр",
+		"noRides": "Поездкалар суохтар",
+		"noRequests": "Ыйыылар суохтар",
+		"noRidesDesc": "Бастакы буол — поездканы оҥор",
+		"noRequestsDesc": "Бастакы буол — ыйыыны оҥор",
+		"ride": {
+			"from": "Ханнык",
+			"to": "Ханна",
+			"date": "Күнэ",
+			"time": "Кэмэ",
+			"seats": "олорор сир",
+			"price": "Сыана",
+			"priceNegotiable": "Кэпсэтэн көрөбүт",
+			"seatsAvailable": "Олорор сир баар",
+			"comment": "Суруйуу",
+			"create": "Поездканы оҥор",
+			"createDesc": "Ханна барарыҥ эт"
 		},
-		request: {
-			from: 'Хантан',
-			to: 'Хайдаҕар',
-			date: 'Хаһан',
-			comment: 'Биллиилээ',
-			create: 'Быһыыны оҥор',
-			createDesc: 'Хайдаҕар барарыҥ ахтах'
+		"request": {
+			"from": "Ханнык",
+			"to": "Ханна",
+			"date": "Хаһан",
+			"comment": "Суруйуу",
+			"create": "Ыйыыны оҥор",
+			"createDesc": "Ханна барарыҥ эт"
 		},
-		respond: {
-			button: 'Хоруйдуо',
-			contact: 'Контакт',
-			contactDesc: 'Түһүмэхтигэр сыһыыҥ',
-			success: 'Хоруйдубут!',
-			message: 'Тиһик (нааатыгар)',
-			messagePlaceholder: 'Водительгэ суруй...'
+		"respond": {
+			"button": "Хоруйдаа",
+			"contact": "Контакт",
+			"contactDesc": "Туруоруу холбоһуҥ",
+			"success": "Хоруйдаммыт!",
+			"message": "Суруйуу (эрэ буолуо)",
+			"messagePlaceholder": "Водительга суруй..."
 		},
-		driver: 'Водитель',
-		passenger: 'Пассажир',
-		contactReceived: 'Контакт тиксибит',
-		respondFirst: 'Бастаан хоруйдуо'
+		"driver": "Водитель",
+		"passenger": "Пассажир",
+		"contactReceived": "Контакт ылыллыбыт",
+		"respondFirst": "Бастаан хоруйдаа"
 	}
 }

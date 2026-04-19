@@ -110,23 +110,6 @@ export function formatDriverName(driver: { first_name: string; username?: string
 }
 
 // ==========================================
-// Validation utilities
-// ==========================================
-
-export function isValidPrice(price: number): boolean {
-	return price >= 100 && price <= 5000
-}
-
-export function isValidTime(timeStr: string): boolean {
-	const regex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
-	return regex.test(timeStr)
-}
-
-export function isValidAddress(address: string): boolean {
-	return address.length >= 2 && address.length <= 255
-}
-
-// ==========================================
 // Random utilities
 // ==========================================
 
