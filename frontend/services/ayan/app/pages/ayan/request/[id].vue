@@ -81,6 +81,7 @@ await loadResponses()
 							:placeholder="t('ayan.respond.messagePlaceholder')"
 							:rows="2"
 							autoresize
+							class="w-full"
 						/>
 						<UButton
 							block
