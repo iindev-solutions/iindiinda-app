@@ -1,46 +1,43 @@
 # AGENTS.md — iindiinda-app
 
-> iindiinda — делаем сложные вещи просто. Modern solutions. Simply.
+> iindiinda — делаем сложные вещи просто.
 
-**iind.app** — Telegram Mini App платформа. Один принцип для всех сервисов: заявка → отклик → договор. Без посредников. Без сложных систем.
+**iind.app** — Telegram Mini App платформа. Один принцип: заявка → отклик → договор. Без посредников.
 
 Монорепозиторий: Nuxt 4 (frontend) + Laravel (backend).
 
-## Vault — единое место документации и имплементации
+## Vault — источник документации
 
-**Workflow**: сначала думаем в vault → анализируем → через vault выполняем задачи
+**Start here**: `vault/master_index.md`
 
-- `vault/master_index.md` — карта базы знаний (start here)
-- `vault/wiki/architecture/` — системный дизайн, API контракт, модели, auth flow, статус-флоу
-- `vault/wiki/services/` — документация по сервисам (эндпоинты, роутинг, composables)
-- `vault/raw/` — сырые данные (аудиты, спецификации)
-- `vault/logs/changelog.md` — история изменений
-- `vault/CLAUDE.md` — важные правила 
-
-Все решения, дизайн-доки, API детали, статус-флоу → **vault**. AGENTS.md = правила + how-to.
+| Путь | Содержание |
+|------|-----------|
+| `vault/master_index.md` | Карта базы знаний, roadmap, активные задачи |
+| `vault/sprint.md` | Текущий спринт, статусы задач |
+| `vault/CODE_MAP.md` | Инвентарь кода: composables, components, pages, API |
+| `vault/wiki/architecture/` | Vision, system design, auth flow, roadmap |
+| `vault/wiki/services/` | API контракты, эндпоинты, модели |
+| `vault/raw/` | Черновики (пустой после обработки) |
+| `vault/logs/changelog.md` | История изменений |
 
 ## Branches
 
 - `main` — production, `dev` — разработка
 - `front/ayan` — текущая разработка AYAN
-- `front/taxi` — legacy (не поддерживается)
+- `front/taxi` — legacy
 
-## Frontend Path: `frontend/`
+## Frontend: `frontend/`
 
 - Nuxt config: `frontend/nuxt.config.ts`
 - App code: `frontend/app/` (composables, pages, types, layouts, assets, utils, middleware)
-- Service layers: `frontend/services/{ayan,uus,agal,tal}/`
+- Service layers: `frontend/services/{ayan,agal,tal,uus}/`
 - i18n: `frontend/i18n/locales/{ru,sah}.json`
 
 ## Nuxt 4 Extends — Service Layers
 
-`nuxt.config.ts` extends services as Nuxt layers (in order):
-```
-services/ayan → services/agal → services/tal → services/uus
-```
-Each service has its own `app/` folder with pages, composables, components.
-- **AYAN** (first) — primary service, must use `useTaxiAPI()` from `app/composables/`, never `useAPI()` directly
-- **AGAL, TAL, UUS** — extended layers, use `useAPI()`
+`nuxt.config.ts` extends: `services/ayan → services/agal → services/tal → services/uus`
+
+Each service: `app/` folder с pages, composables, components.
 
 ## Dev Commands (frontend/)
 
@@ -62,57 +59,16 @@ cd frontend && npm install && npm run dev
 docker-compose up -d    # Backend (scaffold-only) at http://localhost:8000
 ```
 
-## Vault Workflow
+## Workflow
 
-### Think First, Code Later
-
-**Before ANY implementation:**
-1. Read relevant vault doc — understand WHY
-2. Write TODO in chat — what, why, problems to solve
-3. Think 3 times — edge cases, state, API contract
-4. Only then implement
-
-**Never start coding without knowing:**
-- What problem does this solve?
-- What happens before/after?
-- What states exist?
-
-### Workflow Sequence
-
-```
-1. Read vault/master_index.md → find relevant vision/design
-2. Read vault/wiki/architecture/*.md → understand context
-3. Write TODO in chat:
-   ### TODO: [feature name]
-   - Problem: ...
-   - Solution: ...
-   - Edge cases: ...
+1. Read `vault/sprint.md` → текущие задачи
+2. Read `vault/CODE_MAP.md` → где что в коде
+3. Read `vault/wiki/` → контекст задачи (vision, API contract)
 4. Implement
-5. Update vault/logs/changelog.md
-6. Verify: typecheck → lint → test
-```
-
-### TODO Format (MANDATORY)
-
-Every task starts with:
-```
-### TODO: [feature]
-**Problem:** What problem does this solve?
-**Solution:** How will we solve it?
-**Edge cases:** What could go wrong?
-```
-
-Every completed task:
-```
-### DONE: [feature] ✅
-- What changed
-- What to test
-```
-
-### After Changes
-
-- Update `vault/logs/changelog.md` (date, what, why)
-- Cite vault source: `Based on: vault/wiki/architecture/ayan-vision.md`
+5. Verify: typecheck → lint → test
+6. Обновить `vault/sprint.md` (статус задачи)
+7. Обновить `vault/CODE_MAP.md` (если структура изменилась)
+8. Обновить `vault/logs/changelog.md` (дата, что, зачем)
 
 ## Code Style
 
@@ -143,7 +99,6 @@ services/ayan/app/pages/
 - **API URL**: NEVER `new URL(endpoint, base)` — use string concatenation
 - **Don't modify Telegram SDK** — loaded externally
 - **Don't create `layers/` folder** — services are in `services/`
-- **ITaxiAPI only** — ayan pages must use `useTaxiAPI()` methods, never `useAPI()` directly
 - **Polling** — use `useIntervalFn` from `@vueuse/core` for polling, not raw `setInterval`
 - **Shared components** — extract duplicates into `services/ayan/app/components/`
 - **No hardcoded strings** — all user-visible text must use `t('key')`

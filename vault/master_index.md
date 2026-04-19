@@ -2,83 +2,81 @@
 
 ## Project Overview
 
-> iindiinda — делаем сложные вещи просто. Modern solutions. Simply.
+> iindiinda — делаем сложные вещи просто.
 
 **iind.app** — платформа из 4 сервисов, где люди решают повседневные задачи через других людей. Бесплатно для заказчиков. Платят исполнители.
 
-Проект: [[https://github.com/iindiinda/iindiinda-app|iindiinda-app]]
+Проект: https://github.com/iindiinda/iindiinda-app
 Стек: Nuxt 4 (frontend) + Laravel (backend)
-Статус: **Implementation Phase** — Vision COMPLETE, roadmap создан
+Статус: **Phase 1 — AYAN MVP** (Foundation COMPLETE)
 
 ### Roadmap
 
-**Phase 0:** Foundation 🔄 IN PROGRESS
-- 0.1: Очистка старого кода (delete buggy AYAN, useTaxiAPI, useMockAPI)
-- 0.2: Composables (useAuth, useUtils)
-- 0.3: Components (AppHeader, ServiceCard, LoadingSpinner, EmptyState, ErrorMessage)
-- 0.4: Types & i18n (clean api.ts, full i18n keys)
-- 0.5: Layout & Pages (update default.vue, index.vue)
-- 0.6: Mock APIs (auth, user base mocks)
-
-**Phase 1:** AYAN MVP 🔜 Next
+**Phase 0:** Foundation ✅ COMPLETE
+**Phase 1:** AYAN MVP 🔄 CURRENT — sprint.md
 **Phase 2:** Auth & Platform Foundation
 **Phase 3:** UUS MVP
 **Phase 4:** TAL MVP
 **Phase 5:** AGAL MVP
 
+Full roadmap: vault/wiki/architecture/roadmap.md
+
 ---
 
-## Structure
+## Active Tasks
 
-### Wiki (`/wiki`)
+**Sprint:** vault/sprint.md — Phase 1 AYAN MVP (9 задач)
 
-#### Architecture (Vision Only)
-**Platform Vision:**
-- [[wiki/architecture/iind-app-vision]] — **Главный vision iind.app** (национальный контекст, экосистема, цели)
-- [[wiki/architecture/system-design]] — общий системный дизайн платформы
+---
 
-**Service Visions (4/4 complete):**
-- [[wiki/architecture/ayan-vision]] — AYAN — попутки
-- [[wiki/architecture/uus-vision]] — UUS — услуги
-- [[wiki/architecture/tal-vision]] — TAL — запись к мастерам
-- [[wiki/architecture/agal-vision]] — AGAL — доставка через людей
+## Key Docs
+
+### Code Inventory
+- **vault/CODE_MAP.md** — инвентарь кода: composables, components, pages, API, статус реализации
+
+### Wiki (vault/wiki/)
+
+#### Architecture
+**Platform:**
+- vault/wiki/architecture/iind-app-vision.md — главный vision iind.app
+- vault/wiki/architecture/system-design.md — системный дизайн платформы
+- vault/wiki/architecture/roadmap.md — implementation roadmap (phases, scope)
+- vault/wiki/architecture/auth-flow.md — авторизация (TMA + OAuth)
+
+**Service Visions (4/4):**
+- vault/wiki/architecture/ayan-vision.md — AYAN — попутки
+- vault/wiki/architecture/uus-vision.md — UUS — услуги
+- vault/wiki/architecture/tal-vision.md — TAL — запись к мастерам
+- vault/wiki/architecture/agal-vision.md — AGAL — доставка через людей
 
 **UI/UX:**
-- [[wiki/architecture/browser-back-button]] — универсальный компонент BackButton
+- vault/wiki/architecture/browser-back-button.md — BackButton компонент
 
-*Implementation docs (API, models, code) — created after vision phase*
+#### Services (Implementation Docs)
+**AYAN:**
+- vault/wiki/services/ayan/api-contract.md — API контракт (эндпоинты, модели, валидация)
 
-#### Vision Phase — COMPLETE ✅
-All 5 vision documents finalized (platform + 4 services). Ready for implementation phase.
+### Raw (vault/raw/)
+
+**Пустой** — отработанные спеки удалены.
+Правило: raw = черновик → wiki = финал → raw чистим.
 
 ### Logs
-- [[logs/changelog]] — история изменений базы знаний
+- vault/logs/changelog.md — история изменений
 
 ---
-
-## Quick Links
-- AGENTS.md проекта: `C:\Users\slavk\Desktop\git\iindiinda-app\AGENTS.md`
-- Obsidian проекта: `C:\Users\slavk\Desktop\my-data\zettel\slava-obsidian-new\base\iindev.md`
 
 ## Active Branches
 - `main` — production
 - `dev` — разработка
-- `front/taxi` — legacy (старый taxi-код, не поддерживается)
-- `front/ayan` — новый AYAN (доска попуток, чистый старт)
+- `front/ayan` — AYAN MVP (текущий)
 
-## Roadmap Summary — AYAN (доска попуток)
+## AYAN MVP Summary
 
 **MVP:**
 1. Создать поездку (откуда, куда, когда, места, цена)
 2. Создать запрос (пассажир ищет попутку)
-3. Список поездок/запросов с фильтром по маршруту
+3. Лента поездок/запросов с фильтром по маршруту
 4. Откликнуться → получить контакт
 
-**No:**
-- Статусы, трекинг, карты, авто-подбор
-
-**After MVP (if needed):**
-- Геокодинг + карты
-- Регулярные маршруты
-- Чат между участниками
-- Рейтинги
+**NO на MVP:** Карты, геокодинг, трекинг, push, рейтинги, оплата
