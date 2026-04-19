@@ -42,7 +42,7 @@ function handleServiceClick(service: { route: string }) {
 <template>
 	<div class="index-page">
 		<div class="index-page__header">
-			<h1 class="index-page__title">iind.app</h1>
+			<app-title />
 			<p class="index-page__subtitle">Городские сервисы</p>
 		</div>
 
@@ -79,13 +79,6 @@ function handleServiceClick(service: { route: string }) {
 .index-page__header {
 	text-align: center;
 	margin-bottom: 40px;
-}
-
-.index-page__title {
-	font-size: 32px;
-	font-weight: 700;
-	color: rgb(var(--color-gray-100));
-	margin: 0;
 }
 
 .index-page__subtitle {

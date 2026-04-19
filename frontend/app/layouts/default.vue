@@ -1,11 +1,6 @@
-<script setup lang="ts">
-const route = useRoute()
-const isHome = computed(() => route.path === '/')
-</script>
-
 <template>
 	<div class="tma-layout">
-		<main :class="{ 'pb-16': !isHome }">
+		<main class="tma-main">
 			<slot />
 		</main>
 		<AppBottomNav />
@@ -15,6 +10,10 @@ const isHome = computed(() => route.path === '/')
 <style>
 .tma-layout {
 	min-height: 100vh;
-	background: rgb(var(--color-gray-950));
+	min-height: 100dvh;
+	background: var(--bg-level-0);
+}
+.tma-main {
+	padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
 }
 </style>

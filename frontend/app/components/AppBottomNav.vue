@@ -19,28 +19,50 @@ const activeRoute = computed(() => {
 	return '/'
 })
 
-function handleNavigate(route: string) {
+function handleNavigate(path: string) {
 	hapticFeedback('impact')
-	navigateTo(route)
+	navigateTo(path)
 }
 </script>
 
 <template>
-	<nav
-		class="fixed inset-x-0 bottom-0 z-50 border-t border-gray-800 bg-[#0a0c0e]/95 backdrop-blur-sm"
-		style="padding-bottom: env(safe-area-inset-bottom, 0px)"
-	>
-		<div class="mx-auto flex max-w-[480px] items-center justify-around px-2 py-2">
+	<nav class="bottom-nav">
+		<div class="mx-auto flex max-w-[480px] items-center justify-around px-2 py-1.5">
 			<button
 				v-for="item in navItems"
 				:key="item.route"
-				class="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 transition-colors"
-				:class="activeRoute === item.route ? 'text-cyan-400' : 'text-gray-500 hover:text-gray-300'"
+				class="nav-item"
+				:class="activeRoute === item.route ? 'text-cyan-400' : 'text-gray-500'"
 				@click="handleNavigate(item.route)"
 			>
-				<UIcon :name="item.icon" class="text-[20px]" />
-				<span class="text-[10px] font-medium">{{ item.label }}</span>
+				<UIcon :name="item.icon" class="text-lg" />
+				<span class="text-[10px] font-medium leading-tight">{{ item.label }}</span>
 			</button>
 		</div>
 	</nav>
 </template>
+
+<style>
+.bottom-nav {
+	position: fixed;
+	inset-inline: 0;
+	bottom: 0;
+	z-index: 50;
+	border-top: 0.5px solid var(--border-color);
+	background: rgb(10 12 14 / 0.95);
+	backdrop-filter: blur(12px);
+	padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.nav-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 2px;
+	padding: 6px 12px;
+	border-radius: 12px;
+	transition: color 150ms ease-out;
+}
+.nav-item:hover {
+	color: var(--color-gray-300);
+}
+</style>

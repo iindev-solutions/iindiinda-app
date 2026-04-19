@@ -37,7 +37,7 @@ await loadResponses()
 </script>
 
 <template>
-	<div class="min-h-screen px-4 py-6 pb-20">
+	<div class="min-h-screen px-4 py-6">
 		<div class="mx-auto max-w-[480px]">
 			<BackButton />
 
