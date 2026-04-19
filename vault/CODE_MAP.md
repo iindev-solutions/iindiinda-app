@@ -51,7 +51,11 @@
 | `formatters.ts` | formatPrice, formatDate, formatDateFull, formatTime, formatRelativeTime, getInitials, formatDriverName, randomId, debounce |
 | `validators.ts` | isValidPhone, isValidPrice, isValidAddress, isValidDate, isValidTime, isValidSeats, isValidComment, isValidTelegramUsername |
 
-### Config (`frontend/app/config/`)
+### Config (`frontend/app/`)
+
+| Файл | Назначение |
+|------|-----------|
+| `app.config.ts` | UI-оверрайды: primary=cyan, neutral=gray. Единый конфиг (root app.config.ts удалён) |
 
 | Файл | Назначение |
 |------|-----------|

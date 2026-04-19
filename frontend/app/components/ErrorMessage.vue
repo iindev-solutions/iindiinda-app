@@ -11,7 +11,7 @@ defineProps<{
 			<UIcon name="i-carbon-warning" />
 		</div>
 		<p class="error-message__text">{{ message }}</p>
-		<UButton v-if="retry" variant="outline" color="cyan" size="sm" @click="retry">
+		<UButton v-if="retry" variant="outline" color="primary" size="sm" @click="retry">
 			{{ $t('common.retry') }}
 		</UButton>
 	</div>

@@ -81,8 +81,8 @@ function showToast(type: 'primary' | 'neutral') {
 							<div class="flex flex-wrap gap-2">
 								<UButton color="primary">Primary</UButton>
 								<UButton color="neutral">Neutral</UButton>
-								<UButton color="cyan">Cyan</UButton>
-								<UButton color="gray">Gray</UButton>
+								<UButton color="secondary">Secondary</UButton>
+								<UButton color="success">Success</UButton>
 							</div>
 						</div>
 					</UCard>
@@ -160,7 +160,7 @@ function showToast(type: 'primary' | 'neutral') {
 						<div class="flex flex-wrap gap-2">
 							<UBadge color="primary" variant="soft" size="xs">Verified</UBadge>
 							<UBadge color="neutral" variant="soft" size="xs">Encrypted</UBadge>
-							<UBadge color="cyan" variant="soft" size="xs">Audited</UBadge>
+							<UBadge color="primary" variant="soft" size="xs">Audited</UBadge>
 						</div>
 					</UCard>
 				</div>
@@ -263,7 +263,7 @@ function showToast(type: 'primary' | 'neutral') {
 						<UAlert
 							title="Information"
 							description="New features are now available"
-							color="cyan"
+							color="primary"
 							icon="i-lucide-info"
 						/>
 					</div>
@@ -325,8 +325,8 @@ function showToast(type: 'primary' | 'neutral') {
 								<UBadge>Default</UBadge>
 								<UBadge color="primary">Primary</UBadge>
 								<UBadge color="neutral">Neutral</UBadge>
-								<UBadge color="cyan">Cyan</UBadge>
-								<UBadge color="gray">Gray</UBadge>
+								<UBadge color="secondary">Secondary</UBadge>
+								<UBadge color="success">Success</UBadge>
 							</div>
 						</div>
 
@@ -354,7 +354,7 @@ function showToast(type: 'primary' | 'neutral') {
 									<UIcon name="i-lucide-clock" class="size-3" />
 									Pending
 								</UBadge>
-								<UBadge color="cyan">
+								<UBadge color="error">
 									<UIcon name="i-lucide-x" class="size-3" />
 									Rejected
 								</UBadge>
@@ -440,10 +440,10 @@ function showToast(type: 'primary' | 'neutral') {
 								</div>
 								<div>
 									<div class="flex justify-between text-xs text-muted mb-1">
-										<span>Cyan</span>
+										<span>Success</span>
 										<span>60%</span>
 									</div>
-									<UProgress :value="60" color="cyan" />
+									<UProgress :value="60" color="success" />
 								</div>
 							</div>
 						</div>

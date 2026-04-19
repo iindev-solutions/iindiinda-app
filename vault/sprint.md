@@ -18,12 +18,13 @@
 | 1.1 | Backend: миграции (users, trips, requests, responses) | TODO | — |
 | 1.2 | Backend: модели + контроллеры AYAN | TODO | 1.1 |
 | 1.3 | Frontend: структура AYAN (pages, composables, types) | DONE | — |
-| 1.4 | Frontend: создание поездки (форма + API) | DONE* | — |
-| 1.5 | Frontend: создание запроса (форма + API) | DONE* | — |
+| 1.4 | Frontend: создание поездки (форма + API + validation + w-full + labels) | DONE* | — |
+| 1.5 | Frontend: создание запроса (форма + API + validation + w-full + labels) | DONE* | — |
 | 1.6 | Frontend: лента поездок/запросов + фильтры | IN_PROGRESS | — |
 | 1.7 | Frontend: отклик + контакт | IN_PROGRESS | — |
-| 1.8 | Integration: mock → real API | TODO | 1.2 |
-| 1.9 | QA: все flow работают E2E | TODO | 1.8 |
+| 1.8 | Frontend: performance (lazy, useLazyAsyncData, loader overlay, prefetch) | DONE | — |
+| 1.9 | Integration: mock → real API | TODO | 1.2 |
+| 1.10 | QA: все flow работают E2E | TODO | 1.9 |
 
 \* 1.4 и 1.5 — формы и composables работают на mock API. При переключении на real API нужно проверить валидацию ответов.
 
@@ -35,11 +36,43 @@
 
 ### Решения
 
-Лог решений текущего спринта
+- **Ограниченная палитра `ui.theme.colors`** — убрана. Вызывала отсутствие error/success/warning цветов в Nuxt UI компонентах (FormField не мог передать `color="error"` инпуту)
+- **`pageTransition` убран** — конфликтует с `lazy: true` страницами (Suspense рендерит fragment, Transition требует один root). Overlay loader заменяет.
+- **`useLazyAsyncData`** вместо `useAsyncData` — навигация мгновенная, данные грузятся после. `await` блокировал рендер страницы.
+- **`deep: false`** для списков — нет нужды в глубокой реактивности для API-ответов, экономит proxy overhead.
+- **Дубликат `app.config.ts`** — удалён корневой `frontend/app.config.ts`, всё в `frontend/app/app.config.ts` (тот, что реально импортируется билдом)
 
 ---
 
-## Next: Phase 2 — Auth & Platform
+## Next Steps (priority order)
+
+### 1.6 Лента — фильтры по маршруту
+- [ ] Добавить UInput поиска (откуда/куда) поверх ленты
+- [ ] Фильтр по дате (сегодня/завтра/выбрать)
+- [ ] Пустой результат → EmptyState с подсказкой
+
+### 1.7 Отклик + контакт
+- [ ] trip/[id].vue — форма отклика (сообщение + отправка)
+- [ ] request/[id].vue — форма отклика
+- [ ] После принятия отклика → показать контакт (telegram username)
+- [ ] Статусы отклика: pending → accepted/rejected
+
+### 1.8 TS: cyan/gray типы
+- [ ] BackButton.vue, ErrorMessage.vue — color="cyan" → color="primary" или тип-окаст
+- [ ] ui.vue (dev page) — аналогично
+
+### 1.9 Mock → Real API
+- [ ] `api.config.ts` → `USE_MOCK_API = false`
+- [ ] Проверить все composables на реальном API
+- [ ] Обработка 401, 403, 404, 500
+
+### 1.10 QA E2E
+- [ ] Создание поездки → появляется в ленте
+- [ ] Создание запроса → появляется в ленте
+- [ ] Отклик → статус меняется → контакт доступен
+- [ ] Мои поездки/запросы → отображаются
+- [ ] Ошибки валидации на формах
+- [ ] Навигация между сервисами — нет пустого экрана
 
 - Telegram initData validation (real, не mock)
 - JWT → Sanctum

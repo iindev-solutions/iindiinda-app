@@ -1,10 +1,11 @@
 <script setup lang="ts">
-definePageMeta({ lazy: true })
+// definePageMeta({ lazy: true })
 
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
 
 const activeTab = ref('trips')
+const createOpen = ref(false)
 
 const tabs = computed(() => [
 	{ label: t('ayan.rides'), value: 'trips', icon: 'i-lucide-car' },
@@ -43,14 +44,9 @@ function handleTabChange(val: string | number) {
 	hapticFeedback('impact')
 }
 
-function handleCreateTrip() {
+function handleCreate() {
 	hapticFeedback('impact')
-	navigateTo('/ayan/create-trip')
-}
-
-function handleCreateRequest() {
-	hapticFeedback('impact')
-	navigateTo('/ayan/create-request')
+	createOpen.value = true
 }
 
 function handleTripClick(tripId: number) {
@@ -84,29 +80,13 @@ function handleRequestClick(requestId: number) {
 				:model-value="activeTab"
 				variant="pill"
 				size="sm"
-				class="mb-6"
 				@update:model-value="handleTabChange"
 			/>
 
-			<div class="mb-4 flex gap-2">
-				<UButton
-					:label="t('ayan.createRide')"
-					icon="i-lucide-plus"
-					size="sm"
-					variant="soft"
-					color="primary"
-					class="flex-1"
-					@click="handleCreateTrip"
-				/>
-				<UButton
-					:label="t('ayan.createRequest')"
-					icon="i-lucide-plus"
-					size="sm"
-					variant="outline"
-					color="neutral"
-					class="flex-1"
-					@click="handleCreateRequest"
-				/>
+			<div class="mb-4">
+				<UButton icon="i-lucide-plus" size="lg" variant="soft" color="primary" block @click="handleCreate">
+					{{ t('ayan.createRide') }}
+				</UButton>
 			</div>
 
 			<div v-if="loading" class="flex justify-center py-12">
@@ -238,5 +218,7 @@ function handleRequestClick(requestId: number) {
 				</div>
 			</template>
 		</div>
+
+		<AyanCreateSlideover v-model:open="createOpen" />
 	</div>
 </template>
