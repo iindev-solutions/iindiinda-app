@@ -4,6 +4,42 @@
 
 ---
 
+## 2026-04-19 — AYAN Slideover + Color Fix
+
+### Slideover: Merge Create Forms
+
+**Проблема:** Две отдельные страницы (`create-trip.vue`, `create-request.vue`) с почти идентичным кодом. Две кнопки на ленте. Навигация на отдельную страницу = задержка.
+
+**Решение:**
+- Создан `AyanCreateSlideover.vue` — единый bottom-slideover с pill-табами (Поездка/Запрос)
+- `side="bottom"` + `rounded-t-2xl` + `max-h-[85dvh]` — мобильный sheet
+- Общие поля: откуда, куда, дата, время
+- `formType === 'trip'` → места + цена + комментарий
+- `formType === 'request'` → комментарий (description)
+- После сабмита → slideover закрывается, форма сбрасывается
+- Одна кнопка на ленте вместо двух → открывает slideover
+- Удалены `create-trip.vue`, `create-request.vue`
+
+### Color Fix: cyan/gray → primary/neutral
+
+**Проблема:** `color="cyan"` / `color="gray"` — не валидные Nuxt UI v4 prop values. TS ошибки + красная ui.vue страница.
+
+**Решение:**
+- `color="cyan"` → `color="primary"` (primary=cyan в app.config)
+- `color="gray"` → `color="neutral"` (neutral=gray в app.config)
+- `color="cyan"` (rejected badge) → `color="error"` (семантически верно)
+- `color="cyan"` (progress) → `color="success"` (семантически верно)
+- Затронуто: `BackButton.vue`, `ErrorMessage.vue`, `ui.vue`
+- **typecheck + lint: 0 ошибок** (впервые чисто)
+
+### i18n
+- Добавлены `ayan.create.ride/request/from/to/date/time` (ru + sah)
+
+### Verified
+- typecheck ✅ lint ✅
+
+---
+
 ## 2026-04-19 — Forms, Validation, Performance
 
 ### Forms: Error State + Layout (create-request, create-trip)

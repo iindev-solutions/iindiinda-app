@@ -55,12 +55,9 @@
 
 | Файл | Назначение |
 |------|-----------|
-| `app.config.ts` | UI-оверрайды: primary=cyan, neutral=gray. Единый конфиг (root app.config.ts удалён) |
-
-| Файл | Назначение |
-|------|-----------|
-| `api.config.ts` | `USE_MOCK_API = true/false`. MOCK_CONFIG: errorRate, delays |
-| `mockData.ts` | MOCK_USERS, AyaniOrder, CITY_ROUTES, INTERCITY_ROUTES, generateMockOrders, mockApiResponses |
+| `app.config.ts` | UI-оверрайды: primary=cyan, neutral=gray. Единый конфиг |
+| `config/api.config.ts` | `USE_MOCK_API = true/false`. MOCK_CONFIG: errorRate, delays |
+| `config/mockData.ts` | MOCK_USERS, CITY_ROUTES, mockApiResponses |
 
 ### Plugins (`frontend/app/plugins/`)
 
@@ -97,9 +94,8 @@
 | `app/composables/useAyanResponses.ts` | Отклики (fetch/create/cancel) |
 | `app/composables/useAyanMy.ts` | Мои данные (myTrips, myRequests, myResponses) |
 | `app/pages/ayan.vue` | Parent wrapper → /ayan (только <NuxtPage />) |
-| `app/pages/ayan/index.vue` | Лента поездок/запросов + табы |
-| `app/pages/ayan/create-trip.vue` | Форма создания поездки |
-| `app/pages/ayan/create-request.vue` | Форма создания запроса |
+| `app/pages/ayan/index.vue` | Лента поездок/запросов + табы + кнопка создания |
+| `app/components/AyanCreateSlideover.vue` | Единый slideover создания поездки/запроса (pill-табы, side=bottom) |
 | `app/pages/ayan/trip/[id].vue` | Детали поездки + отклик |
 | `app/pages/ayan/request/[id].vue` | Детали запроса + отклик |
 

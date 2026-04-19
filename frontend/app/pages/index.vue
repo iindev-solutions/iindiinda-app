@@ -35,7 +35,7 @@ const services = [
 
 function handleServiceClick(service: { route: string }) {
 	hapticFeedback('impact')
-	navigateTo(service.route)
+	return navigateTo(service.route)
 }
 </script>
 
@@ -57,7 +57,7 @@ function handleServiceClick(service: { route: string }) {
 
 		<div class="index-page__partner">
 			<div class="index-page__partner-icon">
-				<UIcon name="i-carbon-users" />
+				<UIcon name="i-carbon-user" />
 			</div>
 			<div class="index-page__partner-content">
 				<h3>Стать партнером</h3>

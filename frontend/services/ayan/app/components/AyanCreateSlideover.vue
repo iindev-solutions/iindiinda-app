@@ -2,7 +2,10 @@
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 import type { AyanTripCreate, AyanRequestCreate } from '../types/ayan'
 
+const emit = defineEmits<{ created: [] }>()
+
 const { t } = useI18n()
+const toast = useToast()
 const { hapticFeedback } = useTg()
 const { createTrip } = useAyanTrips()
 const { createRequest } = useAyanRequests()
@@ -85,10 +88,25 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 			await createRequest(payload)
 		}
 		hapticFeedback('notification')
+		toast.add({
+			title: formType.value === 'trip' ? t('ayan.ride.create') : t('ayan.request.create'),
+			description: t('ayan.create.success'),
+			color: 'success',
+			icon: 'i-lucide-check-circle',
+			duration: 3000
+		})
 		open.value = false
 		resetForm()
+		emit('created')
 	} catch {
 		hapticFeedback('impact')
+		toast.add({
+			title: t('common.error'),
+			description: t('ayan.create.error'),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
 	} finally {
 		submitting.value = false
 	}
@@ -100,8 +118,8 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 		v-model:open="open"
 		:title="formType === 'trip' ? t('ayan.ride.create') : t('ayan.request.create')"
 		:description="formType === 'trip' ? t('ayan.ride.createDesc') : t('ayan.request.createDesc')"
-		side="bottom"
 		:ui="{ content: 'sm:max-w-sm mx-auto max-h-[85dvh] rounded-t-2xl' }"
+		side="bottom"
 	>
 		<template #body>
 			<UTabs
@@ -172,18 +190,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 								<UInputNumber v-model="state.seats" :min="1" :max="10" size="lg" class="w-full" />
 							</UFormField>
 							<UFormField :label="t('ayan.ride.price')" name="price" required eager-validation>
-								<UInput
-									v-model="state.price"
-									type="number"
-									inputmode="numeric"
-									placeholder="0"
-									size="lg"
-									class="w-full"
-								>
-									<template #trailing>
-										<span class="text-sm text-gray-400">₽</span>
-									</template>
-								</UInput>
+								<UInputNumber v-model="state.price" :min="0" size="lg" class="w-full" />
 							</UFormField>
 						</div>
 

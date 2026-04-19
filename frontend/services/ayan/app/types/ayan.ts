@@ -1,4 +1,5 @@
 export type AyanStatus = 'open' | 'closed'
+export type AyanResponseStatus = 'pending' | 'accepted' | 'rejected'
 
 export interface AyanTripDriver {
 	id: number
@@ -48,6 +49,7 @@ export interface AyanResponse {
 	id: number
 	user: AyanResponseUser
 	message: string | null
+	status: AyanResponseStatus
 	created_at: string
 }
 
