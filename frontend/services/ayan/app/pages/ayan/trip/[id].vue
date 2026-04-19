@@ -60,7 +60,7 @@ await loadResponses()
 					<div class="space-y-3">
 						<div class="flex items-center justify-between">
 							<span class="text-sm text-gray-400">{{ t('ayan.ride.price') }}</span>
-							<span class="text-sm font-semibold text-cyan-400">{{ formatPrice(trip.price) }} ₽</span>
+							<span class="text-sm font-semibold text-cyan-400">{{ formatPrice(trip.price) }}</span>
 						</div>
 						<div class="flex items-center justify-between">
 							<span class="text-sm text-gray-400">{{ t('ayan.ride.seatsAvailable') }}</span>

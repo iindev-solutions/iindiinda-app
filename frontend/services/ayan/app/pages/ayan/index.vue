@@ -133,7 +133,7 @@ function handleRequestClick(requestId: number) {
 								</div>
 							</div>
 							<div class="shrink-0 text-right">
-								<div class="text-sm font-semibold text-cyan-400">{{ formatPrice(trip.price) }} ₽</div>
+								<div class="text-sm font-semibold text-cyan-400">{{ formatPrice(trip.price) }}</div>
 							</div>
 						</div>
 					</UCard>
@@ -201,7 +201,7 @@ function handleRequestClick(requestId: number) {
 								</div>
 							</div>
 							<div class="shrink-0 text-right">
-								<div class="text-sm font-semibold text-cyan-400">{{ formatPrice(trip.price) }} ₽</div>
+								<div class="text-sm font-semibold text-cyan-400">{{ formatPrice(trip.price) }}</div>
 							</div>
 						</div>
 					</UCard>
