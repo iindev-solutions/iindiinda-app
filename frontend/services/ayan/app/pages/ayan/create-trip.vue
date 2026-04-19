@@ -47,7 +47,7 @@ async function onSubmit() {
 		<div class="mx-auto max-w-[480px]">
 			<BackButton />
 
-			<header class="mb-6">
+			<header class="mb-5">
 				<h1 class="mb-1 text-xl font-medium tracking-tight text-[#eff3f5]">
 					{{ t('ayan.ride.create') }}
 				</h1>
@@ -57,43 +57,89 @@ async function onSubmit() {
 			</header>
 
 			<UForm :state="state" :validate="validate" @submit="onSubmit">
-				<div class="space-y-4">
-					<UFormField :label="t('ayan.ride.from')" name="from_address" required>
-						<UInput
-							v-model="state.from_address"
-							:placeholder="t('ayan.ride.from')"
-							icon="i-lucide-map-pin"
+				<div class="space-y-5">
+					<UCard variant="outline" class="p-1">
+						<div class="space-y-3">
+							<UFormField name="from_address" required>
+								<UInput
+									v-model="state.from_address"
+									placeholder="Откуда"
+									icon="i-lucide-circle-dot"
+									variant="soft"
+									size="lg"
+								/>
+							</UFormField>
+							<UFormField name="to_address" required>
+								<UInput
+									v-model="state.to_address"
+									placeholder="Куда"
+									icon="i-lucide-map-pin"
+									variant="soft"
+									size="lg"
+								/>
+							</UFormField>
+						</div>
+					</UCard>
+
+					<UCard variant="outline" class="p-1">
+						<div class="grid grid-cols-2 gap-3">
+							<UFormField name="date" required>
+								<UInput
+									v-model="state.date"
+									type="date"
+									icon="i-lucide-calendar"
+									variant="soft"
+									size="lg"
+								/>
+							</UFormField>
+							<UFormField name="time" required>
+								<UInput
+									v-model="state.time"
+									type="time"
+									icon="i-lucide-clock"
+									variant="soft"
+									size="lg"
+								/>
+							</UFormField>
+						</div>
+					</UCard>
+
+					<div class="grid grid-cols-2 gap-3">
+						<UFormField :label="t('ayan.ride.seatsAvailable')" name="seats" required>
+							<UInputNumber v-model="state.seats" :min="1" :max="10" size="lg" variant="soft" />
+						</UFormField>
+						<UFormField :label="t('ayan.ride.price')" name="price" required>
+							<UInput
+								v-model="state.price"
+								type="number"
+								inputmode="numeric"
+								placeholder="0"
+								trailing-icon="i-none"
+								variant="soft"
+								size="lg"
+							>
+								<template #trailing>
+									<span class="text-sm text-gray-400">₽</span>
+								</template>
+							</UInput>
+						</UFormField>
+					</div>
+
+					<UFormField name="comment">
+						<UTextarea
+							v-model="state.comment"
+							placeholder="Комментарий (необязательно)"
+							variant="soft"
+							size="lg"
+							:rows="2"
+							autoresize
 						/>
-					</UFormField>
-
-					<UFormField :label="t('ayan.ride.to')" name="to_address" required>
-						<UInput v-model="state.to_address" :placeholder="t('ayan.ride.to')" icon="i-lucide-map-pin" />
-					</UFormField>
-
-					<UFormField :label="t('ayan.ride.date')" name="date" required>
-						<UInput v-model="state.date" type="date" icon="i-lucide-calendar" />
-					</UFormField>
-
-					<UFormField :label="t('ayan.ride.time')" name="time" required>
-						<UInput v-model="state.time" type="time" icon="i-lucide-clock" />
-					</UFormField>
-
-					<UFormField :label="t('ayan.ride.seatsAvailable')" name="seats" required>
-						<UInputNumber v-model="state.seats" :min="1" :max="10" />
-					</UFormField>
-
-					<UFormField :label="t('ayan.ride.price')" name="price" required>
-						<UInputNumber v-model="state.price" :min="0" />
-					</UFormField>
-
-					<UFormField :label="t('ayan.ride.comment')" name="comment">
-						<UTextarea v-model="state.comment" :placeholder="t('ayan.ride.comment')" :rows="2" autoresize />
 					</UFormField>
 
 					<UButton
 						type="submit"
 						block
-						size="lg"
+						size="xl"
 						color="primary"
 						:loading="submitting"
 						:label="t('ayan.ride.create')"
