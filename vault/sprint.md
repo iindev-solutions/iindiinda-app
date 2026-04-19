@@ -17,13 +17,15 @@
 |---|--------|--------|---------|
 | 1.1 | Backend: миграции (users, trips, requests, responses) | TODO | — |
 | 1.2 | Backend: модели + контроллеры AYAN | TODO | 1.1 |
-| 1.3 | Frontend: структура AYAN (pages, composables, types) | TODO | — |
-| 1.4 | Frontend: создание поездки (форма + API) | TODO | 1.2, 1.3 |
-| 1.5 | Frontend: создание запроса (форма + API) | TODO | 1.2, 1.3 |
-| 1.6 | Frontend: лента поездок/запросов + фильтры | TODO | 1.2, 1.3 |
-| 1.7 | Frontend: отклик + контакт | TODO | 1.2, 1.6 |
-| 1.8 | Integration: mock → real API | TODO | 1.2–1.7 |
+| 1.3 | Frontend: структура AYAN (pages, composables, types) | DONE | — |
+| 1.4 | Frontend: создание поездки (форма + API) | DONE* | — |
+| 1.5 | Frontend: создание запроса (форма + API) | DONE* | — |
+| 1.6 | Frontend: лента поездок/запросов + фильтры | IN_PROGRESS | — |
+| 1.7 | Frontend: отклик + контакт | IN_PROGRESS | — |
+| 1.8 | Integration: mock → real API | TODO | 1.2 |
 | 1.9 | QA: все flow работают E2E | TODO | 1.8 |
+
+\* 1.4 и 1.5 — формы и composables работают на mock API. При переключении на real API нужно проверить валидацию ответов.
 
 Статусы: `TODO` `IN_PROGRESS` `DONE` `BLOCKED`
 

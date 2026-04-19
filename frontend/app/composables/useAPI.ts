@@ -1,11 +1,5 @@
 import { USE_MOCK_API } from '~/config/api.config'
-import {
-	mockApiResponses,
-	generateMockOrders,
-	getMockAuthResponse,
-	getMockCurrentUser,
-	type AyaniOrder
-} from '~/config/mockData'
+import { mockApiResponses, getMockAuthResponse, getMockCurrentUser } from '~/config/mockData'
 
 export const useAPI = () => {
 	const config = useRuntimeConfig()
@@ -97,44 +91,8 @@ export const useAPI = () => {
 			}) as Promise<T>
 		}
 
-		// AYAN endpoints
-		if (endpoint === '/ayan/orders/open') {
-			return mockApiResponses.get(generateMockOrders(8)) as Promise<T>
-		}
-
-		if (endpoint === '/ayan/orders/my') {
-			return mockApiResponses.get(null) as Promise<T>
-		}
-
-		if (endpoint === '/ayan/orders' && options.method === 'POST') {
-			const order = {
-				id: Math.floor(Math.random() * 10000),
-				...options.body,
-				status: 'open',
-				driver_id: 1,
-				passenger_id: null,
-				created_at: new Date().toISOString(),
-				updated_at: new Date().toISOString()
-			} as AyaniOrder
-			return mockApiResponses.post(order) as Promise<T>
-		}
-
-		if (endpoint.match(/\/ayan\/orders\/\/d+\/accept/)) {
-			const order = {
-				id: parseInt(endpoint.match(/\/ayan\/orders\/(\/d+)\/accept/)?.[1] || '0'),
-				status: 'accepted',
-				passenger_id: 4
-			} as AyaniOrder
-			return mockApiResponses.post(order) as Promise<T>
-		}
-
-		if (endpoint.match(/\/ayan\/orders\/\/d+\/cancel/)) {
-			const order = {
-				id: parseInt(endpoint.match(/\/ayan\/orders\/(\/d+)\/cancel/)?.[1] || '0'),
-				status: 'cancelled'
-			} as AyaniOrder
-			return mockApiResponses.post(order) as Promise<T>
-		}
+		// AYAN endpoints are handled by AYAN layer composables (useAyanTrips, useAyanRequests, etc.)
+		// This mock handler only covers auth and user endpoints
 
 		// Default: return empty array or null
 		if (options.method === 'GET') {
@@ -168,7 +126,10 @@ export const useAPI = () => {
 
 	const put = <T>(endpoint: string, body?: Record<string, unknown>) => request<T>(endpoint, { method: 'PUT', body })
 
+	const patch = <T>(endpoint: string, body?: Record<string, unknown>) =>
+		request<T>(endpoint, { method: 'PATCH', body })
+
 	const del = <T>(endpoint: string) => request<T>(endpoint, { method: 'DELETE' })
 
-	return { request, get, post, put, del, baseURL, headers, token }
+	return { request, get, post, put, patch, del, baseURL, headers, token }
 }

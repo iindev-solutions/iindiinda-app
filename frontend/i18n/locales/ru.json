@@ -61,11 +61,21 @@
 			"contactDesc": "Свяжитесь напрямую",
 			"success": "Отклик отправлен!",
 			"message": "Сообщение (необязательно)",
-			"messagePlaceholder": "Напишите водителю..."
+			"messagePlaceholder": "Напишите сообщение..."
 		},
+		"responses": "Отклики",
 		"driver": "Водитель",
 		"passenger": "Пассажир",
 		"contactReceived": "Контакт получен",
-		"respondFirst": "Сначала откликнитесь"
+		"respondFirst": "Сначала откликнитесь",
+		"validation": {
+			"required": "Обязательное поле",
+			"minSeats": "Минимум 1 место",
+			"minPrice": "Цена не может быть отрицательной"
+		},
+		"status": {
+			"open": "Открыто",
+			"closed": "Закрыто"
+		}
 	}
 }

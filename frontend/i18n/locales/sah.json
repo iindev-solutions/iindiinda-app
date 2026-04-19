@@ -61,11 +61,21 @@
 			"contactDesc": "Туруоруу холбоһуҥ",
 			"success": "Хоруйдаммыт!",
 			"message": "Суруйуу (эрэ буолуо)",
-			"messagePlaceholder": "Водительга суруй..."
+			"messagePlaceholder": "Суруйуу суруй..."
 		},
+		"responses": "Хоруйдар",
 		"driver": "Водитель",
 		"passenger": "Пассажир",
 		"contactReceived": "Контакт ылыллыбыт",
-		"respondFirst": "Бастаан хоруйдаа"
+		"respondFirst": "Бастаан хоруйдаа",
+		"validation": {
+			"required": "Хайаан толоруллар",
+			"minSeats": "Аччыгыста 1 сир",
+			"minPrice": "Сыана отрицательнай буолбатуох"
+		},
+		"status": {
+			"open": "Аһаҕас",
+			"closed": "Сабыллыбыт"
+		}
 	}
 }
