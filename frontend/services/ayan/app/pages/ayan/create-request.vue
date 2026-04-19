@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 import type { AyanRequestCreate } from '../../types/ayan'
 
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
 const { createRequest } = useAyanRequests()
-
-const submitting = ref(false)
 
 const state = reactive<AyanRequestCreate>({
 	from_address: '',
@@ -15,15 +14,17 @@ const state = reactive<AyanRequestCreate>({
 	description: ''
 })
 
-const validate = (s: Partial<AyanRequestCreate>) => {
-	const errors: { name: string; message: string }[] = []
+const validate = (s: Partial<AyanRequestCreate>): FormError[] => {
+	const errors: FormError[] = []
 	if (!s.from_address) errors.push({ name: 'from_address', message: t('ayan.validation.required') })
 	if (!s.to_address) errors.push({ name: 'to_address', message: t('ayan.validation.required') })
 	if (!s.date) errors.push({ name: 'date', message: t('ayan.validation.required') })
 	return errors
 }
 
-async function onSubmit() {
+const submitting = ref(false)
+
+async function onSubmit(_event: FormSubmitEvent<AyanRequestCreate>) {
 	submitting.value = true
 	try {
 		await createRequest(state)
@@ -42,7 +43,7 @@ async function onSubmit() {
 		<div class="mx-auto max-w-[480px]">
 			<BackButton />
 
-			<header class="mb-5">
+			<header class="mb-6">
 				<h1 class="mb-1 text-xl font-medium tracking-tight text-[#eff3f5]">
 					{{ t('ayan.request.create') }}
 				</h1>
@@ -53,37 +54,40 @@ async function onSubmit() {
 
 			<UForm :state="state" :validate="validate" @submit="onSubmit">
 				<div class="space-y-4">
-					<UFormField name="from_address" required>
+					<UFormField :label="t('ayan.request.from')" name="from_address" required eager-validation>
 						<UInput
 							v-model="state.from_address"
-							placeholder="Откуда"
+							:placeholder="t('ayan.request.from')"
 							icon="i-lucide-circle-dot"
 							variant="outline"
 							size="lg"
+							class="w-full"
 						/>
 					</UFormField>
 
-					<UFormField name="to_address" required>
+					<UFormField :label="t('ayan.request.to')" name="to_address" required eager-validation>
 						<UInput
 							v-model="state.to_address"
-							placeholder="Куда"
+							:placeholder="t('ayan.request.to')"
 							icon="i-lucide-map-pin"
 							variant="outline"
 							size="lg"
+							class="w-full"
 						/>
 					</UFormField>
 
 					<div class="grid grid-cols-2 gap-3">
-						<UFormField name="date" required>
+						<UFormField :label="t('ayan.request.date')" name="date" required eager-validation>
 							<UInput
 								v-model="state.date"
 								type="date"
 								icon="i-lucide-calendar"
 								variant="outline"
 								size="lg"
+								class="w-full"
 							/>
 						</UFormField>
-						<UFormField name="time">
+						<UFormField :label="t('ayan.request.time')" name="time">
 							<UInput
 								v-model="state.time"
 								type="time"
@@ -91,16 +95,18 @@ async function onSubmit() {
 								variant="outline"
 								size="lg"
 								placeholder="--:--"
+								class="w-full"
 							/>
 						</UFormField>
 					</div>
 
-					<UFormField name="description">
+					<UFormField :label="t('ayan.request.comment')" name="description">
 						<UTextarea
 							v-model="state.description"
-							placeholder="Комментарий (необязательно)"
-							:rows="2"
+							:placeholder="t('ayan.request.commentPlaceholder')"
+							:rows="3"
 							autoresize
+							class="w-full"
 						/>
 					</UFormField>
 

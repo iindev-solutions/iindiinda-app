@@ -1,11 +1,10 @@
 <script setup lang="ts">
+import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 import type { AyanTripCreate } from '../../types/ayan'
 
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
 const { createTrip } = useAyanTrips()
-
-const submitting = ref(false)
 
 const state = reactive<AyanTripCreate>({
 	from_address: '',
@@ -17,8 +16,8 @@ const state = reactive<AyanTripCreate>({
 	comment: ''
 })
 
-const validate = (s: Partial<AyanTripCreate>) => {
-	const errors: { name: string; message: string }[] = []
+const validate = (s: Partial<AyanTripCreate>): FormError[] => {
+	const errors: FormError[] = []
 	if (!s.from_address) errors.push({ name: 'from_address', message: t('ayan.validation.required') })
 	if (!s.to_address) errors.push({ name: 'to_address', message: t('ayan.validation.required') })
 	if (!s.date) errors.push({ name: 'date', message: t('ayan.validation.required') })
@@ -28,7 +27,9 @@ const validate = (s: Partial<AyanTripCreate>) => {
 	return errors
 }
 
-async function onSubmit() {
+const submitting = ref(false)
+
+async function onSubmit(_event: FormSubmitEvent<AyanTripCreate>) {
 	submitting.value = true
 	try {
 		await createTrip(state)
@@ -47,7 +48,7 @@ async function onSubmit() {
 		<div class="mx-auto max-w-[480px]">
 			<BackButton />
 
-			<header class="mb-5">
+			<header class="mb-6">
 				<h1 class="mb-1 text-xl font-medium tracking-tight text-[#eff3f5]">
 					{{ t('ayan.ride.create') }}
 				</h1>
@@ -58,53 +59,65 @@ async function onSubmit() {
 
 			<UForm :state="state" :validate="validate" @submit="onSubmit">
 				<div class="space-y-4">
-					<UFormField name="from_address" required>
+					<UFormField :label="t('ayan.ride.from')" name="from_address" required eager-validation>
 						<UInput
 							v-model="state.from_address"
-							placeholder="Откуда"
+							:placeholder="t('ayan.ride.from')"
 							icon="i-lucide-circle-dot"
 							variant="outline"
 							size="lg"
+							class="w-full"
 						/>
 					</UFormField>
 
-					<UFormField name="to_address" required>
+					<UFormField :label="t('ayan.ride.to')" name="to_address" required eager-validation>
 						<UInput
 							v-model="state.to_address"
-							placeholder="Куда"
+							:placeholder="t('ayan.ride.to')"
 							icon="i-lucide-map-pin"
 							variant="outline"
 							size="lg"
+							class="w-full"
 						/>
 					</UFormField>
 
 					<div class="grid grid-cols-2 gap-3">
-						<UFormField name="date" required>
+						<UFormField :label="t('ayan.ride.date')" name="date" required eager-validation>
 							<UInput
 								v-model="state.date"
 								type="date"
 								icon="i-lucide-calendar"
 								variant="outline"
 								size="lg"
+								class="w-full"
 							/>
 						</UFormField>
-						<UFormField name="time" required>
+						<UFormField :label="t('ayan.ride.time')" name="time" required eager-validation>
 							<UInput
 								v-model="state.time"
 								type="time"
 								icon="i-lucide-clock"
 								variant="outline"
 								size="lg"
+								placeholder="--:--"
+								class="w-full"
 							/>
 						</UFormField>
 					</div>
 
 					<div class="grid grid-cols-2 gap-3">
-						<UFormField :label="t('ayan.ride.seatsAvailable')" name="seats" required>
-							<UInputNumber v-model="state.seats" :min="1" :max="10" size="lg" />
+						<UFormField :label="t('ayan.ride.seatsAvailable')" name="seats" required eager-validation>
+							<UInputNumber v-model="state.seats" :min="1" :max="10" size="lg" class="w-full" />
 						</UFormField>
-						<UFormField :label="t('ayan.ride.price')" name="price" required>
-							<UInput v-model="state.price" type="number" inputmode="numeric" placeholder="0" size="lg">
+						<UFormField :label="t('ayan.ride.price')" name="price" required eager-validation>
+							<UInput
+								v-model="state.price"
+								type="number"
+								inputmode="numeric"
+								placeholder="0"
+								size="lg"
+								class="w-full"
+							>
 								<template #trailing>
 									<span class="text-sm text-gray-400">₽</span>
 								</template>
@@ -112,12 +125,13 @@ async function onSubmit() {
 						</UFormField>
 					</div>
 
-					<UFormField name="comment">
+					<UFormField :label="t('ayan.ride.comment')" name="comment">
 						<UTextarea
 							v-model="state.comment"
-							placeholder="Комментарий (необязательно)"
-							:rows="2"
+							:placeholder="t('ayan.ride.commentPlaceholder')"
+							:rows="3"
 							autoresize
+							class="w-full"
 						/>
 					</UFormField>
 

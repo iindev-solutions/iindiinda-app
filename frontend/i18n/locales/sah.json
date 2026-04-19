@@ -44,6 +44,7 @@
 			"priceNegotiable": "Кэпсэтэн көрөбүт",
 			"seatsAvailable": "Олорор сир баар",
 			"comment": "Суруйуу",
+			"commentPlaceholder": "Эрэ буолуо — сири хайҕаа",
 			"create": "Поездканы оҥор",
 			"createDesc": "Ханна барарыҥ эт"
 		},
@@ -51,7 +52,9 @@
 			"from": "Ханнык",
 			"to": "Ханна",
 			"date": "Хаһан",
+			"time": "Кэмэ",
 			"comment": "Суруйуу",
+			"commentPlaceholder": "Эрэ буолуо — сири хайҕаа",
 			"create": "Ыйыыны оҥор",
 			"createDesc": "Ханна барарыҥ эт"
 		},
