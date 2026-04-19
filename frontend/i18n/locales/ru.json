@@ -44,6 +44,7 @@
 			"priceNegotiable": "Договорная",
 			"seatsAvailable": "Свободных мест",
 			"comment": "Комментарий",
+			"commentPlaceholder": "Необязательно — любые подробности",
 			"create": "Создать поездку",
 			"createDesc": "Расскажи, куда едешь"
 		},
@@ -51,7 +52,9 @@
 			"from": "Откуда",
 			"to": "Куда",
 			"date": "Когда",
+			"time": "Время",
 			"comment": "Комментарий",
+			"commentPlaceholder": "Необязательно — любые подробности",
 			"create": "Создать запрос",
 			"createDesc": "Расскажи, куда нужно доехать"
 		},
@@ -61,11 +64,21 @@
 			"contactDesc": "Свяжитесь напрямую",
 			"success": "Отклик отправлен!",
 			"message": "Сообщение (необязательно)",
-			"messagePlaceholder": "Напишите водителю..."
+			"messagePlaceholder": "Напишите сообщение..."
 		},
+		"responses": "Отклики",
 		"driver": "Водитель",
 		"passenger": "Пассажир",
 		"contactReceived": "Контакт получен",
-		"respondFirst": "Сначала откликнитесь"
+		"respondFirst": "Сначала откликнитесь",
+		"validation": {
+			"required": "Обязательное поле",
+			"minSeats": "Минимум 1 место",
+			"minPrice": "Цена не может быть отрицательной"
+		},
+		"status": {
+			"open": "Открыто",
+			"closed": "Закрыто"
+		}
 	}
 }
