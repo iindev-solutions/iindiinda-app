@@ -104,6 +104,28 @@ services/ayan/app/pages/
 - **No hardcoded strings** — all user-visible text must use `t('key')`
 - **i18n keys**: nested only — `ayan.order.status.open` not `ayan.orderStatusOpen`
 
+## Nuxt 4 + Nuxt UI Reference (MANDATORY)
+
+**Docs index**: `llms-nuxt4.txt`, `llms-nuxt-ui.txt` (URLs to official docs)
+**MCP**: nuxt4 + nuxt-ui MCP servers available — use them for API lookups
+
+**Before writing ANY component/page/composable** — verify against Nuxt 4 + Nuxt UI patterns:
+- Use `useAsyncData`/`useFetch` for data fetching, NOT raw `$fetch` in setup
+- Use `useState` for shared state, NOT `ref()` across composables
+- Use `@nuxt/ui` components (UButton, UInput, UModal, UCard, etc.) — NEVER raw HTML equivalents
+- Style with **Tailwind CSS utility classes** — NEVER write raw CSS in `<style>` blocks unless impossible with Tailwind
+- Use `defineNuxtPlugin` for plugins, `defineNuxtRouteMiddleware` for middleware
+- Auto-imports: no manual `import` for composables, components, utils from `app/` dirs
+- Layers: `extends` in nuxt.config.ts, NOT `layers/` folder
+
+**Common mistakes to avoid:**
+- ❌ `<style scoped>` with raw CSS → ✅ Tailwind classes in template
+- ❌ `<button class="...">` → ✅ `<UButton ...>`
+- ❌ `<input class="...">` → ✅ `<UInput ...>`
+- ❌ `ref()` for cross-component state → ✅ `useState()`
+- ❌ `onMounted(() => fetch())` → ✅ `useFetch()` / `useAsyncData()`
+- ❌ Manual `import { useAuth }` → ✅ auto-imported from `app/composables/`
+
 ## Design System
 
 - Dark only, Primary: Cyan `#5edac6`, Background: `#0a0c0e`, Font: Geist/Inter
