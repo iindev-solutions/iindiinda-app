@@ -4,6 +4,39 @@
 
 ---
 
+## 2026-04-22 — Deep Audit + Resume Plan
+
+### Что сделано
+- Проведён глубокий аудит `vault`, frontend и backend для восстановления stop point
+- Создан `vault/resume-plan.md` — единая точка входа: где остановились, что блокирует, что делать дальше
+- Обновлён `vault/sprint.md` — добавлены `Resume Point`, реальные блокеры и список resume files
+- Обновлён `vault/master_index.md` — добавлена ссылка на resume-plan, исправлен счётчик задач спринта
+- Обновлён `vault/CODE_MAP.md` — добавлен `AppBottomNav.vue`, зафиксирован факт что backend всё ещё на old `orders` API, а `app.vue` loader overlay отключён
+
+### Ключевой вывод
+- Мы остановились после почти готового AYAN frontend на mock API
+- Следующий реальный этап: заменить backend `/ayan/orders/*` на contract-aligned AYAN API (`trips`, `requests`, `responses`, `my/*`)
+
+### Verified
+- Аудит docs/code sync ✅
+
+---
+
+## 2026-04-22 — Vitest Setup Baseline
+
+### Что сделано
+- Завершён начатый setup `vitest`
+- Добавлены scripts: `test`, `test:watch`
+- Добавлен `frontend/vitest.config.ts`
+- Добавлен smoke test `frontend/tests/unit/validators.test.ts`
+- Обновлены `vault/resume-plan.md`, `vault/sprint.md`, `vault/CODE_MAP.md` под новый stop point
+- Текущий уровень готовности: baseline для plain TS unit tests, не полный Nuxt/composable test harness
+
+### Verified
+- `npm run test` ✅
+- `npm run typecheck` ✅
+- `npm run lint -- tests/unit/validators.test.ts vitest.config.ts` ✅ (по факту запускает `eslint .` в frontend)
+
 ## 2026-04-19 — AYAN Slideover + Color Fix
 
 ### Slideover: Merge Create Forms

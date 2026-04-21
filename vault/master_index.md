@@ -25,7 +25,9 @@ Full roadmap: vault/wiki/architecture/roadmap.md
 
 ## Active Tasks
 
-**Sprint:** vault/sprint.md — Phase 1 AYAN MVP (9 задач)
+**Sprint:** vault/sprint.md — Phase 1 AYAN MVP (11 задач)
+
+**Resume:** vault/resume-plan.md — где остановились, что блокирует, что делать дальше
 
 ---
 

@@ -22,6 +22,7 @@
 | `AppHeader.vue` | Шапка приложения |
 | `AppTitle.vue` | Заголовок страницы |
 | `BackButton.vue` | Универсальная кнопка назад (TMA + browser) |
+| `AppBottomNav.vue` | Нижняя навигация приложения |
 | `EmptyState.vue` | Пустое состояние списка |
 | `ErrorMessage.vue` | Отображение ошибки |
 | `LoadingSpinner.vue` | Спиннер загрузки |
@@ -58,6 +59,13 @@
 | `app.config.ts` | UI-оверрайды: primary=cyan, neutral=gray. Единый конфиг |
 | `config/api.config.ts` | `USE_MOCK_API = true/false`. MOCK_CONFIG: errorRate, delays |
 | `config/mockData.ts` | MOCK_USERS, CITY_ROUTES, mockApiResponses |
+
+### Testing (`frontend/`)
+
+| Файл | Назначение |
+|------|-----------|
+| `vitest.config.ts` | Базовый Vitest config для plain TS unit tests (`environment: node`, `tests/**/*.test.ts`) |
+| `tests/unit/validators.test.ts` | Smoke unit tests для базовых валидаторов |
 
 ### Plugins (`frontend/app/plugins/`)
 
@@ -178,6 +186,13 @@
 
 - `frontend/nuxt.config.ts` — Nuxt конфиг, extends слоёв
 - `frontend/app/app.vue` — Root component
+- `frontend/app/app.vue` — overlay loader сейчас закомментирован, активен только `NuxtLoadingIndicator`
 - `frontend/app/config/api.config.ts` — Mock/real toggle
 - `backend/routes/api.php` — Все API маршруты
 - `vault/wiki/services/ayan/api-contract.md` — Финальный API контракт AYAN
+
+## Audit Notes — 2026-04-22
+
+- `frontend/app/config/api.config.ts`: `USE_MOCK_API = true` — AYAN фронт всё ещё работает через mock
+- `backend/routes/api.php` + `backend/app/Http/Controllers/Ayan/OrderController.php`: backend AYAN всё ещё на старом `orders` API
+- Текущий backend AYAN **не совпадает** с фронтовым контрактом `trips / requests / responses / my/*`

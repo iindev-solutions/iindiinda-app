@@ -9,6 +9,8 @@
 		"generate": "nuxt generate",
 		"preview": "nuxt preview",
 		"postinstall": "nuxt prepare",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --check .",
@@ -29,6 +31,7 @@
 		"eslint-plugin-prettier": "^5.5.5",
 		"prettier": "^3.8.0",
 		"typescript": "^5.9.3",
+		"vitest": "^4.1.5",
 		"vue-tsc": "^3.2.1"
 	}
 }

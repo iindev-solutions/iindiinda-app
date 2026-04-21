@@ -11,6 +11,20 @@
 Начало: 2026-04-19
 Цель: Рабочий MVP попуток (создание поездки/запроса → лента → отклик → контакт)
 
+### Resume Point — 2026-04-22
+
+- **Где остановились:** frontend AYAN практически готов, но всё ещё работает через `mock API`
+- **Главный блокер:** backend до сих пор на старом `/ayan/orders/*`, а frontend уже живёт в контракте `trips / requests / responses / my/*`
+- **Последнее завершённое локальное действие:** `vitest` setup поднят как baseline для plain TS smoke tests (`frontend/vitest.config.ts`, `test`, `test:watch`, smoke test)
+- **Продолжать с:** `vault/resume-plan.md`
+
+### Current Reality
+
+- Frontend Phase 1 = **mock-ready**, не `real API ready`
+- Backend Phase 1 = **blocked by missing real implementation**, не только миграции, но и несовпадение доменной модели
+- Frontend testing base = **baseline ready** (`vitest` smoke path работает для plain TS unit tests, не для Nuxt composables)
+- Переключение `mock → real` начинать только после замены backend `orders` API на новый AYAN contract
+
 ### Задачи
 
 | # | Задача | Статус | Блокеры |
@@ -33,7 +47,9 @@
 
 ### Блокеры
 
-Пока нет
+- Backend всё ещё использует старый mock `Ayan\\OrderController` и маршруты `/ayan/orders/*`
+- Backend не совпадает с `vault/wiki/services/ayan/api-contract.md`
+- `1.10 Mock → Real API` и `1.11 QA E2E` нельзя нормально начать до завершения `1.1` и `1.2`
 
 ### Решения
 
@@ -48,9 +64,9 @@
 
 ---
 
-## Frontend MVP Complete ✅
+## Frontend AYAN Mock-Ready ✅
 
-Все фронтенд-задачи Phase 1 выполнены. Дальше — backend:
+Все основные фронтенд-задачи Phase 1 выполнены **в mock-режиме**. Дальше — backend и реальная интеграция:
 
 ### Blocked by Backend (1.1, 1.2)
 
@@ -58,6 +74,19 @@
 - [ ] 1.2 Backend: модели + контроллеры
 - [ ] 1.10 Mock → Real API (зависит от 1.2)
 - [ ] 1.11 QA E2E (зависит от 1.10)
+
+### Resume Files
+
+- `vault/resume-plan.md`
+- `vault/wiki/services/ayan/api-contract.md`
+- `backend/routes/api.php`
+- `backend/app/Http/Controllers/Ayan/OrderController.php`
+- `frontend/services/ayan/app/composables/useAyanTrips.ts`
+- `frontend/services/ayan/app/composables/useAyanRequests.ts`
+- `frontend/services/ayan/app/composables/useAyanResponses.ts`
+- `frontend/services/ayan/app/composables/useAyanMy.ts`
+- `frontend/vitest.config.ts`
+- `frontend/tests/unit/validators.test.ts`
 
 ---
 
