@@ -37,6 +37,27 @@
 - `npm run typecheck` ✅
 - `npm run lint -- tests/unit/validators.test.ts vitest.config.ts` ✅ (по факту запускает `eslint .` в frontend)
 
+---
+
+## 2026-04-22 — Backend AYAN Contract Skeleton
+
+### Что сделано
+- Добавлен базовый Laravel-style skeleton под новый AYAN contract
+- Добавлены модели: `User`, `Trip`, `AyanRequest`, `AyanResponse`
+- Добавлены миграции: `users`, `trips`, `requests`, `responses`
+- Добавлены новые controllers: `TripController`, `RequestController`, `ResponseController`, `MyController`
+- `backend/routes/api.php` переведён с old `/ayan/orders/*` на новый набор `trips / requests / responses / my/*`
+- Исправлены namespaces/imports в `AuthController`, `UserController`, добавлен базовый `Controller.php`
+
+### Важно
+- Это пока **contract-aligned skeleton**, не подтверждённый рабочим Laravel runtime
+- В текущей среде нет `php`, `composer`, `docker`, поэтому backend нельзя было прогнать или промигрировать
+
+### Next
+- Поднять реальный Laravel runtime
+- Прогнать миграции
+- Заменить mock payloads на persistence и реальную auth-логику
+
 ## 2026-04-19 — AYAN Slideover + Color Fix
 
 ### Slideover: Merge Create Forms

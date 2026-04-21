@@ -25,6 +25,7 @@
 - В репо всё ещё старый mock-контур `/ayan/orders/*`
 - Текущий backend не совпадает с новым контрактом AYAN: `trips / requests / responses / my/*`
 - Миграций, моделей и реальной persistence-логики под AYAN пока нет
+- После текущего хода уже добавлен contract-aligned Laravel skeleton, но он ещё не проверен рантаймом
 
 ---
 
@@ -43,6 +44,7 @@
 3. `useAuth.ts` ждёт `config.public.telegramBotId`, но этот runtime config не описан в `frontend/nuxt.config.ts`
 4. В `frontend/app/app.vue` overlay loader сейчас закомментирован, хотя в changelog он описан как активный
 5. Базовый `vitest` setup уже есть, но он покрывает только plain TS smoke tests, не Nuxt/composable runtime
+6. В текущей среде нет `php`, `composer`, `docker`, поэтому backend нельзя прогнать локально
 
 ### Технический долг, который всплыл во время аудита
 
@@ -66,15 +68,18 @@
 
 **Цель:** убрать старый `orders`-слой и дать фронту реальный API под текущие composables.
 
+**Текущий статус:** contract-aligned routes/controllers/models/migrations уже добавлены как skeleton. Следующий шаг — прогнать это в реальном Laravel runtime и заменить mock-логику на persistence.
+
 **Начинать с файлов:**
 - `backend/routes/api.php`
 - `backend/app/Http/Controllers/Ayan/OrderController.php`
 - `vault/wiki/services/ayan/api-contract.md`
 
 **Что делать:**
-1. Создать миграции `users`, `trips`, `requests`, `responses`
-2. Создать модели под новый контракт
-3. Заменить old `orders` API на:
+1. Поднять рабочий Laravel runtime с `php` + `composer`
+2. Прогнать миграции `users`, `trips`, `requests`, `responses`
+3. Прогнать и дочистить модели под новый контракт
+4. Довести новые endpoints вместо old `orders` API:
    - `GET/POST /ayan/trips`
    - `GET/POST /ayan/requests`
    - `GET/POST /ayan/*/{id}/responses`
@@ -82,7 +87,8 @@
    - `GET /ayan/my/trips`
    - `GET /ayan/my/requests`
    - `GET /ayan/my/responses`
-4. Вернуть ответ в формате, который ждёт фронт: `{ success, data }`
+5. Вернуть ответ в формате, который ждёт фронт: `{ success, data }`
+6. Удалить legacy `Ayan/OrderController.php`, когда новый runtime слой будет подтверждён
 
 ### P2. Переключить AYAN с mock на real API
 

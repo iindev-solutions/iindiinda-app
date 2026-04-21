@@ -29,8 +29,8 @@
 
 | # | Задача | Статус | Блокеры |
 |---|--------|--------|---------|
-| 1.1 | Backend: миграции (users, trips, requests, responses) | TODO | — |
-| 1.2 | Backend: модели + контроллеры AYAN | TODO | 1.1 |
+| 1.1 | Backend: миграции (users, trips, requests, responses) | IN_PROGRESS | нет runtime verification |
+| 1.2 | Backend: модели + контроллеры AYAN | IN_PROGRESS | 1.1, нет runtime verification |
 | 1.3 | Frontend: структура AYAN (pages, composables, types) | DONE | — |
 | 1.4 | Frontend: создание поездки/запроса (единый slideover + pill-табы) | DONE* | — |
 | 1.5 | Frontend: лента поездок/запросов + табы + empty state | DONE* | — |
@@ -49,6 +49,7 @@
 
 - Backend всё ещё использует старый mock `Ayan\\OrderController` и маршруты `/ayan/orders/*`
 - Backend не совпадает с `vault/wiki/services/ayan/api-contract.md`
+- В текущей среде нет `php`, `composer`, `docker` — backend нельзя прогнать локально, только готовить статический Laravel-код
 - `1.10 Mock → Real API` и `1.11 QA E2E` нельзя нормально начать до завершения `1.1` и `1.2`
 
 ### Решения
@@ -79,12 +80,20 @@
 
 - `vault/resume-plan.md`
 - `vault/wiki/services/ayan/api-contract.md`
+- `backend/app/Http/Controllers/Ayan/TripController.php`
+- `backend/app/Http/Controllers/Ayan/RequestController.php`
+- `backend/app/Http/Controllers/Ayan/ResponseController.php`
+- `backend/app/Http/Controllers/Ayan/MyController.php`
 - `backend/routes/api.php`
 - `backend/app/Http/Controllers/Ayan/OrderController.php`
-- `frontend/services/ayan/app/composables/useAyanTrips.ts`
-- `frontend/services/ayan/app/composables/useAyanRequests.ts`
-- `frontend/services/ayan/app/composables/useAyanResponses.ts`
-- `frontend/services/ayan/app/composables/useAyanMy.ts`
+- `backend/app/Models/User.php`
+- `backend/app/Models/Trip.php`
+- `backend/app/Models/AyanRequest.php`
+- `backend/app/Models/AyanResponse.php`
+- `backend/database/migrations/2026_04_22_000001_create_users_table.php`
+- `backend/database/migrations/2026_04_22_000002_create_trips_table.php`
+- `backend/database/migrations/2026_04_22_000003_create_requests_table.php`
+- `backend/database/migrations/2026_04_22_000004_create_responses_table.php`
 - `frontend/vitest.config.ts`
 - `frontend/tests/unit/validators.test.ts`
 

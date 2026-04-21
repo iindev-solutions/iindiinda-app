@@ -1,22 +1,14 @@
 <?php
 
-namespace AppHttpControllers;
+namespace App\Http\Controllers;
 
-use IlluminateHttpJsonResponse;
-use IlluminateHttpRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Get current user
-     *
-     * Reply: User { id, telegram_id, username, first_name, role, created_at }
-     */
     public function me(): JsonResponse
     {
-        // TODO: Get from auth token (Sanctum)
-        // For now, return mock user
-
         $mockUser = [
             'id' => 1,
             'telegram_id' => 123456789,
@@ -33,20 +25,11 @@ class UserController extends Controller
         return response()->json($mockUser);
     }
 
-    /**
-     * Switch user role
-     *
-     * Body: { role: 'passenger' | 'driver' }
-     * Reply: { user: User }
-     */
     public function switchRole(Request $request): JsonResponse
     {
         $request->validate([
             'role' => 'required|in:passenger,driver,carrier,master,sender',
         ]);
-
-        // TODO: Get from auth token, update in DB
-        // For now, return mock with new role
 
         $mockUser = [
             'id' => 1,

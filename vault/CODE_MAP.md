@@ -144,7 +144,7 @@
 
 ## Backend: `backend/`
 
-**Статус**: Scaffold-only. Нет миграций, нет моделей (.gitkeep).
+**Статус**: In progress. Старый scaffold ещё есть, параллельно добавлен новый AYAN contract-aligned skeleton.
 
 ### Controllers
 
@@ -153,6 +153,10 @@
 | `AuthController.php` | Login via Telegram (mock) |
 | `UserController.php` | me, switchRole (mock) |
 | `Ayan/OrderController.php` | AYAN orders (mock) |
+| `Ayan/TripController.php` | Новый AYAN contract-aligned skeleton: trips endpoints |
+| `Ayan/RequestController.php` | Новый AYAN contract-aligned skeleton: requests endpoints |
+| `Ayan/ResponseController.php` | Новый AYAN contract-aligned skeleton: responses endpoints |
+| `Ayan/MyController.php` | Новый AYAN contract-aligned skeleton: my trips/requests/responses |
 
 ### Routes (`backend/routes/api.php`)
 
@@ -174,7 +178,7 @@
 
 | Сервис | Backend | Frontend | Mock Data |
 |--------|---------|----------|-----------|
-| AYAN | scaffold (OrderController mock) | pages + composables + types | ayanMock.ts |
+| AYAN | in progress: old OrderController + new contract skeleton | pages + composables + types | ayanMock.ts |
 | TAL | routes only (нет контроллеров) | showcase | нет |
 | UUS | routes only | placeholder | нет |
 | AGAL | routes only | placeholder | нет |
@@ -196,3 +200,4 @@
 - `frontend/app/config/api.config.ts`: `USE_MOCK_API = true` — AYAN фронт всё ещё работает через mock
 - `backend/routes/api.php` + `backend/app/Http/Controllers/Ayan/OrderController.php`: backend AYAN всё ещё на старом `orders` API
 - Текущий backend AYAN **не совпадает** с фронтовым контрактом `trips / requests / responses / my/*`
+- Добавлен новый backend skeleton под contract-aligned AYAN API, но в текущей среде он не проверен рантаймом
