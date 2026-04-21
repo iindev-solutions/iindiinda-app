@@ -57,6 +57,7 @@ Full roadmap: vault/wiki/architecture/roadmap.md
 #### Services (Implementation Docs)
 **AYAN:**
 - vault/wiki/services/ayan/api-contract.md — API контракт (эндпоинты, модели, валидация)
+- vault/wiki/services/ayan/backend-bringup.md — runtime checklist: как поднять и проверить AYAN backend
 
 ### Raw (vault/raw/)
 

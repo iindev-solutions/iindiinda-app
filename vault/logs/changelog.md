@@ -58,6 +58,9 @@
 - Прогнать миграции
 - Заменить mock payloads на persistence и реальную auth-логику
 
+### Docs
+- Добавлен `vault/wiki/services/ayan/backend-bringup.md` — пошаговый runtime checklist для первого реального запуска backend
+
 ## 2026-04-19 — AYAN Slideover + Color Fix
 
 ### Slideover: Merge Create Forms

@@ -63,6 +63,7 @@
   - `vault/sprint.md`
   - `vault/resume-plan.md`
   - `vault/wiki/services/ayan/api-contract.md`
+  - `vault/wiki/services/ayan/backend-bringup.md`
 
 ### P1. Довести backend до контракта AYAN
 

@@ -80,6 +80,7 @@
 
 - `vault/resume-plan.md`
 - `vault/wiki/services/ayan/api-contract.md`
+- `vault/wiki/services/ayan/backend-bringup.md`
 - `backend/app/Http/Controllers/Ayan/TripController.php`
 - `backend/app/Http/Controllers/Ayan/RequestController.php`
 - `backend/app/Http/Controllers/Ayan/ResponseController.php`
