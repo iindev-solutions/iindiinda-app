@@ -63,9 +63,11 @@ export const useAuth = () => {
 	const login = async () => {
 		if (isInTelegram.value) {
 			await loginWithInitData()
-		} else {
-			loginWithOAuth()
+			return
 		}
+
+		// Browser mode stays unauthenticated until real OAuth / verification flow is implemented.
+		console.warn('[useAuth] Browser login is disabled until Telegram OAuth is wired end-to-end')
 	}
 
 	const logout = () => {

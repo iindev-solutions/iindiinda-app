@@ -4,6 +4,24 @@
 
 ---
 
+## 2026-04-22 — Frontend AYAN Real API Switch
+
+### Что сделано
+- `frontend/app/config/api.config.ts`: `USE_MOCK_API = false`
+- `frontend/useAuth.ts` переведён в TMA-first поведение: browser mode больше не пытается автоматически запускать старый Telegram OAuth flow без backend support
+- `frontend/nuxt.config.ts` теперь знает `public.telegramBotId`
+- `.env.example` дополнен `NUXT_PUBLIC_TELEGRAM_BOT_ID`
+- `vault/sprint.md`, `vault/resume-plan.md`, `vault/CODE_MAP.md` обновлены под новый stop point
+
+### Verified
+- `npm run typecheck` ✅
+- `npm run lint` ✅
+
+### Важно
+- AYAN composables уже ходят в real API
+- Browser auth пока intentionally урезан до TMA-only path до появления real OAuth / Telegram verification end-to-end
+- Следующий шаг: пройти UI flow против VPS backend и затем закоммитить frontend integration пакет
+
 ## 2026-04-22 — VPS Backend Bring-Up + AYAN Persistence
 
 ### Что сделано

@@ -9,15 +9,17 @@
 - Текущая ветка: `front/ayan`
 - Локальная ветка: `front/ayan` с большим незакоммиченным backend пакетом (Laravel runtime base, Sanctum, AYAN persistence, vault updates)
 - Незакоммиченные изменения: backend runtime files + AYAN backend fixes + backend feature tests + обновления в `vault/*`
-- Последнее завершённое действие: VPS backend bring-up + AYAN persistence verification (`Laravel + MySQL + Nginx + Sanctum`, health `200`, guest protected route `401`, feature tests green)
+- Последнее завершённое действие: backend runtime/persistence пакет закоммичен и запушен; frontend AYAN переключён на real API, browser auth временно оставлен TMA-only
 
 ## Где мы остановились
 
 ### Frontend
 
-- AYAN на фронте собран и работает **на mock API**
+- AYAN на фронте уже собран и переключён на **real API** (`USE_MOCK_API = false`)
 - Готово: лента поездок/запросов, фильтры, единый `AyanCreateSlideover`, детали поездки/запроса, отклики, принятие/отклонение, Telegram contact link
-- Основной stop point фронта: UI почти доведён, но реальная интеграция ещё не начата
+- `npm run typecheck` и `npm run lint` проходят после переключения
+- Browser auth intentionally не запускает старый OAuth flow до появления real backend support; TMA login path остаётся основным
+- Основной stop point фронта: нужно пройти реальный UI flow против VPS backend и затем закрыть production-grade Telegram verification
 
 ### Backend
 
@@ -42,12 +44,11 @@
 
 ### Что блокирует следующий этап
 
-1. `frontend/app/config/api.config.ts` всё ещё держит `USE_MOCK_API = true`
-2. Нужен реальный frontend integration pass против VPS backend
-3. `useAuth.ts` ждёт `config.public.telegramBotId`, но этот runtime config не описан в `frontend/nuxt.config.ts`
-4. Telegram `initData` verification на backend пока не production-grade
-5. В текущей среде нет `php`, `composer`, `docker`, поэтому backend проверяется только на VPS
-6. Базовый `vitest` setup уже есть, но Nuxt/composable frontend harness ещё не настроен
+1. Нужен реальный frontend integration pass против VPS backend
+2. Browser auth intentionally disabled until OAuth / Telegram verification is wired end-to-end
+3. Telegram `initData` verification на backend пока не production-grade
+4. В текущей среде нет `php`, `composer`, `docker`, поэтому backend проверяется только на VPS
+5. Базовый `vitest` setup уже есть, но Nuxt/composable frontend harness ещё не настроен
 
 ### Технический долг, который всплыл во время аудита
 
@@ -119,6 +120,11 @@
     - my trips / my requests / my responses
 4. Проверить, что `POST /api/auth/telegram` и `GET /api/user` реально работают с текущим frontend auth flow
 
+**Текущий статус:**
+- `USE_MOCK_API = false` уже включён
+- `frontend/nuxt.config.ts` уже знает `public.telegramBotId`
+- `useAuth.ts` в browser mode больше не запускает сломанный OAuth flow автоматически
+
 ### P3. Закрыть auth-конфигурацию
 
 **Цель:** убрать расхождение между `useAuth.ts` и runtime config.
@@ -165,10 +171,10 @@
 
 Если продолжать прямо с текущей точки, следующий нормальный шаг такой:
 
-1. Зафиксировать текущий backend runtime/persistence пакет в git
-2. Переключить фронт `mock → real` и пройти AYAN flow против VPS backend
+1. Пройти AYAN flow в UI против VPS backend
+2. Зафиксировать frontend real-API switch отдельным commit'ом
 3. Отдельным пакетом закрыть настоящую Telegram `initData` verification
 
 ## Короткая версия в одну строку
 
-Мы уже подняли реальный AYAN backend на VPS и перевели его на MySQL persistence + Sanctum; следующий этап — закоммитить этот runtime пакет, переключить фронт с mock на real API и потом дочистить настоящую Telegram verification.
+Мы уже подняли и запушили реальный AYAN backend на VPS, переключили фронт с mock на real API; следующий этап — пройти UI flow против VPS и потом дочистить настоящую Telegram verification.

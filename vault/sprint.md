@@ -13,17 +13,18 @@
 
 ### Resume Point — 2026-04-22
 
-- **Где остановились:** backend AYAN уже поднят на VPS как реальный Laravel runtime (`/var/www/iind-app/backend`) и больше не зависит от старого `orders` API, но frontend всё ещё сидит на `USE_MOCK_API = true`
-- **Главный блокер:** integration слой ещё не пройден end-to-end на фронте; Telegram `initData` verification пока в stub-режиме (`init_data = test` / parse only), не production-grade
-- **Последнее завершённое действие:** на VPS подтверждены `Laravel + MySQL + Nginx + Sanctum`, миграции прошли, `GET /api/health` = `200`, guest `GET /api/ayan/trips` = JSON `401`, AYAN persistence проверена feature tests
+- **Где остановились:** backend AYAN уже поднят и запушен в `front/ayan`, frontend AYAN переключён с mock на real API (`USE_MOCK_API = false`)
+- **Главный блокер:** auth для browser mode пока intentionally отключён до real Telegram OAuth / `initData` verification; production-grade verification на backend ещё не реализована
+- **Последнее завершённое действие:** frontend real-API switch подтверждён `npm run typecheck` + `npm run lint`, backend/vault runtime commit уже в `origin/front/ayan`
 - **Продолжать с:** `vault/resume-plan.md`
 
 ### Current Reality
 
-- Frontend Phase 1 = **mock-ready**, не `real API ready`
+- Frontend Phase 1 = **real API wired for AYAN**, но browser auth flow ещё intentionally урезан до TMA-first режима
 - Backend Phase 1 = **runtime-ready on VPS**: Laravel base восстановлен, Sanctum стоит, AYAN `trips / requests / responses / my/*` работают через MySQL persistence
 - Frontend testing base = **baseline ready** (`vitest` smoke path работает для plain TS unit tests, не для Nuxt composables)
 - Следующий реальный этап = переключение `mock → real` на фронте и прохождение flow against VPS backend
+- Следующий реальный этап = пройти полный AYAN flow в UI против VPS backend и затем закрыть real Telegram verification
 
 ### Задачи
 
@@ -38,7 +39,7 @@
 | 1.7 | Frontend: отклик + контакт (status, accept/reject, telegram link) | DONE | — |
 | 1.8 | Frontend: фильтры по маршруту/дате | DONE | — |
 | 1.9 | Frontend: Nuxt UI colors fix (cyan→primary, gray→neutral) | DONE | — |
-| 1.10 | Integration: mock → real API | TODO | 1.2 |
+| 1.10 | Integration: mock → real API | IN_PROGRESS | browser auth / real Telegram verification |
 | 1.11 | QA: все flow работают E2E | TODO | 1.10 |
 
 \* 1.4 и 1.5 — работают на mock API. При переключении на real API нужно проверить валидацию ответов.
@@ -48,8 +49,7 @@
 ### Блокеры
 
 - В текущей среде нет `php`, `composer`, `docker` — backend нельзя прогнать локально, только готовить статический Laravel-код
-- `frontend/app/config/api.config.ts` всё ещё держит `USE_MOCK_API = true`
-- `useAuth.ts` / frontend runtime config ещё не выровнены под реальный backend flow
+- Browser auth intentionally disabled until real OAuth / Telegram verification exists end-to-end
 - `POST /api/auth/telegram` уже выдаёт реальный Sanctum token, но Telegram `initData` cryptographic verification ещё не реализована
 - `1.11 QA E2E` нельзя закрыть до реального frontend integration и проверки full flow
 
@@ -74,7 +74,7 @@
 
 - [x] 1.1 Backend: миграции
 - [x] 1.2 Backend: модели + контроллеры
-- [ ] 1.10 Mock → Real API (зависит от 1.2)
+- [ ] 1.10 Mock → Real API (AYAN composables switched; full UI flow verification pending)
 - [ ] 1.11 QA E2E (зависит от 1.10)
 
 ### Resume Files
@@ -105,6 +105,10 @@
 - `backend/tests/Feature/AyanPersistenceTest.php`
 - `frontend/vitest.config.ts`
 - `frontend/tests/unit/validators.test.ts`
+- `frontend/app/config/api.config.ts`
+- `frontend/app/composables/useAuth.ts`
+- `frontend/nuxt.config.ts`
+- `.env.example`
 
 \* `1.2 DONE*`: transport/auth/runtime/persistence готовы для AYAN MVP и проверены на VPS, но `initData` verification пока не production-grade.
 

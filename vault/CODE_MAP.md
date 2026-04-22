@@ -9,7 +9,7 @@
 | Файл | Экспорт | Назначение |
 |------|---------|------------|
 | `useAPI.ts` | `useAPI()` | HTTP клиент (mock/real). Методы: get, post, put, del. Токен + initData в заголовках |
-| `useAuth.ts` | `useAuth()` | Auth: login (TMA init_data + OAuth), logout, switchRole. State: token, user |
+| `useAuth.ts` | `useAuth()` | Auth: login (TMA init_data), logout, switchRole. Browser OAuth auto-login сейчас intentionally disabled до real backend support. State: token, user |
 | `useError.ts` | `useGlobalError()` | Глобальные ошибки. showError/clearError. Автоскрытие через 5с |
 | `useNetwork.ts` | `useNetwork()` | Online/offline статус. isOnline |
 | `useStorage.ts` | `useStorage()` | localStorage wrapper. JSON serialize. get/set/remove/clear |
@@ -57,7 +57,7 @@
 | Файл | Назначение |
 |------|-----------|
 | `app.config.ts` | UI-оверрайды: primary=cyan, neutral=gray. Единый конфиг |
-| `config/api.config.ts` | `USE_MOCK_API = true/false`. MOCK_CONFIG: errorRate, delays |
+| `config/api.config.ts` | `USE_MOCK_API = true/false`. Сейчас `false` для реального AYAN backend. MOCK_CONFIG: errorRate, delays |
 | `config/mockData.ts` | MOCK_USERS, CITY_ROUTES, mockApiResponses |
 
 ### Testing (`frontend/`)
@@ -200,7 +200,7 @@
 
 | Сервис | Backend | Frontend | Mock Data |
 |--------|---------|----------|-----------|
-| AYAN | runtime-ready on VPS: migrations + Sanctum + persistence controllers; Telegram verification still stub | pages + composables + types | ayanMock.ts |
+| AYAN | runtime-ready on VPS: migrations + Sanctum + persistence controllers; Telegram verification still stub | pages + composables + types, real API switched on | ayanMock.ts |
 | TAL | routes only (нет контроллеров) | showcase | нет |
 | UUS | routes only | placeholder | нет |
 | AGAL | routes only | placeholder | нет |
@@ -219,7 +219,8 @@
 
 ## Audit Notes — 2026-04-22
 
-- `frontend/app/config/api.config.ts`: `USE_MOCK_API = true` — AYAN фронт всё ещё работает через mock
+- `frontend/app/config/api.config.ts`: `USE_MOCK_API = false` — AYAN фронт переключён на real API
+- `frontend/app/composables/useAuth.ts`: browser auto-login не ходит в старый OAuth flow до появления backend support
 - `backend/`: Laravel runtime восстановлен и проверен на VPS (`Nginx + PHP-FPM + MySQL`)
 - `backend/routes/api.php`: AYAN routes уже совпадают с фронтовым контрактом `trips / requests / responses / my/*`
 - `backend/app/Http/Controllers/Ayan/*`: persistence-backed, не sample arrays
