@@ -1,6 +1,6 @@
 <template>
 	<div class="tma-layout">
-		<main class="tma-main">
+		<main class="tma-main l-wrapper">
 			<slot />
 		</main>
 		<AppBottomNav />

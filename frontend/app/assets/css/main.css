@@ -101,3 +101,9 @@ body {
 .loader-fade-leave-to {
 	opacity: 0;
 }
+
+.l-wrapper {
+	max-width: 560px;
+	margin: 0 auto;
+	padding: 0 16px;
+}

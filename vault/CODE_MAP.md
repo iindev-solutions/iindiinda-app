@@ -22,6 +22,7 @@
 | `AppHeader.vue` | Шапка приложения |
 | `AppTitle.vue` | Заголовок страницы |
 | `BackButton.vue` | Универсальная кнопка назад (TMA + browser) |
+| `AppBottomNav.vue` | Нижняя навигация приложения |
 | `EmptyState.vue` | Пустое состояние списка |
 | `ErrorMessage.vue` | Отображение ошибки |
 | `LoadingSpinner.vue` | Спиннер загрузки |
@@ -55,12 +56,16 @@
 
 | Файл | Назначение |
 |------|-----------|
-| `app.config.ts` | UI-оверрайды: primary=cyan, neutral=gray. Единый конфиг (root app.config.ts удалён) |
+| `app.config.ts` | UI-оверрайды: primary=cyan, neutral=gray. Единый конфиг |
+| `config/api.config.ts` | `USE_MOCK_API = true/false`. MOCK_CONFIG: errorRate, delays |
+| `config/mockData.ts` | MOCK_USERS, CITY_ROUTES, mockApiResponses |
+
+### Testing (`frontend/`)
 
 | Файл | Назначение |
 |------|-----------|
-| `api.config.ts` | `USE_MOCK_API = true/false`. MOCK_CONFIG: errorRate, delays |
-| `mockData.ts` | MOCK_USERS, AyaniOrder, CITY_ROUTES, INTERCITY_ROUTES, generateMockOrders, mockApiResponses |
+| `vitest.config.ts` | Базовый Vitest config для plain TS unit tests (`environment: node`, `tests/**/*.test.ts`) |
+| `tests/unit/validators.test.ts` | Smoke unit tests для базовых валидаторов |
 
 ### Plugins (`frontend/app/plugins/`)
 
@@ -97,9 +102,8 @@
 | `app/composables/useAyanResponses.ts` | Отклики (fetch/create/cancel) |
 | `app/composables/useAyanMy.ts` | Мои данные (myTrips, myRequests, myResponses) |
 | `app/pages/ayan.vue` | Parent wrapper → /ayan (только <NuxtPage />) |
-| `app/pages/ayan/index.vue` | Лента поездок/запросов + табы |
-| `app/pages/ayan/create-trip.vue` | Форма создания поездки |
-| `app/pages/ayan/create-request.vue` | Форма создания запроса |
+| `app/pages/ayan/index.vue` | Лента поездок/запросов + табы + кнопка создания |
+| `app/components/AyanCreateSlideover.vue` | Единый slideover создания поездки/запроса (pill-табы, side=bottom) |
 | `app/pages/ayan/trip/[id].vue` | Детали поездки + отклик |
 | `app/pages/ayan/request/[id].vue` | Детали запроса + отклик |
 
@@ -140,7 +144,7 @@
 
 ## Backend: `backend/`
 
-**Статус**: Scaffold-only. Нет миграций, нет моделей (.gitkeep).
+**Статус**: In progress. Старый scaffold ещё есть, параллельно добавлен новый AYAN contract-aligned skeleton.
 
 ### Controllers
 
@@ -149,6 +153,10 @@
 | `AuthController.php` | Login via Telegram (mock) |
 | `UserController.php` | me, switchRole (mock) |
 | `Ayan/OrderController.php` | AYAN orders (mock) |
+| `Ayan/TripController.php` | Новый AYAN contract-aligned skeleton: trips endpoints |
+| `Ayan/RequestController.php` | Новый AYAN contract-aligned skeleton: requests endpoints |
+| `Ayan/ResponseController.php` | Новый AYAN contract-aligned skeleton: responses endpoints |
+| `Ayan/MyController.php` | Новый AYAN contract-aligned skeleton: my trips/requests/responses |
 
 ### Routes (`backend/routes/api.php`)
 
@@ -170,7 +178,7 @@
 
 | Сервис | Backend | Frontend | Mock Data |
 |--------|---------|----------|-----------|
-| AYAN | scaffold (OrderController mock) | pages + composables + types | ayanMock.ts |
+| AYAN | in progress: old OrderController + new contract skeleton | pages + composables + types | ayanMock.ts |
 | TAL | routes only (нет контроллеров) | showcase | нет |
 | UUS | routes only | placeholder | нет |
 | AGAL | routes only | placeholder | нет |
@@ -182,6 +190,14 @@
 
 - `frontend/nuxt.config.ts` — Nuxt конфиг, extends слоёв
 - `frontend/app/app.vue` — Root component
+- `frontend/app/app.vue` — overlay loader сейчас закомментирован, активен только `NuxtLoadingIndicator`
 - `frontend/app/config/api.config.ts` — Mock/real toggle
 - `backend/routes/api.php` — Все API маршруты
 - `vault/wiki/services/ayan/api-contract.md` — Финальный API контракт AYAN
+
+## Audit Notes — 2026-04-22
+
+- `frontend/app/config/api.config.ts`: `USE_MOCK_API = true` — AYAN фронт всё ещё работает через mock
+- `backend/routes/api.php` + `backend/app/Http/Controllers/Ayan/OrderController.php`: backend AYAN всё ещё на старом `orders` API
+- Текущий backend AYAN **не совпадает** с фронтовым контрактом `trips / requests / responses / my/*`
+- Добавлен новый backend skeleton под contract-aligned AYAN API, но в текущей среде он не проверен рантаймом

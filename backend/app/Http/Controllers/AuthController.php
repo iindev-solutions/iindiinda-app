@@ -1,22 +1,13 @@
 <?php
 
-namespace AppHttpControllers;
+namespace App\Http\Controllers;
 
-use IlluminateHttpJsonResponse;
+use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    /**
-     * Login via Telegram WebApp initData
-     *
-     * Body: { init_data: string }
-     * Reply: { token: string, user: User }
-     */
     public function loginViaTelegram(): JsonResponse
     {
-        // TODO: Validate Telegram initData
-        // For now, return mock user
-
         $mockUser = [
             'id' => 1,
             'telegram_id' => 123456789,

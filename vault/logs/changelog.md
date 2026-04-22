@@ -4,6 +4,99 @@
 
 ---
 
+## 2026-04-22 — Deep Audit + Resume Plan
+
+### Что сделано
+- Проведён глубокий аудит `vault`, frontend и backend для восстановления stop point
+- Создан `vault/resume-plan.md` — единая точка входа: где остановились, что блокирует, что делать дальше
+- Обновлён `vault/sprint.md` — добавлены `Resume Point`, реальные блокеры и список resume files
+- Обновлён `vault/master_index.md` — добавлена ссылка на resume-plan, исправлен счётчик задач спринта
+- Обновлён `vault/CODE_MAP.md` — добавлен `AppBottomNav.vue`, зафиксирован факт что backend всё ещё на old `orders` API, а `app.vue` loader overlay отключён
+
+### Ключевой вывод
+- Мы остановились после почти готового AYAN frontend на mock API
+- Следующий реальный этап: заменить backend `/ayan/orders/*` на contract-aligned AYAN API (`trips`, `requests`, `responses`, `my/*`)
+
+### Verified
+- Аудит docs/code sync ✅
+
+---
+
+## 2026-04-22 — Vitest Setup Baseline
+
+### Что сделано
+- Завершён начатый setup `vitest`
+- Добавлены scripts: `test`, `test:watch`
+- Добавлен `frontend/vitest.config.ts`
+- Добавлен smoke test `frontend/tests/unit/validators.test.ts`
+- Обновлены `vault/resume-plan.md`, `vault/sprint.md`, `vault/CODE_MAP.md` под новый stop point
+- Текущий уровень готовности: baseline для plain TS unit tests, не полный Nuxt/composable test harness
+
+### Verified
+- `npm run test` ✅
+- `npm run typecheck` ✅
+- `npm run lint -- tests/unit/validators.test.ts vitest.config.ts` ✅ (по факту запускает `eslint .` в frontend)
+
+---
+
+## 2026-04-22 — Backend AYAN Contract Skeleton
+
+### Что сделано
+- Добавлен базовый Laravel-style skeleton под новый AYAN contract
+- Добавлены модели: `User`, `Trip`, `AyanRequest`, `AyanResponse`
+- Добавлены миграции: `users`, `trips`, `requests`, `responses`
+- Добавлены новые controllers: `TripController`, `RequestController`, `ResponseController`, `MyController`
+- `backend/routes/api.php` переведён с old `/ayan/orders/*` на новый набор `trips / requests / responses / my/*`
+- Исправлены namespaces/imports в `AuthController`, `UserController`, добавлен базовый `Controller.php`
+
+### Важно
+- Это пока **contract-aligned skeleton**, не подтверждённый рабочим Laravel runtime
+- В текущей среде нет `php`, `composer`, `docker`, поэтому backend нельзя было прогнать или промигрировать
+
+### Next
+- Поднять реальный Laravel runtime
+- Прогнать миграции
+- Заменить mock payloads на persistence и реальную auth-логику
+
+### Docs
+- Добавлен `vault/wiki/services/ayan/backend-bringup.md` — пошаговый runtime checklist для первого реального запуска backend
+
+## 2026-04-19 — AYAN Slideover + Color Fix
+
+### Slideover: Merge Create Forms
+
+**Проблема:** Две отдельные страницы (`create-trip.vue`, `create-request.vue`) с почти идентичным кодом. Две кнопки на ленте. Навигация на отдельную страницу = задержка.
+
+**Решение:**
+- Создан `AyanCreateSlideover.vue` — единый bottom-slideover с pill-табами (Поездка/Запрос)
+- `side="bottom"` + `rounded-t-2xl` + `max-h-[85dvh]` — мобильный sheet
+- Общие поля: откуда, куда, дата, время
+- `formType === 'trip'` → места + цена + комментарий
+- `formType === 'request'` → комментарий (description)
+- После сабмита → slideover закрывается, форма сбрасывается
+- Одна кнопка на ленте вместо двух → открывает slideover
+- Удалены `create-trip.vue`, `create-request.vue`
+
+### Color Fix: cyan/gray → primary/neutral
+
+**Проблема:** `color="cyan"` / `color="gray"` — не валидные Nuxt UI v4 prop values. TS ошибки + красная ui.vue страница.
+
+**Решение:**
+- `color="cyan"` → `color="primary"` (primary=cyan в app.config)
+- `color="gray"` → `color="neutral"` (neutral=gray в app.config)
+- `color="cyan"` (rejected badge) → `color="error"` (семантически верно)
+- `color="cyan"` (progress) → `color="success"` (семантически верно)
+- Затронуто: `BackButton.vue`, `ErrorMessage.vue`, `ui.vue`
+- **typecheck + lint: 0 ошибок** (впервые чисто)
+
+### i18n
+- Добавлены `ayan.create.ride/request/from/to/date/time` (ru + sah)
+
+### Verified
+- typecheck ✅ lint ✅
+
+---
+
 ## 2026-04-19 — Forms, Validation, Performance
 
 ### Forms: Error State + Layout (create-request, create-trip)

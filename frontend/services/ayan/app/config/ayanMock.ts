@@ -8,7 +8,8 @@ import type {
 	AyanResponseUser,
 	AyanTripCreate,
 	AyanRequestCreate,
-	AyanFilters
+	AyanFilters,
+	AyanResponseStatus
 } from '../types/ayan'
 
 const CITY_ROUTES = [
@@ -137,6 +138,7 @@ export function generateMockRequests(count = 6, filters?: AyanFilters): AyanRequ
 }
 
 export function generateMockResponses(count = 3): AyanResponse[] {
+	const statuses: AyanResponseStatus[] = ['pending', 'accepted', 'rejected']
 	const responses: AyanResponse[] = []
 
 	for (let i = 0; i < count; i++) {
@@ -147,6 +149,7 @@ export function generateMockResponses(count = 3): AyanResponse[] {
 			id: 300 + i,
 			user,
 			message: Math.random() > 0.5 ? 'Могу подвезти, звоните' : null,
+			status: statuses[i % 3] ?? 'pending',
 			created_at: new Date(Date.now() - Math.floor(Math.random() * 24) * 3600000).toISOString()
 		})
 	}
@@ -174,7 +177,7 @@ export function findMockRequest(id: number): AyanRequest | null {
 
 export function createMockTrip(data: AyanTripCreate): AyanTrip {
 	const driver = mockDrivers[0]!
-	return {
+	const trip: AyanTrip = {
 		id: Math.floor(Math.random() * 10000) + 1000,
 		driver,
 		...data,
@@ -182,11 +185,13 @@ export function createMockTrip(data: AyanTripCreate): AyanTrip {
 		status: 'open',
 		created_at: new Date().toISOString()
 	}
+	getMockTripsStore().unshift(trip)
+	return trip
 }
 
 export function createMockRequest(data: AyanRequestCreate): AyanRequest {
 	const passenger = mockPassengers[0]!
-	return {
+	const req: AyanRequest = {
 		id: Math.floor(Math.random() * 10000) + 2000,
 		passenger,
 		...data,
@@ -195,6 +200,8 @@ export function createMockRequest(data: AyanRequestCreate): AyanRequest {
 		status: 'open',
 		created_at: new Date().toISOString()
 	}
+	getMockRequestsStore().unshift(req)
+	return req
 }
 
 export function createMockResponse(message?: string | null): AyanResponse {
@@ -203,6 +210,7 @@ export function createMockResponse(message?: string | null): AyanResponse {
 		id: Math.floor(Math.random() * 10000) + 3000,
 		user,
 		message: message ?? null,
+		status: 'pending',
 		created_at: new Date().toISOString()
 	}
 }
