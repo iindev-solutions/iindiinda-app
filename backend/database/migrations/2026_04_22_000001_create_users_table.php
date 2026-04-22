@@ -13,7 +13,7 @@ return new class extends Migration {
             $table->string('first_name');
             $table->string('username')->nullable();
             $table->string('role')->default('passenger');
-            $table->unsignedDecimal('rating', 3, 2)->default(5.0);
+            $table->decimal('rating', 3, 2)->default(5.0);
             $table->unsignedInteger('completed_orders')->default(0);
             $table->boolean('is_available')->default(true);
             $table->timestamps();

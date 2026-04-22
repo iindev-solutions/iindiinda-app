@@ -13,24 +13,24 @@
 
 ### Resume Point — 2026-04-22
 
-- **Где остановились:** frontend AYAN практически готов, но всё ещё работает через `mock API`
-- **Главный блокер:** backend до сих пор на старом `/ayan/orders/*`, а frontend уже живёт в контракте `trips / requests / responses / my/*`
-- **Последнее завершённое локальное действие:** `vitest` setup поднят как baseline для plain TS smoke tests (`frontend/vitest.config.ts`, `test`, `test:watch`, smoke test)
+- **Где остановились:** backend AYAN уже поднят на VPS как реальный Laravel runtime (`/var/www/iind-app/backend`) и больше не зависит от старого `orders` API, но frontend всё ещё сидит на `USE_MOCK_API = true`
+- **Главный блокер:** integration слой ещё не пройден end-to-end на фронте; Telegram `initData` verification пока в stub-режиме (`init_data = test` / parse only), не production-grade
+- **Последнее завершённое действие:** на VPS подтверждены `Laravel + MySQL + Nginx + Sanctum`, миграции прошли, `GET /api/health` = `200`, guest `GET /api/ayan/trips` = JSON `401`, AYAN persistence проверена feature tests
 - **Продолжать с:** `vault/resume-plan.md`
 
 ### Current Reality
 
 - Frontend Phase 1 = **mock-ready**, не `real API ready`
-- Backend Phase 1 = **blocked by missing real implementation**, не только миграции, но и несовпадение доменной модели
+- Backend Phase 1 = **runtime-ready on VPS**: Laravel base восстановлен, Sanctum стоит, AYAN `trips / requests / responses / my/*` работают через MySQL persistence
 - Frontend testing base = **baseline ready** (`vitest` smoke path работает для plain TS unit tests, не для Nuxt composables)
-- Переключение `mock → real` начинать только после замены backend `orders` API на новый AYAN contract
+- Следующий реальный этап = переключение `mock → real` на фронте и прохождение flow against VPS backend
 
 ### Задачи
 
 | # | Задача | Статус | Блокеры |
 |---|--------|--------|---------|
-| 1.1 | Backend: миграции (users, trips, requests, responses) | IN_PROGRESS | нет runtime verification |
-| 1.2 | Backend: модели + контроллеры AYAN | IN_PROGRESS | 1.1, нет runtime verification |
+| 1.1 | Backend: миграции (users, trips, requests, responses) | DONE | — |
+| 1.2 | Backend: модели + контроллеры AYAN | DONE* | real Telegram initData verification ещё stub |
 | 1.3 | Frontend: структура AYAN (pages, composables, types) | DONE | — |
 | 1.4 | Frontend: создание поездки/запроса (единый slideover + pill-табы) | DONE* | — |
 | 1.5 | Frontend: лента поездок/запросов + табы + empty state | DONE* | — |
@@ -47,10 +47,11 @@
 
 ### Блокеры
 
-- Backend всё ещё использует старый mock `Ayan\\OrderController` и маршруты `/ayan/orders/*`
-- Backend не совпадает с `vault/wiki/services/ayan/api-contract.md`
 - В текущей среде нет `php`, `composer`, `docker` — backend нельзя прогнать локально, только готовить статический Laravel-код
-- `1.10 Mock → Real API` и `1.11 QA E2E` нельзя нормально начать до завершения `1.1` и `1.2`
+- `frontend/app/config/api.config.ts` всё ещё держит `USE_MOCK_API = true`
+- `useAuth.ts` / frontend runtime config ещё не выровнены под реальный backend flow
+- `POST /api/auth/telegram` уже выдаёт реальный Sanctum token, но Telegram `initData` cryptographic verification ещё не реализована
+- `1.11 QA E2E` нельзя закрыть до реального frontend integration и проверки full flow
 
 ### Решения
 
@@ -71,8 +72,8 @@
 
 ### Blocked by Backend (1.1, 1.2)
 
-- [ ] 1.1 Backend: миграции
-- [ ] 1.2 Backend: модели + контроллеры
+- [x] 1.1 Backend: миграции
+- [x] 1.2 Backend: модели + контроллеры
 - [ ] 1.10 Mock → Real API (зависит от 1.2)
 - [ ] 1.11 QA E2E (зависит от 1.10)
 
@@ -85,18 +86,27 @@
 - `backend/app/Http/Controllers/Ayan/RequestController.php`
 - `backend/app/Http/Controllers/Ayan/ResponseController.php`
 - `backend/app/Http/Controllers/Ayan/MyController.php`
+- `backend/app/Http/Middleware/ForceJsonResponse.php`
+- `backend/app/Http/Controllers/Ayan/Concerns/SerializesAyanData.php`
 - `backend/routes/api.php`
-- `backend/app/Http/Controllers/Ayan/OrderController.php`
 - `backend/app/Models/User.php`
 - `backend/app/Models/Trip.php`
 - `backend/app/Models/AyanRequest.php`
 - `backend/app/Models/AyanResponse.php`
+- `backend/bootstrap/app.php`
+- `backend/config/auth.php`
+- `backend/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php`
 - `backend/database/migrations/2026_04_22_000001_create_users_table.php`
 - `backend/database/migrations/2026_04_22_000002_create_trips_table.php`
 - `backend/database/migrations/2026_04_22_000003_create_requests_table.php`
 - `backend/database/migrations/2026_04_22_000004_create_responses_table.php`
+- `backend/tests/Feature/AuthApiTest.php`
+- `backend/tests/Feature/AyanAuthTest.php`
+- `backend/tests/Feature/AyanPersistenceTest.php`
 - `frontend/vitest.config.ts`
 - `frontend/tests/unit/validators.test.ts`
+
+\* `1.2 DONE*`: transport/auth/runtime/persistence готовы для AYAN MVP и проверены на VPS, но `initData` verification пока не production-grade.
 
 ---
 

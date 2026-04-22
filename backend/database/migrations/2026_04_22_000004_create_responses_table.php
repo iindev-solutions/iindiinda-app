@@ -2,7 +2,6 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
@@ -18,9 +17,6 @@ return new class extends Migration {
             $table->timestamps();
         });
 
-        DB::statement(
-            'ALTER TABLE responses ADD CONSTRAINT responses_target_check CHECK ((trip_id IS NOT NULL AND request_id IS NULL) OR (trip_id IS NULL AND request_id IS NOT NULL))'
-        );
     }
 
     public function down(): void

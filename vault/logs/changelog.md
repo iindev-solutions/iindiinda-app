@@ -4,6 +4,43 @@
 
 ---
 
+## 2026-04-22 — VPS Backend Bring-Up + AYAN Persistence
+
+### Что сделано
+- Поднят реальный Laravel runtime для `backend/` на VPS (`/var/www/iind-app/backend`) под `Nginx + PHP-FPM + MySQL`
+- Восстановлен Laravel base в `backend/`: `artisan`, `composer.json`, `bootstrap/`, `config/`, `routes/console.php`, `resources/`, `tests/`, `storage/`
+- Настроен Nginx на `backend/public`, health endpoint начал отвечать по HTTP
+- Установлен `laravel/sanctum`, добавлена миграция `personal_access_tokens`
+- `AuthController` переведён с `mock_token_*` на реальный Sanctum token issuance
+- `UserController` переведён на authenticated user вместо hardcoded mock payload
+- `TripController`, `RequestController`, `ResponseController`, `MyController` переведены с sample arrays на MySQL persistence
+- Добавлен `ForceJsonResponse` middleware, чтобы guest protected API давал JSON `401`, а не HTML redirect / `Route [login] not defined`
+- Исправлены backend migrations под реальный Laravel/MySQL runtime:
+  - `unsignedDecimal()` → `decimal()` в `users`
+  - убран DB-level `CHECK` constraint из `responses`, несовместимый с текущим MySQL FK setup
+- Добавлены backend feature tests:
+  - `backend/tests/Feature/AuthApiTest.php`
+  - `backend/tests/Feature/AyanAuthTest.php`
+  - `backend/tests/Feature/AyanPersistenceTest.php`
+- Обновлены `vault/sprint.md`, `vault/resume-plan.md`, `vault/CODE_MAP.md` под новый stop point
+
+### Verified
+- `./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php /var/www/iind-app/backend/tests/Feature/AyanPersistenceTest.php` ✅ (`6 tests, 69 assertions`)
+- `curl http://89.22.226.34/api/health` ✅ (`200`)
+- `curl http://89.22.226.34/api/ayan/trips` ✅ (`401` JSON guest auth)
+- `POST /api/auth/telegram` → real Sanctum token ✅
+- `GET /api/user` with bearer token ✅
+
+### Важно
+- Telegram `initData` verification пока ещё не production-grade: есть stub `init_data = test` + простой parse payload
+- Frontend всё ещё на `USE_MOCK_API = true`, integration пакет ещё не начат
+- Изменения пока не зафиксированы git commit'ом; VPS и локальный repo синхронизированы файлово, но branch ещё dirty
+
+### Next
+- Закоммитить и запушить Laravel runtime + backend fixes
+- Переключить фронт `mock → real` и пройти AYAN flow против VPS backend
+- Отдельным пакетом закрыть настоящую Telegram `initData` verification
+
 ## 2026-04-22 — Deep Audit + Resume Plan
 
 ### Что сделано

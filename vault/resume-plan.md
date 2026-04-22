@@ -7,9 +7,9 @@
 ## Stop Point
 
 - Текущая ветка: `front/ayan`
-- Локальная ветка: `ahead 1` относительно `origin/front/ayan`
-- Незакоммиченные изменения: `frontend/package.json`, `frontend/package-lock.json`, `frontend/vitest.config.ts`, `frontend/tests/unit/validators.test.ts`, обновления в `vault/*`
-- Последнее завершённое действие: `vitest` setup доведён до рабочего **baseline** состояния (`test`, `test:watch`, `vitest.config.ts`, plain TS smoke test)
+- Локальная ветка: `front/ayan` с большим незакоммиченным backend пакетом (Laravel runtime base, Sanctum, AYAN persistence, vault updates)
+- Незакоммиченные изменения: backend runtime files + AYAN backend fixes + backend feature tests + обновления в `vault/*`
+- Последнее завершённое действие: VPS backend bring-up + AYAN persistence verification (`Laravel + MySQL + Nginx + Sanctum`, health `200`, guest protected route `401`, feature tests green)
 
 ## Где мы остановились
 
@@ -21,11 +21,13 @@
 
 ### Backend
 
-- Backend Phase 1 фактически не начат как real API
-- В репо всё ещё старый mock-контур `/ayan/orders/*`
-- Текущий backend не совпадает с новым контрактом AYAN: `trips / requests / responses / my/*`
-- Миграций, моделей и реальной persistence-логики под AYAN пока нет
-- После текущего хода уже добавлен contract-aligned Laravel skeleton, но он ещё не проверен рантаймом
+- Backend Phase 1 уже не skeleton-only: на VPS поднят рабочий Laravel runtime в `backend/`
+- AYAN routes теперь реально зарегистрированы как `trips / requests / responses / my/*`
+- Миграции `users`, `trips`, `requests`, `responses`, `personal_access_tokens` прогнаны на MySQL
+- `AuthController` уже выдаёт реальный Sanctum token, `UserController` читает authenticated user
+- `TripController`, `RequestController`, `ResponseController`, `MyController` переведены с sample arrays на MySQL persistence
+- Guest API transport починен: protected `api/*` больше не падают в missing `login` route, а отвечают JSON `401`
+- Production-grade Telegram `initData` verification пока ещё не реализована: сейчас работает stub `init_data = test` + простой parse payload
 
 ---
 
@@ -34,17 +36,18 @@
 ### Что реально готово
 
 1. Frontend AYAN MVP готов в mock-режиме
-2. Vault в целом отражает направление работ, но не фиксирует точку остановки
-3. API контракт AYAN уже сместился на правильную модель: `trips`, `requests`, `responses`
+2. Backend AYAN runtime реально поднят на VPS и отвечает по HTTP
+3. API контракт AYAN уже подтверждён рантаймом для основных persistence endpoints
+4. Базовый backend regression layer теперь есть: auth + guest auth handling + AYAN persistence feature tests
 
 ### Что блокирует следующий этап
 
-1. Backend всё ещё на старом `OrderController` и маршрутах `/ayan/orders/*`
-2. `frontend/app/config/api.config.ts` всё ещё держит `USE_MOCK_API = true`
+1. `frontend/app/config/api.config.ts` всё ещё держит `USE_MOCK_API = true`
+2. Нужен реальный frontend integration pass против VPS backend
 3. `useAuth.ts` ждёт `config.public.telegramBotId`, но этот runtime config не описан в `frontend/nuxt.config.ts`
-4. В `frontend/app/app.vue` overlay loader сейчас закомментирован, хотя в changelog он описан как активный
-5. Базовый `vitest` setup уже есть, но он покрывает только plain TS smoke tests, не Nuxt/composable runtime
-6. В текущей среде нет `php`, `composer`, `docker`, поэтому backend нельзя прогнать локально
+4. Telegram `initData` verification на backend пока не production-grade
+5. В текущей среде нет `php`, `composer`, `docker`, поэтому backend проверяется только на VPS
+6. Базовый `vitest` setup уже есть, но Nuxt/composable frontend harness ещё не настроен
 
 ### Технический долг, который всплыл во время аудита
 
@@ -69,27 +72,27 @@
 
 **Цель:** убрать старый `orders`-слой и дать фронту реальный API под текущие composables.
 
-**Текущий статус:** contract-aligned routes/controllers/models/migrations уже добавлены как skeleton. Следующий шаг — прогнать это в реальном Laravel runtime и заменить mock-логику на persistence.
+**Текущий статус:** runtime + persistence уже подняты на VPS. Следующий шаг по backend — дочистить auth до production-grade Telegram verification и затем коммитнуть/запушить весь Laravel runtime пакет в git.
 
-**Начинать с файлов:**
-- `backend/routes/api.php`
-- `backend/app/Http/Controllers/Ayan/OrderController.php`
-- `vault/wiki/services/ayan/api-contract.md`
+**Ключевые файлы:**
+- `backend/bootstrap/app.php`
+- `backend/app/Http/Middleware/ForceJsonResponse.php`
+- `backend/app/Http/Controllers/AuthController.php`
+- `backend/app/Http/Controllers/UserController.php`
+- `backend/app/Http/Controllers/Ayan/TripController.php`
+- `backend/app/Http/Controllers/Ayan/RequestController.php`
+- `backend/app/Http/Controllers/Ayan/ResponseController.php`
+- `backend/app/Http/Controllers/Ayan/MyController.php`
+- `backend/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php`
+- `backend/tests/Feature/AuthApiTest.php`
+- `backend/tests/Feature/AyanAuthTest.php`
+- `backend/tests/Feature/AyanPersistenceTest.php`
 
 **Что делать:**
-1. Поднять рабочий Laravel runtime с `php` + `composer`
-2. Прогнать миграции `users`, `trips`, `requests`, `responses`
-3. Прогнать и дочистить модели под новый контракт
-4. Довести новые endpoints вместо old `orders` API:
-   - `GET/POST /ayan/trips`
-   - `GET/POST /ayan/requests`
-   - `GET/POST /ayan/*/{id}/responses`
-   - `PATCH/DELETE /ayan/responses/{id}`
-   - `GET /ayan/my/trips`
-   - `GET /ayan/my/requests`
-   - `GET /ayan/my/responses`
-5. Вернуть ответ в формате, который ждёт фронт: `{ success, data }`
-6. Удалить legacy `Ayan/OrderController.php`, когда новый runtime слой будет подтверждён
+1. Закоммитить и запушить Laravel runtime base + backend fixes, чтобы future `git pull` не зависел от ручного VPS состояния
+2. Реализовать настоящую Telegram `initData` verification в `POST /api/auth/telegram`
+3. Решить, нужен ли fallback/stub режим только для dev/VPS smoke path
+4. После этого можно считать backend Phase 1 реально готовым для frontend integration
 
 ### P2. Переключить AYAN с mock на real API
 
@@ -111,9 +114,10 @@
    - feed filters
    - detail page
    - create response
-   - accept/reject response
-   - contact link
-   - my trips / my requests / my responses
+    - accept/reject response
+    - contact link
+    - my trips / my requests / my responses
+4. Проверить, что `POST /api/auth/telegram` и `GET /api/user` реально работают с текущим frontend auth flow
 
 ### P3. Закрыть auth-конфигурацию
 
@@ -161,10 +165,10 @@
 
 Если продолжать прямо с текущей точки, следующий нормальный шаг такой:
 
-1. Подтвердить, что backend будет приводиться к новому контракту, а не развиваться вокруг `orders`
-2. Реализовать backend Phase `1.1` + `1.2`
-3. Только после этого включать real API на фронте
+1. Зафиксировать текущий backend runtime/persistence пакет в git
+2. Переключить фронт `mock → real` и пройти AYAN flow против VPS backend
+3. Отдельным пакетом закрыть настоящую Telegram `initData` verification
 
 ## Короткая версия в одну строку
 
-Мы остановились после почти готового AYAN frontend на mock API; следующий реальный этап — заменить backend old `/ayan/orders/*` на новый contract-aligned API и только потом переключать фронт на real.
+Мы уже подняли реальный AYAN backend на VPS и перевели его на MySQL persistence + Sanctum; следующий этап — закоммитить этот runtime пакет, переключить фронт с mock на real API и потом дочистить настоящую Telegram verification.
