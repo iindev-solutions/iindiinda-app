@@ -18,6 +18,7 @@ class TripController extends Controller
         $query = Trip::query()
             ->with('driver')
             ->where('status', 'open')
+            ->upcomingForFeed()
             ->latest();
 
         if ($request->filled('from')) {

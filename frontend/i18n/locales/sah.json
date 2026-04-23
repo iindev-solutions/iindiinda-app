@@ -62,6 +62,7 @@
 			"time": "Кэмэ",
 			"seats": "олорор сир",
 			"price": "Сыана",
+			"free": "Босхо",
 			"priceNegotiable": "Кэпсэтэн көрөбүт",
 			"seatsAvailable": "Олорор сир баар",
 			"comment": "Суруйуу",
@@ -95,6 +96,20 @@
 		"responses": "Хоруйдар",
 		"driver": "Водитель",
 		"passenger": "Пассажир",
+		"roleSwitcher": {
+			"title": "Роль",
+			"desc": "Атын көрүҥнү оҥороругар ролу уларыт",
+			"error": "Ролу уларытар сатаммата",
+			"successTitle": "Роль уларыйда",
+			"successDesc": {
+				"driver": "Билигин водитель буоллуҥ",
+				"passenger": "Билигин пассажир буоллуҥ"
+			},
+			"current": {
+				"driver": "Билигин водитель",
+				"passenger": "Билигин пассажир"
+			}
+		},
 		"contactReceived": "Контакт ылыллыбыт",
 		"respondFirst": "Бастаан хоруйдаа",
 		"validation": {
@@ -104,7 +119,8 @@
 		},
 		"status": {
 			"open": "Аһаҕас",
-			"closed": "Сабыллыбыт"
+			"closed": "Сабыллыбыт",
+			"past": "Ааспыт"
 		}
 	}
 }

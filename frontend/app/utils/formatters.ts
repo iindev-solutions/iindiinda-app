@@ -2,8 +2,17 @@
 // Price formatting
 // ==========================================
 
-export function formatPrice(price: number, currency = '₽'): string {
+export function formatPrice(price: number, currency = '₽', freeLabel?: string): string {
+	if (price === 0 && freeLabel) {
+		return freeLabel
+	}
+
 	return `${price.toLocaleString('ru-RU')} ${currency}`
+}
+
+export function isPastAyanDateTime(dateStr: string, timeStr?: string | null): boolean {
+	const fullDateTime = timeStr ? `${dateStr}T${timeStr}` : `${dateStr}T23:59:59`
+	return new Date(fullDateTime).getTime() < Date.now()
 }
 
 // ==========================================

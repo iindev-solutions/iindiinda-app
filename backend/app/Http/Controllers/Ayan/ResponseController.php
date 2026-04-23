@@ -80,6 +80,7 @@ class ResponseController extends Controller
 
         abort_if(!$trip, 404, 'Trip not found');
         abort_if($trip->status !== 'open', 422, 'Trip is closed');
+        abort_if($trip->isPast(), 422, 'Trip is past');
         abort_if($trip->driver_id === $user->id, 422, 'Cannot respond to your own trip');
         abort_if(
             AyanResponse::query()->where('trip_id', $trip->id)->where('user_id', $user->id)->exists(),
@@ -117,6 +118,7 @@ class ResponseController extends Controller
 
         abort_if(!$ayanRequest, 404, 'Request not found');
         abort_if($ayanRequest->status !== 'open', 422, 'Request is closed');
+        abort_if($ayanRequest->isPast(), 422, 'Request is past');
         abort_if($ayanRequest->passenger_id === $user->id, 422, 'Cannot respond to your own request');
         abort_if(
             AyanResponse::query()->where('request_id', $ayanRequest->id)->where('user_id', $user->id)->exists(),
@@ -160,6 +162,8 @@ class ResponseController extends Controller
         abort_if($response->status !== 'pending', 422, 'Response is not pending');
         abort_if($response->trip && $response->trip->status !== 'open', 422, 'Trip is closed');
         abort_if($response->request && $response->request->status !== 'open', 422, 'Request is closed');
+        abort_if($response->trip && $response->trip->isPast(), 422, 'Trip is past');
+        abort_if($response->request && $response->request->isPast(), 422, 'Request is past');
 
         if ($validated['status'] === 'accepted') {
             $conflictQuery = AyanResponse::query()->whereKeyNot($response->id)->where('status', 'accepted');

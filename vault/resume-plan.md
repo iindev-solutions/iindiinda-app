@@ -1,218 +1,182 @@
 # Resume Plan — 2026-04-23
 
-> Цель: быстро восстановить контекст, понять где мы остановились, и продолжить Phase 1 без повторного аудита.
-
----
+> Goal: restore the exact current state quickly and continue work without depending on chat history.
 
 ## Stop Point
 
-- Текущая ветка: `front/ayan`
-- `front/ayan` уже содержит и remote commit `755f7c6` `fix(ayan): enforce auth and response rules`
-- Этот commit уже в `origin/front/ayan`
-- Локальный dev flow для теста real backend: `frontend/.env` (ignored) с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api` и `NUXT_PUBLIC_DEV_INIT_DATA=test`
-- VPS alias подтверждён локальным SSH config: `iind-vps -> root@89.22.226.34`
-- `gh-pages` ветка уже опубликована: static output запушен отдельным temp-repo commit'ом `bff6aa5`
-- Expected URL: `https://iindev-solutions.github.io/iindiinda-app/`
-- GitHub Pages уже live: `/` и `/ayan` отвечают `200`, rebased asset path `/iindiinda-app/assets/*` тоже отвечает `200`
-- Прямой AYAN VPS smoke уже зелёный: два synthetic Telegram payload юзера прошли `POST /auth/telegram` → create trip/request → respond → accept → `my/*`
-- Новый локальный hardening slice уже сделан и запушен:
-  1. `AuthController` больше не принимает forged `initData` как раньше
-  2. `init_data=test` ограничен `local/testing`
-  3. AYAN role/owner rules закрыты на backend
-  4. frontend detail pages больше не тянут owner-only `/responses` для non-owner
-- Важный нюанс для следующего деплоя: прямой build с `NUXT_APP_BASE_URL=/iindiinda-app/` ломает Nuxt prerender; рабочий flow сейчас такой:
-  1. build с `NUXT_APP_BASE_URL=/`
-  2. rebased output: `href/src /assets/*` → `/iindiinda-app/assets/*`, `app.baseURL` → `/iindiinda-app/`
-  3. publish `.output/public` в `gh-pages`
-- Важно: в generated HTML всё ещё сериализуется ключ `public.devInitData` как пустая строка; не публиковать deploy build с непустым `NUXT_PUBLIC_DEV_INIT_DATA`
-- Текущий blocker: `ssh iind-vps` с этой машины рвётся сразу после handshake (`Connection closed by 89.22.226.34 port 22`), поэтому `git pull` и backend phpunit на новом commit ещё не выполнены
+- Current branch: `front/ayan`
+- Local `front/ayan` and `origin/front/ayan` are currently aligned at `1fd837f` `docs(vault): record ayan hardening handoff`
+- Remote branch already contains the AYAN hardening commit: `755f7c6` `fix(ayan): enforce auth and response rules`
+- Local workspace now also contains a new uncommitted slice for AYAN past-item and free-price UX plus AYAN role switching UI:
+  - public feed should hide expired open trips/requests
+  - My/details should still show them with a past badge
+  - `0` price should render as localized free text
+  - backend response actions should reject expired open targets
+  - AYAN page should expose passenger/driver switching through the existing auth endpoint
+- Local frontend dev flow against VPS uses `frontend/.env` with:
+  - `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`
+  - optional `NUXT_PUBLIC_DEV_INIT_DATA=test`
+- VPS alias is defined locally as `iind-vps -> root@89.22.226.34`
+- Local workspace is currently dirty only in documentation/vault files; no new frontend/backend code drift was found in this audit
+- GitHub Pages is live:
+  - `/` responds `200`
+  - `/ayan` responds `200`
+  - rebased assets under `/iindiinda-app/assets/*` respond correctly
+- VPS frontend HTTP deploy now also works:
+  - `http://89.22.226.34/` serves the frontend SPA
+  - `http://89.22.226.34/ayan` falls back to SPA entry correctly
+  - `http://89.22.226.34/api/health` still returns `200`
+- Previous direct AYAN VPS smoke was green for:
+  - `POST /auth/telegram`
+  - create trip/request
+  - respond
+  - accept
+  - `my/*`
+- The VPS runtime is reachable again from this machine:
+  - `ssh iind-vps` succeeds
+  - `curl -I http://89.22.226.34/api/health` returns `200`
+  - focused backend feature tests pass on the clean synchronized checkout (`13 tests, 94 assertions`)
+- VPS checkout state during this audit:
+  - current HEAD: `1fd837f` `docs(vault): record ayan hardening handoff`
+  - tracking `origin/front/ayan`
+  - worktree is clean after sync
+- Previous dirty VPS state was preserved before sync:
+  - backup patch: `/root/iind-backups/backend-dirty-20260423.patch`
+  - backup status: `/root/iind-backups/backend-dirty-20260423.status`
+  - backup untracked list: `/root/iind-backups/backend-untracked-20260423.list`
+  - backup untracked archive: `/root/iind-backups/backend-untracked-20260423.tgz`
+  - git stash: `stash@{0}` `pre-sync-20260423`
+- Latest local hardening slice already pushed:
+  1. `AuthController` no longer accepts forged Telegram payloads the old way
+  2. `init_data=test` is limited to `local/testing`
+  3. AYAN role and owner rules are enforced in backend code
+  4. frontend detail pages no longer fetch owner-only response lists for non-owners
+- Current blocker:
+  - clean deployment verification is no longer blocked and has already passed
+  - role switching UX is now implemented locally, but still needs manual live verification against the real backend
+  - browser auth also remains intentionally limited outside final Telegram flow
+  - the new past-item/backend-expiry slice is only local right now; it has frontend verification and backend syntax/app-boot verification, but not full backend feature-test execution on isolated VPS because VPS test environment options are constrained
+  - VPS frontend has no trusted HTTPS yet because there is no hostname/domain bound to the server
 
-### Session-Restart Handoff (коротко)
+## Session Restart Prompt
 
-Когда открывается новая сессия, стартовый prompt:
+Use this prompt at the start of the next session:
 
 ```text
-Read vault/resume-plan.md and continue from “Stop Point”.
-Current task: restore `ssh iind-vps`, run `git pull` in `/var/www/iind-app/backend`, then execute backend feature tests for AYAN auth/authorization hardening.
+Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
+Current task: verify the new AYAN role switcher and past-item UX against the VPS frontend/backend, then attach a hostname and add HTTPS for Telegram-ready deployment.
 ```
 
-Минимальный безопасный план на следующую сессию:
-1. Починить доступ `ssh iind-vps`
-2. На VPS: `git -C /var/www/iind-app/backend status --short --branch`
-3. На VPS: `git -C /var/www/iind-app/backend pull --ff-only`
-4. На VPS: `cd /var/www/iind-app/backend && ./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php`
-5. После remote green обновить `vault/logs/changelog.md`, `vault/sprint.md`, `vault/resume-plan.md`
+## Safe Next-Step Plan
 
-## Где мы остановились
+1. Commit/deploy the current local AYAN slice:
+   - public feed hides expired items
+   - My/details show past badge
+   - `0` price shows free label
+   - AYAN role switcher toggles passenger/driver in UI
+2. If deploying backend slice, choose verification path carefully because isolated VPS backend tests could not use SQLite and copied MySQL runs collided with existing tables
+3. Manually test role-aware flows against live backend/front on VPS:
+   - default login lands as `passenger`
+   - passenger can create request and respond to trip
+   - driver can create trip and respond to request
+   - owners can see/accept/reject responses
+4. Add a hostname for VPS frontend so HTTPS can be issued
+5. Issue TLS cert and switch Nginx frontend to HTTPS when hostname is ready
+6. Record the result in:
+   - `vault/logs/changelog.md`
+   - `vault/sprint.md`
+   - `vault/resume-plan.md`
 
-### Frontend
+## Frontend State
 
-- AYAN на фронте уже собран и переключён на **real API** (`USE_MOCK_API = false`)
-- Готово: лента поездок/запросов, фильтры, единый `AyanCreateSlideover`, детали поездки/запроса, отклики, принятие/отклонение, Telegram contact link
-- `npm run typecheck` и `npm run lint` проходят после переключения
-- `npm run typecheck`, `npm run lint`, `npm run test` проходят после hardening slice
-- Browser auth intentionally не запускает старый OAuth flow до появления real backend support; TMA login path остаётся основным
-- Для local frontend against VPS нужен `frontend/.env` с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`; для browser-only dev smoke path можно добавить `NUXT_PUBLIC_DEV_INIT_DATA=test`
-- GitHub Pages deploy уже live: `https://iindev-solutions.github.io/iindiinda-app/` и `/ayan` отвечают `200`
-- На фронте уже убран forbidden call pattern: non-owner detail pages больше не грузят owner-only responses
-- Основной stop point фронта: следующий шаг только после VPS pull/phpunit на новом hardening commit
+- AYAN frontend is already on the real API (`USE_MOCK_API = false`)
+- Implemented features:
+  - trips/requests feed
+  - filters
+  - unified create slideover
+  - AYAN role switcher in page header
+  - trip/request detail pages
+  - responses
+  - accept/reject flow
+  - Telegram contact link
+- Local frontend verification already passed:
+  - `npm run typecheck`
+  - `npm run lint`
+  - `npm run test`
+- Browser auth remains intentionally limited until the Telegram flow is fully finalized end-to-end
+- VPS frontend static deploy status:
+  - build uploaded to `/var/www/iind-app/frontend/public`
+  - Nginx default site now serves SPA at `/`
+  - `/api/*` remains backed by Laravel
+  - currently HTTP only
 
-### Backend
+## Backend State
 
-- Backend Phase 1 уже не skeleton-only: на VPS поднят рабочий Laravel runtime в `backend/`
-- AYAN routes теперь реально зарегистрированы как `trips / requests / responses / my/*`
-- Миграции `users`, `trips`, `requests`, `responses`, `personal_access_tokens` прогнаны на MySQL
-- `AuthController` уже выдаёт реальный Sanctum token, `UserController` читает authenticated user
-- `TripController`, `RequestController`, `ResponseController`, `MyController` переведены с sample arrays на MySQL persistence
-- Guest API transport починен: protected `api/*` больше не падают в missing `login` route, а отвечают JSON `401`
-- `AuthController` уже переведён на signed Telegram `initData` parsing; `init_data = test` ограничен только `local/testing`
-- AYAN backend теперь локально зафиксирован кодом под role/owner rules, duplicate/closed response guards и one-accepted-response rule
-- Но remote verification этого slice ещё pending, потому что с этой машины нет рабочего SSH до VPS
+- VPS backend runtime already exists and serves AYAN endpoints
+- Database migrations for `users`, `trips`, `requests`, `responses`, and `personal_access_tokens` were previously run on MySQL
+- `AuthController` issues Sanctum tokens
+- `TripController`, `RequestController`, `ResponseController`, and `MyController` use MySQL persistence
+- Guest API transport already returns JSON `401`
+- Focused VPS backend feature tests are currently green on clean deployed state (`13 tests, 94 assertions`)
+- AYAN runtime routes are registered on VPS via `php artisan route:list --path=api/ayan`
+- VPS checkout is now clean and aligned to `1fd837f`
+- Latest local backend hardening adds:
+  - signed Telegram `initData` parsing
+  - scoped local/testing fallback
+  - role restrictions for create/respond actions
+  - owner-only response list access
+  - duplicate/closed-response guards
+  - single accepted response guard
+- Runtime verification of the committed hardening is complete on the clean synchronized VPS checkout
+- Backend role logic summary:
+  - new user login defaults to `passenger`
+  - `POST /api/user/switch-role` updates role
+  - only `driver` can create trips and respond to requests
+  - only `passenger` can create requests and respond to trips
+  - only order owner can list responses and accept/reject them
+- New local backend slice adds:
+  - public feed filtering for expired open trips/requests
+  - expired target guards for response creation/update
+- Verification status for that local backend slice:
+  - PHP syntax on changed files: green
+  - Laravel app boot / route registration in isolated VPS copy: green
+  - full feature tests for isolated copy: blocked by VPS environment limitations (`sqlite` driver missing, copied MySQL test runs collide with server tables)
 
----
+## Main Findings
 
-## Главные выводы аудита
+### What Is Already Solid
 
-### Что реально готово
+1. AYAN frontend is already switched to the real API
+2. GitHub Pages deployment is live
+3. AYAN backend runtime already exists on VPS
+4. VPS now also serves the frontend SPA over HTTP from the same machine
+5. The branch already contains the latest auth/authorization hardening
+6. The clean deployed VPS checkout now verifies that hardening successfully
 
-1. Frontend AYAN уже переключён на real API и GitHub Pages deploy live
-2. Backend AYAN runtime реально поднят на VPS и отвечает по HTTP
-3. API контракт AYAN подтверждён direct smoke flow для основных persistence endpoints
-4. Базовый backend regression layer теперь есть: auth + guest auth handling + AYAN persistence feature tests
+### What Blocks The Next Stage
 
-### Что блокирует следующий этап
+1. Trusted HTTPS is still missing for VPS frontend because there is no hostname/domain yet
+2. Browser auth remains intentionally constrained
+3. Local backend execution is impossible in this environment because `php`, `composer`, and `docker` are unavailable
+4. New local backend slice is not yet committed/deployed
 
-1. Нужно восстановить SSH доступ к `iind-vps`, иначе новый backend slice нельзя подтвердить на runtime
-2. Browser auth intentionally disabled until OAuth / Telegram verification is wired end-to-end
-3. В текущей среде нет `php`, `composer`, `docker`, поэтому backend проверяется только на VPS
-4. После VPS pull/phpunit нужен новый direct API smoke на tightened rules
-5. Базовый `vitest` setup уже есть, но Nuxt/composable frontend harness ещё не настроен
+## Priority Order
 
-### Технический долг, который всплыл во время аудита
+### P0 — Restore Operational Access
 
-1. `frontend/app/components/AppBottomNav.vue` не отражён в `vault/CODE_MAP.md`
-2. `vault/master_index.md` и старые записи changelog держали старый счётчик задач спринта
-3. Часть wiki-страниц (`roadmap`, `system-design`, `browser-back-button`) устарела относительно текущего кода
+- manually verify role-aware live flows from frontend/TMA
+- attach a hostname so VPS frontend can move to HTTPS
 
----
+### P1 — Verify AYAN Hardening On VPS
 
-## Приоритетный план
+- backend verification already complete
+- record manual frontend role-flow verification in `vault/`
 
-### P0. Зафиксировать точку продолжения
+### P2 — Continue Integration Work
 
-- Использовать этот файл как главный handoff для Phase 1
-- Перед началом новой задачи читать:
-  - `vault/sprint.md`
-  - `vault/resume-plan.md`
-  - `vault/wiki/services/ayan/api-contract.md`
-  - `vault/wiki/services/ayan/backend-bringup.md`
+- continue frontend/browser verification only after VPS verification is complete
+- then continue with the next AYAN slice
 
-### P1. Довести backend до контракта AYAN
+## One-Line Summary
 
-**Цель:** убрать старый `orders`-слой и дать фронту реальный API под текущие composables.
-
-**Текущий статус:** runtime + persistence уже подняты на VPS. Следующий шаг по backend — дочистить auth до production-grade Telegram verification и затем коммитнуть/запушить весь Laravel runtime пакет в git.
-
-**Ключевые файлы:**
-- `backend/bootstrap/app.php`
-- `backend/app/Http/Middleware/ForceJsonResponse.php`
-- `backend/app/Http/Controllers/AuthController.php`
-- `backend/app/Http/Controllers/UserController.php`
-- `backend/app/Http/Controllers/Ayan/TripController.php`
-- `backend/app/Http/Controllers/Ayan/RequestController.php`
-- `backend/app/Http/Controllers/Ayan/ResponseController.php`
-- `backend/app/Http/Controllers/Ayan/MyController.php`
-- `backend/database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php`
-- `backend/tests/Feature/AuthApiTest.php`
-- `backend/tests/Feature/AyanAuthTest.php`
-- `backend/tests/Feature/AyanPersistenceTest.php`
-
-**Что делать:**
-1. Закоммитить и запушить Laravel runtime base + backend fixes, чтобы future `git pull` не зависел от ручного VPS состояния
-2. Реализовать настоящую Telegram `initData` verification в `POST /api/auth/telegram`
-3. Решить, нужен ли fallback/stub режим только для dev/VPS smoke path
-4. После этого можно считать backend Phase 1 реально готовым для frontend integration
-
-### P2. Переключить AYAN с mock на real API
-
-**Цель:** после backend-ready пройти весь MVP flow без генераторов mock-данных.
-
-**Файлы:**
-- `frontend/app/config/api.config.ts`
-- `frontend/services/ayan/app/composables/useAyanTrips.ts`
-- `frontend/services/ayan/app/composables/useAyanRequests.ts`
-- `frontend/services/ayan/app/composables/useAyanResponses.ts`
-- `frontend/services/ayan/app/composables/useAyanMy.ts`
-
-**Что делать:**
-1. Переключить `USE_MOCK_API = false`
-2. Проверить shape всех ответов против `services/ayan/app/types/ayan.ts`
-3. Пройти сценарии:
-   - create trip
-   - create request
-   - feed filters
-   - detail page
-   - create response
-    - accept/reject response
-    - contact link
-    - my trips / my requests / my responses
-4. Проверить, что `POST /api/auth/telegram` и `GET /api/user` реально работают с текущим frontend auth flow
-
-**Текущий статус:**
-- `USE_MOCK_API = false` уже включён
-- `frontend/nuxt.config.ts` уже знает `public.telegramBotId`
-- `useAuth.ts` в browser mode больше не запускает сломанный OAuth flow автоматически
-
-### P3. Закрыть auth-конфигурацию
-
-**Цель:** убрать расхождение между `useAuth.ts` и runtime config.
-
-**Файлы:**
-- `frontend/app/composables/useAuth.ts`
-- `frontend/nuxt.config.ts`
-- `.env.example`
-
-**Что делать:**
-1. Решить, нужен ли browser OAuth прямо сейчас для MVP
-2. Если нужен: добавить `NUXT_PUBLIC_TELEGRAM_BOT_ID` в env и runtime config
-3. Если не нужен: временно упростить flow и явно задокументировать TMA-only режим
-
-### P4. Закончить тестовый контур
-
-**Цель:** развить текущий baseline `vitest` до полезного regression layer.
-
-**Текущий статус:** базовый setup уже готов для plain TS unit tests; Nuxt/composable harness ещё не настроен.
-
-**Файлы:**
-- `frontend/package.json`
-- `frontend/package-lock.json`
-- будущий `frontend/vitest.config.ts`
-- будущие тесты AYAN composables / utils
-
-**Что делать:**
-1. Оставить текущий базовый setup как foundation
-2. Следующим пакетом расширить plain TS coverage для `formatters` / `validators`
-3. Отдельной задачей решить, нужен ли Nuxt-aware test harness для composables AYAN
-4. Держать smoke suite быстрой, чтобы она была обязательной перед backend integration
-
-### P5. После backend integration сделать короткий vault cleanup
-
-**Что обновить:**
-1. `vault/wiki/architecture/roadmap.md`
-2. `vault/wiki/architecture/system-design.md`
-3. `vault/wiki/architecture/browser-back-button.md`
-4. Удалить мёртвые `[[wikilinks]]` и старые ссылки на `raw/*`
-
----
-
-## Рекомендуемый следующий практический шаг
-
-Если продолжать прямо с текущей точки, следующий нормальный шаг такой:
-
-1. Пройти AYAN flow в UI против VPS backend
-2. Зафиксировать deploy/live + UI integration findings в vault и отдельным commit'ом
-3. Отдельным пакетом закрыть настоящую Telegram `initData` verification
-
-## Короткая версия в одну строку
-
-Мы уже подняли и запушили реальный AYAN backend на VPS, переключили фронт на real API, подняли GitHub Pages и прогнали direct API smoke; следующий этап — пройти UI flow в браузере против VPS и потом дочистить настоящую Telegram verification.
+The backend is deployed cleanly on VPS, the frontend SPA now serves from the same VPS over HTTP, and the next real step is verifying the new role-switch/past-item UX and attaching a hostname so HTTPS can be enabled.

@@ -1,6 +1,176 @@
-# Changelog — iindev-vault
+# Changelog — iindiinda Vault
 
-> Формат: `YYYY-MM-DD HH:MM`. Актуальные записи. Архив: changelog-archive.md
+> Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
+
+## 2026-04-23 17:37 — AYAN Role Switch UI + VPS SPA HTTP
+
+### Done
+
+- Added AYAN role switch UI in the page header so the user can toggle between `passenger` and `driver`
+- Reused the existing backend endpoint `POST /api/user/switch-role` through the frontend auth composable
+- Added a small AYAN role utility and unit coverage for role-to-create-mode mapping
+- Kept the earlier past-item/free-price slice in the same local working set
+- Added a repo-tracked Nginx config at `ops/nginx/iind-vps-default.conf` for serving the SPA from VPS root while keeping `/api/*` on Laravel
+- Uploaded the built frontend static output to `/var/www/iind-app/frontend/public`
+- Switched the VPS Nginx default site so:
+  - `/` serves the frontend SPA
+  - `/ayan` falls back to SPA entry
+  - `/api/*` still serves the backend
+
+### Verified
+
+- `frontend: npm run test` ✅ (`3 files, 7 tests`)
+- `frontend: npm run lint` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npx nuxt build --preset github_pages` ✅
+- `curl -I http://89.22.226.34/` ✅ (`200`)
+- `curl -I http://89.22.226.34/ayan` ✅ (`200`)
+- `curl -I http://89.22.226.34/api/health` ✅ (`200`)
+- `nginx -t` on VPS ✅
+
+### Important
+
+- The VPS now serves the frontend over plain HTTP from the same machine as the backend
+- Trusted HTTPS is still not available because there is no hostname/domain attached to the server yet
+- With only a raw VPS IP, practical next options are:
+  - attach a real domain and issue a normal TLS cert, or
+  - attach a free hostname service you control, then issue TLS for that hostname
+- Raw-IP HTTPS without a proper hostname is not a good Telegram-ready deployment path
+
+## 2026-04-23 17:15 — Past Item Logic + Free Price UX
+
+### Done
+
+- Added frontend price formatting so `0` is rendered as a localized free label instead of `0 ₽`
+- Added frontend past-item detection helper for AYAN date/time values
+- Added AYAN past badges on My cards and detail pages while keeping past items hidden from the public feed design
+- Disabled response actions in frontend for past trip/request detail views
+- Added backend upcoming-feed filtering so public `trips` and `requests` indexes only return still-upcoming open items
+- Added backend guards so expired-but-still-open trips/requests reject new responses and accept/reject actions
+- Added regression tests for formatter behavior and backend feed/expired-response behavior in local code
+
+### Verified
+
+- `frontend: npm run test` ✅ (`2 files, 5 tests`)
+- `frontend: npm run lint` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npx nuxt build --preset github_pages` ✅
+- `vps isolated copy: php -l` on changed backend files ✅
+- `vps isolated copy: php artisan route:list --path=api/ayan` ✅
+
+### Important
+
+- Backend runtime behavior changes are implemented in local code, but full backend feature-test execution for the modified code was not reproducible in the isolated VPS copy because:
+  - copied MySQL test runs collide with existing server test tables
+  - SQLite fallback is unavailable on the VPS PHP build (`could not find driver`)
+- Live VPS checkout was not modified for this slice after the clean sync; changes remain local in the workspace
+- If we want frontend on VPS too, the simplest path is static deploy via Nginx serving `frontend/.output/public`; this is easier to control than `gh-pages` and fits later same-domain API hosting
+
+## 2026-04-23 16:12 — VPS Synced Cleanly + Backend Hardening Verified
+
+### Done
+
+- Preserved the previous dirty VPS backend state before sync:
+  - `/root/iind-backups/backend-dirty-20260423.patch`
+  - `/root/iind-backups/backend-dirty-20260423.status`
+  - `/root/iind-backups/backend-untracked-20260423.list`
+  - `/root/iind-backups/backend-untracked-20260423.tgz`
+- Used `git stash push -u` on VPS and synchronized `/var/www/iind-app/backend` to `origin/front/ayan`
+- Confirmed VPS backend is now at clean branch tip `1fd837f`
+- Re-ran backend verification on the clean deployed checkout
+- Built frontend with `npx nuxt build --preset github_pages`
+- Audited the current driver/passenger role logic across frontend and backend
+
+### Verified
+
+- `ssh iind-vps "cd /var/www/iind-app/backend && git stash push -u -m pre-sync-20260423 && git fetch origin front/ayan && git reset --hard origin/front/ayan && git status --short --branch"` ✅
+- `ssh iind-vps "cd /var/www/iind-app/backend && ./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php"` ✅ (`13 tests, 94 assertions`)
+- `ssh iind-vps "cd /var/www/iind-app/backend && php artisan route:list --path=api/ayan"` ✅
+- `curl -I http://89.22.226.34/api/health` ✅
+- `frontend: npx nuxt build --preset github_pages` ✅
+
+### Important
+
+- The committed AYAN auth/authorization hardening is now verified on a clean synchronized VPS checkout
+- The previous VPS dirty state is still recoverable via the backup files and `stash@{0}` (`pre-sync-20260423`)
+- Current product gap: role switching exists in backend (`POST /api/user/switch-role`) and in frontend composable (`useAuth().switchRole`), but there is no frontend UI that actually calls it yet
+- Because of that gap, a new user logs in as `passenger` by default and cannot become `driver` from the current UI without a manual API call or new role-switch screen
+
+## 2026-04-23 15:52 — VPS Audit: SSH Restored, Deploy Drift Confirmed
+
+### Done
+
+- Re-ran the project stop-point audit against `vault/`, the local frontend workspace, and the VPS backend runtime
+- Confirmed local frontend verification is still green: `npm run typecheck`, `npm run lint`, `npm run test`
+- Confirmed local backend execution is still unavailable because `php` is not installed in this environment
+- Confirmed `ssh iind-vps` works again from this machine
+- Confirmed VPS backend runtime is live: `/api/health` returns `200`, AYAN routes are registered, and focused backend feature tests pass on the server
+- Confirmed the VPS checkout is still on `2ef7fb6` and is dirty with backend runtime changes, while local `front/ayan` is 5 commits ahead
+
+### Verified
+
+- `git status --short --branch` ✅
+- `git log --oneline --decorate -8` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run lint` ✅
+- `frontend: npm run test` ✅
+- `php -v` ❌ (`php` not installed locally)
+- `ssh -o BatchMode=yes -o ConnectTimeout=10 iind-vps exit` ✅
+- `ssh iind-vps "git -C /var/www/iind-app/backend status --short --branch"` ✅
+- `ssh iind-vps "git -C /var/www/iind-app/backend log --oneline --decorate -5"` ✅
+- `ssh iind-vps "cd /var/www/iind-app/backend; ./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php"` ✅ (`6 tests, 69 assertions`)
+- `ssh iind-vps "cd /var/www/iind-app/backend; php artisan route:list --path=api/ayan"` ✅
+- `curl -I http://89.22.226.34/api/health` ✅
+
+### Important
+
+- The old blocker `ssh iind-vps` is no longer active
+- The real blocker is now deployment drift on VPS: the server checkout is dirty and still pinned to `2ef7fb6`, so the committed hardening slice `755f7c6` is not yet deployed as clean git history
+- The VPS dirty diff shows runtime and persistence work is present there, but `AuthController` still lacks the stricter signed Telegram `initData` verification from the later hardening commit
+- The next deployment step must preserve or intentionally discard the dirty VPS edits before any sync to `origin/front/ayan`
+
+## 2026-04-23 11:20 — Empty Template Added
+
+### Done
+
+- Added `empty-template/` inside the repository as a new starter project template
+- Kept the template minimal on purpose: starter frontend files, starter backend files, and a full vault-first documentation structure
+- Made `vault/` the explicit heart of the template through:
+  - `empty-template/AGENTS.md`
+  - `empty-template/vault/master_index.md`
+  - `empty-template/vault/WORKFLOW.md`
+  - `empty-template/vault/sprint.md`
+  - `empty-template/vault/resume-plan.md`
+  - `empty-template/vault/CODE_MAP.md`
+  - `empty-template/vault/logs/changelog.md`
+  - `empty-template/vault/SESSION_LEDGER.md`
+
+### Verified
+
+- `empty-template/` directory exists
+- starter `frontend/package.json` exists
+- starter `backend/composer.json` exists
+- starter `vault/` entry docs exist and are written in English
+
+### Important
+
+- The backend side of `empty-template/` is intentionally a starter scaffold, not a full generated Laravel runtime
+- The template is designed to be adapted into a new project while preserving the vault-first workflow
+
+## 2026-04-23 10:55 — Vault English Standard
+
+### Done
+
+- Rewrote the active vault entry docs in English
+- Added `vault/WORKFLOW.md` as the mandatory vault usage protocol
+- Added `vault/SESSION_LEDGER.md` as a short session memory layer
+- Updated `AGENTS.md` so future sessions must read and update `vault/`
+
+### Important
+
+- `vault/` is now explicitly treated as the canonical project memory system
+- New vault content must be written in English
+- Older historical pages outside the active entry set may still contain mixed language and should be translated when touched
 
 ---
 

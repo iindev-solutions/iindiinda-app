@@ -1,135 +1,172 @@
 # AGENTS.md — iindiinda-app
 
-> iindiinda — делаем сложные вещи просто.
+> iindiinda — make hard things simple.
 
-**iind.app** — Telegram Mini App платформа. Один принцип: заявка → отклик → договор. Без посредников.
+`iind.app` is a Telegram Mini App platform built around one principle: request -> response -> agreement.
 
-Монорепозиторий: Nuxt 4 (frontend) + Laravel (backend).
+Monorepo: Nuxt 4 frontend + Laravel backend.
 
-## Vault — источник документации
+## Vault Is The Source Of Truth
 
-**Start here**: `vault/master_index.md`
+Start here: `vault/master_index.md`
 
-| Путь | Содержание |
-|------|-----------|
-| `vault/master_index.md` | Карта базы знаний, roadmap, активные задачи |
-| `vault/sprint.md` | Текущий спринт, статусы задач |
-| `vault/CODE_MAP.md` | Инвентарь кода: composables, components, pages, API |
-| `vault/wiki/architecture/` | Vision, system design, auth flow, roadmap |
-| `vault/wiki/services/` | API контракты, эндпоинты, модели |
-| `vault/raw/` | Черновики (пустой после обработки) |
-| `vault/logs/changelog.md` | История изменений |
+`vault/` is the project knowledge base. It is not optional context. It is the canonical source of truth for:
+
+- current project state
+- active sprint work
+- stop point and next step
+- code inventory
+- architectural decisions
+- operational handoff notes
+
+## Mandatory Vault Protocol
+
+Every session must begin with these reads, in order:
+
+1. `vault/master_index.md`
+2. `vault/WORKFLOW.md`
+3. `vault/sprint.md`
+4. `vault/resume-plan.md`
+
+Before starting a domain-specific task, also read the relevant docs under:
+
+- `vault/wiki/architecture/`
+- `vault/wiki/services/`
+- `vault/CODE_MAP.md`
+
+Before finishing any meaningful task, update `vault/`.
+
+Minimum required update after meaningful work:
+
+1. `vault/logs/changelog.md`
+
+Update when relevant:
+
+1. `vault/resume-plan.md` if the stop point, blocker, next step, or deployment state changed
+2. `vault/sprint.md` if sprint status, blockers, or priorities changed
+3. `vault/CODE_MAP.md` if code structure, ownership, or key file responsibilities changed
+4. `vault/SESSION_LEDGER.md` with a short session note
+
+Do not leave important project state only in chat.
+
+## Vault Language Rule
+
+All content written inside `vault/` must be in English.
+
+- New entries: English only
+- Rewritten active docs: English only
+- Temporary notes, handoffs, and changelog entries: English only
+
+## Vault Map
+
+| Path | Purpose |
+|------|---------|
+| `vault/master_index.md` | Main knowledge base entry point |
+| `vault/WORKFLOW.md` | Mandatory vault operating rules |
+| `vault/SESSION_LEDGER.md` | Short per-session log |
+| `vault/sprint.md` | Current sprint state and priorities |
+| `vault/resume-plan.md` | Exact stop point and next action |
+| `vault/CODE_MAP.md` | Code inventory and implementation notes |
+| `vault/wiki/architecture/` | Vision, system design, auth, roadmap |
+| `vault/wiki/services/` | Service contracts and runbooks |
+| `vault/logs/changelog.md` | Change history and verification notes |
 
 ## Branches
 
-- `main` — production, `dev` — разработка
-- `front/ayan` — текущая разработка AYAN
+- `main` — production
+- `dev` — development
+- `front/ayan` — current AYAN branch
 - `front/taxi` — legacy
 
-## Frontend: `frontend/`
+## Frontend
 
 - Nuxt config: `frontend/nuxt.config.ts`
-- App code: `frontend/app/` (composables, pages, types, layouts, assets, utils, middleware)
+- App code: `frontend/app/`
 - Service layers: `frontend/services/{ayan,agal,tal,uus}/`
 - i18n: `frontend/i18n/locales/{ru,sah}.json`
 
-## Nuxt 4 Extends — Service Layers
+## Service Layers
 
-`nuxt.config.ts` extends: `services/ayan → services/agal → services/tal → services/uus`
+`nuxt.config.ts` extends:
 
-Each service: `app/` folder с pages, composables, components.
+- `services/ayan`
+- `services/agal`
+- `services/tal`
+- `services/uus`
 
-## Dev Commands (frontend/)
+Each service lives under its own `app/` directory.
 
-```bash
-npm run dev          # → http://localhost:3000
-npm run build        # Production build
-npm run typecheck    # nuxt typecheck (vue-tsc)
-npm run lint         # eslint .
-npm run lint:fix     # eslint . --fix
-npm run format       # prettier --check .
-npm run format:fix   # prettier --write .
-```
-
-## Quick Start
+## Frontend Commands
 
 ```bash
-cp .env.example .env
-cd frontend && npm install && npm run dev
-docker-compose up -d    # Backend (scaffold-only) at http://localhost:8000
+npm run dev
+npm run build
+npm run typecheck
+npm run lint
+npm run lint:fix
+npm run format
+npm run format:fix
 ```
 
-## Workflow
+## Core Workflow
 
-1. Read `vault/sprint.md` → текущие задачи
-2. Read `vault/CODE_MAP.md` → где что в коде
-3. Read `vault/wiki/` → контекст задачи (vision, API contract)
-4. Implement
-5. Verify: typecheck → lint → test
-6. Обновить `vault/sprint.md` (статус задачи)
-7. Обновить `vault/CODE_MAP.md` (если структура изменилась)
-8. Обновить `vault/logs/changelog.md` (дата, что, зачем)
+1. Read the required vault files
+2. Read service- or feature-specific vault docs
+3. Implement the change
+4. Verify the change
+5. Update vault before closing the task
 
 ## Code Style
 
-- **ESLint + Prettier**: `printWidth: 120`, `tabWidth: 4`, single quotes, no semicolons, `trailingComma: none`
-- **ESLint overrides**: `@typescript-eslint/no-explicit-any: off`, `vue/no-v-html: off`
-- **TypeScript**: strict, checked via `npm run typecheck`
-- **Composables**: auto-imported from `app/composables/` — no manual imports
+- ESLint + Prettier: `printWidth: 120`, `tabWidth: 4`, single quotes, no semicolons, `trailingComma: none`
+- TypeScript is strict and verified with `npm run typecheck`
+- Composables under `app/composables/` are auto-imported
 
-## Nuxt 4 Page Structure (MANDATORY)
+## Nuxt Page Structure (Mandatory)
 
-```
+```text
 services/ayan/app/pages/
-├── ayan.vue                    → /ayan  (PARENT — ONLY <NuxtPage />, no UI/logic)
+├── ayan.vue
 └── ayan/
-    ├── index.vue               → /ayan
-    ├── create.vue              → /ayan/create
+    ├── index.vue
+    ├── create.vue
     └── ...
 ```
 
-- Same pattern for all services
-- Parent wrapper must contain ONLY `<NuxtPage />`
+- Parent wrapper must contain only `<NuxtPage />`
+- Follow the same structure for every service
 
-## Code Rules (MANDATORY)
+## Code Rules (Mandatory)
 
-- **Navigation**: ALWAYS `navigateTo('/path')` — NEVER `router.push()`
-- **Tailwind**: NEVER dynamic interpolation like `bg-${color}-500/20` — use static class maps
-- **Telegram SDK**: HapticFeedback/BackButton require v6.1+ — always `supportsVersion('6.1')` BEFORE accessing
-- **API URL**: NEVER `new URL(endpoint, base)` — use string concatenation
-- **Don't modify Telegram SDK** — loaded externally
-- **Don't create `layers/` folder** — services are in `services/`
-- **Polling** — use `useIntervalFn` from `@vueuse/core` for polling, not raw `setInterval`
-- **Shared components** — extract duplicates into `services/ayan/app/components/`
-- **No hardcoded strings** — all user-visible text must use `t('key')`
-- **i18n keys**: nested only — `ayan.order.status.open` not `ayan.orderStatusOpen`
+- Always use `navigateTo('/path')`, never `router.push()`
+- Never use dynamic Tailwind interpolation like `bg-${color}-500/20`
+- Guard Telegram SDK features with `supportsVersion('6.1')` before use
+- Never build API URLs with `new URL(endpoint, base)`; use string concatenation
+- Do not modify Telegram SDK source
+- Do not create a `layers/` directory; use `services/`
+- Use `useIntervalFn` from `@vueuse/core` for polling
+- Extract duplicated shared UI into `services/ayan/app/components/`
+- No hardcoded user-facing strings; use `t('key')`
+- i18n keys must be nested, for example `ayan.order.status.open`
 
-## Nuxt 4 + Nuxt UI Reference (MANDATORY)
+## Nuxt 4 + Nuxt UI Rules (Mandatory)
 
-**Docs index**: `llms-nuxt4.txt`, `llms-nuxt-ui.txt` (URLs to official docs)
-**MCP**: nuxt4 + nuxt-ui MCP servers available — use them for API lookups
+Before writing any page, component, or composable:
 
-**Before writing ANY component/page/composable** — verify against Nuxt 4 + Nuxt UI patterns:
-- Use `useAsyncData`/`useFetch` for data fetching, NOT raw `$fetch` in setup
-- Use `useState` for shared state, NOT `ref()` across composables
-- Use `@nuxt/ui` components (UButton, UInput, UModal, UCard, etc.) — NEVER raw HTML equivalents
-- Style with **Tailwind CSS utility classes** — NEVER write raw CSS in `<style>` blocks unless impossible with Tailwind
-- Use `defineNuxtPlugin` for plugins, `defineNuxtRouteMiddleware` for middleware
-- Auto-imports: no manual `import` for composables, components, utils from `app/` dirs
-- Layers: `extends` in nuxt.config.ts, NOT `layers/` folder
-
-**Common mistakes to avoid:**
-- ❌ `<style scoped>` with raw CSS → ✅ Tailwind classes in template
-- ❌ `<button class="...">` → ✅ `<UButton ...>`
-- ❌ `<input class="...">` → ✅ `<UInput ...>`
-- ❌ `ref()` for cross-component state → ✅ `useState()`
-- ❌ `onMounted(() => fetch())` → ✅ `useFetch()` / `useAsyncData()`
-- ❌ Manual `import { useAuth }` → ✅ auto-imported from `app/composables/`
+- prefer `useAsyncData` / `useFetch` over raw `$fetch` in setup
+- use `useState` for shared state
+- use `@nuxt/ui` components instead of raw HTML equivalents when possible
+- style with Tailwind utilities
+- use `defineNuxtPlugin` for plugins and `defineNuxtRouteMiddleware` for middleware
+- rely on auto-imports for app composables/components/utils
 
 ## Design System
 
-- Dark only, Primary: Cyan `#5edac6`, Background: `#0a0c0e`, Font: Geist/Inter
-- @nuxt/ui v4, `colors: ['cyan', 'gray']`
+- Dark mode only
+- Primary color: cyan `#5edac6`
+- Background: `#0a0c0e`
+- Font: Geist/Inter
+- `@nuxt/ui` v4 with `colors: ['cyan', 'gray']`
 
 ## Environment
 
@@ -137,4 +174,4 @@ services/ayan/app/pages/
 NUXT_PUBLIC_API_BASE=http://localhost:8000/api
 ```
 
-Mock/real API toggle: `frontend/app/config/api.config.ts` → `USE_MOCK_API = true/false` (compile-time, requires restart). Full .env: see root `.env.example`
+Mock/real API toggle lives in `frontend/app/config/api.config.ts`.

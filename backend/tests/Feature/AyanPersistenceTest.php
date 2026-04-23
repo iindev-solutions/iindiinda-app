@@ -124,6 +124,129 @@ class AyanPersistenceTest extends TestCase
             ->assertJsonPath('data.0.id', $requestId);
     }
 
+    public function test_public_feeds_hide_past_open_items_but_my_and_detail_keep_them(): void
+    {
+        $driver = $this->makeUser('driver_past', 2501, 'driver');
+        $passenger = $this->makeUser('passenger_past', 2502, 'passenger');
+        $today = now()->toDateString();
+
+        $pastTrip = Trip::create([
+            'driver_id' => $driver->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Намцы',
+            'date' => now()->subDay()->toDateString(),
+            'time' => '09:00',
+            'seats' => 2,
+            'price' => 0,
+            'comment' => 'past trip',
+            'status' => 'open',
+        ]);
+
+        $futureTrip = Trip::create([
+            'driver_id' => $driver->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Покровск',
+            'date' => now()->addDay()->toDateString(),
+            'time' => '10:00',
+            'seats' => 3,
+            'price' => 700,
+            'comment' => 'future trip',
+            'status' => 'open',
+        ]);
+
+        Trip::create([
+            'driver_id' => $driver->id,
+            'from_address' => 'Марха',
+            'to_address' => 'Якутск',
+            'date' => $today,
+            'time' => now()->subHour()->format('H:i'),
+            'seats' => 1,
+            'price' => 300,
+            'comment' => 'today past trip',
+            'status' => 'open',
+        ]);
+
+        Trip::create([
+            'driver_id' => $driver->id,
+            'from_address' => 'Хатассы',
+            'to_address' => 'Якутск',
+            'date' => $today,
+            'time' => now()->addHour()->format('H:i'),
+            'seats' => 1,
+            'price' => 300,
+            'comment' => 'today future trip',
+            'status' => 'open',
+        ]);
+
+        $pastRequest = AyanRequest::create([
+            'passenger_id' => $passenger->id,
+            'from_address' => 'Намцы',
+            'to_address' => 'Якутск',
+            'date' => now()->subDay()->toDateString(),
+            'time' => '12:00',
+            'description' => 'past request',
+            'status' => 'open',
+        ]);
+
+        $futureRequest = AyanRequest::create([
+            'passenger_id' => $passenger->id,
+            'from_address' => 'Тулагино',
+            'to_address' => 'Якутск',
+            'date' => now()->addDays(2)->toDateString(),
+            'time' => '14:00',
+            'description' => 'future request',
+            'status' => 'open',
+        ]);
+
+        AyanRequest::create([
+            'passenger_id' => $passenger->id,
+            'from_address' => 'Тулагино',
+            'to_address' => 'Якутск',
+            'date' => $today,
+            'time' => now()->subHour()->format('H:i'),
+            'description' => 'today past request',
+            'status' => 'open',
+        ]);
+
+        AyanRequest::create([
+            'passenger_id' => $passenger->id,
+            'from_address' => 'Тулагино',
+            'to_address' => 'Якутск',
+            'date' => $today,
+            'time' => now()->addHour()->format('H:i'),
+            'description' => 'today future request',
+            'status' => 'open',
+        ]);
+
+        Sanctum::actingAs($driver);
+        $this->getJson('/api/ayan/trips')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonFragment(['id' => $futureTrip->id]);
+
+        $this->getJson('/api/ayan/my/trips')
+            ->assertOk()
+            ->assertJsonCount(2, 'data');
+
+        $this->getJson("/api/ayan/trips/{$pastTrip->id}")
+            ->assertOk()
+            ->assertJsonPath('data.id', $pastTrip->id);
+
+        Sanctum::actingAs($passenger);
+        $this->getJson('/api/ayan/requests')
+            ->assertOk()
+            ->assertJsonCount(2, 'data')
+            ->assertJsonFragment(['id' => $futureRequest->id]);
+
+        $this->getJson('/api/ayan/my/requests')
+            ->assertOk()
+            ->assertJsonCount(2, 'data');
+
+        $this->getJson("/api/ayan/requests/{$pastRequest->id}")
+            ->assertOk()
+            ->assertJsonPath('data.id', $pastRequest->id);
+    }
+
     public function test_response_endpoints_use_persisted_data_for_trip_and_request(): void
     {
         $tripOwner = $this->makeUser('trip_owner', 3001, 'driver');
@@ -333,6 +456,7 @@ class AyanPersistenceTest extends TestCase
         $passenger = $this->makeUser('trip_passenger_rules', 6002, 'passenger');
         $requestOwner = $this->makeUser('request_owner_rules', 6003, 'passenger');
         $driver = $this->makeUser('request_driver_rules', 6004, 'driver');
+        $today = now()->toDateString();
         $tripDate = now()->addDay()->toDateString();
         $closedTripDate = now()->addDays(2)->toDateString();
         $requestDate = now()->addDays(3)->toDateString();
@@ -362,6 +486,18 @@ class AyanPersistenceTest extends TestCase
             'status' => 'closed',
         ]);
 
+        $pastTrip = Trip::create([
+            'driver_id' => $tripOwner->id,
+            'from_address' => 'Марха',
+            'to_address' => 'Якутск',
+            'date' => $today,
+            'time' => now()->subHour()->format('H:i'),
+            'seats' => 1,
+            'price' => 200,
+            'comment' => null,
+            'status' => 'open',
+        ]);
+
         $request = AyanRequest::create([
             'passenger_id' => $requestOwner->id,
             'from_address' => 'Якутск',
@@ -382,6 +518,16 @@ class AyanPersistenceTest extends TestCase
             'status' => 'closed',
         ]);
 
+        $pastRequest = AyanRequest::create([
+            'passenger_id' => $requestOwner->id,
+            'from_address' => 'Тулагино',
+            'to_address' => 'Якутск',
+            'date' => $today,
+            'time' => now()->subHour()->format('H:i'),
+            'description' => null,
+            'status' => 'open',
+        ]);
+
         Sanctum::actingAs($passenger);
         $this->postJson("/api/ayan/trips/{$trip->id}/responses", [
             'message' => 'first',
@@ -395,6 +541,10 @@ class AyanPersistenceTest extends TestCase
             'message' => 'closed target',
         ])->assertStatus(422);
 
+        $this->postJson("/api/ayan/trips/{$pastTrip->id}/responses", [
+            'message' => 'past target',
+        ])->assertStatus(422);
+
         Sanctum::actingAs($driver);
         $this->postJson("/api/ayan/requests/{$request->id}/responses", [
             'message' => 'first',
@@ -406,6 +556,10 @@ class AyanPersistenceTest extends TestCase
 
         $this->postJson("/api/ayan/requests/{$closedRequest->id}/responses", [
             'message' => 'closed target',
+        ])->assertStatus(422);
+
+        $this->postJson("/api/ayan/requests/{$pastRequest->id}/responses", [
+            'message' => 'past target',
         ])->assertStatus(422);
     }
 

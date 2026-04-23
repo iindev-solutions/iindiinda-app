@@ -18,6 +18,7 @@ class RequestController extends Controller
         $query = AyanRequest::query()
             ->with('passenger')
             ->where('status', 'open')
+            ->upcomingForFeed()
             ->latest();
 
         if ($request->filled('from')) {

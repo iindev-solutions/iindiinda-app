@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { getAyanCreateMode } from '../../utils/role'
+
 definePageMeta({ lazy: true })
 
 const { t } = useI18n()
@@ -20,12 +22,15 @@ const tabs = computed(() => [
 ])
 
 const createMode = computed<'trip' | 'request' | null>(() => {
-	if (authUser.value?.role === 'driver') return 'trip'
-	if (authUser.value?.role === 'passenger') return 'request'
-	return null
+	return getAyanCreateMode(authUser.value?.role)
 })
 
 const createLabel = computed(() => (createMode.value === 'request' ? t('ayan.createRequest') : t('ayan.createRide')))
+
+const formatTripPrice = (price: number) => formatPrice(price, '₽', t('ayan.ride.free'))
+
+const isPastTrip = (date: string, time: string) => isPastAyanDateTime(date, time)
+const isPastRequest = (date: string, time?: string | null) => isPastAyanDateTime(date, time)
 
 const {
 	data: trips,
@@ -135,6 +140,15 @@ function handleCreated() {
 	refreshMyRequests()
 }
 
+function handleRoleChanged(role: 'driver' | 'passenger') {
+	activeTab.value = role === 'driver' ? 'trips' : 'requests'
+	createOpen.value = false
+	refreshTrips()
+	refreshRequests()
+	refreshMyTrips()
+	refreshMyRequests()
+}
+
 function toggleFilters() {
 	filtersOpen.value = !filtersOpen.value
 	hapticFeedback('impact')
@@ -169,6 +183,9 @@ function handleRequestClick(requestId: number) {
 				<p class="text-sm leading-relaxed text-gray-300">
 					{{ t('ayan.desc') }}
 				</p>
+				<div class="mt-4">
+					<AyanRoleSwitch @changed="handleRoleChanged" />
+				</div>
 			</header>
 
 			<UTabs
@@ -286,7 +303,7 @@ function handleRequestClick(requestId: number) {
 								</div>
 							</div>
 							<div class="shrink-0 text-right">
-								<div class="text-sm font-semibold text-cyan-400">{{ formatPrice(trip.price) }}</div>
+								<div class="text-sm font-semibold text-cyan-400">{{ formatTripPrice(trip.price) }}</div>
 							</div>
 						</div>
 					</UCard>
@@ -354,10 +371,18 @@ function handleRequestClick(requestId: number) {
 									<span>{{ trip.date }}</span>
 									<span v-if="trip.time">{{ trip.time }}</span>
 									<span>{{ trip.seats }} {{ t('ayan.ride.seats') }}</span>
+									<UBadge
+										v-if="isPastTrip(trip.date, trip.time)"
+										color="neutral"
+										variant="subtle"
+										size="xs"
+									>
+										{{ t('ayan.status.past') }}
+									</UBadge>
 								</div>
 							</div>
 							<div class="shrink-0 text-right">
-								<div class="text-sm font-semibold text-cyan-400">{{ formatPrice(trip.price) }}</div>
+								<div class="text-sm font-semibold text-cyan-400">{{ formatTripPrice(trip.price) }}</div>
 							</div>
 						</div>
 					</UCard>
@@ -378,6 +403,14 @@ function handleRequestClick(requestId: number) {
 							<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
 								<span>{{ req.date }}</span>
 								<span v-if="req.time">{{ req.time }}</span>
+								<UBadge
+									v-if="isPastRequest(req.date, req.time)"
+									color="neutral"
+									variant="subtle"
+									size="xs"
+								>
+									{{ t('ayan.status.past') }}
+								</UBadge>
 							</div>
 						</div>
 					</UCard>

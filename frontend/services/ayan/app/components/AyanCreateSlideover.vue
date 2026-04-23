@@ -2,6 +2,8 @@
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 import type { AyanTripCreate, AyanRequestCreate } from '../types/ayan'
 
+import { getAyanCreateMode } from '../utils/role'
+
 const emit = defineEmits<{ created: [] }>()
 
 const { t } = useI18n()
@@ -29,9 +31,7 @@ const state = reactive({
 const submitting = ref(false)
 
 const allowedFormType = computed<'trip' | 'request' | null>(() => {
-	if (user.value?.role === 'driver') return 'trip'
-	if (user.value?.role === 'passenger') return 'request'
-	return null
+	return getAyanCreateMode(user.value?.role)
 })
 
 const typeOptions = computed(() => [

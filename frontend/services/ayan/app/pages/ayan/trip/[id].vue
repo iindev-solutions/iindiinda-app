@@ -19,13 +19,15 @@ const responses = ref<AyanResponse[]>([])
 const responding = ref(false)
 const responseMessage = ref('')
 
+const isPastTrip = computed(() => (trip.value ? isPastAyanDateTime(trip.value.date, trip.value.time) : false))
+
 const isOwner = computed(() => {
 	if (!trip.value || !authUser.value) return false
 	return trip.value.driver.id === authUser.value.id
 })
 
 const canRespond = computed(
-	() => !isOwner.value && trip.value?.status === 'open' && authUser.value?.role === 'passenger'
+	() => !isOwner.value && !isPastTrip.value && trip.value?.status === 'open' && authUser.value?.role === 'passenger'
 )
 
 const hasAcceptedResponse = computed(() => responses.value.some((r) => r.status === 'accepted'))
@@ -116,6 +118,9 @@ watch(
 						<UBadge :color="trip.status === 'open' ? 'success' : 'neutral'" variant="subtle" size="xs">
 							{{ t(`ayan.status.${trip.status}`) }}
 						</UBadge>
+						<UBadge v-if="isPastTrip" color="neutral" variant="subtle" size="xs">
+							{{ t('ayan.status.past') }}
+						</UBadge>
 					</div>
 				</header>
 
@@ -123,7 +128,9 @@ watch(
 					<div class="space-y-3">
 						<div class="flex items-center justify-between">
 							<span class="text-sm text-gray-400">{{ t('ayan.ride.price') }}</span>
-							<span class="text-sm font-semibold text-cyan-400">{{ formatPrice(trip.price) }}</span>
+							<span class="text-sm font-semibold text-cyan-400">
+								{{ formatPrice(trip.price, '₽', t('ayan.ride.free')) }}
+							</span>
 						</div>
 						<div class="flex items-center justify-between">
 							<span class="text-sm text-gray-400">{{ t('ayan.ride.seatsAvailable') }}</span>
@@ -190,7 +197,7 @@ watch(
 									</div>
 								</div>
 								<div
-									v-if="isOwner && r.status === 'pending' && !hasAcceptedResponse"
+									v-if="isOwner && !isPastTrip && r.status === 'pending' && !hasAcceptedResponse"
 									class="flex shrink-0 gap-1"
 								>
 									<UButton

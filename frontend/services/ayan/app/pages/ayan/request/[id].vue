@@ -21,13 +21,18 @@ const responses = ref<AyanResponse[]>([])
 const responding = ref(false)
 const responseMessage = ref('')
 
+const isPastRequest = computed(() =>
+	request.value ? isPastAyanDateTime(request.value.date, request.value.time) : false
+)
+
 const isOwner = computed(() => {
 	if (!request.value || !authUser.value) return false
 	return request.value.passenger.id === authUser.value.id
 })
 
 const canRespond = computed(
-	() => !isOwner.value && request.value?.status === 'open' && authUser.value?.role === 'driver'
+	() =>
+		!isOwner.value && !isPastRequest.value && request.value?.status === 'open' && authUser.value?.role === 'driver'
 )
 
 const hasAcceptedResponse = computed(() => responses.value.some((r) => r.status === 'accepted'))
@@ -118,6 +123,9 @@ watch(
 						<UBadge :color="request.status === 'open' ? 'success' : 'neutral'" variant="subtle" size="xs">
 							{{ t(`ayan.status.${request.status}`) }}
 						</UBadge>
+						<UBadge v-if="isPastRequest" color="neutral" variant="subtle" size="xs">
+							{{ t('ayan.status.past') }}
+						</UBadge>
 					</div>
 				</header>
 
@@ -184,7 +192,7 @@ watch(
 									</div>
 								</div>
 								<div
-									v-if="isOwner && r.status === 'pending' && !hasAcceptedResponse"
+									v-if="isOwner && !isPastRequest && r.status === 'pending' && !hasAcceptedResponse"
 									class="flex shrink-0 gap-1"
 								>
 									<UButton
