@@ -19,8 +19,8 @@ Goal: ship a working AYAN MVP flow:
 
 - Current branch: `front/ayan`
 - Latest important hardening commit already pushed: `755f7c6` `fix(ayan): enforce auth and response rules`
-- Main blocker: HTTPS is still missing for the VPS-served frontend because there is no hostname/domain attached to the server yet
-- Last completed action: pushed the AYAN role-switch/past-item slice, deployed the backend part on VPS, and verified focused backend tests green on the real checkout (`14 tests, 110 assertions`)
+- Main blocker: manual live browser/TMA verification is still pending even though HTTPS and deploy are now ready
+- Last completed action: attached DuckDNS hostname, enabled Let's Encrypt HTTPS, and confirmed frontend/API respond on `https://iindiinda.duckdns.org`
 - Continue from: `vault/resume-plan.md`
 
 ## Current Reality
@@ -31,6 +31,7 @@ Goal: ship a working AYAN MVP flow:
 - The VPS root `http://89.22.226.34/` now serves the frontend SPA over Nginx static files
 - The VPS route `http://89.22.226.34/api/*` still serves the Laravel backend
 - The current `front/ayan` branch state is pushed and deployed on VPS
+- HTTPS hostname is now live: `https://iindiinda.duckdns.org`
 - Direct AYAN API smoke against VPS was previously green for auth, create, respond, accept, and `my/*`
 - SSH access from this machine to `iind-vps` is working again
 - The VPS backend runtime is now synchronized to the branch tip and passes focused feature tests on the clean deployed checkout
@@ -66,7 +67,7 @@ Goal: ship a working AYAN MVP flow:
 
 - No local `php`, `composer`, or `docker` in this environment
 - Browser auth remains intentionally limited until the Telegram auth flow is fully finalized end-to-end
-- VPS frontend currently works over plain HTTP only; trusted HTTPS still needs a hostname/domain strategy
+- Live browser/TMA verification for the new role-switch and past-item flow is still pending
 
 ## Decisions Already Taken
 
@@ -77,12 +78,10 @@ Goal: ship a working AYAN MVP flow:
 
 ## Next Practical Step
 
-1. Manually test AYAN against `http://89.22.226.34/` with the new role switcher
-2. Decide hostname strategy for HTTPS:
-   - buy/attach a real domain, or
-   - use a free hostname service you control
-3. After hostname exists, issue a real TLS certificate and switch VPS frontend to HTTPS
-4. Re-test Telegram/TMA constraints after HTTPS is available
+1. Manually test AYAN against `https://iindiinda.duckdns.org/` with the new role switcher
+2. Re-test Telegram/TMA constraints now that HTTPS exists
+3. If DuckDNS is only temporary, later replace it with the final domain and re-issue TLS
+4. Update `vault/` again with the exact result
 5. Update `vault/` again with the exact result
 
 ## Definition Of Progress For This Sprint

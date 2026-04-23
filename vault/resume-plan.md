@@ -26,6 +26,10 @@
   - `http://89.22.226.34/` serves the frontend SPA
   - `http://89.22.226.34/ayan` falls back to SPA entry correctly
   - `http://89.22.226.34/api/health` still returns `200`
+- VPS HTTPS deploy is now live:
+  - `https://iindiinda.duckdns.org/` serves the frontend SPA
+  - `https://iindiinda.duckdns.org/api/health` returns `200`
+  - `http://iindiinda.duckdns.org/` redirects to HTTPS
 - Previous direct AYAN VPS smoke was green for:
   - `POST /auth/telegram`
   - create trip/request
@@ -56,7 +60,7 @@
   - role switching UX is now implemented locally, but still needs manual live verification against the real backend
   - browser auth also remains intentionally limited outside final Telegram flow
   - the new past-item/backend-expiry slice is now deployed and focused backend tests are green on the real VPS checkout
-  - VPS frontend has no trusted HTTPS yet because there is no hostname/domain bound to the server
+  - HTTPS is now available through DuckDNS, but live browser/TMA verification is still pending
 
 ## Session Restart Prompt
 
@@ -64,7 +68,7 @@ Use this prompt at the start of the next session:
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: verify the new AYAN role switcher and past-item UX against the live VPS frontend/backend, then attach a DuckDNS or real hostname and add HTTPS for Telegram-ready deployment.
+Current task: verify the new AYAN role switcher and past-item UX against https://iindiinda.duckdns.org and confirm Telegram/TMA behavior on the HTTPS deployment.
 ```
 
 ## Safe Next-Step Plan
@@ -79,8 +83,8 @@ Current task: verify the new AYAN role switcher and past-item UX against the liv
    - passenger can create request and respond to trip
    - driver can create trip and respond to request
    - owners can see/accept/reject responses
-3. Add a hostname for VPS frontend so HTTPS can be issued
-4. Issue TLS cert and switch Nginx frontend to HTTPS when hostname is ready
+3. Re-test Telegram/TMA integration on `https://iindiinda.duckdns.org`
+4. If needed later, replace DuckDNS with the final domain and re-issue TLS
 5. Record the result in:
    - `vault/logs/changelog.md`
    - `vault/sprint.md`
@@ -107,7 +111,7 @@ Current task: verify the new AYAN role switcher and past-item UX against the liv
   - build uploaded to `/var/www/iind-app/frontend/public`
   - Nginx default site now serves SPA at `/`
   - `/api/*` remains backed by Laravel
-  - currently HTTP only
+  - HTTPS hostname now live at `iindiinda.duckdns.org`
 
 ## Backend State
 
@@ -155,17 +159,16 @@ Current task: verify the new AYAN role switcher and past-item UX against the liv
 
 ### What Blocks The Next Stage
 
-1. Trusted HTTPS is still missing for VPS frontend because there is no hostname/domain yet
-2. Browser auth remains intentionally constrained
-3. Local backend execution is impossible in this environment because `php`, `composer`, and `docker` are unavailable
-4. Live browser/TMA verification for the new role-switch/past-item flow is still pending
+1. Browser auth remains intentionally constrained
+2. Local backend execution is impossible in this environment because `php`, `composer`, and `docker` are unavailable
+3. Live browser/TMA verification for the new role-switch/past-item flow is still pending
 
 ## Priority Order
 
 ### P0 — Restore Operational Access
 
 - manually verify role-aware live flows from frontend/TMA
-- attach a hostname so VPS frontend can move to HTTPS
+- confirm the new HTTPS DuckDNS deployment works correctly in TMA/browser
 
 ### P1 — Verify AYAN Hardening On VPS
 
@@ -179,4 +182,4 @@ Current task: verify the new AYAN role switcher and past-item UX against the liv
 
 ## One-Line Summary
 
-The backend and frontend slices are now pushed and deployed on VPS over HTTP, and the next real step is attaching a DuckDNS or real hostname so HTTPS can be enabled for Telegram-ready verification.
+The backend and frontend slices are pushed and deployed, DuckDNS HTTPS is now live, and the next real step is manual Telegram/browser verification on the secure deployment.

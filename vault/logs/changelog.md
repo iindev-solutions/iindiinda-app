@@ -2,6 +2,33 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-23 19:31 — DuckDNS + HTTPS Live
+
+### Done
+
+- Bound `iindiinda.duckdns.org` to VPS IP `89.22.226.34`
+- Updated VPS Nginx `server_name` to `iindiinda.duckdns.org`
+- Installed `certbot` and `python3-certbot-nginx` on VPS
+- Issued a real Let's Encrypt certificate for `iindiinda.duckdns.org`
+- Enabled HTTP -> HTTPS redirect through Certbot-managed Nginx config
+- Added DuckDNS updater script on VPS at `/opt/duckdns/update.sh`
+- Added root crontab entry to refresh the DuckDNS record every 5 minutes
+
+### Verified
+
+- `nslookup iindiinda.duckdns.org` ✅ (`89.22.226.34`)
+- `curl -I http://iindiinda.duckdns.org/` ✅ (`301` -> HTTPS)
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- `certbot --nginx ... -d iindiinda.duckdns.org` ✅
+- `/opt/duckdns/update.sh` executes successfully ✅
+
+### Important
+
+- Telegram-ready hostname is now available: `https://iindiinda.duckdns.org`
+- DuckDNS token is stored only on VPS inside `/opt/duckdns/update.sh`; it was not written into repo code
+- Certbot dry-run check initially slept because of random renewal delay; live cert issuance itself succeeded and HTTPS is already working
+
 ## 2026-04-23 17:56 — Push + Backend Deploy + VPS HTTP Frontend
 
 ### Done

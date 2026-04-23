@@ -55,3 +55,11 @@
 - Verified: `git push origin front/ayan`, VPS `git pull --ff-only origin front/ayan`, VPS backend `phpunit` (`15 tests, 112 assertions`), `curl -I http://89.22.226.34/`, `curl -I http://89.22.226.34/ayan`, `curl -I http://89.22.226.34/api/health`
 - Blockers: HTTPS still needs a hostname/domain before TLS can be issued
 - Next: set up DuckDNS or a real domain, issue TLS, then manually verify the live role-switch/past-item flow in browser/TMA
+
+## 2026-04-23 19:31 — DuckDNS HTTPS Enabled
+
+- Scope: bind a real hostname to the VPS and enable trusted HTTPS for the SPA + API deployment
+- Changes: updated DuckDNS to point at the VPS, set Nginx `server_name` to `iindiinda.duckdns.org`, issued a Let's Encrypt certificate through Certbot, enabled HTTP-to-HTTPS redirect, and installed a DuckDNS updater cron job on VPS
+- Verified: `nslookup iindiinda.duckdns.org`, `curl -I http://iindiinda.duckdns.org/`, `curl -I https://iindiinda.duckdns.org/`, `curl -I https://iindiinda.duckdns.org/api/health`, direct execution of `/opt/duckdns/update.sh`
+- Blockers: manual live browser/TMA verification is still pending
+- Next: test the secure deployment end-to-end from browser/Telegram and record the result
