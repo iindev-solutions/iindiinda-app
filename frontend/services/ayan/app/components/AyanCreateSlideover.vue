@@ -7,6 +7,7 @@ const emit = defineEmits<{ created: [] }>()
 const { t } = useI18n()
 const toast = useToast()
 const { hapticFeedback } = useTg()
+const { user } = useAuth()
 const { createTrip } = useAyanTrips()
 const { createRequest } = useAyanRequests()
 
@@ -27,10 +28,35 @@ const state = reactive({
 
 const submitting = ref(false)
 
+const allowedFormType = computed<'trip' | 'request' | null>(() => {
+	if (user.value?.role === 'driver') return 'trip'
+	if (user.value?.role === 'passenger') return 'request'
+	return null
+})
+
 const typeOptions = computed(() => [
-	{ label: t('ayan.create.ride'), value: 'trip' as const, icon: 'i-lucide-car' },
-	{ label: t('ayan.create.request'), value: 'request' as const, icon: 'i-lucide-map-pin' }
+	...(allowedFormType.value !== 'request'
+		? [{ label: t('ayan.create.ride'), value: 'trip' as const, icon: 'i-lucide-car' }]
+		: []),
+	...(allowedFormType.value !== 'trip'
+		? [{ label: t('ayan.create.request'), value: 'request' as const, icon: 'i-lucide-map-pin' }]
+		: [])
 ])
+
+watch(
+	[allowedFormType, open],
+	([type, isOpen]) => {
+		if (type) {
+			formType.value = type
+			return
+		}
+
+		if (isOpen) {
+			formType.value = 'trip'
+		}
+	},
+	{ immediate: true }
+)
 
 function resetForm() {
 	Object.assign(state, {
@@ -123,6 +149,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 	>
 		<template #body>
 			<UTabs
+				v-if="typeOptions.length > 1"
 				:items="typeOptions"
 				:model-value="formType"
 				variant="pill"

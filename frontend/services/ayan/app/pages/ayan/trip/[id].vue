@@ -24,6 +24,10 @@ const isOwner = computed(() => {
 	return trip.value.driver.id === authUser.value.id
 })
 
+const canRespond = computed(
+	() => !isOwner.value && trip.value?.status === 'open' && authUser.value?.role === 'passenger'
+)
+
 const hasAcceptedResponse = computed(() => responses.value.some((r) => r.status === 'accepted'))
 
 const statusColor = (status: AyanResponse['status']) => {
@@ -33,7 +37,12 @@ const statusColor = (status: AyanResponse['status']) => {
 }
 
 async function loadResponses() {
-	responses.value = await fetchTripResponses(tripId.value)
+	try {
+		responses.value = await fetchTripResponses(tripId.value)
+	} catch (error) {
+		responses.value = []
+		console.error('[ayan.trip] Failed to load responses:', error)
+	}
 }
 
 async function handleRespond() {
@@ -42,7 +51,6 @@ async function handleRespond() {
 		await createTripResponse(tripId.value, { message: responseMessage.value || undefined })
 		hapticFeedback('notification')
 		toast.add({ title: t('ayan.respond.success'), color: 'success', icon: 'i-lucide-check-circle', duration: 3000 })
-		await loadResponses()
 		responseMessage.value = ''
 	} catch {
 		hapticFeedback('impact')
@@ -74,7 +82,18 @@ async function handleReject(r: AyanResponse) {
 	}
 }
 
-loadResponses()
+watch(
+	isOwner,
+	async (owner) => {
+		if (!owner) {
+			responses.value = []
+			return
+		}
+
+		await loadResponses()
+	},
+	{ immediate: true }
+)
 </script>
 
 <template>
@@ -121,7 +140,7 @@ loadResponses()
 					</div>
 				</UCard>
 
-				<template v-if="!isOwner && trip.status === 'open'">
+				<template v-if="canRespond">
 					<div class="mb-6">
 						<h2 class="mb-3 text-sm font-medium text-gray-400">
 							{{ t('ayan.respond.button') }}

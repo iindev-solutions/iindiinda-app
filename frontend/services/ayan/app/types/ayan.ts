@@ -47,6 +47,8 @@ export interface AyanResponseUser {
 
 export interface AyanResponse {
 	id: number
+	trip_id?: number | null
+	request_id?: number | null
 	user: AyanResponseUser
 	message: string | null
 	status: AyanResponseStatus

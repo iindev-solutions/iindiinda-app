@@ -46,11 +46,12 @@ class RequestController extends Controller
         $user = $request->user();
 
         abort_unless($user instanceof User, 401, 'Unauthenticated.');
+        abort_if($user->role !== 'passenger', 403, 'Only passengers can create requests');
 
         $validated = $request->validate([
             'from_address' => 'required|string|max:255',
             'to_address' => 'required|string|max:255',
-            'date' => 'required|date',
+            'date' => 'required|date|after_or_equal:today',
             'time' => ['nullable', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'],
             'description' => 'nullable|string|max:500',
         ]);

@@ -3,6 +3,7 @@ definePageMeta({ lazy: true })
 
 const { t } = useI18n()
 const { hapticFeedback } = useTg()
+const { user: authUser } = useAuth()
 
 const activeTab = ref('trips')
 const createOpen = ref(false)
@@ -17,6 +18,14 @@ const tabs = computed(() => [
 	{ label: t('ayan.requests'), value: 'requests', icon: 'i-lucide-map-pin' },
 	{ label: t('ayan.myRides'), value: 'my', icon: 'i-lucide-user' }
 ])
+
+const createMode = computed<'trip' | 'request' | null>(() => {
+	if (authUser.value?.role === 'driver') return 'trip'
+	if (authUser.value?.role === 'passenger') return 'request'
+	return null
+})
+
+const createLabel = computed(() => (createMode.value === 'request' ? t('ayan.createRequest') : t('ayan.createRide')))
 
 const {
 	data: trips,
@@ -114,6 +123,7 @@ function handleTabChange(val: string | number) {
 }
 
 function handleCreate() {
+	if (!createMode.value) return
 	hapticFeedback('impact')
 	createOpen.value = true
 }
@@ -233,9 +243,9 @@ function handleRequestClick(requestId: number) {
 				</Transition>
 			</div>
 
-			<div class="mb-4">
+			<div v-if="createMode" class="mb-4">
 				<UButton icon="i-lucide-plus" size="lg" variant="soft" color="primary" block @click="handleCreate">
-					{{ activeTab === 'requests' ? t('ayan.createRequest') : t('ayan.createRide') }}
+					{{ createLabel }}
 				</UButton>
 			</div>
 

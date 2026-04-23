@@ -26,6 +26,10 @@ const isOwner = computed(() => {
 	return request.value.passenger.id === authUser.value.id
 })
 
+const canRespond = computed(
+	() => !isOwner.value && request.value?.status === 'open' && authUser.value?.role === 'driver'
+)
+
 const hasAcceptedResponse = computed(() => responses.value.some((r) => r.status === 'accepted'))
 
 const statusColor = (status: AyanResponse['status']) => {
@@ -35,7 +39,12 @@ const statusColor = (status: AyanResponse['status']) => {
 }
 
 async function loadResponses() {
-	responses.value = await fetchRequestResponses(requestId.value)
+	try {
+		responses.value = await fetchRequestResponses(requestId.value)
+	} catch (error) {
+		responses.value = []
+		console.error('[ayan.request] Failed to load responses:', error)
+	}
 }
 
 async function handleRespond() {
@@ -44,7 +53,6 @@ async function handleRespond() {
 		await createRequestResponse(requestId.value, { message: responseMessage.value || undefined })
 		hapticFeedback('notification')
 		toast.add({ title: t('ayan.respond.success'), color: 'success', icon: 'i-lucide-check-circle', duration: 3000 })
-		await loadResponses()
 		responseMessage.value = ''
 	} catch {
 		hapticFeedback('impact')
@@ -76,7 +84,18 @@ async function handleReject(r: AyanResponse) {
 	}
 }
 
-loadResponses()
+watch(
+	isOwner,
+	async (owner) => {
+		if (!owner) {
+			responses.value = []
+			return
+		}
+
+		await loadResponses()
+	},
+	{ immediate: true }
+)
 </script>
 
 <template>
@@ -115,7 +134,7 @@ loadResponses()
 					</div>
 				</UCard>
 
-				<template v-if="!isOwner && request.status === 'open'">
+				<template v-if="canRespond">
 					<div class="mb-6">
 						<h2 class="mb-3 text-sm font-medium text-gray-400">
 							{{ t('ayan.respond.button') }}

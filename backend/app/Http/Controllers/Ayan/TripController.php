@@ -46,11 +46,12 @@ class TripController extends Controller
         $user = $request->user();
 
         abort_unless($user instanceof User, 401, 'Unauthenticated.');
+        abort_if($user->role !== 'driver', 403, 'Only drivers can create trips');
 
         $validated = $request->validate([
             'from_address' => 'required|string|max:255',
             'to_address' => 'required|string|max:255',
-            'date' => 'required|date',
+            'date' => 'required|date|after_or_equal:today',
             'time' => ['required', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'],
             'seats' => 'required|integer|min:1|max:10',
             'price' => 'required|integer|min:0',

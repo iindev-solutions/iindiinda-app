@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -45,6 +46,12 @@ class AuthController extends Controller
     private function resolveTelegramUser(string $initData): array
     {
         if ($initData === 'test') {
+            if (!app()->environment(['local', 'testing'])) {
+                throw ValidationException::withMessages([
+                    'init_data' => 'Telegram user data is invalid.',
+                ]);
+            }
+
             return [
                 'telegram_id' => 123456789,
                 'first_name' => 'Тест',
@@ -52,14 +59,54 @@ class AuthController extends Controller
             ];
         }
 
+        $botToken = (string) config('services.telegram.bot_token', '');
+
+        if ($botToken === '') {
+            throw ValidationException::withMessages([
+                'init_data' => 'Telegram auth is not configured.',
+            ]);
+        }
+
         parse_str($initData, $params);
+
+        $hash = Arr::pull($params, 'hash');
+        $authDate = $params['auth_date'] ?? null;
+
+        if (!is_string($hash) || !is_numeric($authDate)) {
+            throw ValidationException::withMessages([
+                'init_data' => 'Telegram user data is invalid.',
+            ]);
+        }
+
+        $timestamp = (int) $authDate;
+
+        if ($timestamp < now()->subDay()->timestamp || $timestamp > now()->addMinutes(5)->timestamp) {
+            throw ValidationException::withMessages([
+                'init_data' => 'Telegram auth data expired.',
+            ]);
+        }
+
+        ksort($params);
+
+        $dataCheckString = collect($params)
+            ->map(fn ($value, $key) => sprintf('%s=%s', $key, is_scalar($value) ? (string) $value : ''))
+            ->implode("\n");
+
+        $secretKey = hash_hmac('sha256', $botToken, 'WebAppData', true);
+        $expectedHash = hash_hmac('sha256', $dataCheckString, $secretKey);
+
+        if (!hash_equals($expectedHash, $hash)) {
+            throw ValidationException::withMessages([
+                'init_data' => 'Telegram user data is invalid.',
+            ]);
+        }
 
         $rawUser = $params['user'] ?? null;
         $decodedUser = is_string($rawUser) ? json_decode($rawUser, true) : null;
 
-        $telegramId = $decodedUser['id'] ?? $params['id'] ?? null;
-        $firstName = $decodedUser['first_name'] ?? $params['first_name'] ?? null;
-        $username = $decodedUser['username'] ?? $params['username'] ?? null;
+        $telegramId = $decodedUser['id'] ?? null;
+        $firstName = $decodedUser['first_name'] ?? null;
+        $username = $decodedUser['username'] ?? null;
 
         if (!$telegramId || !$firstName) {
             throw ValidationException::withMessages([

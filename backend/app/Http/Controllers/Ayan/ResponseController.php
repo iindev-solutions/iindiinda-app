@@ -18,7 +18,15 @@ class ResponseController extends Controller
 
     public function tripIndex(int $tripId): JsonResponse
     {
-        abort_unless(Trip::query()->whereKey($tripId)->exists(), 404, 'Trip not found');
+        /** @var User|null $user */
+        $user = request()->user();
+
+        abort_unless($user instanceof User, 401, 'Unauthenticated.');
+
+        $trip = Trip::query()->find($tripId);
+
+        abort_if(!$trip, 404, 'Trip not found');
+        abort_if($trip->driver_id !== $user->id, 403, 'Forbidden');
 
         return response()->json([
             'success' => true,
@@ -34,7 +42,15 @@ class ResponseController extends Controller
 
     public function requestIndex(int $requestId): JsonResponse
     {
-        abort_unless(AyanRequest::query()->whereKey($requestId)->exists(), 404, 'Request not found');
+        /** @var User|null $user */
+        $user = request()->user();
+
+        abort_unless($user instanceof User, 401, 'Unauthenticated.');
+
+        $ayanRequest = AyanRequest::query()->find($requestId);
+
+        abort_if(!$ayanRequest, 404, 'Request not found');
+        abort_if($ayanRequest->passenger_id !== $user->id, 403, 'Forbidden');
 
         return response()->json([
             'success' => true,
@@ -54,6 +70,7 @@ class ResponseController extends Controller
         $user = $request->user();
 
         abort_unless($user instanceof User, 401, 'Unauthenticated.');
+        abort_if($user->role !== 'passenger', 403, 'Only passengers can respond to trips');
 
         $validated = $request->validate([
             'message' => 'nullable|string|max:500',
@@ -62,7 +79,13 @@ class ResponseController extends Controller
         $trip = Trip::query()->with('driver')->find($tripId);
 
         abort_if(!$trip, 404, 'Trip not found');
+        abort_if($trip->status !== 'open', 422, 'Trip is closed');
         abort_if($trip->driver_id === $user->id, 422, 'Cannot respond to your own trip');
+        abort_if(
+            AyanResponse::query()->where('trip_id', $trip->id)->where('user_id', $user->id)->exists(),
+            422,
+            'You already responded to this trip'
+        );
 
         $response = AyanResponse::query()->create([
             'user_id' => $user->id,
@@ -84,6 +107,7 @@ class ResponseController extends Controller
         $user = $request->user();
 
         abort_unless($user instanceof User, 401, 'Unauthenticated.');
+        abort_if($user->role !== 'driver', 403, 'Only drivers can respond to requests');
 
         $validated = $request->validate([
             'message' => 'nullable|string|max:500',
@@ -92,7 +116,13 @@ class ResponseController extends Controller
         $ayanRequest = AyanRequest::query()->with('passenger')->find($requestId);
 
         abort_if(!$ayanRequest, 404, 'Request not found');
+        abort_if($ayanRequest->status !== 'open', 422, 'Request is closed');
         abort_if($ayanRequest->passenger_id === $user->id, 422, 'Cannot respond to your own request');
+        abort_if(
+            AyanResponse::query()->where('request_id', $ayanRequest->id)->where('user_id', $user->id)->exists(),
+            422,
+            'You already responded to this request'
+        );
 
         $response = AyanResponse::query()->create([
             'user_id' => $user->id,
@@ -116,7 +146,7 @@ class ResponseController extends Controller
         abort_unless($user instanceof User, 401, 'Unauthenticated.');
 
         $validated = $request->validate([
-            'status' => 'required|in:pending,accepted,rejected',
+            'status' => 'required|in:accepted,rejected',
         ]);
 
         $response = AyanResponse::query()->with(['user', 'trip.driver', 'request.passenger'])->find($id);
@@ -127,6 +157,21 @@ class ResponseController extends Controller
         $requestOwnerId = $response->request?->passenger_id;
 
         abort_if($tripOwnerId !== $user->id && $requestOwnerId !== $user->id, 403, 'Forbidden');
+        abort_if($response->status !== 'pending', 422, 'Response is not pending');
+        abort_if($response->trip && $response->trip->status !== 'open', 422, 'Trip is closed');
+        abort_if($response->request && $response->request->status !== 'open', 422, 'Request is closed');
+
+        if ($validated['status'] === 'accepted') {
+            $conflictQuery = AyanResponse::query()->whereKeyNot($response->id)->where('status', 'accepted');
+
+            if ($response->trip_id) {
+                $conflictQuery->where('trip_id', $response->trip_id);
+            } else {
+                $conflictQuery->where('request_id', $response->request_id);
+            }
+
+            abort_if($conflictQuery->exists(), 422, 'Another response was already accepted');
+        }
 
         DB::transaction(function () use ($response, $validated) {
             $response->status = $validated['status'];

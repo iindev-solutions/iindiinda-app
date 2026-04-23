@@ -18,12 +18,14 @@ class AyanPersistenceTest extends TestCase
     {
         $owner = $this->makeUser('owner_trip', 1001, 'driver');
         $other = $this->makeUser('other_trip', 1002, 'driver');
+        $tripDate = now()->addDay()->toDateString();
+        $otherTripDate = now()->addDays(2)->toDateString();
 
         Trip::create([
             'driver_id' => $other->id,
             'from_address' => 'Намцы',
             'to_address' => 'Якутск',
-            'date' => '2026-04-25',
+            'date' => $otherTripDate,
             'time' => '08:00',
             'seats' => 2,
             'price' => 600,
@@ -36,7 +38,7 @@ class AyanPersistenceTest extends TestCase
         $created = $this->postJson('/api/ayan/trips', [
             'from_address' => 'Якутск',
             'to_address' => 'Намцы',
-            'date' => '2026-04-24',
+            'date' => $tripDate,
             'time' => '09:15',
             'seats' => 3,
             'price' => 500,
@@ -45,7 +47,7 @@ class AyanPersistenceTest extends TestCase
 
         $tripId = $created->json('data.id');
 
-        $this->getJson('/api/ayan/trips?from=Якут&date=2026-04-24')
+        $this->getJson("/api/ayan/trips?from=Якут&date={$tripDate}")
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.id', $tripId)
@@ -73,12 +75,14 @@ class AyanPersistenceTest extends TestCase
     {
         $owner = $this->makeUser('owner_request', 2001, 'passenger');
         $other = $this->makeUser('other_request', 2002, 'passenger');
+        $requestDate = now()->addDay()->toDateString();
+        $otherRequestDate = now()->addDays(3)->toDateString();
 
         AyanRequest::create([
             'passenger_id' => $other->id,
             'from_address' => 'Покровск',
             'to_address' => 'Якутск',
-            'date' => '2026-04-26',
+            'date' => $otherRequestDate,
             'time' => '13:00',
             'description' => 'other request',
             'status' => 'open',
@@ -89,14 +93,14 @@ class AyanPersistenceTest extends TestCase
         $created = $this->postJson('/api/ayan/requests', [
             'from_address' => 'Якутск',
             'to_address' => 'Тулагино',
-            'date' => '2026-04-24',
+            'date' => $requestDate,
             'time' => '18:30',
             'description' => 'persisted request',
         ])->assertCreated();
 
         $requestId = $created->json('data.id');
 
-        $this->getJson('/api/ayan/requests?to=Тулаг&date=2026-04-24')
+        $this->getJson("/api/ayan/requests?to=Тулаг&date={$requestDate}")
             ->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.id', $requestId)
@@ -126,12 +130,14 @@ class AyanPersistenceTest extends TestCase
         $tripResponder = $this->makeUser('trip_responder', 3002, 'passenger');
         $requestOwner = $this->makeUser('request_owner', 3003, 'passenger');
         $requestResponder = $this->makeUser('request_responder', 3004, 'driver');
+        $tripDate = now()->addDay()->toDateString();
+        $requestDate = now()->addDays(2)->toDateString();
 
         $trip = Trip::create([
             'driver_id' => $tripOwner->id,
             'from_address' => 'Якутск',
             'to_address' => 'Намцы',
-            'date' => '2026-04-24',
+            'date' => $tripDate,
             'time' => '09:00',
             'seats' => 3,
             'price' => 500,
@@ -143,7 +149,7 @@ class AyanPersistenceTest extends TestCase
             'passenger_id' => $requestOwner->id,
             'from_address' => 'Якутск',
             'to_address' => 'Тулагино',
-            'date' => '2026-04-24',
+            'date' => $requestDate,
             'time' => '17:00',
             'description' => null,
             'status' => 'open',
@@ -205,6 +211,253 @@ class AyanPersistenceTest extends TestCase
         $this->assertDatabaseHas('responses', [
             'id' => $tripResponseId,
             'status' => 'accepted',
+        ]);
+    }
+
+    public function test_trip_and_request_response_lists_are_owner_only(): void
+    {
+        $tripOwner = $this->makeUser('trip_owner_list', 4001, 'driver');
+        $tripResponder = $this->makeUser('trip_responder_list', 4002, 'passenger');
+        $requestOwner = $this->makeUser('request_owner_list', 4003, 'passenger');
+        $requestResponder = $this->makeUser('request_responder_list', 4004, 'driver');
+        $tripDate = now()->addDay()->toDateString();
+        $requestDate = now()->addDays(2)->toDateString();
+
+        $trip = Trip::create([
+            'driver_id' => $tripOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Намцы',
+            'date' => $tripDate,
+            'time' => '09:00',
+            'seats' => 3,
+            'price' => 500,
+            'comment' => null,
+            'status' => 'open',
+        ]);
+
+        $request = AyanRequest::create([
+            'passenger_id' => $requestOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Тулагино',
+            'date' => $requestDate,
+            'time' => '17:00',
+            'description' => null,
+            'status' => 'open',
+        ]);
+
+        AyanResponse::create([
+            'user_id' => $tripResponder->id,
+            'trip_id' => $trip->id,
+            'request_id' => null,
+            'message' => 'trip response',
+            'status' => 'pending',
+        ]);
+
+        AyanResponse::create([
+            'user_id' => $requestResponder->id,
+            'trip_id' => null,
+            'request_id' => $request->id,
+            'message' => 'request response',
+            'status' => 'pending',
+        ]);
+
+        Sanctum::actingAs($tripResponder);
+        $this->getJson("/api/ayan/trips/{$trip->id}/responses")->assertForbidden();
+
+        Sanctum::actingAs($requestResponder);
+        $this->getJson("/api/ayan/requests/{$request->id}/responses")->assertForbidden();
+    }
+
+    public function test_role_rules_are_enforced_for_trip_request_and_response_creation(): void
+    {
+        $passenger = $this->makeUser('passenger_role', 5001, 'passenger');
+        $driver = $this->makeUser('driver_role', 5002, 'driver');
+        $tripOwner = $this->makeUser('trip_owner_role', 5003, 'driver');
+        $requestOwner = $this->makeUser('request_owner_role', 5004, 'passenger');
+        $tripDate = now()->addDay()->toDateString();
+        $requestDate = now()->addDays(2)->toDateString();
+
+        $trip = Trip::create([
+            'driver_id' => $tripOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Намцы',
+            'date' => $tripDate,
+            'time' => '09:00',
+            'seats' => 3,
+            'price' => 500,
+            'comment' => null,
+            'status' => 'open',
+        ]);
+
+        $request = AyanRequest::create([
+            'passenger_id' => $requestOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Тулагино',
+            'date' => $requestDate,
+            'time' => '17:00',
+            'description' => null,
+            'status' => 'open',
+        ]);
+
+        Sanctum::actingAs($passenger);
+        $this->postJson('/api/ayan/trips', [
+            'from_address' => 'Якутск',
+            'to_address' => 'Намцы',
+            'date' => $tripDate,
+            'time' => '09:15',
+            'seats' => 3,
+            'price' => 500,
+        ])->assertForbidden();
+
+        Sanctum::actingAs($driver);
+        $this->postJson('/api/ayan/requests', [
+            'from_address' => 'Якутск',
+            'to_address' => 'Тулагино',
+            'date' => $requestDate,
+        ])->assertForbidden();
+
+        Sanctum::actingAs($driver);
+        $this->postJson("/api/ayan/trips/{$trip->id}/responses", [
+            'message' => 'wrong role',
+        ])->assertForbidden();
+
+        Sanctum::actingAs($passenger);
+        $this->postJson("/api/ayan/requests/{$request->id}/responses", [
+            'message' => 'wrong role',
+        ])->assertForbidden();
+    }
+
+    public function test_duplicate_and_closed_target_responses_are_rejected(): void
+    {
+        $tripOwner = $this->makeUser('trip_owner_rules', 6001, 'driver');
+        $passenger = $this->makeUser('trip_passenger_rules', 6002, 'passenger');
+        $requestOwner = $this->makeUser('request_owner_rules', 6003, 'passenger');
+        $driver = $this->makeUser('request_driver_rules', 6004, 'driver');
+        $tripDate = now()->addDay()->toDateString();
+        $closedTripDate = now()->addDays(2)->toDateString();
+        $requestDate = now()->addDays(3)->toDateString();
+        $closedRequestDate = now()->addDays(4)->toDateString();
+
+        $trip = Trip::create([
+            'driver_id' => $tripOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Намцы',
+            'date' => $tripDate,
+            'time' => '09:00',
+            'seats' => 3,
+            'price' => 500,
+            'comment' => null,
+            'status' => 'open',
+        ]);
+
+        $closedTrip = Trip::create([
+            'driver_id' => $tripOwner->id,
+            'from_address' => 'Покровск',
+            'to_address' => 'Якутск',
+            'date' => $closedTripDate,
+            'time' => '10:00',
+            'seats' => 1,
+            'price' => 700,
+            'comment' => null,
+            'status' => 'closed',
+        ]);
+
+        $request = AyanRequest::create([
+            'passenger_id' => $requestOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Тулагино',
+            'date' => $requestDate,
+            'time' => '17:00',
+            'description' => null,
+            'status' => 'open',
+        ]);
+
+        $closedRequest = AyanRequest::create([
+            'passenger_id' => $requestOwner->id,
+            'from_address' => 'Намцы',
+            'to_address' => 'Якутск',
+            'date' => $closedRequestDate,
+            'time' => '18:00',
+            'description' => null,
+            'status' => 'closed',
+        ]);
+
+        Sanctum::actingAs($passenger);
+        $this->postJson("/api/ayan/trips/{$trip->id}/responses", [
+            'message' => 'first',
+        ])->assertCreated();
+
+        $this->postJson("/api/ayan/trips/{$trip->id}/responses", [
+            'message' => 'duplicate',
+        ])->assertStatus(422);
+
+        $this->postJson("/api/ayan/trips/{$closedTrip->id}/responses", [
+            'message' => 'closed target',
+        ])->assertStatus(422);
+
+        Sanctum::actingAs($driver);
+        $this->postJson("/api/ayan/requests/{$request->id}/responses", [
+            'message' => 'first',
+        ])->assertCreated();
+
+        $this->postJson("/api/ayan/requests/{$request->id}/responses", [
+            'message' => 'duplicate',
+        ])->assertStatus(422);
+
+        $this->postJson("/api/ayan/requests/{$closedRequest->id}/responses", [
+            'message' => 'closed target',
+        ])->assertStatus(422);
+    }
+
+    public function test_only_one_response_can_be_accepted_for_same_trip(): void
+    {
+        $tripOwner = $this->makeUser('trip_owner_accept', 7001, 'driver');
+        $passengerOne = $this->makeUser('trip_passenger_one', 7002, 'passenger');
+        $passengerTwo = $this->makeUser('trip_passenger_two', 7003, 'passenger');
+        $tripDate = now()->addDay()->toDateString();
+
+        $trip = Trip::create([
+            'driver_id' => $tripOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Намцы',
+            'date' => $tripDate,
+            'time' => '09:00',
+            'seats' => 3,
+            'price' => 500,
+            'comment' => null,
+            'status' => 'open',
+        ]);
+
+        $accepted = AyanResponse::create([
+            'user_id' => $passengerOne->id,
+            'trip_id' => $trip->id,
+            'request_id' => null,
+            'message' => 'accepted first',
+            'status' => 'accepted',
+        ]);
+
+        $other = AyanResponse::create([
+            'user_id' => $passengerTwo->id,
+            'trip_id' => $trip->id,
+            'request_id' => null,
+            'message' => 'pending second',
+            'status' => 'rejected',
+        ]);
+
+        Trip::query()->whereKey($trip->id)->update(['status' => 'closed']);
+
+        Sanctum::actingAs($tripOwner);
+        $this->patchJson("/api/ayan/responses/{$other->id}", [
+            'status' => 'accepted',
+        ])->assertStatus(422);
+
+        $this->assertDatabaseHas('responses', [
+            'id' => $accepted->id,
+            'status' => 'accepted',
+        ]);
+        $this->assertDatabaseHas('responses', [
+            'id' => $other->id,
+            'status' => 'rejected',
         ]);
     }
 
