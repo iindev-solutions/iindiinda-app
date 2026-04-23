@@ -11,19 +11,20 @@
 Начало: 2026-04-19
 Цель: Рабочий MVP попуток (создание поездки/запроса → лента → отклик → контакт)
 
-### Resume Point — 2026-04-22
+### Resume Point — 2026-04-23
 
-- **Где остановились:** backend AYAN уже поднят и запушен в `front/ayan`, frontend AYAN переключён с mock на real API (`USE_MOCK_API = false`)
+- **Где остановились:** backend AYAN уже поднят и запушен в `front/ayan`, frontend AYAN переключён с mock на real API (`USE_MOCK_API = false`), GitHub Pages deploy live
 - **Главный блокер:** auth для browser mode пока intentionally отключён до real Telegram OAuth / `initData` verification; production-grade verification на backend ещё не реализована
-- **Последнее завершённое действие:** frontend real-API switch подтверждён `npm run typecheck` + `npm run lint`, backend/vault runtime commit уже в `origin/front/ayan`
+- **Последнее завершённое действие:** GitHub Pages deploy подтверждён (`/`, `/ayan`, assets = `200`), direct VPS API smoke подтверждён для login/create/respond/accept/`my/*`
 - **Продолжать с:** `vault/resume-plan.md`
 
 ### Current Reality
 
 - Frontend Phase 1 = **real API wired for AYAN**, но browser auth flow ещё intentionally урезан до TMA-first режима
 - Backend Phase 1 = **runtime-ready on VPS**: Laravel base восстановлен, Sanctum стоит, AYAN `trips / requests / responses / my/*` работают через MySQL persistence
+- GitHub Pages frontend = **live** on `https://iindev-solutions.github.io/iindiinda-app/`
+- Direct AYAN API smoke against VPS = **green** for auth + create/list/respond/accept + `my/*`
 - Frontend testing base = **baseline ready** (`vitest` smoke path работает для plain TS unit tests, не для Nuxt composables)
-- Следующий реальный этап = переключение `mock → real` на фронте и прохождение flow against VPS backend
 - Следующий реальный этап = пройти полный AYAN flow в UI против VPS backend и затем закрыть real Telegram verification
 
 ### Задачи

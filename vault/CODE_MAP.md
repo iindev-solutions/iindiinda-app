@@ -9,7 +9,7 @@
 | Файл | Экспорт | Назначение |
 |------|---------|------------|
 | `useAPI.ts` | `useAPI()` | HTTP клиент (mock/real). Методы: get, post, put, del. Токен + initData в заголовках |
-| `useAuth.ts` | `useAuth()` | Auth: login (TMA init_data), logout, switchRole. Browser OAuth auto-login сейчас intentionally disabled до real backend support. State: token, user |
+| `useAuth.ts` | `useAuth()` | Auth: login (TMA init_data), logout, switchRole. Browser OAuth auto-login сейчас intentionally disabled до real backend support; для local dev можно дать `public.devInitData` fallback |
 | `useError.ts` | `useGlobalError()` | Глобальные ошибки. showError/clearError. Автоскрытие через 5с |
 | `useNetwork.ts` | `useNetwork()` | Online/offline статус. isOnline |
 | `useStorage.ts` | `useStorage()` | localStorage wrapper. JSON serialize. get/set/remove/clear |
@@ -211,18 +211,23 @@
 ## Ключевые файлы-входы
 
 - `frontend/nuxt.config.ts` — Nuxt конфиг, extends слоёв
+- `frontend/.env` — local-only env для frontend dev (`NUXT_PUBLIC_API_BASE`, optional `NUXT_PUBLIC_DEV_INIT_DATA`)
 - `frontend/app/app.vue` — Root component
 - `frontend/app/app.vue` — overlay loader сейчас закомментирован, активен только `NuxtLoadingIndicator`
 - `frontend/app/config/api.config.ts` — Mock/real toggle
 - `backend/routes/api.php` — Все API маршруты
 - `vault/wiki/services/ayan/api-contract.md` — Финальный API контракт AYAN
 
-## Audit Notes — 2026-04-22
+## Audit Notes — 2026-04-23
 
 - `frontend/app/config/api.config.ts`: `USE_MOCK_API = false` — AYAN фронт переключён на real API
 - `frontend/app/composables/useAuth.ts`: browser auto-login не ходит в старый OAuth flow до появления backend support
+- local frontend against VPS: задать `frontend/.env` с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`; для browser-only smoke path можно добавить `NUXT_PUBLIC_DEV_INIT_DATA=test`
+- GitHub Pages deploy live: `https://iindev-solutions.github.io/iindiinda-app/` и `/ayan` отвечают `200`, rebased assets под `/iindiinda-app/assets/*` грузятся
+- direct VPS smoke подтверждён: два synthetic Telegram payload юзера прошли login → create trip/request → respond → accept → `my/*`
 - `backend/`: Laravel runtime восстановлен и проверен на VPS (`Nginx + PHP-FPM + MySQL`)
 - `backend/routes/api.php`: AYAN routes уже совпадают с фронтовым контрактом `trips / requests / responses / my/*`
 - `backend/app/Http/Controllers/Ayan/*`: persistence-backed, не sample arrays
 - `backend/app/Http/Middleware/ForceJsonResponse.php`: guest protected API даёт JSON `401`, не `Route [login] not defined`
 - `backend/app/Http/Controllers/AuthController.php`: real Sanctum token issuance уже есть, но Telegram verification ещё не production-ready
+- deploy caveat: `public.devInitData` сериализуется в static HTML как пустой ключ; не собирать deploy с непустым `NUXT_PUBLIC_DEV_INIT_DATA`

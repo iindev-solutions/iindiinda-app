@@ -1,4 +1,4 @@
-# Resume Plan — 2026-04-22
+# Resume Plan — 2026-04-23
 
 > Цель: быстро восстановить контекст, понять где мы остановились, и продолжить Phase 1 без повторного аудита.
 
@@ -7,9 +7,34 @@
 ## Stop Point
 
 - Текущая ветка: `front/ayan`
-- Локальная ветка: `front/ayan` с большим незакоммиченным backend пакетом (Laravel runtime base, Sanctum, AYAN persistence, vault updates)
-- Незакоммиченные изменения: backend runtime files + AYAN backend fixes + backend feature tests + обновления в `vault/*`
-- Последнее завершённое действие: backend runtime/persistence пакет закоммичен и запушен; frontend AYAN переключён на real API, browser auth временно оставлен TMA-only
+- `backend` и `frontend real API switch` уже закоммичены и запушены в `origin/front/ayan`
+- Текущие рабочие незакоммиченные изменения: `.env.example`, `frontend/app/composables/useAuth.ts`, `frontend/nuxt.config.ts`, `vault/CODE_MAP.md`, `vault/logs/changelog.md`, `vault/resume-plan.md`
+- Локальный dev flow для теста real backend: `frontend/.env` (ignored) с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api` и `NUXT_PUBLIC_DEV_INIT_DATA=test`
+- `gh-pages` ветка уже опубликована: static output запушен отдельным temp-repo commit'ом `bff6aa5`
+- Expected URL: `https://iindev-solutions.github.io/iindiinda-app/`
+- GitHub Pages уже live: `/` и `/ayan` отвечают `200`, rebased asset path `/iindiinda-app/assets/*` тоже отвечает `200`
+- Прямой AYAN VPS smoke уже зелёный: два synthetic Telegram payload юзера прошли `POST /auth/telegram` → create trip/request → respond → accept → `my/*`
+- Важный нюанс для следующего деплоя: прямой build с `NUXT_APP_BASE_URL=/iindiinda-app/` ломает Nuxt prerender; рабочий flow сейчас такой:
+  1. build с `NUXT_APP_BASE_URL=/`
+  2. rebased output: `href/src /assets/*` → `/iindiinda-app/assets/*`, `app.baseURL` → `/iindiinda-app/`
+  3. publish `.output/public` в `gh-pages`
+- Важно: в generated HTML всё ещё сериализуется ключ `public.devInitData` как пустая строка; не публиковать deploy build с непустым `NUXT_PUBLIC_DEV_INIT_DATA`
+
+### Session-Restart Handoff (коротко)
+
+Когда открывается новая сессия, стартовый prompt:
+
+```text
+Read vault/resume-plan.md and continue from “Stop Point”.
+Current task: run AYAN browser UI flow against VPS backend and confirm local auth/bootstrap behavior.
+```
+
+Минимальный безопасный план на следующую сессию:
+1. Поднять локально `frontend/` против VPS API (`frontend/.env` с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`)
+2. Для browser-only smoke path при необходимости включить `NUXT_PUBLIC_DEV_INIT_DATA=test`
+3. Пройти UI smoke: `/` → `/ayan` → feed → detail pages
+4. Пройти create/respond/accept/contact/`my/*` из браузера, не только direct API
+5. После UI pass обновить `vault/logs/changelog.md` и `vault/resume-plan.md` под новый stop point
 
 ## Где мы остановились
 
@@ -19,7 +44,9 @@
 - Готово: лента поездок/запросов, фильтры, единый `AyanCreateSlideover`, детали поездки/запроса, отклики, принятие/отклонение, Telegram contact link
 - `npm run typecheck` и `npm run lint` проходят после переключения
 - Browser auth intentionally не запускает старый OAuth flow до появления real backend support; TMA login path остаётся основным
-- Основной stop point фронта: нужно пройти реальный UI flow против VPS backend и затем закрыть production-grade Telegram verification
+- Для local frontend against VPS нужен `frontend/.env` с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`; для browser-only dev smoke path можно добавить `NUXT_PUBLIC_DEV_INIT_DATA=test`
+- GitHub Pages deploy уже live: `https://iindev-solutions.github.io/iindiinda-app/` и `/ayan` отвечают `200`
+- Основной stop point фронта: direct API smoke уже подтверждён, теперь нужно пройти реальный UI flow против VPS backend и затем закрыть production-grade Telegram verification
 
 ### Backend
 
@@ -37,14 +64,14 @@
 
 ### Что реально готово
 
-1. Frontend AYAN MVP готов в mock-режиме
+1. Frontend AYAN уже переключён на real API и GitHub Pages deploy live
 2. Backend AYAN runtime реально поднят на VPS и отвечает по HTTP
-3. API контракт AYAN уже подтверждён рантаймом для основных persistence endpoints
+3. API контракт AYAN подтверждён direct smoke flow для основных persistence endpoints
 4. Базовый backend regression layer теперь есть: auth + guest auth handling + AYAN persistence feature tests
 
 ### Что блокирует следующий этап
 
-1. Нужен реальный frontend integration pass против VPS backend
+1. Нужен реальный frontend browser integration pass против VPS backend
 2. Browser auth intentionally disabled until OAuth / Telegram verification is wired end-to-end
 3. Telegram `initData` verification на backend пока не production-grade
 4. В текущей среде нет `php`, `composer`, `docker`, поэтому backend проверяется только на VPS
@@ -172,9 +199,9 @@
 Если продолжать прямо с текущей точки, следующий нормальный шаг такой:
 
 1. Пройти AYAN flow в UI против VPS backend
-2. Зафиксировать frontend real-API switch отдельным commit'ом
+2. Зафиксировать deploy/live + UI integration findings в vault и отдельным commit'ом
 3. Отдельным пакетом закрыть настоящую Telegram `initData` verification
 
 ## Короткая версия в одну строку
 
-Мы уже подняли и запушили реальный AYAN backend на VPS, переключили фронт с mock на real API; следующий этап — пройти UI flow против VPS и потом дочистить настоящую Telegram verification.
+Мы уже подняли и запушили реальный AYAN backend на VPS, переключили фронт на real API, подняли GitHub Pages и прогнали direct API smoke; следующий этап — пройти UI flow в браузере против VPS и потом дочистить настоящую Telegram verification.

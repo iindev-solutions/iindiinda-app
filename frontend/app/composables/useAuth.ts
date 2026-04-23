@@ -11,13 +11,15 @@ export const useAuth = () => {
 	const isLoading = ref(false)
 
 	// TMA mode: auto-login with initData
-	const loginWithInitData = async () => {
-		if (!initData.value) throw new Error('No initData')
+	const loginWithInitData = async (overrideInitData?: string) => {
+		const payload = overrideInitData || initData.value
+
+		if (!payload) throw new Error('No initData')
 
 		isLoading.value = true
 		try {
 			const response = await api.post<AuthResponse>('/auth/telegram', {
-				init_data: initData.value
+				init_data: payload
 			})
 			token.value = response.token
 			user.value = response.user
@@ -63,6 +65,13 @@ export const useAuth = () => {
 	const login = async () => {
 		if (isInTelegram.value) {
 			await loginWithInitData()
+			return
+		}
+
+		const devInitData = config.public.devInitData as string
+		if (devInitData) {
+			console.warn('[useAuth] Using dev initData fallback for browser testing')
+			await loginWithInitData(devInitData)
 			return
 		}
 

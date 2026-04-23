@@ -4,6 +4,50 @@
 
 ---
 
+## 2026-04-23 — GitHub Pages Live + AYAN VPS Smoke
+
+### Что сделано
+- Повторно проверен GitHub Pages deploy для `gh-pages`
+- Подтверждено, что `https://iindev-solutions.github.io/iindiinda-app/` уже live
+- Прогнан direct smoke против VPS backend через реальные AYAN endpoints с двумя synthetic Telegram payload users
+- Обновлены `vault/sprint.md`, `vault/resume-plan.md`, `vault/CODE_MAP.md` под новый stop point
+
+### Verified
+- `HEAD https://iindev-solutions.github.io/iindiinda-app/` → `200` ✅
+- `HEAD https://iindev-solutions.github.io/iindiinda-app/ayan` → `200` ✅
+- rebased asset `/iindiinda-app/assets/entry.DKuJVqy4.css` → `200` ✅
+- `POST /api/auth/telegram` with synthetic `init_data` for 2 users ✅
+- `POST /api/ayan/trips` ✅
+- `POST /api/ayan/requests` ✅
+- `POST /api/ayan/trips/{id}/responses` ✅
+- `POST /api/ayan/requests/{id}/responses` ✅
+- `PATCH /api/ayan/responses/{id}` accept flow ✅
+- `GET /api/ayan/my/trips`, `/my/requests`, `/my/responses` ✅
+
+### Важно
+- GitHub Pages propagation/source blocker больше не актуален: deploy уже live
+- Main next step сместился с deploy verification на реальный browser UI flow против VPS backend
+- В generated HTML публичный ключ `devInitData` всё ещё сериализуется как пустая строка; deploy build нельзя собирать с непустым `NUXT_PUBLIC_DEV_INIT_DATA`
+
+## 2026-04-22 — GitHub Pages Deploy Attempt
+
+### Что сделано
+- Собран static frontend output из `frontend/` через `npx nuxt build --preset github_pages`
+- Выявлен deploy nuance: build с `NUXT_APP_BASE_URL=/iindiinda-app/` ломает Nuxt prerender, потому что crawler идёт в `/`, а Nitro mount'ит app под repo base path
+- Рабочий временный flow: build с `NUXT_APP_BASE_URL=/`, затем rebase generated HTML/CSS под repo path `/iindiinda-app/`
+- Из generated HTML убран публичный `devInitData:"test"` fallback для deploy build
+- Содержимое `frontend/.output/public` опубликовано в новую ветку `gh-pages` отдельным temp-repo commit'ом `bff6aa5`
+
+### Verified
+- `npx nuxt build --preset github_pages` with `NUXT_APP_BASE_URL=/` ✅
+- rebased output содержит `/iindiinda-app/assets/*` и `app.baseURL:"/iindiinda-app/"` ✅
+- `git push -u origin gh-pages` ✅
+
+### Важно
+- Expected URL: `https://iindev-solutions.github.io/iindiinda-app/`
+- На момент последней проверки URL ещё отвечал `404`
+- Причина вне локального build pipeline: либо GitHub Pages source ещё не включён на repo, либо deploy не успел подняться
+
 ## 2026-04-22 — Frontend AYAN Real API Switch
 
 ### Что сделано
@@ -21,6 +65,11 @@
 - AYAN composables уже ходят в real API
 - Browser auth пока intentionally урезан до TMA-only path до появления real OAuth / Telegram verification end-to-end
 - Следующий шаг: пройти UI flow против VPS backend и затем закоммитить frontend integration пакет
+
+### Follow-up
+- Local frontend dev against VPS now uses `frontend/.env`:
+  - `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`
+  - optional `NUXT_PUBLIC_DEV_INIT_DATA=test` для browser-only smoke login без Telegram
 
 ## 2026-04-22 — VPS Backend Bring-Up + AYAN Persistence
 
