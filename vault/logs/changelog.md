@@ -4,6 +4,41 @@
 
 ---
 
+## 2026-04-23 — AYAN Auth Hardening + Push
+
+### Что сделано
+- Добавлен и закоммичен hardening slice `755f7c6` `fix(ayan): enforce auth and response rules`
+- `git push origin front/ayan` выполнен успешно
+- Backend локально усилен:
+  - signed Telegram `initData` parsing вместо простого blind parse
+  - `init_data=test` только для `local/testing`
+  - role/owner enforcement для AYAN create/respond/list responses
+  - duplicate/closed response guards
+  - single accepted response guard
+- Frontend AYAN выровнен под новые backend rules:
+  - role-aware create UI
+  - non-owner detail pages больше не вызывают owner-only `/responses`
+- `vault/wiki/services/ayan/api-contract.md` обновлён под live backend surface
+
+### Verified
+- `git push origin front/ayan` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run lint` ✅
+- `frontend: npm run test` ✅
+
+### Blocked
+- `ssh iind-vps` / `ssh root@89.22.226.34` ❌
+- Симптом: SSH handshake проходит, затем сервер закрывает соединение: `Connection closed by 89.22.226.34 port 22`
+- Из-за этого не выполнены:
+  - `git -C /var/www/iind-app/backend pull --ff-only`
+  - backend phpunit на VPS для нового hardening commit
+
+### Next
+- Восстановить SSH доступ к `iind-vps`
+- На VPS сделать `git pull` в `/var/www/iind-app/backend`
+- На VPS прогнать `AuthApiTest`, `AyanAuthTest`, `AyanPersistenceTest`
+- После remote green обновить `vault` ещё раз и зафиксировать deploy verification commit
+
 ## 2026-04-23 — GitHub Pages Live + AYAN VPS Smoke
 
 ### Что сделано

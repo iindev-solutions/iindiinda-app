@@ -7,18 +7,25 @@
 ## Stop Point
 
 - Текущая ветка: `front/ayan`
-- `backend` и `frontend real API switch` уже закоммичены и запушены в `origin/front/ayan`
-- Текущие рабочие незакоммиченные изменения: `.env.example`, `frontend/app/composables/useAuth.ts`, `frontend/nuxt.config.ts`, `vault/CODE_MAP.md`, `vault/logs/changelog.md`, `vault/resume-plan.md`
+- `front/ayan` уже содержит и remote commit `755f7c6` `fix(ayan): enforce auth and response rules`
+- Этот commit уже в `origin/front/ayan`
 - Локальный dev flow для теста real backend: `frontend/.env` (ignored) с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api` и `NUXT_PUBLIC_DEV_INIT_DATA=test`
+- VPS alias подтверждён локальным SSH config: `iind-vps -> root@89.22.226.34`
 - `gh-pages` ветка уже опубликована: static output запушен отдельным temp-repo commit'ом `bff6aa5`
 - Expected URL: `https://iindev-solutions.github.io/iindiinda-app/`
 - GitHub Pages уже live: `/` и `/ayan` отвечают `200`, rebased asset path `/iindiinda-app/assets/*` тоже отвечает `200`
 - Прямой AYAN VPS smoke уже зелёный: два synthetic Telegram payload юзера прошли `POST /auth/telegram` → create trip/request → respond → accept → `my/*`
+- Новый локальный hardening slice уже сделан и запушен:
+  1. `AuthController` больше не принимает forged `initData` как раньше
+  2. `init_data=test` ограничен `local/testing`
+  3. AYAN role/owner rules закрыты на backend
+  4. frontend detail pages больше не тянут owner-only `/responses` для non-owner
 - Важный нюанс для следующего деплоя: прямой build с `NUXT_APP_BASE_URL=/iindiinda-app/` ломает Nuxt prerender; рабочий flow сейчас такой:
   1. build с `NUXT_APP_BASE_URL=/`
   2. rebased output: `href/src /assets/*` → `/iindiinda-app/assets/*`, `app.baseURL` → `/iindiinda-app/`
   3. publish `.output/public` в `gh-pages`
 - Важно: в generated HTML всё ещё сериализуется ключ `public.devInitData` как пустая строка; не публиковать deploy build с непустым `NUXT_PUBLIC_DEV_INIT_DATA`
+- Текущий blocker: `ssh iind-vps` с этой машины рвётся сразу после handshake (`Connection closed by 89.22.226.34 port 22`), поэтому `git pull` и backend phpunit на новом commit ещё не выполнены
 
 ### Session-Restart Handoff (коротко)
 
@@ -26,15 +33,15 @@
 
 ```text
 Read vault/resume-plan.md and continue from “Stop Point”.
-Current task: run AYAN browser UI flow against VPS backend and confirm local auth/bootstrap behavior.
+Current task: restore `ssh iind-vps`, run `git pull` in `/var/www/iind-app/backend`, then execute backend feature tests for AYAN auth/authorization hardening.
 ```
 
 Минимальный безопасный план на следующую сессию:
-1. Поднять локально `frontend/` против VPS API (`frontend/.env` с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`)
-2. Для browser-only smoke path при необходимости включить `NUXT_PUBLIC_DEV_INIT_DATA=test`
-3. Пройти UI smoke: `/` → `/ayan` → feed → detail pages
-4. Пройти create/respond/accept/contact/`my/*` из браузера, не только direct API
-5. После UI pass обновить `vault/logs/changelog.md` и `vault/resume-plan.md` под новый stop point
+1. Починить доступ `ssh iind-vps`
+2. На VPS: `git -C /var/www/iind-app/backend status --short --branch`
+3. На VPS: `git -C /var/www/iind-app/backend pull --ff-only`
+4. На VPS: `cd /var/www/iind-app/backend && ./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php`
+5. После remote green обновить `vault/logs/changelog.md`, `vault/sprint.md`, `vault/resume-plan.md`
 
 ## Где мы остановились
 
@@ -43,10 +50,12 @@ Current task: run AYAN browser UI flow against VPS backend and confirm local aut
 - AYAN на фронте уже собран и переключён на **real API** (`USE_MOCK_API = false`)
 - Готово: лента поездок/запросов, фильтры, единый `AyanCreateSlideover`, детали поездки/запроса, отклики, принятие/отклонение, Telegram contact link
 - `npm run typecheck` и `npm run lint` проходят после переключения
+- `npm run typecheck`, `npm run lint`, `npm run test` проходят после hardening slice
 - Browser auth intentionally не запускает старый OAuth flow до появления real backend support; TMA login path остаётся основным
 - Для local frontend against VPS нужен `frontend/.env` с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`; для browser-only dev smoke path можно добавить `NUXT_PUBLIC_DEV_INIT_DATA=test`
 - GitHub Pages deploy уже live: `https://iindev-solutions.github.io/iindiinda-app/` и `/ayan` отвечают `200`
-- Основной stop point фронта: direct API smoke уже подтверждён, теперь нужно пройти реальный UI flow против VPS backend и затем закрыть production-grade Telegram verification
+- На фронте уже убран forbidden call pattern: non-owner detail pages больше не грузят owner-only responses
+- Основной stop point фронта: следующий шаг только после VPS pull/phpunit на новом hardening commit
 
 ### Backend
 
@@ -56,7 +65,9 @@ Current task: run AYAN browser UI flow against VPS backend and confirm local aut
 - `AuthController` уже выдаёт реальный Sanctum token, `UserController` читает authenticated user
 - `TripController`, `RequestController`, `ResponseController`, `MyController` переведены с sample arrays на MySQL persistence
 - Guest API transport починен: protected `api/*` больше не падают в missing `login` route, а отвечают JSON `401`
-- Production-grade Telegram `initData` verification пока ещё не реализована: сейчас работает stub `init_data = test` + простой parse payload
+- `AuthController` уже переведён на signed Telegram `initData` parsing; `init_data = test` ограничен только `local/testing`
+- AYAN backend теперь локально зафиксирован кодом под role/owner rules, duplicate/closed response guards и one-accepted-response rule
+- Но remote verification этого slice ещё pending, потому что с этой машины нет рабочего SSH до VPS
 
 ---
 
@@ -71,10 +82,10 @@ Current task: run AYAN browser UI flow against VPS backend and confirm local aut
 
 ### Что блокирует следующий этап
 
-1. Нужен реальный frontend browser integration pass против VPS backend
+1. Нужно восстановить SSH доступ к `iind-vps`, иначе новый backend slice нельзя подтвердить на runtime
 2. Browser auth intentionally disabled until OAuth / Telegram verification is wired end-to-end
-3. Telegram `initData` verification на backend пока не production-grade
-4. В текущей среде нет `php`, `composer`, `docker`, поэтому backend проверяется только на VPS
+3. В текущей среде нет `php`, `composer`, `docker`, поэтому backend проверяется только на VPS
+4. После VPS pull/phpunit нужен новый direct API smoke на tightened rules
 5. Базовый `vitest` setup уже есть, но Nuxt/composable frontend harness ещё не настроен
 
 ### Технический долг, который всплыл во время аудита

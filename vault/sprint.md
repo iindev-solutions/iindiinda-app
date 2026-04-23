@@ -13,19 +13,20 @@
 
 ### Resume Point — 2026-04-23
 
-- **Где остановились:** backend AYAN уже поднят и запушен в `front/ayan`, frontend AYAN переключён с mock на real API (`USE_MOCK_API = false`), GitHub Pages deploy live
-- **Главный блокер:** auth для browser mode пока intentionally отключён до real Telegram OAuth / `initData` verification; production-grade verification на backend ещё не реализована
-- **Последнее завершённое действие:** GitHub Pages deploy подтверждён (`/`, `/ayan`, assets = `200`), direct VPS API smoke подтверждён для login/create/respond/accept/`my/*`
+- **Где остановились:** локально и в `origin/front/ayan` уже есть hardening commit `755f7c6` с real Telegram signed `initData` parsing, AYAN role/owner rules и frontend alignment под owner-only responses
+- **Главный блокер:** с текущей машины нет живого SSH session на `iind-vps` — сервер закрывает соединение сразу после handshake, поэтому `git pull` и backend phpunit на VPS пока не прогнаны на новом commit
+- **Последнее завершённое действие:** `git push origin front/ayan` ✅, frontend verification локально зелёный: `typecheck`, `lint`, `vitest`
 - **Продолжать с:** `vault/resume-plan.md`
 
 ### Current Reality
 
 - Frontend Phase 1 = **real API wired for AYAN**, но browser auth flow ещё intentionally урезан до TMA-first режима
 - Backend Phase 1 = **runtime-ready on VPS**: Laravel base восстановлен, Sanctum стоит, AYAN `trips / requests / responses / my/*` работают через MySQL persistence
+- Local hardening patch already pushed to branch: signed Telegram auth check + role/owner enforcement + frontend AYAN role alignment
 - GitHub Pages frontend = **live** on `https://iindev-solutions.github.io/iindiinda-app/`
 - Direct AYAN API smoke against VPS = **green** for auth + create/list/respond/accept + `my/*`
 - Frontend testing base = **baseline ready** (`vitest` smoke path работает для plain TS unit tests, не для Nuxt composables)
-- Следующий реальный этап = пройти полный AYAN flow в UI против VPS backend и затем закрыть real Telegram verification
+- Следующий реальный этап = восстановить SSH доступ к `iind-vps`, сделать `git pull`, прогнать backend feature tests и только потом продолжать следующий AYAN slice
 
 ### Задачи
 
@@ -49,9 +50,10 @@
 
 ### Блокеры
 
-- В текущей среде нет `php`, `composer`, `docker` — backend нельзя прогнать локально, только готовить статический Laravel-код
+- В текущей среде нет `php`, `composer`, `docker` — backend нельзя прогнать локально, только через VPS
+- `ssh iind-vps` сейчас обрывается сразу после handshake (`Connection closed by 89.22.226.34 port 22`), поэтому deploy verification временно заблокирован
 - Browser auth intentionally disabled until real OAuth / Telegram verification exists end-to-end
-- `POST /api/auth/telegram` уже выдаёт реальный Sanctum token, но Telegram `initData` cryptographic verification ещё не реализована
+- `POST /api/auth/telegram` уже переведён на signed `initData` parsing, но production verification надо подтвердить phpunit/HTTP smoke на VPS
 - `1.11 QA E2E` нельзя закрыть до реального frontend integration и проверки full flow
 
 ### Решения
