@@ -615,6 +615,63 @@ class AyanPersistenceTest extends TestCase
         ]);
     }
 
+    public function test_past_targets_cannot_be_accepted_or_rejected(): void
+    {
+        $tripOwner = $this->makeUser('trip_owner_past_update', 8001, 'driver');
+        $tripResponder = $this->makeUser('trip_responder_past_update', 8002, 'passenger');
+        $requestOwner = $this->makeUser('request_owner_past_update', 8003, 'passenger');
+        $requestResponder = $this->makeUser('request_responder_past_update', 8004, 'driver');
+        $today = now()->toDateString();
+
+        $pastTrip = Trip::create([
+            'driver_id' => $tripOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Намцы',
+            'date' => $today,
+            'time' => now()->subHour()->format('H:i'),
+            'seats' => 1,
+            'price' => 300,
+            'comment' => null,
+            'status' => 'open',
+        ]);
+
+        $pastRequest = AyanRequest::create([
+            'passenger_id' => $requestOwner->id,
+            'from_address' => 'Тулагино',
+            'to_address' => 'Якутск',
+            'date' => $today,
+            'time' => now()->subHour()->format('H:i'),
+            'description' => null,
+            'status' => 'open',
+        ]);
+
+        $tripResponse = AyanResponse::create([
+            'user_id' => $tripResponder->id,
+            'trip_id' => $pastTrip->id,
+            'request_id' => null,
+            'message' => 'late trip response',
+            'status' => 'pending',
+        ]);
+
+        $requestResponse = AyanResponse::create([
+            'user_id' => $requestResponder->id,
+            'trip_id' => null,
+            'request_id' => $pastRequest->id,
+            'message' => 'late request response',
+            'status' => 'pending',
+        ]);
+
+        Sanctum::actingAs($tripOwner);
+        $this->patchJson("/api/ayan/responses/{$tripResponse->id}", [
+            'status' => 'accepted',
+        ])->assertStatus(422);
+
+        Sanctum::actingAs($requestOwner);
+        $this->patchJson("/api/ayan/responses/{$requestResponse->id}", [
+            'status' => 'rejected',
+        ])->assertStatus(422);
+    }
+
     private function makeUser(string $name, int $telegramId, string $role): User
     {
         return User::create([

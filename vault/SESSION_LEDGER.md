@@ -52,6 +52,6 @@
 
 - Scope: push the new AYAN slice, deploy backend changes to VPS, and verify the real checkout end-to-end at the command level
 - Changes: pushed `front/ayan`, pulled VPS repo forward, corrected one backend test expectation for `my/*` history, and re-ran the focused backend suite on the live checkout
-- Verified: `git push origin front/ayan`, VPS `git pull --ff-only origin front/ayan`, VPS backend `phpunit` (`14 tests, 110 assertions`), `curl -I http://89.22.226.34/`, `curl -I http://89.22.226.34/ayan`, `curl -I http://89.22.226.34/api/health`
+- Verified: `git push origin front/ayan`, VPS `git pull --ff-only origin front/ayan`, VPS backend `phpunit` (`15 tests, 112 assertions`), `curl -I http://89.22.226.34/`, `curl -I http://89.22.226.34/ayan`, `curl -I http://89.22.226.34/api/health`
 - Blockers: HTTPS still needs a hostname/domain before TLS can be issued
 - Next: set up DuckDNS or a real domain, issue TLS, then manually verify the live role-switch/past-item flow in browser/TMA

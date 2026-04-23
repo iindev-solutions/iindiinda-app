@@ -16,7 +16,7 @@
 
 - `git push origin front/ayan` ✅
 - `ssh iind-vps "git -C /var/www/iind-app pull --ff-only origin front/ayan"` ✅
-- `ssh iind-vps "cd /var/www/iind-app/backend && ./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php"` ✅ (`14 tests, 110 assertions`)
+- `ssh iind-vps "cd /var/www/iind-app/backend && ./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php"` ✅ (`15 tests, 112 assertions`)
 - `curl -I http://89.22.226.34/` ✅ (`200`)
 - `curl -I http://89.22.226.34/ayan` ✅ (`200`)
 - `curl -I http://89.22.226.34/api/health` ✅ (`200`)
@@ -25,6 +25,7 @@
 
 - VPS now serves frontend SPA and backend API from one machine over HTTP
 - Backend past-item filtering/guards are deployed on VPS together with the frontend role switcher
+- Added backend test coverage for rejecting accept/reject on already-past trip/request targets
 - Trusted HTTPS is still blocked by infrastructure, not code: a hostname/domain must exist before issuing a real TLS cert
 
 ## 2026-04-23 17:37 — AYAN Role Switch UI + VPS SPA HTTP

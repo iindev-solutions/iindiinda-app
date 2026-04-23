@@ -117,7 +117,7 @@ Current task: verify the new AYAN role switcher and past-item UX against the liv
 - `TripController`, `RequestController`, `ResponseController`, and `MyController` use MySQL persistence
 - Guest API transport already returns JSON `401`
 - Focused VPS backend feature tests are currently green on clean deployed state (`13 tests, 94 assertions`)
-- Focused VPS backend feature tests are currently green on the latest deployed checkout (`14 tests, 110 assertions`)
+- Focused VPS backend feature tests are currently green on the latest deployed checkout (`15 tests, 112 assertions`)
 - AYAN runtime routes are registered on VPS via `php artisan route:list --path=api/ayan`
 - VPS checkout is now clean and aligned to `1fd837f`
 - Latest local backend hardening adds:
@@ -139,7 +139,7 @@ Current task: verify the new AYAN role switcher and past-item UX against the liv
   - public feed filtering for expired open trips/requests
   - expired target guards for response creation/update
 - Verification status for that deployed backend slice:
-  - real VPS checkout feature tests: green (`14 tests, 110 assertions`)
+  - real VPS checkout feature tests: green (`15 tests, 112 assertions`)
   - API health route: green
 
 ## Main Findings
