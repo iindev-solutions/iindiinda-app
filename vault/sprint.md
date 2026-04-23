@@ -20,7 +20,7 @@ Goal: ship a working AYAN MVP flow:
 - Current branch: `front/ayan`
 - Latest important hardening commit already pushed: `755f7c6` `fix(ayan): enforce auth and response rules`
 - Main blocker: HTTPS is still missing for the VPS-served frontend because there is no hostname/domain attached to the server yet
-- Last completed action: added frontend AYAN role-switch UI, deployed SPA static build to VPS root over HTTP, and kept `/api` served by the backend on the same VPS
+- Last completed action: pushed the AYAN role-switch/past-item slice, deployed the backend part on VPS, and verified focused backend tests green on the real checkout (`14 tests, 110 assertions`)
 - Continue from: `vault/resume-plan.md`
 
 ## Current Reality
@@ -30,6 +30,7 @@ Goal: ship a working AYAN MVP flow:
 - GitHub Pages frontend is live at `https://iindev-solutions.github.io/iindiinda-app/`
 - The VPS root `http://89.22.226.34/` now serves the frontend SPA over Nginx static files
 - The VPS route `http://89.22.226.34/api/*` still serves the Laravel backend
+- The current `front/ayan` branch state is pushed and deployed on VPS
 - Direct AYAN API smoke against VPS was previously green for auth, create, respond, accept, and `my/*`
 - SSH access from this machine to `iind-vps` is working again
 - The VPS backend runtime is now synchronized to the branch tip and passes focused feature tests on the clean deployed checkout

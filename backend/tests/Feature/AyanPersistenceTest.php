@@ -226,7 +226,7 @@ class AyanPersistenceTest extends TestCase
 
         $this->getJson('/api/ayan/my/trips')
             ->assertOk()
-            ->assertJsonCount(2, 'data');
+            ->assertJsonCount(4, 'data');
 
         $this->getJson("/api/ayan/trips/{$pastTrip->id}")
             ->assertOk()
@@ -240,7 +240,7 @@ class AyanPersistenceTest extends TestCase
 
         $this->getJson('/api/ayan/my/requests')
             ->assertOk()
-            ->assertJsonCount(2, 'data');
+            ->assertJsonCount(4, 'data');
 
         $this->getJson("/api/ayan/requests/{$pastRequest->id}")
             ->assertOk()

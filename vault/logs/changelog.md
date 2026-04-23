@@ -2,6 +2,31 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-23 17:56 — Push + Backend Deploy + VPS HTTP Frontend
+
+### Done
+
+- Pushed `front/ayan` to origin with the AYAN role-switch, past-item UX, vault, and ops changes
+- Fast-forwarded the VPS repo to the pushed branch tip
+- Deployed the backend part on VPS and re-ran focused backend feature tests on the real checkout
+- Fixed one failing backend test expectation so `my/*` keeps full history instead of only upcoming items
+- Kept the frontend static bundle served from VPS root over HTTP and preserved `/api/*` backend routing
+
+### Verified
+
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app pull --ff-only origin front/ayan"` ✅
+- `ssh iind-vps "cd /var/www/iind-app/backend && ./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php"` ✅ (`14 tests, 110 assertions`)
+- `curl -I http://89.22.226.34/` ✅ (`200`)
+- `curl -I http://89.22.226.34/ayan` ✅ (`200`)
+- `curl -I http://89.22.226.34/api/health` ✅ (`200`)
+
+### Important
+
+- VPS now serves frontend SPA and backend API from one machine over HTTP
+- Backend past-item filtering/guards are deployed on VPS together with the frontend role switcher
+- Trusted HTTPS is still blocked by infrastructure, not code: a hostname/domain must exist before issuing a real TLS cert
+
 ## 2026-04-23 17:37 — AYAN Role Switch UI + VPS SPA HTTP
 
 ### Done
