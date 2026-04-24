@@ -2,6 +2,34 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-24 12:36 — AYAN Entry Polish Live
+
+### Done
+
+- Added always-visible UI back button on AYAN detail pages while keeping Telegram native back button support
+- Replaced the trip price stepper with a normal text price field plus trailing `₽`
+- Switched AYAN date selection in the create slideover to a Nuxt UI calendar popover
+- Disabled past dates in the calendar and added frontend validation for past-date selection
+- Added small helper coverage for price parsing/sanitizing and back-button display logic
+- Pushed commit `87a4815` `feat(ayan): polish entry form and detail nav`
+- Fast-forwarded the VPS repo to `87a4815` and uploaded the rebuilt SPA bundle to the HTTPS deployment
+
+### Verified
+
+- `frontend: npm run test` ✅ (`6 files, 13 tests`)
+- `frontend: npm run lint` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npx nuxt build --preset github_pages` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`87a4815`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- deployed HTML still contains `apiBase:"/api"` and `devInitData:""` ✅
+
+### Important
+
+- The polished create-form and detail-nav UX is now live on the HTTPS VPS deployment
+- VPS repo remains intentionally dirty only because `frontend/public/` is the uploaded static bundle and is not tracked by git
+
 ## 2026-04-24 12:05 — TMA Auth Root Cause: Missing Bot Token
 
 ### Done

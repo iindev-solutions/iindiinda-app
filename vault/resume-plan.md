@@ -5,14 +5,12 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Local `front/ayan` now contains the AYAN role-switch/past-item/VPS-SPA slice and is intended to be aligned with `origin/front/ayan` after the final test-fix push
+- Local `front/ayan` and `origin/front/ayan` are aligned at `87a4815` `feat(ayan): polish entry form and detail nav`
 - Remote branch already contains the AYAN hardening commit: `755f7c6` `fix(ayan): enforce auth and response rules`
-- Local workspace now also contains a new uncommitted slice for AYAN past-item and free-price UX plus AYAN role switching UI:
-  - public feed should hide expired open trips/requests
-  - My/details should still show them with a past badge
-  - `0` price should render as localized free text
-  - backend response actions should reject expired open targets
-  - AYAN page should expose passenger/driver switching through the existing auth endpoint
+- Latest shipped UX slice now also includes:
+  - visible detail-page back button in both browser UI and Telegram context
+  - normal text price field with trailing `₽`
+  - Nuxt UI calendar date picker with past dates disabled
 - Local frontend dev flow against VPS uses `frontend/.env` with:
   - `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`
   - optional `NUXT_PUBLIC_DEV_INIT_DATA=test`
@@ -30,7 +28,7 @@
   - `https://iindiinda.duckdns.org/` serves the frontend SPA
   - `https://iindiinda.duckdns.org/api/health` returns `200`
   - `http://iindiinda.duckdns.org/` redirects to HTTPS
-- Local workspace now also contains an uncommitted frontend auth-guard slice:
+- Auth-gate slice is committed and deployed:
   - AYAN shows Telegram-only access state for unauthenticated browser users
   - AYAN shows retryable auth-failed state for failed Telegram auth
   - production SPA no longer ships `devInitData:test`
@@ -61,11 +59,10 @@
   4. frontend detail pages no longer fetch owner-only response lists for non-owners
 - Current blocker:
   - clean deployment verification is no longer blocked and has already passed
-  - role switching UX is now implemented locally, but still needs manual live verification against the real backend
+  - role switching UX is implemented and deployed, but still needs manual live verification against the real backend
   - browser auth also remains intentionally limited outside final Telegram flow
   - the new past-item/backend-expiry slice is now deployed and focused backend tests are green on the real VPS checkout
   - HTTPS is now available through DuckDNS, but live browser/TMA verification is still pending
-  - auth UX hardening for guest browser / failed Telegram auth is deployed in the static frontend but not yet committed to git
   - the previous live TMA blocker (missing `TELEGRAM_BOT_TOKEN`) has been fixed on VPS and now needs manual retest from the real bot
 
 ## Session Restart Prompt
@@ -75,20 +72,21 @@ Use this prompt at the start of the next session:
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
 Current task: verify the AYAN role switcher and past-item UX against https://iindiinda.duckdns.org and confirm Telegram/TMA auth behavior on the HTTPS deployment, then decide whether to commit the new frontend auth-gate slice.
+
+Current task: verify the full AYAN flow on https://iindiinda.duckdns.org in Telegram Mini App, including role switching, detail back navigation, price input, and calendar date restrictions.
 ```
 
 ## Safe Next-Step Plan
 
-1. Commit/deploy the current local AYAN slice:
-   - public feed hides expired items
-   - My/details show past badge
-   - `0` price shows free label
-   - AYAN role switcher toggles passenger/driver in UI
-2. Manually test role-aware flows against live backend/front on VPS:
+1. Manually test role-aware flows against live backend/front on VPS:
    - default login lands as `passenger`
    - passenger can create request and respond to trip
    - driver can create trip and respond to request
    - owners can see/accept/reject responses
+2. Check the new UX details on the live deployment:
+   - detail-page back button is visible and works
+   - trip price field no longer shows stepper controls
+   - calendar blocks past dates
 3. Re-test Telegram/TMA integration on `https://iindiinda.duckdns.org`
 4. Confirm guest browser users now see Telegram-only access state instead of broken AYAN actions
 5. If needed later, replace DuckDNS with the final domain and re-issue TLS
@@ -168,8 +166,7 @@ Current task: verify the AYAN role switcher and past-item UX against https://iin
 
 1. Browser auth remains intentionally constrained
 2. Local backend execution is impossible in this environment because `php`, `composer`, and `docker` are unavailable
-3. Live browser/TMA verification for the new role-switch/past-item flow is still pending
-4. Frontend auth-gate fix is live in deployed static files but still uncommitted locally
+3. Live browser/TMA verification for the new role-switch/past-item/detail-nav flow is still pending
 
 ## Priority Order
 
@@ -190,4 +187,4 @@ Current task: verify the AYAN role switcher and past-item UX against https://iin
 
 ## One-Line Summary
 
-The backend and frontend slices are deployed on secure DuckDNS HTTPS, and the next real step is manual Telegram/browser verification plus deciding whether to commit the new frontend auth-gate cleanup.
+The backend and frontend slices are committed, pushed, and deployed on secure DuckDNS HTTPS, and the next real step is full manual Telegram/browser verification of the polished AYAN flow.

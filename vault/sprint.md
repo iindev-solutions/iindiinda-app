@@ -20,7 +20,7 @@ Goal: ship a working AYAN MVP flow:
 - Current branch: `front/ayan`
 - Latest important hardening commit already pushed: `755f7c6` `fix(ayan): enforce auth and response rules`
 - Main blocker: manual live browser/TMA verification is still pending even though HTTPS and deploy are now ready
-- Last completed action: attached DuckDNS hostname, enabled Let's Encrypt HTTPS, and confirmed frontend/API respond on `https://iindiinda.duckdns.org`
+- Last completed action: pushed/deployed `87a4815` with detail-page back button recovery, text price field, and calendar date picker polish on the live HTTPS SPA
 - Continue from: `vault/resume-plan.md`
 
 ## Current Reality
@@ -44,6 +44,8 @@ Goal: ship a working AYAN MVP flow:
 - new login defaults to `passenger`
 - `driver`/`passenger` separation is enforced in backend and frontend guards
 - switching role is now exposed in AYAN UI and backed by the existing `/api/user/switch-role` endpoint
+- detail pages now show a visible UI back button while keeping Telegram native back support
+- create flow now uses a text price field and a calendar date picker that blocks past dates
 
 ## Sprint Tasks
 
@@ -58,7 +60,7 @@ Goal: ship a working AYAN MVP flow:
 | 1.7 | Response flow, contact link, accept/reject | DONE | — |
 | 1.8 | Feed filters by route/date | DONE | — |
 | 1.9 | Nuxt UI color alignment | DONE | — |
-| 1.10 | Integration: mock -> real API | IN_PROGRESS | browser auth limitations, HTTPS/domain still missing on VPS frontend |
+| 1.10 | Integration: mock -> real API | IN_PROGRESS | manual live TMA/browser verification still pending |
 | 1.11 | QA: complete E2E verification | TODO | 1.10 |
 
 `DONE*` means the slice is implemented and partially verified, but one important verification layer is still pending.
@@ -80,8 +82,8 @@ Goal: ship a working AYAN MVP flow:
 
 1. Manually test AYAN against `https://iindiinda.duckdns.org/` with the new role switcher
 2. Re-test Telegram/TMA constraints now that HTTPS exists
-3. If DuckDNS is only temporary, later replace it with the final domain and re-issue TLS
-4. Update `vault/` again with the exact result
+3. Check the new detail-page back button, text price field, and calendar restriction UX on the live deployment
+4. If DuckDNS is only temporary, later replace it with the final domain and re-issue TLS
 5. Update `vault/` again with the exact result
 
 ## Definition Of Progress For This Sprint

@@ -79,3 +79,11 @@
 - Verified: VPS env now contains the token, fake `/api/auth/telegram` requests now fail as `Telegram user data is invalid.` instead of `Telegram auth is not configured.`, `/api/health` remains green
 - Blockers: manual retest from the real Telegram Mini App is still pending
 - Next: reopen the Mini App from the bot and verify login/role switching now works end-to-end
+
+## 2026-04-24 12:36 — AYAN Entry Polish Live
+
+- Scope: improve detail-page back navigation and polish the create form UX for price/date entry
+- Changes: added helper-tested back-button display logic, forced visible back button on AYAN detail pages, replaced the price stepper with a normal text price field, switched date picking to Nuxt UI calendar, pushed commit `87a4815`, synced VPS repo, and deployed the rebuilt SPA bundle to HTTPS
+- Verified: `npm run test` (`13 tests`), `npm run lint`, `npm run typecheck`, `npx nuxt build --preset github_pages`, VPS repo `87a4815`, `curl -I https://iindiinda.duckdns.org/ayan`, `curl -I https://iindiinda.duckdns.org/api/health`
+- Blockers: full manual Telegram/browser verification is still pending
+- Next: manually verify back navigation, price field UX, calendar restrictions, and the full AYAN flow inside TMA
