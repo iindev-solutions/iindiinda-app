@@ -15,13 +15,14 @@ Goal: ship a working AYAN MVP flow:
 3. respond
 4. exchange contact details
 
-## Resume Point - 2026-04-24 19:50
+## Resume Point - 2026-04-24 20:00
 
 - Current branch: `front/ayan`
 - Latest shipped commit is `a3591a0` (`feat(ayan): expand trip/request lifecycle statuses`)
 - Live HTTPS runtime is available at `https://iindiinda.duckdns.org`
 - Legal routes (`/legal/ayan-terms`, `/legal/privacy`, `/legal/ayan-safety`) are deployed and reachable on live HTTPS
 - Lifecycle statuses (`matched/completed/cancelled`) are now deployed on backend + frontend
+- Live synthetic API smoke for lifecycle transitions is completed and green
 - Continue from: `vault/resume-plan.md`
 
 ## Current Reality
@@ -33,6 +34,7 @@ Goal: ship a working AYAN MVP flow:
 - Role switch UI, detail back button, status cards, price field polish, and no-zoom form sizing are already deployed
 - Legal pages/links are now committed, pushed, and deployed
 - Lifecycle status expansion (`matched/completed/cancelled`) is now committed, pushed, migrated, and deployed
+- Production API behavior for lifecycle states is validated (`open -> matched -> completed/cancelled`)
 
 ## Sprint Tasks
 
@@ -51,11 +53,11 @@ Goal: ship a working AYAN MVP flow:
 | 1.11 | Legal pages + footer/access legal links | DONE | shipped in `f13f6b6` |
 | 1.12 | Legal-only commit + VPS deploy | DONE | live on `https://iindiinda.duckdns.org` |
 | 1.13 | Lifecycle status expansion for targets/responses | DONE | shipped in `a3591a0` |
-| 1.14 | QA complete E2E verification | IN_PROGRESS | pending full manual Telegram/browser pass |
+| 1.14 | QA complete E2E verification | IN_PROGRESS | pending full manual Telegram/browser UI pass |
 
 ## Active Blockers
 
-- Full manual Telegram Mini App verification is still pending on real devices
+- Full manual Telegram Mini App UI verification is still pending on real devices
 - VPS DB migration flow was recovered after a historical partial apply; monitor schema health in next deploy window
 - No local `php`, `composer`, or `docker` in this environment for full backend execution
 
@@ -68,10 +70,10 @@ Goal: ship a working AYAN MVP flow:
 
 ## Next Practical Step
 
-1. Run full manual Telegram/browser E2E for create/respond/accept/match-complete/match-cancel flows
+1. Run full manual Telegram/browser UI E2E for create/respond/accept/match-complete/match-cancel flows
 2. Validate lifecycle statuses in live AYAN UI on `/ayan`, `/ayan/trip/:id`, `/ayan/request/:id`, and `My` tab cards
-3. Record any runtime edge cases from production and patch in a focused follow-up slice
-4. Keep vault stop point synchronized after manual verification
+3. Compare manual UI outcomes with already green API smoke behavior
+4. Record any runtime edge cases from production and patch in a focused follow-up slice
 
 ## Definition Of Progress For This Sprint
 

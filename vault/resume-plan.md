@@ -1,4 +1,4 @@
-# Resume Plan - 2026-04-24 19:50
+# Resume Plan - 2026-04-24 20:00
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
 
@@ -15,6 +15,7 @@
   - `/api/health`
 - Backend migrations are now fully applied, including lifecycle migration:
   - `2026_04_24_120000_expand_ayan_target_statuses`
+- Live lifecycle API smoke is green for both trip and request target flows
 
 ## What Shipped In Lifecycle Slice
 
@@ -50,15 +51,29 @@
   - `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
 
+## API Smoke Snapshot (Live)
+
+- Trip flow:
+  - create trip -> respond -> accept => `matched`
+  - owner finalize => `completed`
+  - responder `my/responses` includes `trip.status = completed`
+- Request flow:
+  - create request -> respond -> accept => `matched`
+  - owner finalize => `cancelled`
+  - responder `my/responses` includes `request.status = cancelled`
+- Deletion guard:
+  - deleting accepted response returns `422` with `Only pending responses can be deleted`
+
 ## Next Session Prompt
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: complete manual Telegram/browser E2E for lifecycle statuses on live HTTPS.
+Current task: complete manual Telegram/browser UI E2E for lifecycle statuses on live HTTPS.
 1) verify matched/completed/cancelled flows in AYAN trip and request details
 2) verify My responses cards show linked target route/status info correctly
-3) capture any production edge cases and patch in a focused follow-up commit if needed
-4) update vault files with exact manual verification outcomes
+3) compare UI results with already green API smoke behavior
+4) capture any production edge cases and patch in a focused follow-up commit if needed
+5) update vault files with exact manual verification outcomes
 ```
 
 ## Deployment Context
@@ -70,4 +85,4 @@ Current task: complete manual Telegram/browser E2E for lifecycle statuses on liv
 
 ## One-Line Summary
 
-Lifecycle status expansion is live at `a3591a0`; next safe move is full manual E2E validation in Telegram/browser and targeted follow-up fixes only if needed.
+Lifecycle status expansion is live at `a3591a0` and API-smoke verified; next safe move is manual Telegram/browser UI validation and targeted follow-up fixes only if needed.

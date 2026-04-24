@@ -2,6 +2,36 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-24 20:00 - Lifecycle Live API Smoke Completed
+
+### Done
+
+- Executed a live AYAN lifecycle smoke on production API with isolated synthetic users/tokens
+- Verified trip flow end-to-end: create trip -> respond -> accept -> matched -> complete
+- Verified request flow end-to-end: create request -> respond -> accept -> matched -> cancel
+- Verified `my/responses` now returns linked target payloads with updated lifecycle statuses
+- Verified non-pending response deletion guard still enforces `422` with `Only pending responses can be deleted`
+
+### Verified
+
+- Live API smoke output:
+  - `tripStatusAfterAccept = matched`
+  - `tripStatusAfterComplete = completed`
+  - `myTripResponseTargetStatus = completed`
+  - `requestStatusAfterAccept = matched`
+  - `requestStatusAfterCancel = cancelled`
+  - `myRequestResponseTargetStatus = cancelled`
+  - `tripDeleteAcceptedStatus = 422`
+  - `requestDeleteAcceptedStatus = 422`
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+
+### Important
+
+- Backend/contract lifecycle behavior is confirmed live through real API requests
+- Telegram Mini App UI manual pass is still pending (device interaction cannot be automated from this environment)
+
 ## 2026-04-24 19:50 - Lifecycle Status Expansion Deployed Live
 
 ### Done

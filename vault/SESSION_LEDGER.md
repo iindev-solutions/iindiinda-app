@@ -119,3 +119,11 @@
 - Verified: `npm run test`, `npm run lint`, `npm run typecheck`, `npx nuxt build --preset github_pages`, VPS backend phpunit (`16 tests, 127 assertions`), live URL checks for `/`, `/ayan`, `/legal/ayan-terms`, and `/api/health` (all `200`)
 - Blockers: manual real-device Telegram/browser E2E validation is still pending
 - Next: run full manual lifecycle flow verification and capture any production edge-case fixes
+
+## 2026-04-24 20:00 — Lifecycle API Smoke Validation
+
+- Scope: validate shipped lifecycle behavior on live API before manual Telegram device pass
+- Changes: ran synthetic production API flow with isolated smoke users/tokens for trip/request lifecycle transitions and response deletion guards
+- Verified: trip and request both pass `open -> matched -> completed/cancelled`, `my/responses` includes linked target statuses, non-pending response delete returns `422`, live `/`, `/ayan`, and `/api/health` remain `200`
+- Blockers: Telegram Mini App UI interaction still needs human device verification
+- Next: perform manual TMA/browser UI pass and capture outcome in vault
