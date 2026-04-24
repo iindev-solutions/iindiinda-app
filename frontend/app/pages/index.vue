@@ -65,6 +65,10 @@ function handleServiceClick(service: { route: string }) {
 			</div>
 			<UIcon name="i-carbon-chevron-right" class="index-page__partner-arrow" />
 		</div>
+
+		<div class="mt-6">
+			<AppLegalLinks />
+		</div>
 	</div>
 </template>
 

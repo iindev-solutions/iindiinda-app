@@ -259,8 +259,14 @@ function handleResponseClick(response: AyanResponse) {
 					<p class="text-sm leading-relaxed text-gray-300">
 						{{ t('ayan.desc') }}
 					</p>
+					<p class="mt-3 text-xs leading-relaxed text-gray-500">
+						{{ t('legal.ayanDisclaimer') }}
+					</p>
 					<div class="mt-4">
 						<AyanRoleSwitch @changed="handleRoleChanged" />
+					</div>
+					<div class="mt-4">
+						<AppLegalLinks compact />
 					</div>
 				</header>
 
