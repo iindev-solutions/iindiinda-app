@@ -63,7 +63,7 @@ class MyController extends Controller
         return response()->json([
             'success' => true,
             'data' => AyanResponse::query()
-                ->with('user')
+                ->with(['user', 'trip.driver', 'request.passenger'])
                 ->where('user_id', $user->id)
                 ->latest()
                 ->get()

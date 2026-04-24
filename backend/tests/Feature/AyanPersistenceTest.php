@@ -59,10 +59,10 @@ class AyanPersistenceTest extends TestCase
             ->assertJsonPath('data.comment', 'persisted trip');
 
         $this->patchJson("/api/ayan/trips/{$tripId}", [
-            'status' => 'closed',
+            'status' => 'cancelled',
             'price' => 700,
         ])->assertOk()
-            ->assertJsonPath('data.status', 'closed')
+            ->assertJsonPath('data.status', 'cancelled')
             ->assertJsonPath('data.price', 700);
 
         $this->getJson('/api/ayan/my/trips')
@@ -112,10 +112,10 @@ class AyanPersistenceTest extends TestCase
             ->assertJsonPath('data.description', 'persisted request');
 
         $this->patchJson("/api/ayan/requests/{$requestId}", [
-            'status' => 'closed',
+            'status' => 'cancelled',
             'description' => 'updated request',
         ])->assertOk()
-            ->assertJsonPath('data.status', 'closed')
+            ->assertJsonPath('data.status', 'cancelled')
             ->assertJsonPath('data.description', 'updated request');
 
         $this->getJson('/api/ayan/my/requests')
@@ -303,6 +303,10 @@ class AyanPersistenceTest extends TestCase
         ])->assertOk()
             ->assertJsonPath('data.status', 'accepted');
 
+        $this->getJson("/api/ayan/trips/{$trip->id}")
+            ->assertOk()
+            ->assertJsonPath('data.status', 'matched');
+
         Sanctum::actingAs($requestOwner);
         $this->getJson("/api/ayan/requests/{$request->id}/responses")
             ->assertOk()
@@ -318,22 +322,100 @@ class AyanPersistenceTest extends TestCase
         Sanctum::actingAs($tripResponder);
         $this->getJson('/api/ayan/my/responses')
             ->assertOk()
-            ->assertJsonFragment([
-                'id' => $tripResponseId,
-                'status' => 'accepted',
-            ]);
+            ->assertJsonPath('data.0.id', $tripResponseId)
+            ->assertJsonPath('data.0.status', 'accepted')
+            ->assertJsonPath('data.0.trip.id', $trip->id)
+            ->assertJsonPath('data.0.trip.status', 'matched');
 
         Sanctum::actingAs($requestResponder);
         $this->deleteJson("/api/ayan/responses/{$requestResponseId}")
-            ->assertOk()
-            ->assertJsonPath('data.deleted', true);
+            ->assertStatus(422);
 
-        $this->assertDatabaseMissing('responses', [
-            'id' => $requestResponseId,
-        ]);
         $this->assertDatabaseHas('responses', [
             'id' => $tripResponseId,
             'status' => 'accepted',
+        ]);
+        $this->assertDatabaseHas('responses', [
+            'id' => $requestResponseId,
+            'status' => 'rejected',
+        ]);
+    }
+
+    public function test_matched_targets_can_be_completed_or_cancelled_and_non_pending_responses_cannot_be_deleted(): void
+    {
+        $tripOwner = $this->makeUser('trip_owner_match', 3501, 'driver');
+        $tripResponder = $this->makeUser('trip_responder_match', 3502, 'passenger');
+        $requestOwner = $this->makeUser('request_owner_match', 3503, 'passenger');
+        $requestResponder = $this->makeUser('request_responder_match', 3504, 'driver');
+        $tripDate = now()->addDay()->toDateString();
+        $requestDate = now()->addDays(2)->toDateString();
+
+        $trip = Trip::create([
+            'driver_id' => $tripOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Намцы',
+            'date' => $tripDate,
+            'time' => '09:00',
+            'seats' => 3,
+            'price' => 500,
+            'comment' => null,
+            'status' => 'open',
+        ]);
+
+        $request = AyanRequest::create([
+            'passenger_id' => $requestOwner->id,
+            'from_address' => 'Якутск',
+            'to_address' => 'Тулагино',
+            'date' => $requestDate,
+            'time' => '17:00',
+            'description' => null,
+            'status' => 'open',
+        ]);
+
+        Sanctum::actingAs($tripResponder);
+        $tripResponseId = $this->postJson("/api/ayan/trips/{$trip->id}/responses", [
+            'message' => 'trip response',
+        ])->assertCreated()->json('data.id');
+
+        Sanctum::actingAs($requestResponder);
+        $requestResponseId = $this->postJson("/api/ayan/requests/{$request->id}/responses", [
+            'message' => 'request response',
+        ])->assertCreated()->json('data.id');
+
+        Sanctum::actingAs($tripOwner);
+        $this->patchJson("/api/ayan/responses/{$tripResponseId}", [
+            'status' => 'accepted',
+        ])->assertOk();
+
+        $this->patchJson("/api/ayan/trips/{$trip->id}", [
+            'status' => 'completed',
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'completed');
+
+        Sanctum::actingAs($requestOwner);
+        $this->patchJson("/api/ayan/responses/{$requestResponseId}", [
+            'status' => 'accepted',
+        ])->assertOk();
+
+        $this->patchJson("/api/ayan/requests/{$request->id}", [
+            'status' => 'cancelled',
+        ])->assertOk()
+            ->assertJsonPath('data.status', 'cancelled');
+
+        Sanctum::actingAs($tripResponder);
+        $this->deleteJson("/api/ayan/responses/{$tripResponseId}")->assertStatus(422);
+
+        Sanctum::actingAs($requestResponder);
+        $this->deleteJson("/api/ayan/responses/{$requestResponseId}")->assertStatus(422);
+
+        $this->assertDatabaseHas('trips', [
+            'id' => $trip->id,
+            'status' => 'completed',
+        ]);
+
+        $this->assertDatabaseHas('requests', [
+            'id' => $request->id,
+            'status' => 'cancelled',
         ]);
     }
 
@@ -483,7 +565,7 @@ class AyanPersistenceTest extends TestCase
             'seats' => 1,
             'price' => 700,
             'comment' => null,
-            'status' => 'closed',
+            'status' => 'cancelled',
         ]);
 
         $pastTrip = Trip::create([
@@ -515,7 +597,7 @@ class AyanPersistenceTest extends TestCase
             'date' => $closedRequestDate,
             'time' => '18:00',
             'description' => null,
-            'status' => 'closed',
+            'status' => 'cancelled',
         ]);
 
         $pastRequest = AyanRequest::create([
@@ -598,7 +680,7 @@ class AyanPersistenceTest extends TestCase
             'status' => 'rejected',
         ]);
 
-        Trip::query()->whereKey($trip->id)->update(['status' => 'closed']);
+        Trip::query()->whereKey($trip->id)->update(['status' => 'cancelled']);
 
         Sanctum::actingAs($tripOwner);
         $this->patchJson("/api/ayan/responses/{$other->id}", [

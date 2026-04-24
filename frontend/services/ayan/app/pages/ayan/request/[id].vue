@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { AyanResponse } from '../../../types/ayan'
 
+import { getApiErrorMessage } from '~/utils/api-error'
 import { getAyanAccessState } from '~/utils/auth'
 import { findTargetResponse } from '../../../utils/responses'
 
@@ -11,7 +12,7 @@ const { t } = useI18n()
 const toast = useToast()
 const { hapticFeedback, isInTelegram } = useTg()
 const { user: authUser, isAuthenticated, isLoading: authLoading, authError } = useAuth()
-const { fetchRequest } = useAyanRequests()
+const { fetchRequest, updateRequest } = useAyanRequests()
 const { fetchRequestResponses, createRequestResponse, updateResponseStatus } = useAyanResponses()
 const { fetchMyResponses } = useAyanMy()
 
@@ -71,6 +72,13 @@ const statusColor = (status: AyanResponse['status']) => {
 	return 'neutral'
 }
 
+const targetStatusColor = (status: string) => {
+	if (status === 'open') return 'success'
+	if (status === 'matched') return 'primary'
+	if (status === 'cancelled') return 'error'
+	return 'neutral'
+}
+
 async function loadResponses() {
 	try {
 		responses.value = await fetchRequestResponses(requestId.value)
@@ -97,9 +105,14 @@ async function handleRespond() {
 		hapticFeedback('notification')
 		toast.add({ title: t('ayan.respond.success'), color: 'success', icon: 'i-lucide-check-circle', duration: 3000 })
 		responseMessage.value = ''
-	} catch {
+	} catch (error) {
 		hapticFeedback('impact')
-		toast.add({ title: t('common.error'), color: 'error', icon: 'i-lucide-x-circle', duration: 4000 })
+		toast.add({
+			title: getApiErrorMessage(error, t('common.error')),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
 	} finally {
 		responding.value = false
 	}
@@ -109,10 +122,16 @@ async function handleAccept(r: AyanResponse) {
 	try {
 		await updateResponseStatus(r.id, 'accepted')
 		hapticFeedback('notification')
+		await refreshRequest()
 		await loadResponses()
-	} catch {
+	} catch (error) {
 		hapticFeedback('impact')
-		toast.add({ title: t('common.error'), color: 'error', icon: 'i-lucide-x-circle', duration: 4000 })
+		toast.add({
+			title: getApiErrorMessage(error, t('common.error')),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
 	}
 }
 
@@ -121,9 +140,33 @@ async function handleReject(r: AyanResponse) {
 		await updateResponseStatus(r.id, 'rejected')
 		hapticFeedback('notification')
 		await loadResponses()
-	} catch {
+	} catch (error) {
 		hapticFeedback('impact')
-		toast.add({ title: t('common.error'), color: 'error', icon: 'i-lucide-x-circle', duration: 4000 })
+		toast.add({
+			title: getApiErrorMessage(error, t('common.error')),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
+	}
+}
+
+async function handleRequestOutcome(status: 'completed' | 'cancelled') {
+	if (!request.value) return
+
+	try {
+		await updateRequest(request.value.id, { status })
+		hapticFeedback('notification')
+		await refreshRequest()
+		await loadResponses()
+	} catch (error) {
+		hapticFeedback('impact')
+		toast.add({
+			title: getApiErrorMessage(error, t('common.error')),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
 	}
 }
 
@@ -177,7 +220,7 @@ watch(
 					<div class="flex items-center gap-3 text-sm text-gray-400">
 						<span>{{ request.date }}</span>
 						<span v-if="request.time">{{ request.time }}</span>
-						<UBadge :color="request.status === 'open' ? 'success' : 'neutral'" variant="subtle" size="xs">
+						<UBadge :color="targetStatusColor(request.status)" variant="subtle" size="xs">
 							{{ t(`ayan.status.${request.status}`) }}
 						</UBadge>
 						<UBadge v-if="isPastRequest" color="neutral" variant="subtle" size="xs">
@@ -248,6 +291,23 @@ watch(
 								<UIcon name="i-lucide-send" class="size-4" />
 								{{ request.passenger.username }}
 							</a>
+						</div>
+					</div>
+				</UCard>
+
+				<UCard v-if="isOwner && request.status === 'matched'" variant="subtle" class="mb-6">
+					<div class="space-y-3">
+						<div>
+							<div class="text-sm font-medium text-cyan-50">{{ t('ayan.match.title') }}</div>
+							<div class="mt-1 text-xs text-gray-400">{{ t('ayan.match.desc') }}</div>
+						</div>
+						<div class="grid grid-cols-2 gap-2">
+							<UButton color="success" variant="soft" @click="handleRequestOutcome('completed')">
+								{{ t('ayan.match.complete') }}
+							</UButton>
+							<UButton color="error" variant="soft" @click="handleRequestOutcome('cancelled')">
+								{{ t('ayan.match.cancel') }}
+							</UButton>
 						</div>
 					</div>
 				</UCard>

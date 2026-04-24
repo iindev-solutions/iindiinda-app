@@ -160,8 +160,8 @@ class ResponseController extends Controller
 
         abort_if($tripOwnerId !== $user->id && $requestOwnerId !== $user->id, 403, 'Forbidden');
         abort_if($response->status !== 'pending', 422, 'Response is not pending');
-        abort_if($response->trip && $response->trip->status !== 'open', 422, 'Trip is closed');
-        abort_if($response->request && $response->request->status !== 'open', 422, 'Request is closed');
+        abort_if($response->trip && $response->trip->status !== 'open', 422, 'Trip is not open');
+        abort_if($response->request && $response->request->status !== 'open', 422, 'Request is not open');
         abort_if($response->trip && $response->trip->isPast(), 422, 'Trip is past');
         abort_if($response->request && $response->request->isPast(), 422, 'Request is past');
 
@@ -186,7 +186,7 @@ class ResponseController extends Controller
             }
 
             if ($response->trip_id) {
-                Trip::query()->whereKey($response->trip_id)->update(['status' => 'closed']);
+                Trip::query()->whereKey($response->trip_id)->update(['status' => 'matched']);
                 AyanResponse::query()
                     ->where('trip_id', $response->trip_id)
                     ->whereKeyNot($response->id)
@@ -196,7 +196,7 @@ class ResponseController extends Controller
                 return;
             }
 
-            AyanRequest::query()->whereKey($response->request_id)->update(['status' => 'closed']);
+            AyanRequest::query()->whereKey($response->request_id)->update(['status' => 'matched']);
             AyanResponse::query()
                 ->where('request_id', $response->request_id)
                 ->whereKeyNot($response->id)
@@ -221,6 +221,7 @@ class ResponseController extends Controller
 
         abort_if(!$response, 404, 'Response not found');
         abort_if($response->user_id !== $user->id, 403, 'Forbidden');
+        abort_if($response->status !== 'pending', 422, 'Only pending responses can be deleted');
 
         $response->delete();
 

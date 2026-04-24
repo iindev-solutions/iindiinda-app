@@ -100,13 +100,22 @@ class TripController extends Controller
             'seats' => 'sometimes|integer|min:1|max:10',
             'price' => 'sometimes|integer|min:0',
             'comment' => 'nullable|string|max:500',
-            'status' => 'sometimes|in:open,closed',
+            'status' => 'sometimes|in:open,matched,completed,cancelled',
         ]);
 
         $trip = Trip::query()->with('driver')->find($id);
 
         abort_if(!$trip, 404, 'Trip not found');
         abort_if($trip->driver_id !== $user->id, 403, 'Forbidden');
+
+        if (array_key_exists('status', $validated)) {
+            $nextStatus = $validated['status'];
+
+            abort_if($nextStatus === 'matched', 422, 'Matched status is set by accepting a response');
+            abort_if($trip->status === 'matched' && $nextStatus === 'open', 422, 'Use completed or cancelled after matching');
+            abort_if(in_array($trip->status, ['completed', 'cancelled'], true) && $nextStatus !== $trip->status, 422, 'Trip is already final');
+            abort_if($trip->status === 'open' && $nextStatus === 'completed', 422, 'Trip must be matched before completion');
+        }
 
         $trip->fill($validated);
         $trip->save();

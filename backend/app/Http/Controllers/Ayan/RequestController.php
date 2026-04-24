@@ -93,7 +93,7 @@ class RequestController extends Controller
         abort_unless($user instanceof User, 401, 'Unauthenticated.');
 
         $validated = $request->validate([
-            'status' => 'sometimes|in:open,closed',
+            'status' => 'sometimes|in:open,matched,completed,cancelled',
             'time' => ['nullable', 'regex:/^([01]\d|2[0-3]):([0-5]\d)$/'],
             'description' => 'nullable|string|max:500',
         ]);
@@ -102,6 +102,15 @@ class RequestController extends Controller
 
         abort_if(!$item, 404, 'Request not found');
         abort_if($item->passenger_id !== $user->id, 403, 'Forbidden');
+
+        if (array_key_exists('status', $validated)) {
+            $nextStatus = $validated['status'];
+
+            abort_if($nextStatus === 'matched', 422, 'Matched status is set by accepting a response');
+            abort_if($item->status === 'matched' && $nextStatus === 'open', 422, 'Use completed or cancelled after matching');
+            abort_if(in_array($item->status, ['completed', 'cancelled'], true) && $nextStatus !== $item->status, 422, 'Request is already final');
+            abort_if($item->status === 'open' && $nextStatus === 'completed', 422, 'Request must be matched before completion');
+        }
 
         $item->fill($validated);
         $item->save();

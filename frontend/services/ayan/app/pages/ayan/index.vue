@@ -516,17 +516,38 @@ function handleResponseClick(response: AyanResponse) {
 										/>
 										<span class="truncate">
 											{{
-												response.trip_id
-													? t('ayan.myResponse.trip')
-													: t('ayan.myResponse.request')
+												response.trip
+													? `${response.trip.from_address} → ${response.trip.to_address}`
+													: response.request
+														? `${response.request.from_address} → ${response.request.to_address}`
+														: response.trip_id
+															? t('ayan.myResponse.trip')
+															: t('ayan.myResponse.request')
 											}}
 										</span>
 										<UBadge :color="statusColor(response.status)" variant="subtle" size="xs">
 											{{ t(`ayan.respond.status.${response.status}`) }}
 										</UBadge>
+										<UBadge
+											v-if="response.trip?.status || response.request?.status"
+											color="primary"
+											variant="outline"
+											size="xs"
+										>
+											{{ t(`ayan.status.${response.trip?.status || response.request?.status}`) }}
+										</UBadge>
 									</div>
-									<div class="text-xs text-gray-500">
-										#{{ response.trip_id ?? response.request_id }}
+									<div class="flex items-center gap-3 text-xs text-gray-500">
+										<span>#{{ response.trip_id ?? response.request_id }}</span>
+										<span v-if="response.trip?.date || response.request?.date">
+											{{ response.trip?.date || response.request?.date }}
+										</span>
+										<span v-if="response.trip?.time || response.request?.time">
+											{{ response.trip?.time || response.request?.time }}
+										</span>
+									</div>
+									<div class="mt-1 text-xs text-gray-500">
+										{{ response.trip?.driver.name || response.request?.passenger.name }}
 									</div>
 									<div v-if="response.message" class="mt-1 text-xs text-gray-400">
 										{{ response.message }}

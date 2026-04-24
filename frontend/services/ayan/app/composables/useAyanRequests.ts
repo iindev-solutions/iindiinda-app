@@ -1,4 +1,4 @@
-import type { AyanRequest, AyanRequestCreate, AyanFilters } from '../types/ayan'
+import type { AyanRequest, AyanRequestCreate, AyanRequestUpdate, AyanFilters } from '../types/ayan'
 import { generateMockRequests, findMockRequest, createMockRequest, ayanMockDelay } from '../config/ayanMock'
 import { USE_MOCK_API } from '~/config/api.config'
 
@@ -41,5 +41,24 @@ export const useAyanRequests = () => {
 		return res.data!
 	}
 
-	return { fetchRequests, fetchRequest, createRequest }
+	const updateRequest = async (id: number, data: AyanRequestUpdate): Promise<AyanRequest> => {
+		if (USE_MOCK_API) {
+			await ayanMockDelay()
+			const existing = findMockRequest(id)
+			if (!existing) throw new Error('Request not found')
+			return {
+				...existing,
+				...data,
+				description: data.description ?? existing.description,
+				time: data.time ?? existing.time
+			}
+		}
+		const res = await api.patch<{ success: boolean; data: AyanRequest }>(
+			`/ayan/requests/${id}`,
+			data as unknown as Record<string, unknown>
+		)
+		return res.data!
+	}
+
+	return { fetchRequests, fetchRequest, createRequest, updateRequest }
 }

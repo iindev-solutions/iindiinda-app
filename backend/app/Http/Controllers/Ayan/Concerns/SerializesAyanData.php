@@ -47,6 +47,8 @@ trait SerializesAyanData
             'id' => $response->id,
             'trip_id' => $response->trip_id,
             'request_id' => $response->request_id,
+            'trip' => $response->relationLoaded('trip') && $response->trip ? $this->serializeTrip($response->trip) : null,
+            'request' => $response->relationLoaded('request') && $response->request ? $this->serializeRequest($response->request) : null,
             'user' => $this->serializeUserSummary($response->user),
             'message' => $response->message,
             'status' => $response->status,
