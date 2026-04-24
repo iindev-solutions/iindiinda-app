@@ -15,16 +15,16 @@ Goal: ship a working AYAN MVP flow:
 3. respond
 4. exchange contact details
 
-## Resume Point - 2026-04-24 20:10
+## Resume Point - 2026-04-24 20:15
 
 - Current branch: `front/ayan`
 - Latest shipped commit is `a3591a0` (`feat(ayan): expand trip/request lifecycle statuses`)
-- Current branch tip for handoff docs/sync is `219387d`
+- Current branch tip for handoff docs/sync is `d019d0c`
 - Live HTTPS runtime is available at `https://iindiinda.duckdns.org`
 - Legal routes (`/legal/ayan-terms`, `/legal/privacy`, `/legal/ayan-safety`) are deployed and reachable on live HTTPS
 - Lifecycle statuses (`matched/completed/cancelled`) are now deployed on backend + frontend
 - Live synthetic API smoke for lifecycle transitions is completed and green
-- Local, origin, and VPS repo heads are aligned at `219387d`
+- Local, origin, and VPS repo heads are aligned at `d019d0c`
 - Continue from: `vault/resume-plan.md`
 
 ## Current Reality

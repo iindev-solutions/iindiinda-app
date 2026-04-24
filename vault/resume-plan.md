@@ -1,13 +1,13 @@
-# Resume Plan - 2026-04-24 20:10
+# Resume Plan - 2026-04-24 20:15
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
 
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Local, `origin/front/ayan`, and VPS `/var/www/iind-app` are aligned at `219387d`
+- Local, `origin/front/ayan`, and VPS `/var/www/iind-app` are aligned at `d019d0c`
 - Latest shipped commit is `a3591a0` `feat(ayan): expand trip/request lifecycle statuses`
-- Latest vault sync/handoff commit is `219387d` `docs(vault): note smoke cleanup state`
+- Latest vault sync/handoff commit is `d019d0c` `docs(vault): record final sync checkpoint`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
   - `/`
