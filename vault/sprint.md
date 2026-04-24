@@ -1,4 +1,4 @@
-# Sprint — Phase 1 AYAN MVP
+# Sprint - Phase 1 AYAN MVP
 
 > Roadmap: `vault/wiki/architecture/roadmap.md`
 > API contract: `vault/wiki/services/ayan/api-contract.md`
@@ -15,83 +15,69 @@ Goal: ship a working AYAN MVP flow:
 3. respond
 4. exchange contact details
 
-## Resume Point — 2026-04-23
+## Resume Point - 2026-04-24 19:50
 
 - Current branch: `front/ayan`
-- Latest important hardening commit already pushed: `755f7c6` `fix(ayan): enforce auth and response rules`
-- Main blocker: manual live browser/TMA verification is still pending even though HTTPS and deploy are now ready
-- Last completed action: pushed/deployed `09c654b` with current-response status cards and iPhone slideover no-zoom fixes on the live HTTPS SPA
+- Latest shipped commit is `a3591a0` (`feat(ayan): expand trip/request lifecycle statuses`)
+- Live HTTPS runtime is available at `https://iindiinda.duckdns.org`
+- Legal routes (`/legal/ayan-terms`, `/legal/privacy`, `/legal/ayan-safety`) are deployed and reachable on live HTTPS
+- Lifecycle statuses (`matched/completed/cancelled`) are now deployed on backend + frontend
 - Continue from: `vault/resume-plan.md`
 
 ## Current Reality
 
-- Frontend AYAN is wired to the real API
-- Backend AYAN runtime is already live on VPS with Laravel + Sanctum + MySQL persistence
-- GitHub Pages frontend is live at `https://iindev-solutions.github.io/iindiinda-app/`
-- The VPS root `http://89.22.226.34/` now serves the frontend SPA over Nginx static files
-- The VPS route `http://89.22.226.34/api/*` still serves the Laravel backend
-- The current `front/ayan` branch state is pushed and deployed on VPS
-- HTTPS hostname is now live: `https://iindiinda.duckdns.org`
-- Direct AYAN API smoke against VPS was previously green for auth, create, respond, accept, and `my/*`
-- SSH access from this machine to `iind-vps` is working again
-- The VPS backend runtime is now synchronized to the branch tip and passes focused feature tests on the clean deployed checkout
-- A local hardening slice is already pushed and includes:
-  - signed Telegram `initData` parsing
-  - scoped `init_data=test` fallback for local/testing only
-  - role and owner enforcement for AYAN actions
-  - frontend alignment so non-owners do not call owner-only response endpoints
-- Current product role model:
-- new login defaults to `passenger`
-- `driver`/`passenger` separation is enforced in backend and frontend guards
-- switching role is now exposed in AYAN UI and backed by the existing `/api/user/switch-role` endpoint
-- detail pages now show a visible UI back button while keeping Telegram native back support
-- create flow now uses a text price field and a calendar date picker that blocks past dates
-- repeat responses are now suppressed in the detail view and replaced by current status cards
+- Frontend AYAN uses real API (`/api`) on the same VPS host
+- Backend AYAN runtime is live on VPS with Laravel + Sanctum + MySQL
+- HTTPS and HTTP -> HTTPS redirect are active for DuckDNS domain
+- `TELEGRAM_BOT_TOKEN` is present on VPS backend env (prior blocker fixed)
+- Role switch UI, detail back button, status cards, price field polish, and no-zoom form sizing are already deployed
+- Legal pages/links are now committed, pushed, and deployed
+- Lifecycle status expansion (`matched/completed/cancelled`) is now committed, pushed, migrated, and deployed
 
 ## Sprint Tasks
 
 | # | Task | Status | Blockers |
 |---|------|--------|----------|
-| 1.1 | Backend migrations (`users`, `trips`, `requests`, `responses`) | DONE | — |
-| 1.2 | Backend AYAN models and controllers | DONE* | production runtime verification for the new hardening slice is still pending |
-| 1.3 | Frontend AYAN structure (`pages`, `composables`, `types`) | DONE | — |
-| 1.4 | Frontend create flow (`slideover`, form switching) | DONE | — |
-| 1.5 | Frontend feed, tabs, filters, empty states | DONE | — |
-| 1.6 | Frontend performance pass (`lazy`, `useLazyAsyncData`) | DONE | — |
-| 1.7 | Response flow, contact link, accept/reject | DONE | — |
-| 1.8 | Feed filters by route/date | DONE | — |
-| 1.9 | Nuxt UI color alignment | DONE | — |
-| 1.10 | Integration: mock -> real API | IN_PROGRESS | manual live TMA/browser verification still pending |
-| 1.11 | QA: complete E2E verification | TODO | 1.10 |
-
-`DONE*` means the slice is implemented and partially verified, but one important verification layer is still pending.
+| 1.1 | Backend migrations (`users`, `trips`, `requests`, `responses`) | DONE | - |
+| 1.2 | Backend AYAN models and controllers | DONE | - |
+| 1.3 | Frontend AYAN structure (`pages`, `composables`, `types`) | DONE | - |
+| 1.4 | Frontend create flow (`slideover`, form switching) | DONE | - |
+| 1.5 | Frontend feed, tabs, filters, empty states | DONE | - |
+| 1.6 | Frontend performance pass (`lazy`, `useLazyAsyncData`) | DONE | - |
+| 1.7 | Response flow, contact link, accept/reject | DONE | - |
+| 1.8 | Feed filters by route/date | DONE | - |
+| 1.9 | Nuxt UI color alignment | DONE | - |
+| 1.10 | Integration manual Telegram/browser verification | IN_PROGRESS | still pending full real-device pass |
+| 1.11 | Legal pages + footer/access legal links | DONE | shipped in `f13f6b6` |
+| 1.12 | Legal-only commit + VPS deploy | DONE | live on `https://iindiinda.duckdns.org` |
+| 1.13 | Lifecycle status expansion for targets/responses | DONE | shipped in `a3591a0` |
+| 1.14 | QA complete E2E verification | IN_PROGRESS | pending full manual Telegram/browser pass |
 
 ## Active Blockers
 
-- No local `php`, `composer`, or `docker` in this environment
-- Browser auth remains intentionally limited until the Telegram auth flow is fully finalized end-to-end
-- Live browser/TMA verification for the new role-switch and past-item flow is still pending
+- Full manual Telegram Mini App verification is still pending on real devices
+- VPS DB migration flow was recovered after a historical partial apply; monitor schema health in next deploy window
+- No local `php`, `composer`, or `docker` in this environment for full backend execution
 
 ## Decisions Already Taken
 
 - Use `useLazyAsyncData` for AYAN pages
-- Keep the app dark-only with Nuxt UI primary/neutral colors
-- Use a single AYAN create slideover instead of separate create pages
-- Keep browser auth in TMA-first mode until the production Telegram path is fully verified
+- Keep app dark-only with Nuxt UI primary/neutral colors
+- Keep browser flow TMA-first for production auth behavior
+- Ship legal pack first as isolated deploy, then continue lifecycle feature work
 
 ## Next Practical Step
 
-1. Manually test AYAN against `https://iindiinda.duckdns.org/` with the new role switcher
-2. Re-test Telegram/TMA constraints now that HTTPS exists
-3. Check the new detail-page response status cards and iPhone no-zoom behavior on the live deployment
-4. If DuckDNS is only temporary, later replace it with the final domain and re-issue TLS
-5. Update `vault/` again with the exact result
+1. Run full manual Telegram/browser E2E for create/respond/accept/match-complete/match-cancel flows
+2. Validate lifecycle statuses in live AYAN UI on `/ayan`, `/ayan/trip/:id`, `/ayan/request/:id`, and `My` tab cards
+3. Record any runtime edge cases from production and patch in a focused follow-up slice
+4. Keep vault stop point synchronized after manual verification
 
 ## Definition Of Progress For This Sprint
 
 This sprint is complete only when:
 
-- AYAN flows work against the real backend
-- the backend auth/authorization hardening is verified on a clean synchronized VPS checkout
-- driver/passenger role selection is reachable in the real user flow
-- the current stop point is documented in `vault/`
+- AYAN flows work against real backend on live HTTPS deployment
+- legal pages and links are committed and live in production
+- lifecycle status expansion is verified and deployed as a separate safe slice
+- `vault/` contains an exact stop point with no hidden chat-only state

@@ -95,3 +95,27 @@
 - Verified: `npm run test` (`15 tests`), `npm run lint`, `npm run typecheck`, `npx nuxt build --preset github_pages`, VPS repo `09c654b`, `curl -I https://iindiinda.duckdns.org/ayan`, `curl -I https://iindiinda.duckdns.org/api/health`
 - Blockers: manual TMA/iPhone verification is still pending
 - Next: confirm duplicate-response status UX and slideover no-zoom behavior on real devices
+
+## 2026-04-24 18:39 — Vault Refresh For Clean Restart
+
+- Scope: prepare accurate vault handoff before starting a new session
+- Changes: re-read mandatory vault files, rewrote `vault/sprint.md` and `vault/resume-plan.md`, and documented exact legal-pack vs lifecycle-slice split
+- Verified: `git status --short --branch`, `git log --oneline --decorate -12`, and updated vault files now point to one clear next action
+- Blockers: legal and lifecycle work still coexist in same local diff, including overlap in `frontend/services/ayan/app/pages/ayan/index.vue` and locale files
+- Next: run legal-only staging, commit/push/deploy legal routes, then keep lifecycle slice for separate finish and verification
+
+## 2026-04-24 19:00 — Legal Pack Ship Complete
+
+- Scope: isolate, ship, and verify AYAN legal pages/links without mixing unfinished lifecycle status work
+- Changes: staged legal-only hunks/files, committed `f13f6b6`, pushed `front/ayan`, synced VPS repo, rebuilt frontend static bundle, deployed to `/var/www/iind-app/frontend/public`, and reloaded Nginx
+- Verified: `npm run test`, `npm run lint`, `npm run typecheck`, `npx nuxt build --preset github_pages`, live URL checks for `/`, `/ayan`, `/legal/ayan-terms`, `/legal/privacy`, `/legal/ayan-safety`, and `/api/health` (all `200`)
+- Blockers: lifecycle expansion backend/frontend slice is still local and in progress
+- Next: finish lifecycle behavior, run isolated verification for that slice, then ship separately
+
+## 2026-04-24 19:50 — Lifecycle Slice Ship Complete
+
+- Scope: ship AYAN lifecycle statuses (`matched/completed/cancelled`) as a separate safe deployment slice
+- Changes: committed and pushed `a3591a0`, migrated VPS backend, deployed rebuilt frontend bundle, and synced runtime to new lifecycle behavior in detail/my-response surfaces
+- Verified: `npm run test`, `npm run lint`, `npm run typecheck`, `npx nuxt build --preset github_pages`, VPS backend phpunit (`16 tests, 127 assertions`), live URL checks for `/`, `/ayan`, `/legal/ayan-terms`, and `/api/health` (all `200`)
+- Blockers: manual real-device Telegram/browser E2E validation is still pending
+- Next: run full manual lifecycle flow verification and capture any production edge-case fixes

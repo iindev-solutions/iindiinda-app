@@ -2,6 +2,87 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-24 19:50 - Lifecycle Status Expansion Deployed Live
+
+### Done
+
+- Shipped lifecycle slice as `a3591a0` on `front/ayan` with status model `open|matched|completed|cancelled`
+- Deployed backend + frontend updates to VPS and reloaded runtime services
+- Added owner-side lifecycle finalization actions in detail views (`completed` / `cancelled`) after match
+- Enriched `my/responses` serialization with linked target payloads (`trip` / `request`) for better frontend cards
+- Added frontend API error helper (`frontend/app/utils/api-error.ts`) and integrated it into detail flow toasts
+
+### Verified
+
+- `frontend: npm run test` ✅ (`9 files, 17 tests`)
+- `frontend: npm run lint` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npx nuxt build --preset github_pages` ✅
+- `ssh iind-vps "cd /var/www/iind-app/backend && ./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php"` ✅ (`16 tests, 127 assertions`)
+- `ssh iind-vps "cd /var/www/iind-app/backend && php artisan migrate:status"` ✅ (all AYAN migrations ran)
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`a3591a0`)
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+
+### Important
+
+- VPS migration flow needed live recovery because a historical partial migration left `trips` table created without migration record/FK
+- Recovery was completed safely (clear metadata locks, restore missing FK, register missing migration row, apply pending migrations)
+- Manual Telegram Mini App E2E verification is still pending and should be done next
+
+## 2026-04-24 19:00 - Legal Pack Deployed Live
+
+### Done
+
+- Isolated legal-only frontend changes from the mixed legal+lifecycle workspace and committed them as `f13f6b6` on `front/ayan`
+- Pushed `front/ayan` to origin and fast-forwarded VPS repo at `/var/www/iind-app` to the same commit
+- Rebuilt frontend static output with `npx nuxt build --preset github_pages`
+- Uploaded `.output/public` bundle to VPS frontend path `/var/www/iind-app/frontend/public`, set owner to `www-data`, and reloaded Nginx
+- Kept lifecycle expansion slice local and uncommitted (backend status migration/controllers/tests and frontend lifecycle UI/status updates)
+
+### Verified
+
+- `frontend: npm run test` ✅ (`9 files, 17 tests`)
+- `frontend: npm run lint` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npx nuxt build --preset github_pages` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`f13f6b6`)
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal/privacy` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal/ayan-safety` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+
+### Important
+
+- Legal pages/links are now live in production on HTTPS
+- Lifecycle status expansion remains in-progress locally and should be shipped as a separate, safe follow-up slice
+
+## 2026-04-24 18:39 - Vault Handoff Refresh Before New Session
+
+### Done
+
+- Re-audited current branch state (`front/ayan`) and confirmed head alignment with `origin/front/ayan` at `e150493`
+- Captured exact split between local legal-pack work and local lifecycle-expansion work in `vault/resume-plan.md`
+- Rewrote `vault/sprint.md` and `vault/resume-plan.md` to make legal-only ship the explicit next action
+- Updated `vault/CODE_MAP.md` notes so new legal files and in-progress lifecycle files are discoverable from vault docs
+- Appended this handoff update and a new session note for clean restart
+
+### Verified
+
+- `git status --short --branch` ✅ (branch aligned, mixed local diff clearly visible)
+- `git log --oneline --decorate -12` ✅ (latest committed state still `e150493`)
+- Mandatory vault files were re-read in protocol order before update ✅
+
+### Important
+
+- Legal pack is implemented locally but still not committed, pushed, or deployed
+- Lifecycle expansion files remain in-progress and must not be accidentally included in legal-only commit/deploy
+- Next session should execute legal-only staging and deployment first, then continue lifecycle work as a separate slice
+
 ## 2026-04-24 11:56 — Response Status UX + iPhone Zoom Fix Live
 
 ### Done

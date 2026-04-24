@@ -237,3 +237,29 @@
 - `backend/app/Http/Middleware/ForceJsonResponse.php`: guest protected API даёт JSON `401`, не `Route [login] not defined`
 - `backend/app/Http/Controllers/AuthController.php`: real Sanctum token issuance уже есть, но Telegram verification ещё не production-ready
 - deploy caveat: `public.devInitData` сериализуется в static HTML как пустой ключ; не собирать deploy с непустым `NUXT_PUBLIC_DEV_INIT_DATA`
+
+## Audit Notes - 2026-04-24 19:50
+
+- Legal helper shipped: `frontend/app/utils/legal.ts`
+- Shared legal links component shipped: `frontend/app/components/AppLegalLinks.vue`
+- Legal routes shipped: `frontend/app/pages/legal/ayan-terms.vue`, `frontend/app/pages/legal/privacy.vue`, `frontend/app/pages/legal/ayan-safety.vue`
+- Lifecycle status model shipped end-to-end: `open|matched|completed|cancelled`
+- Lifecycle backend migration added: `backend/database/migrations/2026_04_24_120000_expand_ayan_target_statuses.php`
+- Lifecycle backend behavior updated in:
+  - `backend/app/Http/Controllers/Ayan/TripController.php`
+  - `backend/app/Http/Controllers/Ayan/RequestController.php`
+  - `backend/app/Http/Controllers/Ayan/ResponseController.php`
+  - `backend/app/Http/Controllers/Ayan/MyController.php`
+  - `backend/app/Http/Controllers/Ayan/Concerns/SerializesAyanData.php`
+- Lifecycle frontend behavior updated in:
+  - `frontend/services/ayan/app/types/ayan.ts`
+  - `frontend/services/ayan/app/composables/useAyanRequests.ts`
+  - `frontend/services/ayan/app/pages/ayan/index.vue`
+  - `frontend/services/ayan/app/pages/ayan/trip/[id].vue`
+  - `frontend/services/ayan/app/pages/ayan/request/[id].vue`
+  - `frontend/i18n/locales/ru.json`
+  - `frontend/i18n/locales/sah.json`
+- New API error helper and coverage:
+  - `frontend/app/utils/api-error.ts`
+  - `frontend/tests/unit/apiError.test.ts`
+- Backend lifecycle regression coverage expanded in `backend/tests/Feature/AyanPersistenceTest.php`
