@@ -63,6 +63,8 @@
   - responder `my/responses` includes `request.status = cancelled`
 - Deletion guard:
   - deleting accepted response returns `422` with `Only pending responses can be deleted`
+- Cleanup:
+  - synthetic smoke users/tokens were removed after verification (`COUNT = 0`)
 
 ## Next Session Prompt
 

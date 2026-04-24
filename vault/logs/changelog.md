@@ -11,6 +11,7 @@
 - Verified request flow end-to-end: create request -> respond -> accept -> matched -> cancel
 - Verified `my/responses` now returns linked target payloads with updated lifecycle statuses
 - Verified non-pending response deletion guard still enforces `422` with `Only pending responses can be deleted`
+- Removed synthetic smoke users/tokens from production DB after validation to avoid polluting live data
 
 ### Verified
 
@@ -22,15 +23,17 @@
   - `requestStatusAfterCancel = cancelled`
   - `myRequestResponseTargetStatus = cancelled`
   - `tripDeleteAcceptedStatus = 422`
-  - `requestDeleteAcceptedStatus = 422`
+- `requestDeleteAcceptedStatus = 422`
 - `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
 - `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
 - `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- `SELECT COUNT(*) FROM users WHERE telegram_id IN (910000001, 910000002)` ✅ (`0`)
 
 ### Important
 
 - Backend/contract lifecycle behavior is confirmed live through real API requests
 - Telegram Mini App UI manual pass is still pending (device interaction cannot be automated from this environment)
+- No synthetic smoke users remain in production after API verification cleanup
 
 ## 2026-04-24 19:50 - Lifecycle Status Expansion Deployed Live
 

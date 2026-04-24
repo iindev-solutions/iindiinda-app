@@ -123,7 +123,7 @@
 ## 2026-04-24 20:00 — Lifecycle API Smoke Validation
 
 - Scope: validate shipped lifecycle behavior on live API before manual Telegram device pass
-- Changes: ran synthetic production API flow with isolated smoke users/tokens for trip/request lifecycle transitions and response deletion guards
-- Verified: trip and request both pass `open -> matched -> completed/cancelled`, `my/responses` includes linked target statuses, non-pending response delete returns `422`, live `/`, `/ayan`, and `/api/health` remain `200`
+- Changes: ran synthetic production API flow with isolated smoke users/tokens for trip/request lifecycle transitions and response deletion guards, then cleaned smoke users/tokens from production DB
+- Verified: trip and request both pass `open -> matched -> completed/cancelled`, `my/responses` includes linked target statuses, non-pending response delete returns `422`, smoke users removed (`COUNT=0`), live `/`, `/ayan`, and `/api/health` remain `200`
 - Blockers: Telegram Mini App UI interaction still needs human device verification
 - Next: perform manual TMA/browser UI pass and capture outcome in vault
