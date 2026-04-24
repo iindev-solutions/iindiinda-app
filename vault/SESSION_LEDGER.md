@@ -87,3 +87,11 @@
 - Verified: `npm run test` (`13 tests`), `npm run lint`, `npm run typecheck`, `npx nuxt build --preset github_pages`, VPS repo `87a4815`, `curl -I https://iindiinda.duckdns.org/ayan`, `curl -I https://iindiinda.duckdns.org/api/health`
 - Blockers: full manual Telegram/browser verification is still pending
 - Next: manually verify back navigation, price field UX, calendar restrictions, and the full AYAN flow inside TMA
+
+## 2026-04-24 11:56 — Response Status + Zoom Fix Live
+
+- Scope: stop duplicate response UX confusion and remove iPhone auto-zoom from the AYAN create slideover
+- Changes: used `/ayan/my/responses` to detect the current user's existing response on detail pages, replaced repeat response form with a status card, added response cards to `My`, applied `fixed` sizing to slideover form controls, pushed `09c654b`, synced VPS repo, and deployed the rebuilt SPA bundle
+- Verified: `npm run test` (`15 tests`), `npm run lint`, `npm run typecheck`, `npx nuxt build --preset github_pages`, VPS repo `09c654b`, `curl -I https://iindiinda.duckdns.org/ayan`, `curl -I https://iindiinda.duckdns.org/api/health`
+- Blockers: manual TMA/iPhone verification is still pending
+- Next: confirm duplicate-response status UX and slideover no-zoom behavior on real devices

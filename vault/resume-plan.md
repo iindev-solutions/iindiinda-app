@@ -5,12 +5,15 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Local `front/ayan` and `origin/front/ayan` are aligned at `87a4815` `feat(ayan): polish entry form and detail nav`
+- Local `front/ayan` and `origin/front/ayan` are aligned at `09c654b` `feat(ayan): show response status and fix zoom`
 - Remote branch already contains the AYAN hardening commit: `755f7c6` `fix(ayan): enforce auth and response rules`
 - Latest shipped UX slice now also includes:
   - visible detail-page back button in both browser UI and Telegram context
   - normal text price field with trailing `₽`
   - Nuxt UI calendar date picker with past dates disabled
+  - existing response status card instead of repeat response form
+  - `My` response cards with status and deep-link back to target pages
+  - fixed-size slideover controls to avoid iPhone auto-zoom
 - Local frontend dev flow against VPS uses `frontend/.env` with:
   - `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`
   - optional `NUXT_PUBLIC_DEV_INIT_DATA=test`
@@ -73,7 +76,7 @@ Use this prompt at the start of the next session:
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
 Current task: verify the AYAN role switcher and past-item UX against https://iindiinda.duckdns.org and confirm Telegram/TMA auth behavior on the HTTPS deployment, then decide whether to commit the new frontend auth-gate slice.
 
-Current task: verify the full AYAN flow on https://iindiinda.duckdns.org in Telegram Mini App, including role switching, detail back navigation, price input, and calendar date restrictions.
+Current task: verify the full AYAN flow on https://iindiinda.duckdns.org in Telegram Mini App, including role switching, detail back navigation, response-status cards, price input, calendar date restrictions, and iPhone no-zoom behavior.
 ```
 
 ## Safe Next-Step Plan
@@ -85,8 +88,11 @@ Current task: verify the full AYAN flow on https://iindiinda.duckdns.org in Tele
    - owners can see/accept/reject responses
 2. Check the new UX details on the live deployment:
    - detail-page back button is visible and works
+   - repeat response form is replaced by current response status
+   - rejected responses are visible in detail and `My`
    - trip price field no longer shows stepper controls
    - calendar blocks past dates
+   - slideover inputs no longer auto-zoom on iPhone
 3. Re-test Telegram/TMA integration on `https://iindiinda.duckdns.org`
 4. Confirm guest browser users now see Telegram-only access state instead of broken AYAN actions
 5. If needed later, replace DuckDNS with the final domain and re-issue TLS

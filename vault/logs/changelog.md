@@ -2,6 +2,35 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-24 11:56 — Response Status UX + iPhone Zoom Fix Live
+
+### Done
+
+- Added detail-page awareness of the current user's existing response by loading `/ayan/my/responses` for non-owner views
+- Replaced the repeat response form with a status card when the user has already responded
+- Exposed accepted/pending/rejected status on detail pages and in the `My` tab response cards
+- Added navigation from `My` responses back to the related trip/request detail page
+- Applied `fixed` sizing to slideover form controls so iPhone focus no longer auto-zooms the create form fields
+- Pushed commit `09c654b` `feat(ayan): show response status and fix zoom`
+- Fast-forwarded the VPS repo to `09c654b` and deployed the rebuilt SPA bundle to `https://iindiinda.duckdns.org`
+
+### Verified
+
+- `frontend: npm run test` ✅ (`7 files, 15 tests`)
+- `frontend: npm run lint` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npx nuxt build --preset github_pages` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`09c654b`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- deployed HTML still contains `apiBase:"/api"` and `devInitData:""` ✅
+
+### Important
+
+- Users who already responded should now see their current status instead of a second response form
+- Rejected responses are visible in both the detail view and `My` tab
+- The live bundle was uploaded to `frontend/public/`, so the VPS repo still shows that directory as intentionally untracked deployment output
+
 ## 2026-04-24 12:36 — AYAN Entry Polish Live
 
 ### Done

@@ -20,7 +20,7 @@ Goal: ship a working AYAN MVP flow:
 - Current branch: `front/ayan`
 - Latest important hardening commit already pushed: `755f7c6` `fix(ayan): enforce auth and response rules`
 - Main blocker: manual live browser/TMA verification is still pending even though HTTPS and deploy are now ready
-- Last completed action: pushed/deployed `87a4815` with detail-page back button recovery, text price field, and calendar date picker polish on the live HTTPS SPA
+- Last completed action: pushed/deployed `09c654b` with current-response status cards and iPhone slideover no-zoom fixes on the live HTTPS SPA
 - Continue from: `vault/resume-plan.md`
 
 ## Current Reality
@@ -46,6 +46,7 @@ Goal: ship a working AYAN MVP flow:
 - switching role is now exposed in AYAN UI and backed by the existing `/api/user/switch-role` endpoint
 - detail pages now show a visible UI back button while keeping Telegram native back support
 - create flow now uses a text price field and a calendar date picker that blocks past dates
+- repeat responses are now suppressed in the detail view and replaced by current status cards
 
 ## Sprint Tasks
 
@@ -82,7 +83,7 @@ Goal: ship a working AYAN MVP flow:
 
 1. Manually test AYAN against `https://iindiinda.duckdns.org/` with the new role switcher
 2. Re-test Telegram/TMA constraints now that HTTPS exists
-3. Check the new detail-page back button, text price field, and calendar restriction UX on the live deployment
+3. Check the new detail-page response status cards and iPhone no-zoom behavior on the live deployment
 4. If DuckDNS is only temporary, later replace it with the final domain and re-issue TLS
 5. Update `vault/` again with the exact result
 
