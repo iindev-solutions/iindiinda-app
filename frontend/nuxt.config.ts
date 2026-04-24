@@ -30,7 +30,7 @@ export default defineNuxtConfig({
 		public: {
 			apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api',
 			telegramBotId: process.env.NUXT_PUBLIC_TELEGRAM_BOT_ID || '',
-			devInitData: process.env.NUXT_PUBLIC_DEV_INIT_DATA || ''
+			devInitData: ''
 		}
 	},
 

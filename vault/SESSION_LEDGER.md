@@ -63,3 +63,11 @@
 - Verified: `nslookup iindiinda.duckdns.org`, `curl -I http://iindiinda.duckdns.org/`, `curl -I https://iindiinda.duckdns.org/`, `curl -I https://iindiinda.duckdns.org/api/health`, direct execution of `/opt/duckdns/update.sh`
 - Blockers: manual live browser/TMA verification is still pending
 - Next: test the secure deployment end-to-end from browser/Telegram and record the result
+
+## 2026-04-23 23:53 — Frontend Auth Gate Cleanup
+
+- Scope: close the guest-browser auth gap and remove production `devInitData` fallback from the deployed SPA
+- Changes: added AYAN access-state/auth helpers, added Telegram-only and auth-failed UI states, removed `NUXT_PUBLIC_DEV_INIT_DATA=test` from `frontend/.env`, rebuilt the SPA, and redeployed the frontend bundle with safe production config and stable HTTPS SPA fallback
+- Verified: `npm run test`, `npm run lint`, `npm run typecheck`, `npx nuxt build --preset github_pages`, deployed HTML contains `apiBase:"/api"` and `devInitData:""`, `curl -I https://iindiinda.duckdns.org/`, `curl -I https://iindiinda.duckdns.org/ayan`, unauthenticated `/api/user` returns `401`
+- Blockers: real Telegram/TMA verification is still pending
+- Next: manually test login and role switching in the Telegram Mini App, then decide whether to commit the local auth-gate slice

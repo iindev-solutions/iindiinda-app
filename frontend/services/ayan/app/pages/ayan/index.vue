@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { getAyanCreateMode } from '../../utils/role'
+import { getAyanAccessState } from '~/utils/auth'
 
 definePageMeta({ lazy: true })
 
 const { t } = useI18n()
-const { hapticFeedback } = useTg()
-const { user: authUser } = useAuth()
+const { hapticFeedback, isInTelegram } = useTg()
+const { user: authUser, isAuthenticated, isLoading: authLoading, authError } = useAuth()
 
 const activeTab = ref('trips')
 const createOpen = ref(false)
@@ -25,6 +26,17 @@ const createMode = computed<'trip' | 'request' | null>(() => {
 	return getAyanCreateMode(authUser.value?.role)
 })
 
+const accessState = computed(() =>
+	getAyanAccessState({
+		isAuthenticated: isAuthenticated.value,
+		isLoading: authLoading.value,
+		isInTelegram: isInTelegram.value,
+		hasAuthError: !!authError.value
+	})
+)
+
+const canUseAyan = computed(() => accessState.value === 'ready')
+
 const createLabel = computed(() => (createMode.value === 'request' ? t('ayan.createRequest') : t('ayan.createRide')))
 
 const formatTripPrice = (price: number) => formatPrice(price, '₽', t('ayan.ride.free'))
@@ -37,28 +49,44 @@ const {
 	pending: tripsLoading,
 	refresh: refreshTrips
 } = useLazyAsyncData('ayan-trips', () => useAyanTrips().fetchTrips(), {
-	deep: false
+	deep: false,
+	default: () => [],
+	watch: [canUseAyan],
+	immediate: canUseAyan.value
 })
 
 const {
 	data: requests,
 	pending: requestsLoading,
 	refresh: refreshRequests
-} = useLazyAsyncData('ayan-requests', () => useAyanRequests().fetchRequests(), { deep: false })
+} = useLazyAsyncData('ayan-requests', () => useAyanRequests().fetchRequests(), {
+	deep: false,
+	default: () => [],
+	watch: [canUseAyan],
+	immediate: canUseAyan.value
+})
 
 const {
 	data: myTrips,
 	pending: myTripsLoading,
 	refresh: refreshMyTrips
 } = useLazyAsyncData('ayan-my-trips', () => useAyanMy().fetchMyTrips(), {
-	deep: false
+	deep: false,
+	default: () => [],
+	watch: [canUseAyan],
+	immediate: canUseAyan.value
 })
 
 const {
 	data: myRequests,
 	pending: myRequestsLoading,
 	refresh: refreshMyRequests
-} = useLazyAsyncData('ayan-my-requests', () => useAyanMy().fetchMyRequests(), { deep: false })
+} = useLazyAsyncData('ayan-my-requests', () => useAyanMy().fetchMyRequests(), {
+	deep: false,
+	default: () => [],
+	watch: [canUseAyan],
+	immediate: canUseAyan.value
+})
 
 const today = new Date().toISOString().split('T')[0] ?? ''
 const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0] ?? ''
@@ -149,6 +177,17 @@ function handleRoleChanged(role: 'driver' | 'passenger') {
 	refreshMyRequests()
 }
 
+watch(
+	canUseAyan,
+	(ready) => {
+		if (!ready) {
+			createOpen.value = false
+			filtersOpen.value = false
+		}
+	},
+	{ immediate: true }
+)
+
 function toggleFilters() {
 	filtersOpen.value = !filtersOpen.value
 	hapticFeedback('impact')
@@ -173,206 +212,245 @@ function handleRequestClick(requestId: number) {
 <template>
 	<div class="min-h-screen px-4 py-6">
 		<div class="mx-auto max-w-[480px]">
-			<header class="mb-6">
-				<div class="mb-1 text-[10px] font-medium uppercase tracking-widest text-gray-400">
-					{{ t('ayan.category') }}
-				</div>
-				<h1 class="mb-2 text-2xl font-medium tracking-tight text-cyan-50">
-					{{ t('ayan.name') }}
-				</h1>
-				<p class="text-sm leading-relaxed text-gray-300">
-					{{ t('ayan.desc') }}
-				</p>
-				<div class="mt-4">
-					<AyanRoleSwitch @changed="handleRoleChanged" />
-				</div>
-			</header>
-
-			<UTabs
-				:items="tabs"
-				:model-value="activeTab"
-				variant="pill"
-				size="sm"
-				class="mb-5"
-				@update:model-value="handleTabChange"
-			/>
-
-			<div v-if="activeTab !== 'my'" class="mb-4">
-				<UButton
-					icon="i-lucide-filter"
-					size="sm"
-					variant="ghost"
-					color="neutral"
-					:trailing-icon="filtersOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-					@click="toggleFilters"
-				>
-					{{ t('ayan.filter.title') }}
-					<UBadge v-if="hasFilters" color="primary" variant="subtle" size="xs" class="ml-1">
-						{{ activeFilterCount }}
-					</UBadge>
-				</UButton>
-
-				<Transition name="filter-slide">
-					<div v-if="filtersOpen" class="mt-3 space-y-3">
-						<div class="grid grid-cols-2 gap-2">
-							<UInput
-								v-model="filterFrom"
-								:placeholder="t('ayan.filter.from')"
-								icon="i-lucide-circle-dot"
-								variant="outline"
-								size="sm"
-								class="w-full"
-							/>
-							<UInput
-								v-model="filterTo"
-								:placeholder="t('ayan.filter.to')"
-								icon="i-lucide-map-pin"
-								variant="outline"
-								size="sm"
-								class="w-full"
-							/>
-						</div>
-
-						<div class="flex flex-wrap gap-2">
-							<UButton
-								v-for="chip in dateChips"
-								:key="chip.value"
-								size="xs"
-								:variant="filterDate === chip.value ? 'soft' : 'ghost'"
-								:color="filterDate === chip.value ? 'primary' : 'neutral'"
-								@click="handleDateChip(chip.value)"
-							>
-								{{ chip.label }}
-							</UButton>
-						</div>
-
-						<UButton
-							v-if="hasFilters"
-							size="xs"
-							variant="ghost"
-							color="neutral"
-							icon="i-lucide-x"
-							@click="clearFilters"
-						>
-							{{ t('ayan.filter.clear') }}
-						</UButton>
-					</div>
-				</Transition>
-			</div>
-
-			<div v-if="createMode" class="mb-4">
-				<UButton icon="i-lucide-plus" size="lg" variant="soft" color="primary" block @click="handleCreate">
-					{{ createLabel }}
-				</UButton>
-			</div>
-
-			<div v-if="loading" class="flex justify-center py-12">
-				<LoadingSpinner />
-			</div>
-
-			<template v-else-if="activeTab === 'trips'">
-				<div v-if="!filteredTrips.length">
-					<EmptyState
-						:title="hasFilters ? t('empty.noResults') : t('ayan.noRides')"
-						:description="hasFilters ? t('empty.noResultsDesc') : t('ayan.noRidesDesc')"
-					/>
-				</div>
-				<div v-else class="space-y-3">
-					<UCard
-						v-for="trip in filteredTrips"
-						:key="trip.id"
-						variant="outline"
-						class="cursor-pointer transition-colors hover:border-cyan-500/30"
-						@click="handleTripClick(trip.id)"
-					>
-						<div class="flex items-start justify-between gap-3">
-							<div class="min-w-0 flex-1">
-								<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-									<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-									<span class="truncate">{{ trip.from_address }}</span>
-									<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-									<span class="truncate">{{ trip.to_address }}</span>
-								</div>
-								<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
-									<span>{{ trip.date }}</span>
-									<span v-if="trip.time">{{ trip.time }}</span>
-									<span>{{ trip.seats }} {{ t('ayan.ride.seats') }}</span>
-								</div>
-								<div class="mt-1 text-xs text-gray-500">
-									{{ trip.driver.name }}
-								</div>
-							</div>
-							<div class="shrink-0 text-right">
-								<div class="text-sm font-semibold text-cyan-400">{{ formatTripPrice(trip.price) }}</div>
-							</div>
-						</div>
-					</UCard>
-				</div>
-			</template>
-
-			<template v-else-if="activeTab === 'requests'">
-				<div v-if="!filteredRequests.length">
-					<EmptyState
-						:title="hasFilters ? t('empty.noResults') : t('ayan.noRequests')"
-						:description="hasFilters ? t('empty.noResultsDesc') : t('ayan.noRequestsDesc')"
-					/>
-				</div>
-				<div v-else class="space-y-3">
-					<UCard
-						v-for="request in filteredRequests"
-						:key="request.id"
-						variant="outline"
-						class="cursor-pointer transition-colors hover:border-cyan-500/30"
-						@click="handleRequestClick(request.id)"
-					>
-						<div class="min-w-0">
-							<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-								<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-								<span class="truncate">{{ request.from_address }}</span>
-								<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-								<span class="truncate">{{ request.to_address }}</span>
-							</div>
-							<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
-								<span>{{ request.date }}</span>
-								<span v-if="request.time">{{ request.time }}</span>
-							</div>
-							<div class="mt-1 text-xs text-gray-500">
-								{{ request.passenger.name }}
-							</div>
-							<div v-if="request.description" class="mt-1 text-xs text-gray-400">
-								{{ request.description }}
-							</div>
-						</div>
-					</UCard>
-				</div>
-			</template>
+			<AyanAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
 			<template v-else>
-				<div v-if="!filteredMyTrips.length && !filteredMyRequests.length">
-					<EmptyState :title="t('ayan.noMy')" :description="t('ayan.noMyDesc')" />
-				</div>
-				<div v-else class="space-y-3">
-					<UCard
-						v-for="trip in filteredMyTrips"
-						:key="'my-' + trip.id"
-						variant="outline"
-						class="cursor-pointer transition-colors hover:border-cyan-500/30"
-						@click="handleTripClick(trip.id)"
+				<header class="mb-6">
+					<div class="mb-1 text-[10px] font-medium uppercase tracking-widest text-gray-400">
+						{{ t('ayan.category') }}
+					</div>
+					<h1 class="mb-2 text-2xl font-medium tracking-tight text-cyan-50">
+						{{ t('ayan.name') }}
+					</h1>
+					<p class="text-sm leading-relaxed text-gray-300">
+						{{ t('ayan.desc') }}
+					</p>
+					<div class="mt-4">
+						<AyanRoleSwitch @changed="handleRoleChanged" />
+					</div>
+				</header>
+
+				<UTabs
+					:items="tabs"
+					:model-value="activeTab"
+					variant="pill"
+					size="sm"
+					class="mb-5"
+					@update:model-value="handleTabChange"
+				/>
+
+				<div v-if="activeTab !== 'my'" class="mb-4">
+					<UButton
+						icon="i-lucide-filter"
+						size="sm"
+						variant="ghost"
+						color="neutral"
+						:trailing-icon="filtersOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+						@click="toggleFilters"
 					>
-						<div class="flex items-start justify-between gap-3">
-							<div class="min-w-0 flex-1">
+						{{ t('ayan.filter.title') }}
+						<UBadge v-if="hasFilters" color="primary" variant="subtle" size="xs" class="ml-1">
+							{{ activeFilterCount }}
+						</UBadge>
+					</UButton>
+
+					<Transition name="filter-slide">
+						<div v-if="filtersOpen" class="mt-3 space-y-3">
+							<div class="grid grid-cols-2 gap-2">
+								<UInput
+									v-model="filterFrom"
+									:placeholder="t('ayan.filter.from')"
+									icon="i-lucide-circle-dot"
+									variant="outline"
+									size="sm"
+									class="w-full"
+								/>
+								<UInput
+									v-model="filterTo"
+									:placeholder="t('ayan.filter.to')"
+									icon="i-lucide-map-pin"
+									variant="outline"
+									size="sm"
+									class="w-full"
+								/>
+							</div>
+
+							<div class="flex flex-wrap gap-2">
+								<UButton
+									v-for="chip in dateChips"
+									:key="chip.value"
+									size="xs"
+									:variant="filterDate === chip.value ? 'soft' : 'ghost'"
+									:color="filterDate === chip.value ? 'primary' : 'neutral'"
+									@click="handleDateChip(chip.value)"
+								>
+									{{ chip.label }}
+								</UButton>
+							</div>
+
+							<UButton
+								v-if="hasFilters"
+								size="xs"
+								variant="ghost"
+								color="neutral"
+								icon="i-lucide-x"
+								@click="clearFilters"
+							>
+								{{ t('ayan.filter.clear') }}
+							</UButton>
+						</div>
+					</Transition>
+				</div>
+
+				<div v-if="createMode" class="mb-4">
+					<UButton icon="i-lucide-plus" size="lg" variant="soft" color="primary" block @click="handleCreate">
+						{{ createLabel }}
+					</UButton>
+				</div>
+
+				<div v-if="loading" class="flex justify-center py-12">
+					<LoadingSpinner />
+				</div>
+
+				<template v-else-if="activeTab === 'trips'">
+					<div v-if="!filteredTrips.length">
+						<EmptyState
+							:title="hasFilters ? t('empty.noResults') : t('ayan.noRides')"
+							:description="hasFilters ? t('empty.noResultsDesc') : t('ayan.noRidesDesc')"
+						/>
+					</div>
+					<div v-else class="space-y-3">
+						<UCard
+							v-for="trip in filteredTrips"
+							:key="trip.id"
+							variant="outline"
+							class="cursor-pointer transition-colors hover:border-cyan-500/30"
+							@click="handleTripClick(trip.id)"
+						>
+							<div class="flex items-start justify-between gap-3">
+								<div class="min-w-0 flex-1">
+									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
+										<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
+										<span class="truncate">{{ trip.from_address }}</span>
+										<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
+										<span class="truncate">{{ trip.to_address }}</span>
+									</div>
+									<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
+										<span>{{ trip.date }}</span>
+										<span v-if="trip.time">{{ trip.time }}</span>
+										<span>{{ trip.seats }} {{ t('ayan.ride.seats') }}</span>
+									</div>
+									<div class="mt-1 text-xs text-gray-500">
+										{{ trip.driver.name }}
+									</div>
+								</div>
+								<div class="shrink-0 text-right">
+									<div class="text-sm font-semibold text-cyan-400">
+										{{ formatTripPrice(trip.price) }}
+									</div>
+								</div>
+							</div>
+						</UCard>
+					</div>
+				</template>
+
+				<template v-else-if="activeTab === 'requests'">
+					<div v-if="!filteredRequests.length">
+						<EmptyState
+							:title="hasFilters ? t('empty.noResults') : t('ayan.noRequests')"
+							:description="hasFilters ? t('empty.noResultsDesc') : t('ayan.noRequestsDesc')"
+						/>
+					</div>
+					<div v-else class="space-y-3">
+						<UCard
+							v-for="request in filteredRequests"
+							:key="request.id"
+							variant="outline"
+							class="cursor-pointer transition-colors hover:border-cyan-500/30"
+							@click="handleRequestClick(request.id)"
+						>
+							<div class="min-w-0">
 								<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
 									<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-									<span class="truncate">{{ trip.from_address }}</span>
+									<span class="truncate">{{ request.from_address }}</span>
 									<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-									<span class="truncate">{{ trip.to_address }}</span>
+									<span class="truncate">{{ request.to_address }}</span>
 								</div>
 								<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
-									<span>{{ trip.date }}</span>
-									<span v-if="trip.time">{{ trip.time }}</span>
-									<span>{{ trip.seats }} {{ t('ayan.ride.seats') }}</span>
+									<span>{{ request.date }}</span>
+									<span v-if="request.time">{{ request.time }}</span>
+								</div>
+								<div class="mt-1 text-xs text-gray-500">
+									{{ request.passenger.name }}
+								</div>
+								<div v-if="request.description" class="mt-1 text-xs text-gray-400">
+									{{ request.description }}
+								</div>
+							</div>
+						</UCard>
+					</div>
+				</template>
+
+				<template v-else>
+					<div v-if="!filteredMyTrips.length && !filteredMyRequests.length">
+						<EmptyState :title="t('ayan.noMy')" :description="t('ayan.noMyDesc')" />
+					</div>
+					<div v-else class="space-y-3">
+						<UCard
+							v-for="trip in filteredMyTrips"
+							:key="'my-' + trip.id"
+							variant="outline"
+							class="cursor-pointer transition-colors hover:border-cyan-500/30"
+							@click="handleTripClick(trip.id)"
+						>
+							<div class="flex items-start justify-between gap-3">
+								<div class="min-w-0 flex-1">
+									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
+										<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
+										<span class="truncate">{{ trip.from_address }}</span>
+										<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
+										<span class="truncate">{{ trip.to_address }}</span>
+									</div>
+									<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
+										<span>{{ trip.date }}</span>
+										<span v-if="trip.time">{{ trip.time }}</span>
+										<span>{{ trip.seats }} {{ t('ayan.ride.seats') }}</span>
+										<UBadge
+											v-if="isPastTrip(trip.date, trip.time)"
+											color="neutral"
+											variant="subtle"
+											size="xs"
+										>
+											{{ t('ayan.status.past') }}
+										</UBadge>
+									</div>
+								</div>
+								<div class="shrink-0 text-right">
+									<div class="text-sm font-semibold text-cyan-400">
+										{{ formatTripPrice(trip.price) }}
+									</div>
+								</div>
+							</div>
+						</UCard>
+						<UCard
+							v-for="req in filteredMyRequests"
+							:key="'my-req-' + req.id"
+							variant="outline"
+							class="cursor-pointer transition-colors hover:border-cyan-500/30"
+							@click="handleRequestClick(req.id)"
+						>
+							<div class="min-w-0">
+								<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
+									<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
+									<span class="truncate">{{ req.from_address }}</span>
+									<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
+									<span class="truncate">{{ req.to_address }}</span>
+								</div>
+								<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
+									<span>{{ req.date }}</span>
+									<span v-if="req.time">{{ req.time }}</span>
 									<UBadge
-										v-if="isPastTrip(trip.date, trip.time)"
+										v-if="isPastRequest(req.date, req.time)"
 										color="neutral"
 										variant="subtle"
 										size="xs"
@@ -381,44 +459,13 @@ function handleRequestClick(requestId: number) {
 									</UBadge>
 								</div>
 							</div>
-							<div class="shrink-0 text-right">
-								<div class="text-sm font-semibold text-cyan-400">{{ formatTripPrice(trip.price) }}</div>
-							</div>
-						</div>
-					</UCard>
-					<UCard
-						v-for="req in filteredMyRequests"
-						:key="'my-req-' + req.id"
-						variant="outline"
-						class="cursor-pointer transition-colors hover:border-cyan-500/30"
-						@click="handleRequestClick(req.id)"
-					>
-						<div class="min-w-0">
-							<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-								<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-								<span class="truncate">{{ req.from_address }}</span>
-								<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-								<span class="truncate">{{ req.to_address }}</span>
-							</div>
-							<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
-								<span>{{ req.date }}</span>
-								<span v-if="req.time">{{ req.time }}</span>
-								<UBadge
-									v-if="isPastRequest(req.date, req.time)"
-									color="neutral"
-									variant="subtle"
-									size="xs"
-								>
-									{{ t('ayan.status.past') }}
-								</UBadge>
-							</div>
-						</div>
-					</UCard>
-				</div>
+						</UCard>
+					</div>
+				</template>
+
+				<AyanCreateSlideover v-model:open="createOpen" @created="handleCreated" />
 			</template>
 		</div>
-
-		<AyanCreateSlideover v-model:open="createOpen" @created="handleCreated" />
 	</div>
 </template>
 

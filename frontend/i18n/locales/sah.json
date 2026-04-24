@@ -94,6 +94,14 @@
 			}
 		},
 		"responses": "Хоруйдар",
+		"access": {
+			"loadingTitle": "Telegram уруксатын көрөбүт",
+			"loadingDesc": "Кыратык күтө туруй, AYAN киийиигин көрөбүт уонна дааннайдары киллэрэбит.",
+			"telegramOnlyTitle": "AYAN-ы Telegram-тан арый",
+			"telegramOnlyDesc": "Сайттан киирии билигин бэлэм буолбата. Роллары уларытарга уонна киирэргэ Telegram Mini App-тан арый.",
+			"authFailedTitle": "Киирии сатаммата",
+			"authFailedDesc": "Telegram авторизация түмүктэнбэтэ. Mini App-ы боттан хат арыйыппыт көр."
+		},
 		"driver": "Водитель",
 		"passenger": "Пассажир",
 		"roleSwitcher": {

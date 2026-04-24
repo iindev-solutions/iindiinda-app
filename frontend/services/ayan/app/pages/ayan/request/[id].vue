@@ -1,21 +1,40 @@
 <script setup lang="ts">
 import type { AyanResponse } from '../../../types/ayan'
 
+import { getAyanAccessState } from '~/utils/auth'
+
 definePageMeta({ lazy: true })
 
 const route = useRoute()
 const { t } = useI18n()
 const toast = useToast()
-const { hapticFeedback } = useTg()
-const { user: authUser } = useAuth()
+const { hapticFeedback, isInTelegram } = useTg()
+const { user: authUser, isAuthenticated, isLoading: authLoading, authError } = useAuth()
 const { fetchRequest } = useAyanRequests()
 const { fetchRequestResponses, createRequestResponse, updateResponseStatus } = useAyanResponses()
 
 const requestId = computed(() => Number(route.params.id))
 
-const { data: request, pending: loading } = useLazyAsyncData(`ayan-request-${requestId.value}`, () =>
-	fetchRequest(requestId.value)
+const accessState = computed(() =>
+	getAyanAccessState({
+		isAuthenticated: isAuthenticated.value,
+		isLoading: authLoading.value,
+		isInTelegram: isInTelegram.value,
+		hasAuthError: !!authError.value
+	})
 )
+
+const canUseAyan = computed(() => accessState.value === 'ready')
+
+const {
+	data: request,
+	pending: loading,
+	refresh: refreshRequest
+} = useLazyAsyncData(`ayan-request-${requestId.value}`, () => fetchRequest(requestId.value), {
+	default: () => null,
+	watch: [canUseAyan],
+	immediate: canUseAyan.value
+})
 
 const responses = ref<AyanResponse[]>([])
 const responding = ref(false)
@@ -90,8 +109,23 @@ async function handleReject(r: AyanResponse) {
 }
 
 watch(
+	canUseAyan,
+	(ready) => {
+		if (ready) {
+			refreshRequest()
+		}
+	},
+	{ immediate: true }
+)
+
+watch(
 	isOwner,
 	async (owner) => {
+		if (!canUseAyan.value) {
+			responses.value = []
+			return
+		}
+
 		if (!owner) {
 			responses.value = []
 			return
@@ -108,7 +142,9 @@ watch(
 		<div class="mx-auto max-w-[480px]">
 			<BackButton />
 
-			<div v-if="loading" class="flex justify-center py-12">
+			<AyanAccessState v-if="accessState !== 'ready'" :state="accessState" />
+
+			<div v-else-if="loading" class="flex justify-center py-12">
 				<LoadingSpinner />
 			</div>
 

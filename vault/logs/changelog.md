@@ -2,6 +2,39 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-23 23:53 — Auth Gate + Production Fallback Cleanup
+
+### Done
+
+- Investigated the real auth flow gap instead of treating role switching as the main bug
+- Confirmed `switch-role` itself is protected by Sanctum and the real issue was incomplete auth UX outside Telegram Mini App
+- Added frontend auth helpers for access-state derivation and localhost-only dev fallback usage
+- Added AYAN access-state UI so unauthenticated browser users see an explicit Telegram-only message instead of half-working AYAN screens
+- Added AYAN auth-failed state so Telegram users see a retryable auth message instead of silent broken behavior
+- Stopped production frontend usage of `devInitData=test` by removing it from `frontend/.env` and redeploying the SPA bundle
+- Rebuilt and redeployed the VPS frontend with safe runtime config:
+  - `apiBase: "/api"`
+  - `devInitData: ""`
+- Updated VPS Nginx SPA fallback to use a named location and stable HTTPS server blocks
+
+### Verified
+
+- `frontend: npm run test` ✅ (`4 files, 9 tests`)
+- `frontend: npm run lint` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npx nuxt build --preset github_pages` ✅
+- `curl https://iindiinda.duckdns.org/` HTML contains `apiBase:"/api"` ✅
+- `curl https://iindiinda.duckdns.org/` HTML contains `devInitData:""` ✅
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -s -o NUL -w "%{http_code}" https://iindiinda.duckdns.org/api/user` ✅ (`401` guest blocked)
+
+### Important
+
+- The site no longer tries mixed-content API calls to `http://89.22.226.34/api`
+- Guest browser users should now be blocked at the AYAN UI level instead of discovering the auth gap by broken actions
+- TMA/manual live verification is still required to confirm the real Telegram `initData` path behaves correctly with the new gate UX
+
 ## 2026-04-23 19:31 — DuckDNS + HTTPS Live
 
 ### Done

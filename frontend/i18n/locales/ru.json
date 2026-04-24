@@ -94,6 +94,14 @@
 			}
 		},
 		"responses": "Отклики",
+		"access": {
+			"loadingTitle": "Авторизация в Telegram",
+			"loadingDesc": "Подождите, проверяем ваш доступ и загружаем данные AYAN.",
+			"telegramOnlyTitle": "Откройте AYAN в Telegram",
+			"telegramOnlyDesc": "Сайт пока не поддерживает обычный браузерный вход. Откройте сервис из Telegram Mini App, чтобы войти и переключать роли.",
+			"authFailedTitle": "Не удалось войти",
+			"authFailedDesc": "Telegram авторизация не завершилась. Попробуйте открыть Mini App заново из бота."
+		},
 		"driver": "Водитель",
 		"passenger": "Пассажир",
 		"roleSwitcher": {

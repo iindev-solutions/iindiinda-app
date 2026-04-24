@@ -1,5 +1,7 @@
 import type { User, AuthResponse, Role } from '~/types/api'
 
+import { canUseDevInitData } from '~/utils/auth'
+
 export const useAuth = () => {
 	const { initData, isInTelegram, user: tgUser } = useTg()
 	const api = useAPI()
@@ -7,8 +9,12 @@ export const useAuth = () => {
 
 	const token = useState<string | null>('auth-token', () => null)
 	const user = useState<User | null>('auth-user', () => null)
-	const isAuthenticated = computed(() => !!token.value)
-	const isLoading = ref(false)
+	const authStatus = useState<'idle' | 'loading' | 'authenticated' | 'failed'>('auth-status', () =>
+		token.value ? 'authenticated' : 'idle'
+	)
+	const authError = useState<string | null>('auth-error', () => null)
+	const isAuthenticated = computed(() => !!token.value && !!user.value)
+	const isLoading = computed(() => authStatus.value === 'loading')
 
 	// TMA mode: auto-login with initData
 	const loginWithInitData = async (overrideInitData?: string) => {
@@ -16,18 +22,20 @@ export const useAuth = () => {
 
 		if (!payload) throw new Error('No initData')
 
-		isLoading.value = true
+		authStatus.value = 'loading'
+		authError.value = null
 		try {
 			const response = await api.post<AuthResponse>('/auth/telegram', {
 				init_data: payload
 			})
 			token.value = response.token
 			user.value = response.user
+			authStatus.value = 'authenticated'
 		} catch (error) {
+			authStatus.value = 'failed'
+			authError.value = error instanceof Error ? error.message : 'Auth failed'
 			console.error('[useAuth] Login with initData failed:', error)
 			throw error
-		} finally {
-			isLoading.value = false
 		}
 	}
 
@@ -47,17 +55,19 @@ export const useAuth = () => {
 
 	// OAuth callback handler
 	const handleOAuthCallback = async (hash: string) => {
-		isLoading.value = true
+		authStatus.value = 'loading'
+		authError.value = null
 		try {
 			const response = await api.post<AuthResponse>('/auth/telegram/oauth', { hash })
 			token.value = response.token
 			user.value = response.user
+			authStatus.value = 'authenticated'
 			await navigateTo('/')
 		} catch (error) {
+			authStatus.value = 'failed'
+			authError.value = error instanceof Error ? error.message : 'Auth failed'
 			console.error('[useAuth] OAuth callback failed:', error)
 			throw error
-		} finally {
-			isLoading.value = false
 		}
 	}
 
@@ -69,19 +79,23 @@ export const useAuth = () => {
 		}
 
 		const devInitData = config.public.devInitData as string
-		if (devInitData) {
+		if (canUseDevInitData(window.location.hostname, devInitData, import.meta.dev)) {
 			console.warn('[useAuth] Using dev initData fallback for browser testing')
 			await loginWithInitData(devInitData)
 			return
 		}
 
 		// Browser mode stays unauthenticated until real OAuth / verification flow is implemented.
+		authStatus.value = 'idle'
+		authError.value = null
 		console.warn('[useAuth] Browser login is disabled until Telegram OAuth is wired end-to-end')
 	}
 
 	const logout = () => {
 		token.value = null
 		user.value = null
+		authStatus.value = 'idle'
+		authError.value = null
 	}
 
 	const switchRole = async (role: Role) => {
@@ -98,6 +112,8 @@ export const useAuth = () => {
 		token: readonly(token),
 		user: readonly(user),
 		tgUser,
+		authStatus: readonly(authStatus),
+		authError: readonly(authError),
 		isAuthenticated,
 		isLoading: readonly(isLoading),
 		login,

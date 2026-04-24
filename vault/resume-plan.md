@@ -30,6 +30,10 @@
   - `https://iindiinda.duckdns.org/` serves the frontend SPA
   - `https://iindiinda.duckdns.org/api/health` returns `200`
   - `http://iindiinda.duckdns.org/` redirects to HTTPS
+- Local workspace now also contains an uncommitted frontend auth-guard slice:
+  - AYAN shows Telegram-only access state for unauthenticated browser users
+  - AYAN shows retryable auth-failed state for failed Telegram auth
+  - production SPA no longer ships `devInitData:test`
 - Previous direct AYAN VPS smoke was green for:
   - `POST /auth/telegram`
   - create trip/request
@@ -61,6 +65,7 @@
   - browser auth also remains intentionally limited outside final Telegram flow
   - the new past-item/backend-expiry slice is now deployed and focused backend tests are green on the real VPS checkout
   - HTTPS is now available through DuckDNS, but live browser/TMA verification is still pending
+  - auth UX hardening for guest browser / failed Telegram auth is deployed in the static frontend but not yet committed to git
 
 ## Session Restart Prompt
 
@@ -68,7 +73,7 @@ Use this prompt at the start of the next session:
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: verify the new AYAN role switcher and past-item UX against https://iindiinda.duckdns.org and confirm Telegram/TMA behavior on the HTTPS deployment.
+Current task: verify the AYAN role switcher and past-item UX against https://iindiinda.duckdns.org and confirm Telegram/TMA auth behavior on the HTTPS deployment, then decide whether to commit the new frontend auth-gate slice.
 ```
 
 ## Safe Next-Step Plan
@@ -84,8 +89,9 @@ Current task: verify the new AYAN role switcher and past-item UX against https:/
    - driver can create trip and respond to request
    - owners can see/accept/reject responses
 3. Re-test Telegram/TMA integration on `https://iindiinda.duckdns.org`
-4. If needed later, replace DuckDNS with the final domain and re-issue TLS
-5. Record the result in:
+4. Confirm guest browser users now see Telegram-only access state instead of broken AYAN actions
+5. If needed later, replace DuckDNS with the final domain and re-issue TLS
+6. Record the result in:
    - `vault/logs/changelog.md`
    - `vault/sprint.md`
    - `vault/resume-plan.md`
@@ -162,6 +168,7 @@ Current task: verify the new AYAN role switcher and past-item UX against https:/
 1. Browser auth remains intentionally constrained
 2. Local backend execution is impossible in this environment because `php`, `composer`, and `docker` are unavailable
 3. Live browser/TMA verification for the new role-switch/past-item flow is still pending
+4. Frontend auth-gate fix is live in deployed static files but still uncommitted locally
 
 ## Priority Order
 
@@ -182,4 +189,4 @@ Current task: verify the new AYAN role switcher and past-item UX against https:/
 
 ## One-Line Summary
 
-The backend and frontend slices are pushed and deployed, DuckDNS HTTPS is now live, and the next real step is manual Telegram/browser verification on the secure deployment.
+The backend and frontend slices are deployed on secure DuckDNS HTTPS, and the next real step is manual Telegram/browser verification plus deciding whether to commit the new frontend auth-gate cleanup.

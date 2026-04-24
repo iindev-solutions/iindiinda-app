@@ -50,6 +50,7 @@
 | Файл | Функции |
 |------|---------|
 | `formatters.ts` | formatPrice, formatDate, formatDateFull, formatTime, formatRelativeTime, getInitials, formatDriverName, randomId, debounce |
+| `auth.ts` | frontend auth helpers: `canUseDevInitData`, `getAyanAccessState` |
 | `validators.ts` | isValidPhone, isValidPrice, isValidAddress, isValidDate, isValidTime, isValidSeats, isValidComment, isValidTelegramUsername |
 
 ### Config (`frontend/app/`)
@@ -105,6 +106,7 @@
 | `app/pages/ayan.vue` | Parent wrapper → /ayan (только <NuxtPage />) |
 | `app/pages/ayan/index.vue` | Лента поездок/запросов + табы + кнопка создания + role switcher |
 | `app/components/AyanRoleSwitch.vue` | Переключатель `passenger/driver` через `/api/user/switch-role` |
+| `app/components/AyanAccessState.vue` | Экран доступа для guest browser / failed Telegram auth в AYAN |
 | `app/components/AyanCreateSlideover.vue` | Единый slideover создания поездки/запроса (pill-табы, side=bottom) |
 | `app/pages/ayan/trip/[id].vue` | Детали поездки + отклик |
 | `app/pages/ayan/request/[id].vue` | Детали запроса + отклик |
