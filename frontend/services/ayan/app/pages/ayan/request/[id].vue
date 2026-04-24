@@ -2,6 +2,7 @@
 import type { AyanResponse } from '../../../types/ayan'
 
 import { getAyanAccessState } from '~/utils/auth'
+import { findTargetResponse } from '../../../utils/responses'
 
 definePageMeta({ lazy: true })
 
@@ -12,6 +13,7 @@ const { hapticFeedback, isInTelegram } = useTg()
 const { user: authUser, isAuthenticated, isLoading: authLoading, authError } = useAuth()
 const { fetchRequest } = useAyanRequests()
 const { fetchRequestResponses, createRequestResponse, updateResponseStatus } = useAyanResponses()
+const { fetchMyResponses } = useAyanMy()
 
 const requestId = computed(() => Number(route.params.id))
 
@@ -37,6 +39,7 @@ const {
 })
 
 const responses = ref<AyanResponse[]>([])
+const myResponses = ref<AyanResponse[]>([])
 const responding = ref(false)
 const responseMessage = ref('')
 
@@ -49,9 +52,15 @@ const isOwner = computed(() => {
 	return request.value.passenger.id === authUser.value.id
 })
 
+const myResponse = computed(() => findTargetResponse(myResponses.value, { requestId: requestId.value }))
+
 const canRespond = computed(
 	() =>
-		!isOwner.value && !isPastRequest.value && request.value?.status === 'open' && authUser.value?.role === 'driver'
+		!isOwner.value &&
+		!myResponse.value &&
+		!isPastRequest.value &&
+		request.value?.status === 'open' &&
+		authUser.value?.role === 'driver'
 )
 
 const hasAcceptedResponse = computed(() => responses.value.some((r) => r.status === 'accepted'))
@@ -71,10 +80,20 @@ async function loadResponses() {
 	}
 }
 
+async function loadMyResponses() {
+	try {
+		myResponses.value = await fetchMyResponses()
+	} catch (error) {
+		myResponses.value = []
+		console.error('[ayan.request] Failed to load my responses:', error)
+	}
+}
+
 async function handleRespond() {
 	responding.value = true
 	try {
 		await createRequestResponse(requestId.value, { message: responseMessage.value || undefined })
+		await loadMyResponses()
 		hapticFeedback('notification')
 		toast.add({ title: t('ayan.respond.success'), color: 'success', icon: 'i-lucide-check-circle', duration: 3000 })
 		responseMessage.value = ''
@@ -123,15 +142,17 @@ watch(
 	async (owner) => {
 		if (!canUseAyan.value) {
 			responses.value = []
+			myResponses.value = []
 			return
 		}
 
-		if (!owner) {
-			responses.value = []
+		if (owner) {
+			await loadResponses()
 			return
 		}
 
-		await loadResponses()
+		responses.value = []
+		await loadMyResponses()
 	},
 	{ immediate: true }
 )
@@ -186,6 +207,7 @@ watch(
 						<div class="space-y-3">
 							<UTextarea
 								v-model="responseMessage"
+								fixed
 								:placeholder="t('ayan.respond.messagePlaceholder')"
 								:rows="2"
 								autoresize
@@ -202,6 +224,33 @@ watch(
 						</div>
 					</div>
 				</template>
+
+				<UCard v-else-if="myResponse" variant="subtle" class="mb-6">
+					<div class="space-y-3">
+						<div class="flex items-center justify-between gap-3">
+							<div>
+								<div class="text-sm font-medium text-cyan-50">{{ t('ayan.myResponse.title') }}</div>
+								<div class="mt-1 text-xs text-gray-400">{{ t('ayan.myResponse.desc') }}</div>
+							</div>
+							<UBadge :color="statusColor(myResponse.status)" variant="subtle" size="xs">
+								{{ t(`ayan.respond.status.${myResponse.status}`) }}
+							</UBadge>
+						</div>
+						<div v-if="myResponse.message" class="text-sm text-gray-300">
+							{{ myResponse.message }}
+						</div>
+						<div v-if="myResponse.status === 'accepted' && request.passenger.username">
+							<a
+								:href="`https://t.me/${request.passenger.username.replace('@', '')}`"
+								target="_blank"
+								class="inline-flex items-center gap-1 text-sm text-cyan-400 hover:text-cyan-300"
+							>
+								<UIcon name="i-lucide-send" class="size-4" />
+								{{ request.passenger.username }}
+							</a>
+						</div>
+					</div>
+				</UCard>
 
 				<div v-if="responses.length > 0">
 					<h2 class="mb-3 text-sm font-medium text-gray-400">{{ t('ayan.responses') }}</h2>

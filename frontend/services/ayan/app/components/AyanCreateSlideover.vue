@@ -187,6 +187,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 					<UFormField :label="t('ayan.create.from')" name="from_address" required eager-validation>
 						<UInput
 							v-model="state.from_address"
+							fixed
 							:placeholder="t('ayan.create.from')"
 							icon="i-lucide-circle-dot"
 							variant="outline"
@@ -198,6 +199,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 					<UFormField :label="t('ayan.create.to')" name="to_address" required eager-validation>
 						<UInput
 							v-model="state.to_address"
+							fixed
 							:placeholder="t('ayan.create.to')"
 							icon="i-lucide-map-pin"
 							variant="outline"
@@ -231,6 +233,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 						>
 							<UInput
 								v-model="state.time"
+								fixed
 								type="time"
 								icon="i-lucide-clock"
 								variant="outline"
@@ -244,12 +247,13 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 					<template v-if="formType === 'trip'">
 						<div class="grid grid-cols-2 gap-3">
 							<UFormField :label="t('ayan.ride.seatsAvailable')" name="seats" required eager-validation>
-								<UInputNumber v-model="state.seats" :min="1" :max="10" size="lg" class="w-full" />
+								<UInputNumber v-model="state.seats" fixed :min="1" :max="10" size="lg" class="w-full" />
 							</UFormField>
 							<UFormField :label="t('ayan.ride.price')" name="price" required eager-validation>
 								<UInput
 									:model-value="state.price"
 									inputmode="numeric"
+									fixed
 									placeholder="0"
 									size="lg"
 									class="w-full"
@@ -265,6 +269,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 						<UFormField :label="t('ayan.ride.comment')" name="comment">
 							<UTextarea
 								v-model="state.comment"
+								fixed
 								:placeholder="t('ayan.ride.commentPlaceholder')"
 								:rows="3"
 								autoresize
@@ -277,6 +282,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 						<UFormField :label="t('ayan.request.comment')" name="description">
 							<UTextarea
 								v-model="state.description"
+								fixed
 								:placeholder="t('ayan.request.commentPlaceholder')"
 								:rows="3"
 								autoresize

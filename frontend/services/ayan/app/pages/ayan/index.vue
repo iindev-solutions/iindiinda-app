@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import type { AyanResponse } from '../../types/ayan'
+
 import { getAyanCreateMode } from '../../utils/role'
+import { getResponseTargetPath } from '../../utils/responses'
 import { getAyanAccessState } from '~/utils/auth'
 
 definePageMeta({ lazy: true })
@@ -40,6 +43,12 @@ const canUseAyan = computed(() => accessState.value === 'ready')
 const createLabel = computed(() => (createMode.value === 'request' ? t('ayan.createRequest') : t('ayan.createRide')))
 
 const formatTripPrice = (price: number) => formatPrice(price, '₽', t('ayan.ride.free'))
+
+const statusColor = (status: AyanResponse['status']) => {
+	if (status === 'accepted') return 'success'
+	if (status === 'rejected') return 'error'
+	return 'neutral'
+}
 
 const isPastTrip = (date: string, time: string) => isPastAyanDateTime(date, time)
 const isPastRequest = (date: string, time?: string | null) => isPastAyanDateTime(date, time)
@@ -82,6 +91,17 @@ const {
 	pending: myRequestsLoading,
 	refresh: refreshMyRequests
 } = useLazyAsyncData('ayan-my-requests', () => useAyanMy().fetchMyRequests(), {
+	deep: false,
+	default: () => [],
+	watch: [canUseAyan],
+	immediate: canUseAyan.value
+})
+
+const {
+	data: myResponses,
+	pending: myResponsesLoading,
+	refresh: refreshMyResponses
+} = useLazyAsyncData('ayan-my-responses', () => useAyanMy().fetchMyResponses(), {
 	deep: false,
 	default: () => [],
 	watch: [canUseAyan],
@@ -144,10 +164,15 @@ const filteredMyRequests = computed(() => {
 	return myRequests.value.filter(matchItem)
 })
 
+const filteredMyResponses = computed(() => {
+	if (!myResponses.value) return []
+	return myResponses.value
+})
+
 const loading = computed(() => {
 	if (activeTab.value === 'trips') return tripsLoading.value
 	if (activeTab.value === 'requests') return requestsLoading.value
-	return myTripsLoading.value || myRequestsLoading.value
+	return myTripsLoading.value || myRequestsLoading.value || myResponsesLoading.value
 })
 
 function handleTabChange(val: string | number) {
@@ -166,6 +191,7 @@ function handleCreated() {
 	refreshRequests()
 	refreshMyTrips()
 	refreshMyRequests()
+	refreshMyResponses()
 }
 
 function handleRoleChanged(role: 'driver' | 'passenger') {
@@ -175,6 +201,7 @@ function handleRoleChanged(role: 'driver' | 'passenger') {
 	refreshRequests()
 	refreshMyTrips()
 	refreshMyRequests()
+	refreshMyResponses()
 }
 
 watch(
@@ -206,6 +233,13 @@ function handleTripClick(tripId: number) {
 function handleRequestClick(requestId: number) {
 	hapticFeedback('impact')
 	navigateTo(`/ayan/request/${requestId}`)
+}
+
+function handleResponseClick(response: AyanResponse) {
+	const targetPath = getResponseTargetPath(response)
+	if (!targetPath) return
+	hapticFeedback('impact')
+	navigateTo(targetPath)
 }
 </script>
 
@@ -392,7 +426,7 @@ function handleRequestClick(requestId: number) {
 				</template>
 
 				<template v-else>
-					<div v-if="!filteredMyTrips.length && !filteredMyRequests.length">
+					<div v-if="!filteredMyTrips.length && !filteredMyRequests.length && !filteredMyResponses.length">
 						<EmptyState :title="t('ayan.noMy')" :description="t('ayan.noMyDesc')" />
 					</div>
 					<div v-else class="space-y-3">
@@ -457,6 +491,40 @@ function handleRequestClick(requestId: number) {
 									>
 										{{ t('ayan.status.past') }}
 									</UBadge>
+								</div>
+							</div>
+						</UCard>
+						<UCard
+							v-for="response in filteredMyResponses"
+							:key="'my-response-' + response.id"
+							variant="outline"
+							class="cursor-pointer transition-colors hover:border-cyan-500/30"
+							@click="handleResponseClick(response)"
+						>
+							<div class="flex items-start justify-between gap-3">
+								<div class="min-w-0 flex-1">
+									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
+										<UIcon
+											:name="response.trip_id ? 'i-lucide-car' : 'i-lucide-map-pin'"
+											class="shrink-0 text-cyan-400"
+										/>
+										<span class="truncate">
+											{{
+												response.trip_id
+													? t('ayan.myResponse.trip')
+													: t('ayan.myResponse.request')
+											}}
+										</span>
+										<UBadge :color="statusColor(response.status)" variant="subtle" size="xs">
+											{{ t(`ayan.respond.status.${response.status}`) }}
+										</UBadge>
+									</div>
+									<div class="text-xs text-gray-500">
+										#{{ response.trip_id ?? response.request_id }}
+									</div>
+									<div v-if="response.message" class="mt-1 text-xs text-gray-400">
+										{{ response.message }}
+									</div>
 								</div>
 							</div>
 						</UCard>
