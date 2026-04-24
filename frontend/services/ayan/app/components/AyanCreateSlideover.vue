@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
+import type { CalendarDate } from '@internationalized/date'
+import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
 import type { AyanTripCreate, AyanRequestCreate } from '../types/ayan'
 
+import { parsePriceInput, sanitizePriceInput } from '../utils/create-form'
 import { getAyanCreateMode } from '../utils/role'
 
 const emit = defineEmits<{ created: [] }>()
@@ -23,12 +26,13 @@ const state = reactive({
 	date: '',
 	time: '',
 	seats: 1,
-	price: 0,
+	price: '',
 	comment: '',
 	description: ''
 })
 
 const submitting = ref(false)
+const datePickerOpen = ref(false)
 
 const allowedFormType = computed<'trip' | 'request' | null>(() => {
 	return getAyanCreateMode(user.value?.role)
@@ -65,7 +69,7 @@ function resetForm() {
 		date: '',
 		time: '',
 		seats: 1,
-		price: 0,
+		price: '',
 		comment: '',
 		description: ''
 	})
@@ -81,12 +85,32 @@ const validate = (s: typeof state): FormError[] => {
 	if (!s.from_address) errors.push({ name: 'from_address', message: t('ayan.validation.required') })
 	if (!s.to_address) errors.push({ name: 'to_address', message: t('ayan.validation.required') })
 	if (!s.date) errors.push({ name: 'date', message: t('ayan.validation.required') })
+	if (s.date && s.date < todayDate.value) errors.push({ name: 'date', message: t('ayan.validation.dateFuture') })
 	if (formType.value === 'trip') {
 		if (!s.time) errors.push({ name: 'time', message: t('ayan.validation.required') })
 		if (s.seats < 1) errors.push({ name: 'seats', message: t('ayan.validation.minSeats') })
-		if (s.price < 0) errors.push({ name: 'price', message: t('ayan.validation.minPrice') })
+		if (parsePriceInput(s.price) < 0) errors.push({ name: 'price', message: t('ayan.validation.minPrice') })
 	}
 	return errors
+}
+
+const todayDate = computed(() => today(getLocalTimeZone()).toString())
+const minCalendarDate = computed(() => parseDate(todayDate.value))
+
+const calendarValue = computed<CalendarDate | undefined>({
+	get() {
+		return state.date ? parseDate(state.date) : undefined
+	},
+	set(value) {
+		state.date = value ? value.toString() : ''
+		datePickerOpen.value = false
+	}
+})
+
+const displayDate = computed(() => state.date || t('ayan.create.datePlaceholder'))
+
+function handlePriceInput(value: string | number) {
+	state.price = sanitizePriceInput(String(value ?? ''))
 }
 
 async function onSubmit(_event: FormSubmitEvent<typeof state>) {
@@ -99,7 +123,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 				date: state.date,
 				time: state.time,
 				seats: state.seats,
-				price: state.price,
+				price: parsePriceInput(state.price),
 				comment: state.comment || undefined
 			}
 			await createTrip(payload)
@@ -184,14 +208,20 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 
 					<div class="grid grid-cols-2 gap-3">
 						<UFormField :label="t('ayan.create.date')" name="date" required eager-validation>
-							<UInput
-								v-model="state.date"
-								type="date"
-								icon="i-lucide-calendar"
-								variant="outline"
-								size="lg"
-								class="w-full"
-							/>
+							<UPopover v-model:open="datePickerOpen">
+								<UButton
+									color="neutral"
+									variant="outline"
+									size="lg"
+									icon="i-lucide-calendar"
+									class="w-full justify-between"
+								>
+									<span class="truncate">{{ displayDate }}</span>
+								</UButton>
+								<template #content>
+									<UCalendar v-model="calendarValue" :min-value="minCalendarDate" />
+								</template>
+							</UPopover>
 						</UFormField>
 						<UFormField
 							:label="t('ayan.create.time')"
@@ -217,7 +247,18 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 								<UInputNumber v-model="state.seats" :min="1" :max="10" size="lg" class="w-full" />
 							</UFormField>
 							<UFormField :label="t('ayan.ride.price')" name="price" required eager-validation>
-								<UInputNumber v-model="state.price" :min="0" size="lg" class="w-full" />
+								<UInput
+									:model-value="state.price"
+									inputmode="numeric"
+									placeholder="0"
+									size="lg"
+									class="w-full"
+									@update:model-value="handlePriceInput"
+								>
+									<template #trailing>
+										<span class="text-sm text-gray-500">₽</span>
+									</template>
+								</UInput>
 							</UFormField>
 						</div>
 

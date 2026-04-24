@@ -71,3 +71,11 @@
 - Verified: `npm run test`, `npm run lint`, `npm run typecheck`, `npx nuxt build --preset github_pages`, deployed HTML contains `apiBase:"/api"` and `devInitData:""`, `curl -I https://iindiinda.duckdns.org/`, `curl -I https://iindiinda.duckdns.org/ayan`, unauthenticated `/api/user` returns `401`
 - Blockers: real Telegram/TMA verification is still pending
 - Next: manually test login and role switching in the Telegram Mini App, then decide whether to commit the local auth-gate slice
+
+## 2026-04-24 12:05 — VPS Telegram Token Fix
+
+- Scope: find the real cause of the TMA login failure on the live HTTPS deployment
+- Changes: verified the frontend no longer ships prod `test` fallback, found missing `TELEGRAM_BOT_TOKEN` on VPS, added the provided token directly to VPS `.env`, and cleared Laravel caches
+- Verified: VPS env now contains the token, fake `/api/auth/telegram` requests now fail as `Telegram user data is invalid.` instead of `Telegram auth is not configured.`, `/api/health` remains green
+- Blockers: manual retest from the real Telegram Mini App is still pending
+- Next: reopen the Mini App from the bot and verify login/role switching now works end-to-end

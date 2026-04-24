@@ -66,6 +66,7 @@
   - the new past-item/backend-expiry slice is now deployed and focused backend tests are green on the real VPS checkout
   - HTTPS is now available through DuckDNS, but live browser/TMA verification is still pending
   - auth UX hardening for guest browser / failed Telegram auth is deployed in the static frontend but not yet committed to git
+  - the previous live TMA blocker (missing `TELEGRAM_BOT_TOKEN`) has been fixed on VPS and now needs manual retest from the real bot
 
 ## Session Restart Prompt
 

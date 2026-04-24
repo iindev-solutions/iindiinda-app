@@ -2,6 +2,29 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-24 12:05 — TMA Auth Root Cause: Missing Bot Token
+
+### Done
+
+- Investigated the Telegram Mini App login failure against the real VPS runtime instead of assuming role-switch logic was broken
+- Confirmed the deployed frontend no longer ships `devInitData:test` and now calls `/api` over HTTPS correctly
+- Found the real live blocker: `TELEGRAM_BOT_TOKEN` was missing from `backend/.env` on VPS
+- Added the provided bot token only on the VPS `.env` file and did not write it into the repository
+- Cleared Laravel caches on VPS after updating the environment
+
+### Verified
+
+- VPS env check: `TELEGRAM_BOT_TOKEN` present ✅
+- `php artisan optimize:clear` on VPS ✅
+- `POST /api/auth/telegram` with fake payload now returns `Telegram user data is invalid.` instead of `Telegram auth is not configured.` ✅
+- `https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+
+### Important
+
+- The current TMA auth failure was not caused by role switching itself
+- The real cause was missing backend bot token, which prevented hash validation of Telegram `initData`
+- End-to-end TMA still needs manual retest from the real bot/Mini App after this server-side env fix
+
 ## 2026-04-23 23:53 — Auth Gate + Production Fallback Cleanup
 
 ### Done

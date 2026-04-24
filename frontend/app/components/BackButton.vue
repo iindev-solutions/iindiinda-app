@@ -2,6 +2,8 @@
 import { computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from '#vue-router'
 
+import { shouldShowTelegramBackButton, shouldShowUiBackButton } from '~/utils/back-button'
+
 const { t } = useI18n()
 
 const props = defineProps<{
@@ -47,7 +49,8 @@ const route = useRoute()
 const tg = useTg()
 
 const isInTelegram = computed(() => tg.isInTelegram.value)
-const showUiButton = computed(() => !isInTelegram.value || props.forceUi)
+const showUiButton = computed(() => shouldShowUiBackButton(isInTelegram.value, !!props.forceUi))
+const showTelegramButton = computed(() => shouldShowTelegramBackButton(isInTelegram.value))
 
 /**
  * Проверяем, находимся ли мы «внутри» одной секции приложения.
@@ -93,14 +96,14 @@ const handleBack = async () => {
 
 // Telegram BackButton lifecycle
 onMounted(() => {
-	if (isInTelegram.value && !props.forceUi) {
+	if (showTelegramButton.value) {
 		tg.showBackButton()
 		tg.onBackButtonClicked(handleBack)
 	}
 })
 
 onUnmounted(() => {
-	if (isInTelegram.value && !props.forceUi) {
+	if (showTelegramButton.value) {
 		tg.hideBackButton()
 	}
 })

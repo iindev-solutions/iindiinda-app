@@ -137,7 +137,7 @@ watch(
 <template>
 	<div class="px-4 py-6">
 		<div class="mx-auto max-w-[480px]">
-			<BackButton />
+			<BackButton force-ui />
 
 			<AyanAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
