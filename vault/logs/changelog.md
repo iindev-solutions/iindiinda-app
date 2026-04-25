@@ -2,6 +2,29 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-25 15:20 - Legal Render Fix Deployed Live
+
+### Done
+
+- Committed the legal render/navigation cleanup as `f5a6f21` `fix(legal): render docs and trim nav`
+- Pushed `front/ayan` and fast-forwarded VPS repo `/var/www/iind-app` to the same commit
+- Redeployed rebuilt static bundle so live legal routes use `rt()` rendering and no longer expose repeated legal entry points across service landing screens
+
+### Verified
+
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`f5a6f21`)
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+
+### Important
+
+- Legal center remains live, but the only intended in-app entry point is now the main-menu bottom card
+- Fix addresses broken vue-i18n object rendering on legal documents and removes redundant legal CTA repetition
+
 ## 2026-04-25 15:05 - Legal Text Rendering Fix + Fewer Entry Points
 
 ### Done

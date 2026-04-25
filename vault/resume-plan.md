@@ -94,7 +94,7 @@
 - Latest legal-center commit is `287b95c` `feat(legal): expand platform legal center`
 - Local, GitHub, and VPS repository states are aligned at `287b95c`
 - Live frontend bundle is redeployed with the expanded legal center and service-specific rules pages
-- New local follow-up fix is prepared: legal docs now render via `rt()` and legal navigation is reduced to the home bottom card only; this smaller UX cleanup is not deployed yet in current stop snapshot
+- Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
 - Latest auth hardening code commit is `af93b9b` `fix(auth): harden tma bootstrap`
 - Static deploy prevention now exists in source via guarded `npm run build:static`

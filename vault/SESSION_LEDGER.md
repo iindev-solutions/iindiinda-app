@@ -231,3 +231,11 @@
 - Verified: origin and VPS head at `287b95c`, live HTML references current assets `GRAbHFO1.js` + `entry.CaE_wa2P.css`, and live `/`, `/legal`, `/legal/uus-rules`, `/legal/tal-rules`, `/legal/agal-rules`, `/api/health` all return `200`
 - Blockers: legal closure is still not final because operator details, public requisites, RF personal-data localization, and counsel review remain pending
 - Next: continue legal work from document finalization, not from UI plumbing
+
+## 2026-04-25 15:20 — Legal Render Fix Deploy
+
+- Scope: publish the legal rendering fix and simplified legal navigation to live VPS frontend hosting
+- Changes: committed `f5a6f21`, pushed `front/ayan`, fast-forwarded VPS repo, rebuilt static bundle, redeployed `frontend/public` via `public_new -> public`, and preserved older hashed assets for cache compatibility
+- Verified: VPS head at `f5a6f21`, live `/`, `/legal`, `/legal/ayan-terms`, and `/api/health` return `200`; local `frontend npm run build:static` stayed green
+- Blockers: legal content still needs final operator details, RF hosting/localization closure, and counsel review
+- Next: continue legal work from content finalization and operator details, not from rendering/UI bugfixes
