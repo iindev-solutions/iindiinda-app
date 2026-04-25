@@ -270,3 +270,14 @@
 - `frontend/app/composables/useTg.ts`: now stores reactive Telegram state snapshots instead of relying on one-shot computed reads from `window.Telegram.WebApp`
 - `frontend/app/plugins/init.ts`: now watches delayed `WebApp`/`initData` arrival to call `ready()`/`expand()` and retry Telegram auto-login
 - `frontend/app/composables/useAuth.ts`: mock auth still goes through shared mock API path, while real Telegram login keeps form-urlencoded `init_data` transport
+
+## Audit Notes - 2026-04-25 12:42
+
+- `frontend/app/composables/useAPI.ts`: HTTPS runtime now normalizes insecure absolute API bases back to same-origin `/api`
+- `frontend/app/utils/api-base.ts`: shared runtime/static API-base guard helpers
+- `frontend/app/utils/telegram.ts`: default wait window increased to tolerate slower Telegram `WebApp`/`initData` bootstrap on real mobile clients
+- `frontend/tests/unit/apiBase.test.ts`: regression coverage for runtime API-base normalization and static HTML guard behavior
+- `frontend/tests/unit/telegram.test.ts`: regression coverage for slower Telegram bootstrap timings
+- `frontend/scripts/build-static.mjs`: guarded static build wrapper that forces `NUXT_PUBLIC_API_BASE=/api` during VPS-style static builds
+- `frontend/scripts/verify-static-api-base.mjs`: post-build guard that fails if generated HTML bakes any insecure absolute `apiBase`
+- `frontend/.env`: treat as local-only frontend dev convenience; never trust it for production static deploys

@@ -58,14 +58,26 @@
 - Live root HTML references current asset hashes (`BfQflojk.js`, `entry.CiIJ0BEA.css`), and core routes remain healthy
 - Repository state on local, GitHub, and VPS checkout remains aligned at `9cc064d`
 
+## Hotfix Update - 2026-04-25 12:42
+
+- Exact root cause is now confirmed:
+  1. AYAN auth gate made TMA startup sensitive to delayed Telegram bootstrap
+  2. later static rebuilds accidentally baked local `frontend/.env` API base `http://89.22.226.34/api` into production HTML instead of same-origin `/api`
+- Legal-pack commit was only a timing coincidence; it did not directly modify Telegram auth/bootstrap code
+- Live frontend HTML is corrected again and now exposes `apiBase:"/api"`
+- New prevention is shipped in source:
+  - `frontend/package.json` -> `npm run build:static`
+  - `frontend/scripts/build-static.mjs`
+  - `frontend/scripts/verify-static-api-base.mjs`
+  - `frontend/app/utils/api-base.ts`
+- Latest auth hardening code commit in this session: `af93b9b` `fix(auth): harden tma bootstrap`
+
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Local, `origin/front/ayan`, and VPS `/var/www/iind-app` are aligned at `110c550`
-- Latest branch tip is `9cc064d` `docs(vault): record telegram sync checkpoint`
-- Local worktree is clean relative to origin after sync checkpoint
-- VPS checkout is aligned; only untracked deploy directories remain on server
-- Live frontend bundle is redeployed from current synced branch tip `9cc064d`
+- Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
+- Latest auth hardening code commit is `af93b9b` `fix(auth): harden tma bootstrap`
+- Static deploy prevention now exists in source via guarded `npm run build:static`
 - Latest shipped commit is `a3591a0` `feat(ayan): expand trip/request lifecycle statuses`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
@@ -102,7 +114,8 @@
   - `npm run test` ✅
   - `npm run lint` ✅
   - `npm run typecheck` ✅
-  - `npx nuxt build --preset github_pages` ✅
+  - `npm run build:static` ✅
+  - `npx nuxt build --preset github_pages` + `node scripts/verify-static-api-base.mjs` ✅
 - Backend (VPS checkout):
   - `./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php` ✅ (`16 tests, 127 assertions`)
 - Runtime:
@@ -110,11 +123,12 @@
   - `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+  - `curl https://iindiinda.duckdns.org/` contains `apiBase:"/api"` ✅
 
 ## Next Action
 
-1. Retry `/ayan` from real Telegram Mini App and confirm signed `initData` now reaches auth successfully
-2. If TMA still fails after deploy, capture one fresh retry timestamp and correlate exact `/api/auth/telegram` response path
+1. Retry `/ayan` from real Telegram Mini App and confirm the first real `/api/auth/telegram` request now reaches backend successfully
+2. If TMA still fails, capture one fresh retry timestamp and correlate exact `/api/auth/telegram` response path
 
 ## API Smoke Snapshot (Live)
 
@@ -136,9 +150,9 @@
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
 Current task: ship and validate the local Telegram bootstrap auth fix for AYAN TMA.
-1) inspect the local Telegram/auth diff in frontend utils/composables/plugin/tests
-2) note that current synced commit is `9cc064d` and live frontend bundle is already redeployed from it
-3) retry `/ayan` from a real Telegram Mini App and confirm signed `initData` reaches auth successfully
+1) note that root cause is split between delayed Telegram bootstrap and poisoned static `apiBase`
+2) use `npm run build:static` for any future VPS static frontend deploy
+3) retry `/ayan` from a real Telegram Mini App and confirm signed `initData` reaches backend auth successfully
 4) if TMA still fails, capture one fresh retry timestamp and correlate the exact `/api/auth/telegram` response path
 5) update vault files with manual verification outcome
 ```
@@ -152,4 +166,4 @@ Current task: ship and validate the local Telegram bootstrap auth fix for AYAN T
 
 ## One-Line Summary
 
-Telegram bootstrap auth fix is live on the frontend bundle; next safe move is real Telegram Mini App validation against production signed `initData`.
+Live HTML is corrected back to same-origin `/api` and source now contains a guarded static deploy path; next safe move is one clean Telegram Mini App retry and immediate log correlation.

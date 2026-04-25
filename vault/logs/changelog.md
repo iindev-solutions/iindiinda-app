@@ -2,6 +2,41 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-25 12:42 - TMA Root Cause Confirmed + Build Guard Added
+
+### Done
+
+- Audited the full AYAN TMA regression timeline and confirmed `feat(ayan): add legal pack pages and links` was not the direct code cause
+- Confirmed two real frontend causes:
+  1. fragile Telegram bootstrap timing after `fix(auth): gate ayan to telegram auth`
+  2. later static redeploys baking local `frontend/.env` value `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api` into production HTML instead of same-origin `/api`
+- Hardened Telegram bootstrap by extending default waits for delayed `WebApp` and delayed `initData`
+- Added runtime safeguard in `frontend/app/composables/useAPI.ts` so HTTPS clients normalize insecure absolute API bases back to same-origin `/api`
+- Added shared API-base helpers and regression tests:
+  - `frontend/app/utils/api-base.ts`
+  - `frontend/tests/unit/apiBase.test.ts`
+- Added guarded static deploy path:
+  - `frontend/scripts/build-static.mjs`
+  - `frontend/scripts/verify-static-api-base.mjs`
+  - `frontend/package.json` -> `npm run build:static`
+- Updated `AGENTS.md` so future VPS static deploys use `npm run build:static` instead of raw `npx nuxt build --preset github_pages`
+- Redeployed live frontend bundle after restoring baked public API base to `/api`
+
+### Verified
+
+- `frontend: npm run test` ✅ (`28 tests`)
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- Raw `frontend: npx nuxt build --preset github_pages` with local `.env` still present, followed by `node scripts/verify-static-api-base.mjs`, ✅ (`STATIC_API_BASE_OK`)
+- Built HTML contains `apiBase:"/api"` and no insecure absolute API base ✅
+- Live `https://iindiinda.duckdns.org/` HTML now contains `apiBase:"/api"` ✅
+- Focused review of final frontend/auth/build-guard files ✅ (`no findings`)
+
+### Important
+
+- Exact production regression cause was not the legal-pack UI work itself; it was a later static rebuild path that reused local frontend env and poisoned the public API base in shipped HTML
+- Live AYAN still needs one clean manual Telegram Mini App retry after the corrected `/api` bundle redeploy to confirm the first real `/api/auth/telegram` hit end-to-end
+
 ## 2026-04-25 11:12 - Frontend Bundle Redeployed Live
 
 ### Done

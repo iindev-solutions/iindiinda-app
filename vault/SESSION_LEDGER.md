@@ -199,3 +199,11 @@
 - Verified: live `/`, `/ayan`, `/api/health`, current JS asset `BfQflojk.js`, and current CSS asset `entry.CiIJ0BEA.css` all return `200`; live root HTML references current asset hashes; VPS repo remains at `9cc064d`
 - Blockers: real Telegram Mini App validation still requires manual device retry
 - Next: open `/ayan` inside Telegram Mini App and confirm signed `initData` login now succeeds; if it fails, capture one fresh retry timestamp for `/api/auth/telegram` correlation
+
+## 2026-04-25 12:42 — TMA Root Cause and Prevention
+
+- Scope: finish the AYAN TMA auth audit, isolate the exact regression cause, and add prevention so future static redeploys cannot silently poison production API base
+- Changes: confirmed legal-pack commit was unrelated to auth logic, traced the real regression to live static HTML baking local `frontend/.env` API base plus fragile Telegram bootstrap timing, extended Telegram wait defaults, added runtime `/api` normalization on HTTPS, added static HTML guard utilities/tests, and added guarded `npm run build:static` deploy command plus repo instruction update
+- Verified: `frontend npm run test` (`28/28`), `frontend npm run typecheck`, `frontend npm run build:static` (`STATIC_API_BASE_OK`), raw `npx nuxt build --preset github_pages` + `node scripts/verify-static-api-base.mjs` (`STATIC_API_BASE_OK`), built HTML contains `apiBase:"/api"`, live HTML contains `apiBase:"/api"`, and final focused review found no issues
+- Blockers: still waiting for one clean Telegram Mini App retry after the corrected `/api` live bundle to verify the first real `/api/auth/telegram` request path
+- Next: retry AYAN once from Telegram Mini App, then inspect nginx access log for the first `/api/auth/telegram` hit or failure status
