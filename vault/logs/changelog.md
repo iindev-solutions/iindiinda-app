@@ -2,6 +2,31 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-25 11:12 - Frontend Bundle Redeployed Live
+
+### Done
+
+- Rebuilt frontend static output from synced branch tip `9cc064d`
+- Packaged `.output/public`, uploaded it to VPS, and redeployed with full directory swap (`public_new` -> `public`)
+- Preserved prior hashed assets by copying `public_prev/assets` into the new `public/assets` without overwriting fresh files
+- Kept VPS repository aligned at `9cc064d` while updating the live frontend bundle in `/var/www/iind-app/frontend/public`
+
+### Verified
+
+- `frontend: npx nuxt build --preset github_pages` ✅
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200 text/html`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200 text/html`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200 application/json`)
+- `curl -I https://iindiinda.duckdns.org/assets/BfQflojk.js` ✅ (`200 application/javascript`)
+- `curl -I https://iindiinda.duckdns.org/assets/entry.CiIJ0BEA.css` ✅ (`200 text/css`)
+- Live root HTML references current asset hashes ✅ (`LIVE_HTML_MATCH`)
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`9cc064d`)
+
+### Important
+
+- Live frontend bundle now matches current synced repository tip `9cc064d`
+- Real Telegram Mini App manual verification is still required to confirm the delayed-bootstrap auth fix against signed production `initData`
+
 ## 2026-04-25 10:59 - Telegram Bootstrap Fix Sync Checkpoint
 
 ### Done

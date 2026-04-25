@@ -51,14 +51,21 @@
 - Local, GitHub, and VPS repository states are now aligned on the same commit
 - VPS repo still keeps untracked deploy directories (`frontend/public*`); live frontend runtime was not redeployed in this step
 
+## Hotfix Update - 2026-04-25 11:12
+
+- Rebuilt and redeployed the live frontend bundle from synced branch tip `9cc064d`
+- VPS frontend static path `/var/www/iind-app/frontend/public` now serves the current build via full directory swap
+- Live root HTML references current asset hashes (`BfQflojk.js`, `entry.CiIJ0BEA.css`), and core routes remain healthy
+- Repository state on local, GitHub, and VPS checkout remains aligned at `9cc064d`
+
 ## Stop Point
 
 - Current branch: `front/ayan`
 - Local, `origin/front/ayan`, and VPS `/var/www/iind-app` are aligned at `110c550`
-- Latest branch tip is `110c550` `fix(auth): recover delayed telegram bootstrap`
+- Latest branch tip is `9cc064d` `docs(vault): record telegram sync checkpoint`
 - Local worktree is clean relative to origin after sync checkpoint
 - VPS checkout is aligned; only untracked deploy directories remain on server
-- Live deployment state was not changed by this sync step
+- Live frontend bundle is redeployed from current synced branch tip `9cc064d`
 - Latest shipped commit is `a3591a0` `feat(ayan): expand trip/request lifecycle statuses`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
@@ -106,9 +113,8 @@
 
 ## Next Action
 
-1. Deploy updated frontend bundle from commit `110c550` to VPS
-2. Retry `/ayan` from real Telegram Mini App and confirm signed `initData` now reaches auth successfully
-3. If TMA still fails after deploy, capture one fresh retry timestamp and correlate exact `/api/auth/telegram` response path
+1. Retry `/ayan` from real Telegram Mini App and confirm signed `initData` now reaches auth successfully
+2. If TMA still fails after deploy, capture one fresh retry timestamp and correlate exact `/api/auth/telegram` response path
 
 ## API Smoke Snapshot (Live)
 
@@ -131,11 +137,10 @@
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
 Current task: ship and validate the local Telegram bootstrap auth fix for AYAN TMA.
 1) inspect the local Telegram/auth diff in frontend utils/composables/plugin/tests
-2) note that current synced commit is `110c550` `fix(auth): recover delayed telegram bootstrap`
-3) deploy the updated frontend bundle to VPS
-4) retry `/ayan` from a real Telegram Mini App and confirm signed `initData` reaches auth successfully
-5) if TMA still fails, capture one fresh retry timestamp and correlate the exact `/api/auth/telegram` response path
-6) update vault files with deploy and manual verification outcome
+2) note that current synced commit is `9cc064d` and live frontend bundle is already redeployed from it
+3) retry `/ayan` from a real Telegram Mini App and confirm signed `initData` reaches auth successfully
+4) if TMA still fails, capture one fresh retry timestamp and correlate the exact `/api/auth/telegram` response path
+5) update vault files with manual verification outcome
 ```
 
 ## Deployment Context
@@ -147,4 +152,4 @@ Current task: ship and validate the local Telegram bootstrap auth fix for AYAN T
 
 ## One-Line Summary
 
-Telegram bootstrap auth fix is committed and synced at `110c550`; next safe move is VPS frontend redeploy plus real Telegram Mini App validation.
+Telegram bootstrap auth fix is live on the frontend bundle; next safe move is real Telegram Mini App validation against production signed `initData`.

@@ -191,3 +191,11 @@
 - Verified: local/origin/VPS all resolve to `110c550`; local worktree is aligned with origin; VPS repo is aligned with origin and only keeps untracked deploy directories
 - Blockers: live frontend bundle still needs redeploy before real Telegram Mini App validation can confirm behavior
 - Next: redeploy frontend from synced commit `110c550`, then retry `/ayan` inside Telegram and capture exact outcome
+
+## 2026-04-25 11:12 — Live Frontend Redeploy
+
+- Scope: publish the synced Telegram bootstrap fix to the live frontend bundle
+- Changes: rebuilt frontend with `npx nuxt build --preset github_pages`, uploaded `.output/public` to VPS, deployed via `public_new -> public` swap, and copied prior hashed assets forward for cache compatibility
+- Verified: live `/`, `/ayan`, `/api/health`, current JS asset `BfQflojk.js`, and current CSS asset `entry.CiIJ0BEA.css` all return `200`; live root HTML references current asset hashes; VPS repo remains at `9cc064d`
+- Blockers: real Telegram Mini App validation still requires manual device retry
+- Next: open `/ayan` inside Telegram Mini App and confirm signed `initData` login now succeeds; if it fails, capture one fresh retry timestamp for `/api/auth/telegram` correlation
