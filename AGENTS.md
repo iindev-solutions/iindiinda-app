@@ -101,6 +101,7 @@ Each service lives under its own `app/` directory.
 ```bash
 npm run dev
 npm run build
+npm run build:static
 npm run typecheck
 npm run lint
 npm run lint:fix
@@ -115,6 +116,8 @@ npm run format:fix
 3. Implement the change
 4. Verify the change
 5. Update vault before closing the task
+
+For VPS static frontend deploys, use `npm run build:static` instead of raw `npx nuxt build --preset github_pages`. This command forces safe same-origin `/api` and verifies generated HTML before deploy.
 
 ## Code Style
 

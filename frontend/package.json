@@ -5,6 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"build": "nuxt build",
+		"build:static": "node scripts/build-static.mjs",
 		"dev": "nuxt dev",
 		"generate": "nuxt generate",
 		"preview": "nuxt preview",

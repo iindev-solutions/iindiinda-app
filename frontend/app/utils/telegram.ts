@@ -9,7 +9,7 @@ export function getTelegramWebApp(): TelegramWebApp | null {
 }
 
 export async function waitForTelegramWebApp(options: WaitForTelegramInitDataOptions = {}): Promise<TelegramWebApp | null> {
-	const { timeoutMs = 1500, intervalMs = 50 } = options
+	const { timeoutMs = 10000, intervalMs = 50 } = options
 	const startedAt = Date.now()
 
 	while (Date.now() - startedAt <= timeoutMs) {
@@ -23,7 +23,7 @@ export async function waitForTelegramWebApp(options: WaitForTelegramInitDataOpti
 }
 
 export async function waitForTelegramInitData(options: WaitForTelegramInitDataOptions = {}): Promise<string> {
-	const { timeoutMs = 1500, intervalMs = 50 } = options
+	const { timeoutMs = 10000, intervalMs = 50 } = options
 	const startedAt = Date.now()
 
 	while (Date.now() - startedAt <= timeoutMs) {

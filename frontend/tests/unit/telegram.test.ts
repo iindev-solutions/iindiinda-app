@@ -50,6 +50,21 @@ describe('telegram utils', () => {
 		await expect(pendingWebApp).resolves.toBe(webApp)
 	})
 
+	it('keeps waiting long enough for slower telegram web app bootstrap', async () => {
+		vi.useFakeTimers()
+		const webApp = { initData: '' } as MockTelegramWebApp as TelegramWebApp
+
+		const pendingWebApp = waitForTelegramWebApp()
+
+		setTimeout(() => {
+			setMockWindow({ Telegram: { WebApp: webApp } })
+		}, 2000)
+
+		await vi.advanceTimersByTimeAsync(2000)
+
+		await expect(pendingWebApp).resolves.toBe(webApp)
+	})
+
 	it('waits for initData to arrive on existing telegram web app', async () => {
 		vi.useFakeTimers()
 		const webApp = { initData: '' } as MockTelegramWebApp as TelegramWebApp
@@ -64,6 +79,22 @@ describe('telegram utils', () => {
 		await vi.advanceTimersByTimeAsync(100)
 
 		await expect(pendingInitData).resolves.toBe('signed-init-data')
+	})
+
+	it('keeps waiting long enough for slower telegram initData bootstrap', async () => {
+		vi.useFakeTimers()
+		const webApp = { initData: '' } as MockTelegramWebApp as TelegramWebApp
+		setMockWindow({ Telegram: { WebApp: webApp } })
+
+		const pendingInitData = waitForTelegramInitData()
+
+		setTimeout(() => {
+			webApp.initData = 'slow-signed-init-data'
+		}, 2000)
+
+		await vi.advanceTimersByTimeAsync(2000)
+
+		await expect(pendingInitData).resolves.toBe('slow-signed-init-data')
 	})
 
 	it('returns empty initData after timeout when telegram never provides it', async () => {
