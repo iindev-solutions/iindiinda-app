@@ -117,6 +117,17 @@ const dateChips = computed(() => [
 	{ label: t('ayan.filter.tomorrow'), value: tomorrow }
 ])
 
+const aboutExamples = computed(() => [
+	{
+		title: t('serviceAbout.ayan.examples.driver.title'),
+		description: t('serviceAbout.ayan.examples.driver.description')
+	},
+	{
+		title: t('serviceAbout.ayan.examples.passenger.title'),
+		description: t('serviceAbout.ayan.examples.passenger.description')
+	}
+])
+
 const hasFilters = computed(() => filterFrom.value || filterTo.value || filterDate.value)
 
 const activeFilterCount = computed(() => {
@@ -259,6 +270,14 @@ function handleResponseClick(response: AyanResponse) {
 					<p class="text-sm leading-relaxed text-gray-300">
 						{{ t('ayan.desc') }}
 					</p>
+					<div class="mt-4">
+						<AppServiceAbout
+							:label="t('serviceAbout.label')"
+							:description="t('serviceAbout.ayan.description')"
+							:examples-title="t('serviceAbout.examplesTitle')"
+							:examples="aboutExamples"
+						/>
+					</div>
 					<div class="mt-4">
 						<AyanRoleSwitch @changed="handleRoleChanged" />
 					</div>

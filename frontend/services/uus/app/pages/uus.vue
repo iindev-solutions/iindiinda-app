@@ -3,21 +3,14 @@ definePageMeta({ layout: 'default' })
 
 const { t } = useI18n()
 
-const cards = computed(() => [
+const aboutExamples = computed(() => [
 	{
-		icon: 'i-carbon-tool-kit',
-		title: t('servicePages.uus.cards.task.title'),
-		description: t('servicePages.uus.cards.task.description')
+		title: t('serviceAbout.uus.examples.cleaning.title'),
+		description: t('serviceAbout.uus.examples.cleaning.description')
 	},
 	{
-		icon: 'i-carbon-user-multiple',
-		title: t('servicePages.uus.cards.responses.title'),
-		description: t('servicePages.uus.cards.responses.description')
-	},
-	{
-		icon: 'i-carbon-checkmark-outline',
-		title: t('servicePages.uus.cards.agreement.title'),
-		description: t('servicePages.uus.cards.agreement.description')
+		title: t('serviceAbout.uus.examples.repair.title'),
+		description: t('serviceAbout.uus.examples.repair.description')
 	}
 ])
 </script>
@@ -37,24 +30,14 @@ const cards = computed(() => [
 				</p>
 			</header>
 
-			<section class="mb-8 space-y-3">
-				<div
-					v-for="(card, index) in cards"
-					:key="card.title"
-					class="rounded-2xl border bg-[#2a3a42]/30 p-5"
-					:class="index === 0 ? 'border-cyan-500/15' : 'border-white/10'"
-				>
-					<div class="flex items-center gap-3">
-						<div class="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0f1113]/60">
-							<UIcon :name="card.icon" class="text-xl text-cyan-400" />
-						</div>
-						<div>
-							<h3 class="text-sm font-medium text-[#eff3f5]">{{ card.title }}</h3>
-							<p class="text-xs text-gray-400">{{ card.description }}</p>
-						</div>
-					</div>
-				</div>
-			</section>
+			<div class="mb-8">
+				<AppServiceAbout
+					:label="t('serviceAbout.label')"
+					:description="t('serviceAbout.uus.description')"
+					:examples-title="t('serviceAbout.examplesTitle')"
+					:examples="aboutExamples"
+				/>
+			</div>
 
 			<div class="space-y-3">
 				<UButton block size="lg" color="primary" disabled>{{ t('servicePages.uus.cta') }}</UButton>
