@@ -2,6 +2,27 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-25 10:59 - Telegram Bootstrap Fix Sync Checkpoint
+
+### Done
+
+- Committed the local Telegram bootstrap auth recovery as `110c550` `fix(auth): recover delayed telegram bootstrap`
+- Pushed `front/ayan` to GitHub so `origin/front/ayan` matches local HEAD
+- Fast-forwarded the VPS repository at `/var/www/iind-app` to the same commit
+
+### Verified
+
+- `git rev-parse --short HEAD` ✅ (`110c550`)
+- `git rev-parse --short origin/front/ayan` ✅ (`110c550`)
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`110c550`)
+- Local `git status --short --branch` ✅ (aligned with origin)
+- VPS `git -C /var/www/iind-app status --short --branch` ✅ (aligned; only untracked deploy dirs remain)
+
+### Important
+
+- Repository state is synchronized across local, GitHub, and VPS checkout
+- Live frontend bundle was not redeployed in this sync step; real Telegram Mini App retest is still required after deploy
+
 ## 2026-04-25 10:50 - Telegram WebApp Bootstrap Auth Recovery
 
 ### Done

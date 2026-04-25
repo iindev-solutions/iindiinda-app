@@ -183,3 +183,11 @@
 - Verified: `frontend npm run test` (`21/21`), `frontend npm run typecheck`, `frontend npm run build`, and final scoped review found no issues in changed Telegram/auth files
 - Blockers: real Telegram Mini App validation still requires deploy plus manual device retry
 - Next: deploy current frontend Telegram bootstrap fix, then retest `/ayan` from real Telegram and record the exact runtime outcome
+
+## 2026-04-25 10:59 — Sync Local GitHub VPS
+
+- Scope: commit the Telegram bootstrap fix and align repository state across local, GitHub, and VPS
+- Changes: created commit `110c550`, pushed `front/ayan` to origin, and fast-forwarded `/var/www/iind-app` on VPS to the same commit
+- Verified: local/origin/VPS all resolve to `110c550`; local worktree is aligned with origin; VPS repo is aligned with origin and only keeps untracked deploy directories
+- Blockers: live frontend bundle still needs redeploy before real Telegram Mini App validation can confirm behavior
+- Next: redeploy frontend from synced commit `110c550`, then retry `/ayan` inside Telegram and capture exact outcome
