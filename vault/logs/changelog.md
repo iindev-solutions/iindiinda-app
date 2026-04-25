@@ -2,6 +2,129 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-25 10:50 - Telegram WebApp Bootstrap Auth Recovery
+
+### Done
+
+- Audited AYAN Telegram Mini App startup after report that `initData` was unavailable and `/ayan` could not open in TMA
+- Root-caused frontend bootstrap race: Telegram detection/auth depended on one-shot reads of `window.Telegram.WebApp` and `initData`, so late availability could leave auth stuck or misclassified
+- Added `frontend/app/utils/telegram.ts` with wait helpers for delayed `WebApp` and delayed `initData`
+- Reworked `frontend/app/composables/useTg.ts` to keep reactive Telegram state snapshots and resync when Telegram context appears late
+- Updated `frontend/app/plugins/init.ts` to react to delayed `WebApp`/`initData`, call `ready()`/`expand()`, and retry Telegram auto-login when context finally arrives
+- Kept mock auth compatibility in `frontend/app/composables/useAuth.ts` while preserving form-urlencoded transport for real Telegram login
+- Added unit coverage for delayed Telegram bootstrap helpers
+
+### Verified
+
+- `frontend: npm run test` ✅ (`21 tests`)
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build` ✅
+- Final scoped review of changed Telegram/auth files ✅ (`no findings`)
+
+### Important
+
+- This fix is local only in current workspace; no commit or VPS deploy was performed in this session
+- Remaining evidence gap is real Telegram Mini App verification after deploy, because local tooling cannot emulate signed production `initData`
+
+## 2026-04-25 10:15 - Telegram Auth Payload Format Fix + Live Redeploy
+
+### Done
+
+- Root-caused multi-account Telegram auth failures to request payload format mismatch on production runtime
+- Confirmed production `/api/auth/telegram` accepted form-urlencoded `init_data` but rejected JSON payload path as missing field
+- Updated frontend auth login call to send `init_data` as `application/x-www-form-urlencoded` instead of JSON
+- Rebuilt frontend and redeployed the full static bundle to VPS with directory-swap deploy flow
+- Verified deployed entry bundle includes the auth payload-format fix
+
+### Verified
+
+- `frontend: npm run test -- auth` ✅ (`2 tests`)
+- `frontend: npm run typecheck` ✅
+- `frontend: npx nuxt build --preset github_pages` ✅
+- Live bundle check: entry asset contains `application/x-www-form-urlencoded` ✅
+- Live API behavior check:
+  - form-urlencoded `init_data=test` reaches Telegram validation path (`Telegram user data is invalid.`) ✅
+  - previous missing-field validation path reproduced for JSON probe (`The init data field is required.`) ✅
+
+### Important
+
+- Bot token is present and valid; this incident was not caused by token removal
+- If Telegram auth still fails after this deploy, next evidence needed is one fresh in-app retry timestamp to correlate the exact runtime request/response pair
+
+## 2026-04-25 09:55 - Telegram Auth Runtime Diagnostic
+
+### Done
+
+- Investigated the reported Telegram bot auth failure after the SPA full redeploy
+- Verified `TELEGRAM_BOT_TOKEN` is present in VPS backend env (`.env`) and non-empty
+- Verified the configured token is valid against Telegram Bot API (`getMe`) and resolves to `@iind_app_bot`
+- Verified bot menu button is still configured as `web_app` pointing to `https://iindiinda.duckdns.org/`
+- Cleared Laravel config/app caches on VPS (`php artisan config:clear`, `php artisan cache:clear`) to remove stale runtime config risk
+
+### Verified
+
+- `Bot API getMe` ✅ (`ok: true`, bot `@iind_app_bot`)
+- `Bot API getChatMenuButton` ✅ (`type: web_app`, URL `https://iindiinda.duckdns.org/`)
+- `php artisan config:clear` ✅
+- `php artisan cache:clear` ✅
+- Direct API probe with fake payload returns Telegram validation path (`Telegram user data is invalid.`), not missing-config path
+
+### Important
+
+- Current evidence does **not** indicate removed bot token on VPS
+- If auth still fails for real Telegram sessions, next diagnostic needs one fresh real-device attempt timestamp to correlate exact `/api/auth/telegram` response for that request
+
+## 2026-04-25 09:42 - Full SPA Rebuild + Full Bundle Redeploy
+
+### Done
+
+- Rebuilt the frontend SPA from scratch with `npx nuxt build --preset github_pages`
+- Packed the full rebuilt `.output/public` bundle, uploaded it to VPS, and deployed by full directory swap (`public` -> `public_prev`, `public_new` -> `public`)
+- Restored cache compatibility by copying previous hashed assets from `public_prev/assets` into the new `public/assets` without overwriting fresh files
+- Removed temporary deployment archives from local workspace and VPS `/tmp`
+
+### Verified
+
+- `frontend: npx nuxt build --preset github_pages` ✅
+- Full public bundle parity check (local vs VPS) ✅ (`MATCH`)
+- Rebuilt asset set presence check on VPS ✅ (`LOCAL_SET_PRESENT`)
+- Live checks for previously failing files now return proper MIME:
+  - `w4TTrgpo.js` -> `200 application/javascript` ✅
+  - `n6zhjH-2.js` -> `200 application/javascript` ✅
+  - `useAyanMy.ahlQBhWc.css` -> `200 text/css` ✅
+  - `LoadingSpinner.BvLJy4-M.css` -> `200 text/css` ✅
+  - `index.sKdH0kcC.css` -> `200 text/css` ✅
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+
+### Important
+
+- Deployment is now full-bundle based, not per-file patching
+- `public_prev` is intentionally kept on VPS as rollback/cache-compat safety
+- Nginx `/assets/*` fallback hardening is still recommended to force `404` for missing assets instead of HTML fallback
+
+## 2026-04-25 09:25 - Production Asset MIME Hotfix
+
+### Done
+
+- Investigated live Telegram/browser startup errors for blocked JS/CSS chunks and dynamic import failures
+- Confirmed affected asset URLs were resolving to `text/html` instead of JS/CSS because some hashed files were missing on VPS
+- Compared local build output (`frontend/.output/public/assets`) against VPS assets and identified 8 missing files
+- Uploaded missing hashed assets to `/var/www/iind-app/frontend/public/assets` on VPS to restore bundle integrity
+
+### Verified
+
+- `curl -I https://iindiinda.duckdns.org/assets/w4TTrgpo.js` ✅ (`200`, `application/javascript`)
+- `curl -I https://iindiinda.duckdns.org/assets/n6zhjH-2.js` ✅ (`200`, `application/javascript`)
+- `curl -I https://iindiinda.duckdns.org/assets/useAyanMy.ahlQBhWc.css` ✅ (`200`, `text/css`)
+- `curl -I https://iindiinda.duckdns.org/assets/LoadingSpinner.BvLJy4-M.css` ✅ (`200`, `text/css`)
+- local-vs-VPS asset diff check ✅ (`NONE` missing files)
+
+### Important
+
+- Root cause is deploy artifact drift: entry bundle referenced hashed chunks that were not present in VPS assets directory
+- Current Nginx SPA fallback still rewrites unknown `/assets/*` to `/index.html`; this masks missing-file issues as MIME errors
+- Follow-up hardening should add explicit `/assets/` handling (`try_files $uri =404`) and cache policy split (`index.html` no-store, hashed assets immutable)
+
 ## 2026-04-24 20:15 - Final Alignment After Vault Sync Commit
 
 ### Done

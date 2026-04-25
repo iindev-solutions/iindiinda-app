@@ -2,12 +2,56 @@
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
 
+## Hotfix Update - 2026-04-25 09:25
+
+- Investigated live Telegram/browser errors: blocked JS/CSS with MIME `text/html` and dynamic import failures
+- Root cause confirmed: deploy asset drift on VPS (`/var/www/iind-app/frontend/public/assets`) where hashed files referenced by `e790UDQL.js` were missing
+- Uploaded missing asset files from local `frontend/.output/public/assets` to VPS; affected URLs now return correct MIME (`application/javascript` / `text/css`)
+- Remaining hardening task: adjust Nginx so unknown `/assets/*` returns `404` (not SPA HTML fallback) and split cache policy between `index.html` and hashed assets
+
+## Hotfix Update - 2026-04-25 09:42
+
+- Replaced partial hotfix with full deployment flow: rebuilt SPA locally and redeployed complete `frontend/.output/public` bundle to VPS
+- Deployment now uses full directory swap (`public_new` -> `public`) and keeps `public_prev` as rollback/cache-compat safety
+- Added old hashed assets back into current `public/assets` without overwriting fresh files to reduce stale-client breakage during cache rollover
+- Previously failing asset URLs (`w4TTrgpo.js`, `n6zhjH-2.js`, `useAyanMy.ahlQBhWc.css`, `LoadingSpinner.BvLJy4-M.css`, `index.sKdH0kcC.css`) now return `200` with correct MIME
+
+## Hotfix Update - 2026-04-25 09:55
+
+- Checked Telegram auth runtime after redeploy due user-reported bot login failure
+- VPS backend token `TELEGRAM_BOT_TOKEN` is present and valid (`getMe` resolves to `@iind_app_bot`)
+- Bot menu button still points to web app URL `https://iindiinda.duckdns.org/`
+- Cleared Laravel config/app caches to remove stale config risk
+- If auth still fails, next required diagnostic is one fresh real Telegram retry timestamp to map exact `/api/auth/telegram` response path
+
+## Hotfix Update - 2026-04-25 10:15
+
+- Auth failure root cause narrowed to payload-format mismatch on production runtime (`/api/auth/telegram`)
+- Frontend now sends `init_data` as `application/x-www-form-urlencoded` in `loginWithInitData` instead of JSON
+- Full frontend bundle rebuilt and redeployed to VPS; deployed entry bundle confirms the new content-type path
+- Token/config path remains healthy (`TELEGRAM_BOT_TOKEN` present + valid bot API checks)
+- Next action: perform immediate Telegram bot login retry and confirm live `/api/auth/telegram` succeeds with real signed `initData`
+
+## Hotfix Update - 2026-04-25 10:50
+
+- Investigated local/frontend TMA report that `window.Telegram.WebApp.initData` was unavailable and AYAN stayed blocked
+- Root cause confirmed in frontend bootstrap: Telegram auth relied on one-shot reads of `WebApp`/`initData`, so late Telegram context arrival could leave auth stuck in browser or failed state
+- Added local fix in:
+  1. `frontend/app/utils/telegram.ts`
+  2. `frontend/app/composables/useTg.ts`
+  3. `frontend/app/composables/useAuth.ts`
+  4. `frontend/app/plugins/init.ts`
+- Added unit coverage for delayed `WebApp` and delayed `initData` helper behavior
+- Local verification is green (`npm run test`, `npm run typecheck`, `npm run build`), but no commit, deploy, or real Telegram retest happened in this session
+
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Local, `origin/front/ayan`, and VPS `/var/www/iind-app` are aligned at `d019d0c`
+- Local HEAD and `origin/front/ayan` are aligned at `99a553b`
+- Local working tree contains uncommitted frontend Telegram bootstrap fix plus vault updates from this session
+- VPS deployment state was not changed in this session
 - Latest shipped commit is `a3591a0` `feat(ayan): expand trip/request lifecycle statuses`
-- Latest vault sync/handoff commit is `d019d0c` `docs(vault): record final sync checkpoint`
+- Latest branch tip before current uncommitted work is `99a553b` `docs(vault): lock final resume hash`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
   - `/`
@@ -52,6 +96,13 @@
   - `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
 
+## Next Action
+
+1. Commit or otherwise preserve the local Telegram bootstrap fix
+2. Deploy updated frontend bundle to VPS
+3. Retry `/ayan` from real Telegram Mini App and confirm signed `initData` now reaches auth successfully
+4. If TMA still fails after deploy, capture one fresh retry timestamp and correlate exact `/api/auth/telegram` response path
+
 ## API Smoke Snapshot (Live)
 
 - Trip flow:
@@ -71,12 +122,13 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: complete manual Telegram/browser UI E2E for lifecycle statuses on live HTTPS.
-1) verify matched/completed/cancelled flows in AYAN trip and request details
-2) verify My responses cards show linked target route/status info correctly
-3) compare UI results with already green API smoke behavior
-4) capture any production edge cases and patch in a focused follow-up commit if needed
-5) update vault files with exact manual verification outcomes
+Current task: ship and validate the local Telegram bootstrap auth fix for AYAN TMA.
+1) inspect the local Telegram/auth diff in frontend utils/composables/plugin/tests
+2) commit or otherwise preserve current local changes
+3) deploy the updated frontend bundle to VPS
+4) retry `/ayan` from a real Telegram Mini App and confirm signed `initData` reaches auth successfully
+5) if TMA still fails, capture one fresh retry timestamp and correlate the exact `/api/auth/telegram` response path
+6) update vault files with deploy and manual verification outcome
 ```
 
 ## Deployment Context
@@ -88,4 +140,4 @@ Current task: complete manual Telegram/browser UI E2E for lifecycle statuses on 
 
 ## One-Line Summary
 
-Lifecycle status expansion is live at `a3591a0` and API-smoke verified; next safe move is manual Telegram/browser UI validation and targeted follow-up fixes only if needed.
+Local fix for delayed Telegram `WebApp`/`initData` bootstrap is verified by test/typecheck/build; next safe move is deploy plus real Telegram Mini App validation.

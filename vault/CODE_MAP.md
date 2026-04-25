@@ -263,3 +263,10 @@
   - `frontend/app/utils/api-error.ts`
   - `frontend/tests/unit/apiError.test.ts`
 - Backend lifecycle regression coverage expanded in `backend/tests/Feature/AyanPersistenceTest.php`
+
+## Audit Notes - 2026-04-25 10:50
+
+- `frontend/app/utils/telegram.ts`: new Telegram bootstrap helpers `getTelegramWebApp`, `waitForTelegramWebApp`, and `waitForTelegramInitData`
+- `frontend/app/composables/useTg.ts`: now stores reactive Telegram state snapshots instead of relying on one-shot computed reads from `window.Telegram.WebApp`
+- `frontend/app/plugins/init.ts`: now watches delayed `WebApp`/`initData` arrival to call `ready()`/`expand()` and retry Telegram auto-login
+- `frontend/app/composables/useAuth.ts`: mock auth still goes through shared mock API path, while real Telegram login keeps form-urlencoded `init_data` transport

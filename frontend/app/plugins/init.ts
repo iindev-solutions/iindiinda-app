@@ -7,14 +7,28 @@
  */
 
 export default defineNuxtPlugin(async () => {
-	const { ready, expand, isInTelegram } = useTg()
-	const { login, isAuthenticated } = useAuth()
+	const { ready, expand, webApp, initData } = useTg()
+	const { login, loginWithInitData, isAuthenticated, authStatus } = useAuth()
 
-	// Init Telegram SDK (if in TMA)
-	if (isInTelegram.value) {
-		ready()
-		expand()
-	}
+	watch(
+		webApp,
+		(currentWebApp) => {
+			if (!currentWebApp) return
+			ready()
+			expand()
+		},
+		{ immediate: true }
+	)
+
+	watch(initData, async (currentInitData) => {
+		if (!currentInitData || isAuthenticated.value || authStatus.value === 'loading') return
+
+		try {
+			await loginWithInitData(currentInitData)
+		} catch (error) {
+			console.error('[init] Delayed Telegram login failed:', error)
+		}
+	})
 
 	// Auto-login if not authenticated
 	if (!isAuthenticated.value) {

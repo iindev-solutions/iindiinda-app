@@ -1,19 +1,62 @@
+import { getTelegramWebApp, waitForTelegramInitData, waitForTelegramWebApp } from '~/utils/telegram'
+
+type TelegramState = {
+	webApp: TelegramWebApp | null
+	initData: string
+	user: TelegramWebAppUser | null
+}
+
+let telegramInitDataSync: Promise<void> | null = null
+
 export const useTg = () => {
-	const isInTelegram = computed(() => {
-		if (typeof window === 'undefined') return false
-		return !!window.Telegram?.WebApp?.initData
-	})
+	const state = useState<TelegramState>('telegram-state', () => ({
+		webApp: null,
+		initData: '',
+		user: null
+	}))
 
-	const webApp = computed(() => {
-		if (import.meta.client && window.Telegram?.WebApp) {
-			return window.Telegram.WebApp
+	const syncTelegramState = () => {
+		const webApp = import.meta.client ? getTelegramWebApp() : null
+
+		state.value = {
+			webApp,
+			initData: webApp?.initData || '',
+			user: webApp?.initDataUnsafe?.user || null
 		}
-		return null
-	})
 
-	const user = computed(() => webApp.value?.initDataUnsafe?.user || null)
+		return state.value
+	}
 
-	const initData = computed(() => webApp.value?.initData || '')
+	const ensureTelegramState = () => {
+		const currentState = syncTelegramState()
+
+		if (!import.meta.client || telegramInitDataSync || (currentState.webApp && currentState.initData)) {
+			return
+		}
+
+		telegramInitDataSync = waitForTelegramWebApp()
+			.then(() => {
+				syncTelegramState()
+
+				if (!state.value.webApp || state.value.initData) {
+					return
+				}
+
+				return waitForTelegramInitData().then(() => {
+					syncTelegramState()
+				})
+			})
+			.finally(() => {
+				telegramInitDataSync = null
+			})
+	}
+
+	ensureTelegramState()
+
+	const webApp = computed(() => state.value.webApp)
+	const isInTelegram = computed(() => !!state.value.webApp)
+	const user = computed(() => state.value.user)
+	const initData = computed(() => state.value.initData)
 
 	const version = computed(() => webApp.value?.version || '6.0')
 
@@ -31,7 +74,8 @@ export const useTg = () => {
 	const isReady = computed(() => !!webApp.value)
 
 	const supportsVersion = (minVersion: string) => {
-		const a = version.value.split('.').map(Number)
+		const currentVersion = syncTelegramState().webApp?.version || '6.0'
+		const a = currentVersion.split('.').map(Number)
 		const b = minVersion.split('.').map(Number)
 		for (let i = 0; i < Math.max(a.length, b.length); i++) {
 			const diff = (a[i] || 0) - (b[i] || 0)
@@ -41,15 +85,15 @@ export const useTg = () => {
 	}
 
 	const ready = () => {
-		webApp.value?.ready()
+		syncTelegramState().webApp?.ready()
 	}
 
 	const expand = () => {
-		webApp.value?.expand()
+		syncTelegramState().webApp?.expand()
 	}
 
 	const close = () => {
-		webApp.value?.close()
+		syncTelegramState().webApp?.close()
 	}
 
 	let _backButtonCallback: (() => void) | null = null
@@ -57,7 +101,7 @@ export const useTg = () => {
 	const showBackButton = () => {
 		if (!supportsVersion('6.1')) return
 		try {
-			webApp.value?.BackButton?.show()
+			syncTelegramState().webApp?.BackButton?.show()
 		} catch {
 			// ignore
 		}
@@ -66,11 +110,12 @@ export const useTg = () => {
 	const hideBackButton = () => {
 		if (!supportsVersion('6.1')) return
 		try {
+			const currentWebApp = syncTelegramState().webApp
 			if (_backButtonCallback) {
-				webApp.value?.BackButton?.offClick(_backButtonCallback)
+				currentWebApp?.BackButton?.offClick(_backButtonCallback)
 				_backButtonCallback = null
 			}
-			webApp.value?.BackButton?.hide()
+			currentWebApp?.BackButton?.hide()
 		} catch {
 			// ignore
 		}
@@ -79,23 +124,25 @@ export const useTg = () => {
 	const onBackButtonClicked = (callback: () => void) => {
 		if (!supportsVersion('6.1')) return
 		try {
+			const currentWebApp = syncTelegramState().webApp
 			if (_backButtonCallback) {
-				webApp.value?.BackButton?.offClick(_backButtonCallback)
+				currentWebApp?.BackButton?.offClick(_backButtonCallback)
 			}
 			_backButtonCallback = callback
-			webApp.value?.BackButton?.onClick(callback)
+			currentWebApp?.BackButton?.onClick(callback)
 		} catch {
 			// ignore
 		}
 	}
 
 	const showMainButton = (text: string, onClick: () => void) => {
-		if (!webApp.value) return
+		const currentWebApp = syncTelegramState().webApp
+		if (!currentWebApp) return
 		try {
-			if (webApp.value.MainButton) {
-				webApp.value.MainButton.text = text
-				webApp.value.MainButton.onClick(onClick)
-				webApp.value.MainButton.show()
+			if (currentWebApp.MainButton) {
+				currentWebApp.MainButton.text = text
+				currentWebApp.MainButton.onClick(onClick)
+				currentWebApp.MainButton.show()
 			}
 		} catch {
 			// ignore
@@ -103,9 +150,10 @@ export const useTg = () => {
 	}
 
 	const hideMainButton = () => {
-		if (!webApp.value) return
+		const currentWebApp = syncTelegramState().webApp
+		if (!currentWebApp) return
 		try {
-			webApp.value.MainButton?.hide()
+			currentWebApp.MainButton?.hide()
 		} catch {
 			// ignore
 		}
@@ -114,10 +162,11 @@ export const useTg = () => {
 	const hapticFeedback = (type: 'impact' | 'notification' | 'selection' = 'impact') => {
 		if (!supportsVersion('6.1')) return
 		try {
-			if (webApp.value?.HapticFeedback) {
-				if (type === 'impact') webApp.value.HapticFeedback.impactOccurred('medium')
-				else if (type === 'notification') webApp.value.HapticFeedback.notificationOccurred('success')
-				else webApp.value.HapticFeedback.selectionChanged()
+			const currentWebApp = syncTelegramState().webApp
+			if (currentWebApp?.HapticFeedback) {
+				if (type === 'impact') currentWebApp.HapticFeedback.impactOccurred('medium')
+				else if (type === 'notification') currentWebApp.HapticFeedback.notificationOccurred('success')
+				else currentWebApp.HapticFeedback.selectionChanged()
 			}
 		} catch {
 			// ignore

@@ -143,3 +143,43 @@
 - Verified: local/origin/VPS all at `d019d0c`, working tree clean
 - Blockers: only manual Telegram/browser UI E2E remains
 - Next: tomorrow continue from `d019d0c` using `vault/resume-plan.md`
+
+## 2026-04-25 09:25 — Production Asset MIME Hotfix
+
+- Scope: investigate and recover live AYAN startup failures caused by blocked module/CSS loads
+- Changes: traced MIME errors to missing hashed files in `/var/www/iind-app/frontend/public/assets`, compared local `.output/public/assets` against VPS, and uploaded the missing files directly to VPS
+- Verified: affected files now return `200` with correct MIME types (`application/javascript` / `text/css`), and local-vs-VPS asset diff shows no missing files
+- Blockers: Nginx SPA fallback still rewrites unknown `/assets/*` to `/index.html`, which can hide future missing asset deploy drift
+- Next: harden Nginx config for `/assets/` (`try_files $uri =404`) and add deploy-time asset integrity check before manual Telegram/browser E2E
+
+## 2026-04-25 09:42 — Full SPA Rebuild + Full Redeploy
+
+- Scope: replace partial asset recovery with a full SPA rebuild and full-bundle VPS redeploy
+- Changes: rebuilt frontend (`npx nuxt build --preset github_pages`), uploaded complete `.output/public` archive, deployed via directory swap (`public_new` -> `public`), and copied prior hashed assets from `public_prev/assets` for cache compatibility
+- Verified: local-vs-VPS full public parity check is `MATCH`, rebuilt asset set exists on VPS (`LOCAL_SET_PRESENT`), previously failing asset URLs now return correct MIME, and `/ayan` stays `200`
+- Blockers: Nginx still masks missing assets with SPA HTML fallback (`/assets/*` not forced to `404` yet)
+- Next: continue manual Telegram/browser lifecycle E2E, then apply Nginx asset-fallback hardening in a focused ops slice
+
+## 2026-04-25 09:55 — Telegram Auth Runtime Diagnostic
+
+- Scope: verify whether live Telegram bot auth failure is caused by missing/invalid bot token
+- Changes: checked VPS backend env token presence, validated token against Telegram `getMe`, checked bot `getChatMenuButton` web_app URL, and cleared Laravel config/app caches
+- Verified: token exists and is valid for `@iind_app_bot`, web_app URL remains `https://iindiinda.duckdns.org/`, cache clear commands succeeded, and auth endpoint follows Telegram validation path instead of missing-config path
+- Blockers: real Telegram-session failure still requires a fresh user attempt timestamp for exact request correlation
+- Next: capture one real-device retry timestamp and inspect matching `/api/auth/telegram` log line/status to isolate remaining auth failure path
+
+## 2026-04-25 10:15 — Telegram Auth Payload Format Fix
+
+- Scope: fix cross-account Telegram login failure after confirming bot token/config are valid
+- Changes: identified production mismatch where JSON `init_data` path failed validation, switched frontend `loginWithInitData` call to form-urlencoded payload, rebuilt SPA, and redeployed full bundle on VPS
+- Verified: auth unit tests pass, typecheck passes, production entry bundle contains the new content-type path, and live endpoint receives form-urlencoded payload through Telegram validation branch
+- Blockers: no fresh post-fix real Telegram retry captured yet in this session
+- Next: run immediate bot login retry from Telegram and confirm `/api/auth/telegram` returns `200` for real signed initData
+
+## 2026-04-25 10:50 — Telegram Bootstrap Audit
+
+- Scope: audit AYAN TMA startup after report that Telegram `initData` was unavailable and AYAN could not open
+- Changes: traced frontend bootstrap race in `useTg`/init plugin, added Telegram wait helpers, made Telegram state reactive, added delayed auto-login retry, and preserved mock-auth behavior alongside real form-urlencoded login
+- Verified: `frontend npm run test` (`21/21`), `frontend npm run typecheck`, `frontend npm run build`, and final scoped review found no issues in changed Telegram/auth files
+- Blockers: real Telegram Mini App validation still requires deploy plus manual device retry
+- Next: deploy current frontend Telegram bootstrap fix, then retest `/ayan` from real Telegram and record the exact runtime outcome

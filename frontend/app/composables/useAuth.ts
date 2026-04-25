@@ -1,9 +1,11 @@
 import type { User, AuthResponse, Role } from '~/types/api'
 
+import { USE_MOCK_API } from '~/config/api.config'
 import { canUseDevInitData } from '~/utils/auth'
+import { getTelegramWebApp, waitForTelegramInitData } from '~/utils/telegram'
 
 export const useAuth = () => {
-	const { initData, isInTelegram, user: tgUser } = useTg()
+	const { initData, user: tgUser } = useTg()
 	const api = useAPI()
 	const config = useRuntimeConfig()
 
@@ -25,9 +27,21 @@ export const useAuth = () => {
 		authStatus.value = 'loading'
 		authError.value = null
 		try {
-			const response = await api.post<AuthResponse>('/auth/telegram', {
-				init_data: payload
-			})
+			const response = USE_MOCK_API
+				? await api.post<AuthResponse>('/auth/telegram', { init_data: payload })
+				: await (() => {
+					const formData = new URLSearchParams()
+					formData.set('init_data', payload)
+
+					return $fetch<AuthResponse>(`${api.baseURL.value}/auth/telegram`, {
+						method: 'POST',
+						headers: {
+							...api.headers.value,
+							'Content-Type': 'application/x-www-form-urlencoded'
+						},
+						body: formData.toString()
+					})
+				})()
 			token.value = response.token
 			user.value = response.user
 			authStatus.value = 'authenticated'
@@ -73,8 +87,21 @@ export const useAuth = () => {
 
 	// Unified login (auto-detect mode)
 	const login = async () => {
-		if (isInTelegram.value) {
-			await loginWithInitData()
+		const telegramWebApp = getTelegramWebApp()
+
+		if (telegramWebApp) {
+			authStatus.value = 'loading'
+			authError.value = null
+
+			const telegramInitData = telegramWebApp.initData || (await waitForTelegramInitData())
+
+			if (!telegramInitData) {
+				authStatus.value = 'failed'
+				authError.value = 'Telegram initData is unavailable'
+				throw new Error('Telegram initData is unavailable')
+			}
+
+			await loginWithInitData(telegramInitData)
 			return
 		}
 
