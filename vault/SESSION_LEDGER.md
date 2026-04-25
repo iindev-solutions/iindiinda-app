@@ -207,3 +207,11 @@
 - Verified: `frontend npm run test` (`28/28`), `frontend npm run typecheck`, `frontend npm run build:static` (`STATIC_API_BASE_OK`), raw `npx nuxt build --preset github_pages` + `node scripts/verify-static-api-base.mjs` (`STATIC_API_BASE_OK`), built HTML contains `apiBase:"/api"`, live HTML contains `apiBase:"/api"`, and final focused review found no issues
 - Blockers: still waiting for one clean Telegram Mini App retry after the corrected `/api` live bundle to verify the first real `/api/auth/telegram` request path
 - Next: retry AYAN once from Telegram Mini App, then inspect nginx access log for the first `/api/auth/telegram` hit or failure status
+
+## 2026-04-25 14:30 — RF Legal Audit + Platform Legal Center
+
+- Scope: audit all service visions for RF legal posture and expand shared legal surfaces beyond the old AYAN-only slice
+- Changes: added platform legal center routes, user agreement/privacy/consent/support pages, UUS/TAL/AGAL rules pages, shared footer legal bar, expanded legal-link helpers, Russian legal copy in `frontend/i18n/locales/ru.json`, and safer UUS/TAL/AGAL placeholder positioning; documented findings in `vault/wiki/architecture/legal-rf-audit.md`
+- Verified: `frontend JSON.parse(frontend/i18n/locales/ru.json)`, `frontend npm run test`, targeted eslint on changed legal files, `frontend npm run typecheck`, `frontend npm run build:static`
+- Blockers: source changes are not deployed yet; final operator/requisites details are still missing; RF personal-data localization remains unresolved because current runtime history points to Sweden-hosted infrastructure; full repo lint still has unrelated pre-existing CRLF/prettier debt outside this slice
+- Next: decide RF localization/hosting plan, fill final operator details, then deploy the new legal center when approved

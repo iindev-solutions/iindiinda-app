@@ -266,7 +266,9 @@ function handleResponseClick(response: AyanResponse) {
 						<AyanRoleSwitch @changed="handleRoleChanged" />
 					</div>
 					<div class="mt-4">
-						<AppLegalLinks compact />
+						<UButton to="/legal" color="neutral" variant="ghost" size="sm" icon="i-lucide-file-text">
+							{{ t('legal.links.center') }}
+						</UButton>
 					</div>
 				</header>
 

@@ -2,6 +2,22 @@
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
 
+## Legal Update - 2026-04-25 14:30
+
+- Audited all four service visions and current frontend copy against the intended RF legal posture
+- Expanded source-only legal center beyond AYAN with platform docs and service rules routes for AYAN, UUS, TAL, and AGAL
+- Added common legal access in source via home legal card + shared footer legal bar in default layout
+- Tightened risky placeholder copy in source:
+  1. TAL no longer positions itself around clinics/medical scenarios
+  2. AGAL no longer promises worldwide/courier-style delivery
+  3. UUS no longer implies ratings/verification that do not exist on MVP
+- Biggest unresolved compliance blocker remains RF personal-data localization: current runtime IP `89.22.226.34` geolocates to Sweden
+- Final missing production legal inputs: real operator/controller details, formal requisites, and licensed RF legal review before deploy
+- Latest owner clarification for future sessions:
+  1. operator is planned as a natural person
+  2. server/personal-data hosting is planned to move to RF later
+  3. final public contact details are still pending
+
 ## Hotfix Update - 2026-04-25 09:25
 
 - Investigated live Telegram/browser errors: blocked JS/CSS with MIME `text/html` and dynamic import failures
@@ -127,8 +143,10 @@
 
 ## Next Action
 
-1. Retry `/ayan` from real Telegram Mini App and confirm the first real `/api/auth/telegram` request now reaches backend successfully
-2. If TMA still fails, capture one fresh retry timestamp and correlate exact `/api/auth/telegram` response path
+1. Decide the RF-compliant personal-data localization/hosting plan before any "legal done" claim
+2. Fill final operator/controller details and formal support/requisites in the new legal texts
+3. Re-review the expanded legal pack with RF counsel, then deploy it with `npm run build:static`
+4. After legal-source approval, resume the pending real Telegram Mini App validation if AYAN runtime verification is still the next release gate
 
 ## API Smoke Snapshot (Live)
 

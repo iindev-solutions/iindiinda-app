@@ -37,6 +37,7 @@ Goal: ship a working AYAN MVP flow:
 - Legal pages/links are now committed, pushed, and deployed
 - Lifecycle status expansion (`matched/completed/cancelled`) is now committed, pushed, migrated, and deployed
 - Production API behavior for lifecycle states is validated (`open -> matched -> completed/cancelled`)
+- Platform-wide legal-center expansion now exists in source only; do not treat it as deploy-ready legal closure until operator details and RF data-localization posture are resolved
 
 ## Sprint Tasks
 
@@ -62,6 +63,7 @@ Goal: ship a working AYAN MVP flow:
 - Full manual Telegram Mini App UI verification is still pending on real devices
 - VPS DB migration flow was recovered after a historical partial apply; monitor schema health in next deploy window
 - No local `php`, `composer`, or `docker` in this environment for full backend execution
+- RF legal closure is still blocked by unresolved personal-data localization and final operator disclosure details
 
 ## Decisions Already Taken
 

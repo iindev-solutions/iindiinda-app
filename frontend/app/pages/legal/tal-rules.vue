@@ -9,14 +9,14 @@ type LegalSection = {
 	bullets?: string[]
 }
 
-const sections = computed(() => tm('legal.ayanRules.sections') as LegalSection[])
+const sections = computed(() => tm('legal.talRules.sections') as LegalSection[])
 </script>
 
 <template>
 	<LegalDocumentPage
 		:badge="t('legal.badge')"
-		:title="t('legal.ayanRules.title')"
-		:intro="t('legal.ayanRules.intro')"
+		:title="t('legal.talRules.title')"
+		:intro="t('legal.talRules.intro')"
 		:sections="sections"
 	/>
 </template>

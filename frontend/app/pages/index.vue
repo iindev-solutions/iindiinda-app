@@ -5,30 +5,30 @@ const { hapticFeedback } = useTg()
 const services = [
 	{
 		id: 'ayan',
-		name: 'AYAN',
+		name: t('services.ayan.name'),
 		icon: 'i-carbon-car',
-		description: t('ayan.desc'),
+		description: t('services.ayan.desc'),
 		route: '/ayan'
 	},
 	{
 		id: 'uus',
-		name: 'UUS',
+		name: t('services.uus.name'),
 		icon: 'i-carbon-tool-kit',
-		description: 'Услуги',
+		description: t('services.uus.desc'),
 		route: '/uus'
 	},
 	{
 		id: 'tal',
-		name: 'TAL',
+		name: t('services.tal.name'),
 		icon: 'i-carbon-calendar',
-		description: 'Запись',
+		description: t('services.tal.desc'),
 		route: '/tal'
 	},
 	{
 		id: 'agal',
-		name: 'AGAL',
+		name: t('services.agal.name'),
 		icon: 'i-carbon-box',
-		description: 'Посылки',
+		description: t('services.agal.desc'),
 		route: '/agal'
 	}
 ]
@@ -43,7 +43,8 @@ function handleServiceClick(service: { route: string }) {
 	<div class="index-page">
 		<div class="index-page__header">
 			<app-title />
-			<p class="index-page__subtitle">Городские сервисы</p>
+			<p class="index-page__subtitle">{{ t('home.subtitle') }}</p>
+			<p class="index-page__caption">{{ t('home.caption') }}</p>
 		</div>
 
 		<div class="index-page__services">
@@ -66,9 +67,18 @@ function handleServiceClick(service: { route: string }) {
 			<UIcon name="i-carbon-chevron-right" class="index-page__partner-arrow" />
 		</div>
 
-		<div class="mt-6">
-			<AppLegalLinks />
-		</div>
+		<UCard class="mt-6" variant="outline">
+			<div class="space-y-4">
+				<div class="space-y-2">
+					<p class="text-[10px] font-medium uppercase tracking-[0.18em] text-gray-500">
+						{{ t('legal.badge') }}
+					</p>
+					<h2 class="text-sm font-medium text-cyan-50">{{ t('legal.footer.title') }}</h2>
+					<p class="text-xs leading-relaxed text-gray-400">{{ t('legal.footer.description') }}</p>
+				</div>
+				<AppLegalLinks :show-intro="false" />
+			</div>
+		</UCard>
 	</div>
 </template>
 
@@ -89,6 +99,14 @@ function handleServiceClick(service: { route: string }) {
 	font-size: 14px;
 	color: rgb(var(--color-gray-400));
 	margin: 8px 0 0;
+}
+
+.index-page__caption {
+	font-size: 12px;
+	line-height: 1.5;
+	color: rgb(var(--color-gray-500));
+	margin: 10px auto 0;
+	max-width: 320px;
 }
 
 .index-page__services {

@@ -53,7 +53,7 @@ function reloadPage() {
 		</div>
 
 		<div class="mt-5 border-t border-gray-800 pt-4">
-			<AppLegalLinks compact />
+			<AppLegalLinks compact scope="ayan" />
 		</div>
 	</div>
 </template>

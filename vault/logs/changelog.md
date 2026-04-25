@@ -2,6 +2,46 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-25 14:30 - RF Legal Audit + Platform Legal Center Expansion
+
+### Done
+
+- Audited AYAN, UUS, TAL, and AGAL vision docs against the intended RF legal posture
+- Added platform-level legal documentation routes in source:
+  - `frontend/app/pages/legal/index.vue`
+  - `frontend/app/pages/legal/user-agreement.vue`
+  - `frontend/app/pages/legal/data-consent.vue`
+  - `frontend/app/pages/legal/support.vue`
+  - `frontend/app/pages/legal/uus-rules.vue`
+  - `frontend/app/pages/legal/tal-rules.vue`
+  - `frontend/app/pages/legal/agal-rules.vue`
+- Added shared legal UI surfaces in source:
+  - `frontend/app/components/AppFooterLegal.vue`
+  - `frontend/app/components/LegalDocumentPage.vue`
+  - expanded `frontend/app/components/AppLegalLinks.vue`
+- Expanded Russian legal content in `frontend/i18n/locales/ru.json` for platform-wide docs and service-specific rules
+- Tightened risky placeholder/service copy in source to a safer legal posture:
+  - `frontend/services/uus/app/pages/uus.vue` no rating/verification implication
+  - `frontend/services/tal/app/pages/tal.vue` no clinic/medical positioning
+  - `frontend/services/agal/app/pages/agal.vue` no worldwide/courier-style delivery promise
+- Captured the RF legal/compliance audit in `vault/wiki/architecture/legal-rf-audit.md`
+- Kept this legal-doc expansion Russian-only per current user instruction
+- Captured latest owner assumptions for future sessions: operator planned as natural person, RF hosting planned later, public contact details still pending
+
+### Verified
+
+- `frontend: node JSON.parse(frontend/i18n/locales/ru.json)` ✅
+- `frontend: npm run test` ✅ (`30 tests`)
+- `frontend: targeted eslint on changed legal files` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- Full repo `frontend: npm run lint` is still red due pre-existing CRLF/prettier debt in unrelated auth/bootstrap/config files outside this legal slice
+- Biggest unresolved RF compliance blocker is still personal-data localization: current runtime history points to `89.22.226.34`, which geolocates to Sweden
+- Final production-grade legal disclosure still needs real operator/controller details and licensed RF counsel review before deploy
+
 ## 2026-04-25 12:42 - TMA Root Cause Confirmed + Build Guard Added
 
 ### Done

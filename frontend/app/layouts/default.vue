@@ -2,6 +2,7 @@
 	<div class="tma-layout">
 		<main class="tma-main l-wrapper">
 			<slot />
+			<AppFooterLegal />
 		</main>
 		<AppBottomNav />
 	</div>

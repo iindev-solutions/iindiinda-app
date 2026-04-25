@@ -57,6 +57,7 @@ See: `vault/wiki/architecture/roadmap.md`
 - `vault/wiki/architecture/roadmap.md`
 - `vault/wiki/architecture/auth-flow.md`
 - `vault/wiki/architecture/browser-back-button.md`
+- `vault/wiki/architecture/legal-rf-audit.md`
 
 ### Services
 

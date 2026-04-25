@@ -1,25 +1,29 @@
 <script setup lang="ts">
-import { getAyanLegalLinks } from '~/utils/legal'
+import type { LegalScope } from '~/utils/legal'
+import { getLegalLinksByScope } from '~/utils/legal'
 
 const props = withDefaults(
 	defineProps<{
 		compact?: boolean
 		showIntro?: boolean
+		scope?: LegalScope
 	}>(),
 	{
 		compact: false,
-		showIntro: true
+		showIntro: true,
+		scope: 'platform'
 	}
 )
 
 const { t } = useI18n()
-const links = getAyanLegalLinks()
+const links = computed(() => getLegalLinksByScope(props.scope, t))
+const introKey = computed(() => `legal.intros.${props.scope}`)
 </script>
 
 <template>
 	<div :class="props.compact ? 'space-y-2' : 'space-y-3'">
 		<p v-if="props.showIntro" class="text-xs leading-relaxed text-gray-500">
-			{{ t('legal.intro') }}
+			{{ t(introKey) }}
 		</p>
 		<div class="flex flex-wrap gap-2">
 			<UButton
@@ -30,7 +34,7 @@ const links = getAyanLegalLinks()
 				variant="outline"
 				:size="props.compact ? 'xs' : 'sm'"
 			>
-				{{ t(`legal.links.${link.key}`) }}
+				{{ link.label }}
 			</UButton>
 		</div>
 	</div>

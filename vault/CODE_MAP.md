@@ -271,6 +271,31 @@
 - `frontend/app/plugins/init.ts`: now watches delayed `WebApp`/`initData` arrival to call `ready()`/`expand()` and retry Telegram auto-login
 - `frontend/app/composables/useAuth.ts`: mock auth still goes through shared mock API path, while real Telegram login keeps form-urlencoded `init_data` transport
 
+## Audit Notes - 2026-04-25 14:30
+
+- Platform legal center expanded in source:
+  - `frontend/app/pages/legal/index.vue`
+  - `frontend/app/pages/legal/user-agreement.vue`
+  - `frontend/app/pages/legal/data-consent.vue`
+  - `frontend/app/pages/legal/support.vue`
+  - `frontend/app/pages/legal/uus-rules.vue`
+  - `frontend/app/pages/legal/tal-rules.vue`
+  - `frontend/app/pages/legal/agal-rules.vue`
+- Shared legal layout surfaces added:
+  - `frontend/app/components/AppFooterLegal.vue`
+  - `frontend/app/components/LegalDocumentPage.vue`
+- Legal helper now supports platform + all service scopes:
+  - `frontend/app/utils/legal.ts`
+  - `frontend/app/components/AppLegalLinks.vue`
+- Frontend Russian locale now contains platform-level legal pack and service-specific rules:
+  - `frontend/i18n/locales/ru.json`
+- Placeholder marketing copy was tightened to safer legal posture in:
+  - `frontend/services/uus/app/pages/uus.vue`
+  - `frontend/services/tal/app/pages/tal.vue`
+  - `frontend/services/agal/app/pages/agal.vue`
+- RF legal/compliance audit captured in:
+  - `vault/wiki/architecture/legal-rf-audit.md`
+
 ## Audit Notes - 2026-04-25 12:42
 
 - `frontend/app/composables/useAPI.ts`: HTTPS runtime now normalizes insecure absolute API bases back to same-origin `/api`
