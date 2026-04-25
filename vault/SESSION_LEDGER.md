@@ -216,6 +216,14 @@
 - Blockers: source changes are not deployed yet; final operator/requisites details are still missing; RF personal-data localization remains unresolved because current runtime history points to Sweden-hosted infrastructure; full repo lint still has unrelated pre-existing CRLF/prettier debt outside this slice
 - Next: decide RF localization/hosting plan, fill final operator details, then deploy the new legal center when approved
 
+## 2026-04-25 15:05 — Legal Rendering Fix + Navigation Simplify
+
+- Scope: fix broken legal text rendering and reduce repeated legal-entry surfaces to one place in the main menu
+- Changes: resolved vue-i18n `tm()` rendering bug by using `rt()` in `frontend/app/components/LegalDocumentPage.vue`, removed repeated legal links/blocks from AYAN/UUS/TAL/AGAL screens and default layout, and kept the legal-center entry only on the home bottom card
+- Verified: targeted eslint on changed files, `frontend npm run typecheck`, `frontend npm run build:static`
+- Blockers: fix is local until committed/pushed/deployed; legal content itself still needs final operator details and RF hosting closure
+- Next: commit this fix and redeploy live if approved
+
 ## 2026-04-25 14:45 — Legal Center Commit Push Deploy
 
 - Scope: finalize the current legal-center slice by committing, pushing, and redeploying it to live VPS hosting

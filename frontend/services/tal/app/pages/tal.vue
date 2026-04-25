@@ -62,13 +62,6 @@ const cards = computed(() => [
 				</NuxtLink>
 				<p class="text-center text-xs text-gray-500">{{ t('servicePages.tal.status') }}</p>
 			</div>
-
-			<UCard class="mt-6" variant="outline">
-				<div class="space-y-4">
-					<p class="text-xs leading-relaxed text-gray-400">{{ t('legal.serviceDisclaimers.tal') }}</p>
-					<AppLegalLinks compact scope="tal" />
-				</div>
-			</UCard>
 		</div>
 	</div>
 </template>

@@ -2,6 +2,33 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-25 15:05 - Legal Text Rendering Fix + Fewer Entry Points
+
+### Done
+
+- Fixed legal document rendering bug where section titles/paragraphs were shown as vue-i18n message objects instead of plain Russian text
+- Root cause: legal pages used `tm()` results directly in templates; rendered values now go through `rt()` inside `frontend/app/components/LegalDocumentPage.vue`
+- Reduced legal entry points in source so legal access is no longer repeated across many screens
+- Kept legal access only on the main menu/home screen bottom card and removed extra legal blocks from:
+  - `frontend/app/layouts/default.vue`
+  - `frontend/services/ayan/app/components/AyanAccessState.vue`
+  - `frontend/services/ayan/app/pages/ayan/index.vue`
+  - `frontend/services/uus/app/pages/uus.vue`
+  - `frontend/services/tal/app/pages/tal.vue`
+  - `frontend/services/agal/app/pages/agal.vue`
+- Removed now-unused `frontend/app/components/AppFooterLegal.vue`
+
+### Verified
+
+- `frontend: targeted eslint on changed files` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- Legal routes remain live and reachable; only the number of navigation entry points is reduced
+- Main menu bottom card is now the single intended in-app entry to the legal center
+
 ## 2026-04-25 14:45 - Platform Legal Center Deployed Live
 
 ### Done

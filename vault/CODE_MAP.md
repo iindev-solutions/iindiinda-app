@@ -281,12 +281,12 @@
   - `frontend/app/pages/legal/uus-rules.vue`
   - `frontend/app/pages/legal/tal-rules.vue`
   - `frontend/app/pages/legal/agal-rules.vue`
-- Shared legal layout surfaces added:
-  - `frontend/app/components/AppFooterLegal.vue`
+- Shared legal document renderer added:
   - `frontend/app/components/LegalDocumentPage.vue`
 - Legal helper now supports platform + all service scopes:
   - `frontend/app/utils/legal.ts`
   - `frontend/app/components/AppLegalLinks.vue`
+- Current legal navigation decision: expose legal center from main menu/home bottom card only; do not repeat legal CTA blocks across service landing screens
 - Frontend Russian locale now contains platform-level legal pack and service-specific rules:
   - `frontend/i18n/locales/ru.json`
 - Placeholder marketing copy was tightened to safer legal posture in:

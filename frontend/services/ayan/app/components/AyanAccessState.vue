@@ -51,9 +51,5 @@ function reloadPage() {
 				{{ t('common.close') }}
 			</UButton>
 		</div>
-
-		<div class="mt-5 border-t border-gray-800 pt-4">
-			<AppLegalLinks compact scope="ayan" />
-		</div>
 	</div>
 </template>

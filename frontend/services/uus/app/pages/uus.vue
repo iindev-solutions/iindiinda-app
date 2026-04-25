@@ -60,13 +60,6 @@ const cards = computed(() => [
 				<UButton block size="lg" color="primary" disabled>{{ t('servicePages.uus.cta') }}</UButton>
 				<p class="text-center text-xs text-gray-500">{{ t('servicePages.uus.status') }}</p>
 			</div>
-
-			<UCard class="mt-6" variant="outline">
-				<div class="space-y-4">
-					<p class="text-xs leading-relaxed text-gray-400">{{ t('legal.serviceDisclaimers.uus') }}</p>
-					<AppLegalLinks compact scope="uus" />
-				</div>
-			</UCard>
 		</div>
 	</div>
 </template>

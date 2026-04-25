@@ -5,6 +5,8 @@ type LegalSection = {
 	bullets?: string[]
 }
 
+const { rt } = useI18n()
+
 defineProps<{
 	badge: string
 	title: string
@@ -22,21 +24,21 @@ defineProps<{
 				<h1 class="text-2xl font-semibold text-cyan-50">{{ title }}</h1>
 				<p class="text-sm leading-relaxed text-gray-400">{{ intro }}</p>
 			</header>
-			<UCard v-for="section in sections" :key="section.title" variant="outline">
+			<UCard v-for="section in sections" :key="rt(section.title)" variant="outline">
 				<div class="space-y-3">
-					<h2 class="text-lg font-medium text-cyan-50">{{ section.title }}</h2>
+					<h2 class="text-lg font-medium text-cyan-50">{{ rt(section.title) }}</h2>
 					<p
 						v-for="paragraph in section.paragraphs || []"
-						:key="paragraph"
+						:key="rt(paragraph)"
 						class="text-sm leading-relaxed text-gray-300"
 					>
-						{{ paragraph }}
+						{{ rt(paragraph) }}
 					</p>
 					<ul
 						v-if="section.bullets?.length"
 						class="list-disc space-y-2 pl-5 text-sm leading-relaxed text-gray-300"
 					>
-						<li v-for="bullet in section.bullets" :key="bullet">{{ bullet }}</li>
+						<li v-for="bullet in section.bullets" :key="rt(bullet)">{{ rt(bullet) }}</li>
 					</ul>
 				</div>
 			</UCard>
