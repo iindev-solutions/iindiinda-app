@@ -2,6 +2,34 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-25 14:45 - Platform Legal Center Deployed Live
+
+### Done
+
+- Committed the platform-wide legal expansion as `287b95c` `feat(legal): expand platform legal center`
+- Pushed `front/ayan` to GitHub and fast-forwarded VPS repo `/var/www/iind-app` to the same commit
+- Uploaded the rebuilt static bundle from `frontend/.output/public` to VPS and redeployed via `public_new -> public` swap
+- Preserved older hashed assets from `public_prev/assets` for cache-compat safety during rollout
+
+### Verified
+
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`287b95c`)
+- Live root HTML matches current built asset references ✅ (`GRAbHFO1.js`, `entry.CaE_wa2P.css`)
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal/uus-rules` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal/tal-rules` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/legal/agal-rules` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/assets/GRAbHFO1.js` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/assets/entry.CaE_wa2P.css` ✅ (`200`)
+
+### Important
+
+- New legal center is now live as current product copy and structure, but it still needs final operator details, RF-hosting completion, and counsel review before any "legal fully closed" claim
+- Next legal follow-up is document finalization, not UI plumbing
+
 ## 2026-04-25 14:30 - RF Legal Audit + Platform Legal Center Expansion
 
 ### Done

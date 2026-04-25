@@ -37,7 +37,7 @@ Goal: ship a working AYAN MVP flow:
 - Legal pages/links are now committed, pushed, and deployed
 - Lifecycle status expansion (`matched/completed/cancelled`) is now committed, pushed, migrated, and deployed
 - Production API behavior for lifecycle states is validated (`open -> matched -> completed/cancelled`)
-- Platform-wide legal-center expansion now exists in source only; do not treat it as deploy-ready legal closure until operator details and RF data-localization posture are resolved
+- Platform-wide legal-center expansion is now deployed live; do not treat it as final legal closure until operator details and RF data-localization posture are resolved
 
 ## Sprint Tasks
 

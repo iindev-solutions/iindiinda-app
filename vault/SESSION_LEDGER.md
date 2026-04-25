@@ -215,3 +215,11 @@
 - Verified: `frontend JSON.parse(frontend/i18n/locales/ru.json)`, `frontend npm run test`, targeted eslint on changed legal files, `frontend npm run typecheck`, `frontend npm run build:static`
 - Blockers: source changes are not deployed yet; final operator/requisites details are still missing; RF personal-data localization remains unresolved because current runtime history points to Sweden-hosted infrastructure; full repo lint still has unrelated pre-existing CRLF/prettier debt outside this slice
 - Next: decide RF localization/hosting plan, fill final operator details, then deploy the new legal center when approved
+
+## 2026-04-25 14:45 — Legal Center Commit Push Deploy
+
+- Scope: finalize the current legal-center slice by committing, pushing, and redeploying it to live VPS hosting
+- Changes: committed `287b95c`, pushed `front/ayan`, fast-forwarded VPS repo, uploaded rebuilt static bundle, swapped `public_new -> public`, and preserved older hashed assets for cache compatibility
+- Verified: origin and VPS head at `287b95c`, live HTML references current assets `GRAbHFO1.js` + `entry.CaE_wa2P.css`, and live `/`, `/legal`, `/legal/uus-rules`, `/legal/tal-rules`, `/legal/agal-rules`, `/api/health` all return `200`
+- Blockers: legal closure is still not final because operator details, public requisites, RF personal-data localization, and counsel review remain pending
+- Next: continue legal work from document finalization, not from UI plumbing

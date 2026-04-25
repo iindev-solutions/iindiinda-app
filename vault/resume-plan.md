@@ -91,6 +91,9 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
+- Latest legal-center commit is `287b95c` `feat(legal): expand platform legal center`
+- Local, GitHub, and VPS repository states are aligned at `287b95c`
+- Live frontend bundle is redeployed with the expanded legal center and service-specific rules pages
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
 - Latest auth hardening code commit is `af93b9b` `fix(auth): harden tma bootstrap`
 - Static deploy prevention now exists in source via guarded `npm run build:static`
@@ -99,7 +102,11 @@
 - Verified live routes (`200`):
   - `/`
   - `/ayan`
+  - `/legal`
   - `/legal/ayan-terms`
+  - `/legal/uus-rules`
+  - `/legal/tal-rules`
+  - `/legal/agal-rules`
   - `/api/health`
 - Backend migrations are now fully applied, including lifecycle migration:
   - `2026_04_24_120000_expand_ayan_target_statuses`
@@ -144,9 +151,9 @@
 ## Next Action
 
 1. Decide the RF-compliant personal-data localization/hosting plan before any "legal done" claim
-2. Fill final operator/controller details and formal support/requisites in the new legal texts
-3. Re-review the expanded legal pack with RF counsel, then deploy it with `npm run build:static`
-4. After legal-source approval, resume the pending real Telegram Mini App validation if AYAN runtime verification is still the next release gate
+2. Fill final operator/controller details and formal support/requisites in the now-live legal texts
+3. Re-review the live legal pack with RF counsel and patch wording if required
+4. After legal finalization, resume the pending real Telegram Mini App validation if AYAN runtime verification is still the next release gate
 
 ## API Smoke Snapshot (Live)
 
