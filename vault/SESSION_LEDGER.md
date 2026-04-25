@@ -239,3 +239,11 @@
 - Verified: VPS head at `f5a6f21`, live `/`, `/legal`, `/legal/ayan-terms`, and `/api/health` return `200`; local `frontend npm run build:static` stayed green
 - Blockers: legal content still needs final operator details, RF hosting/localization closure, and counsel review
 - Next: continue legal work from content finalization and operator details, not from rendering/UI bugfixes
+
+## 2026-04-25 15:45 — Collapsible Service Explainers
+
+- Scope: replace always-visible service explanation blocks with collapsed-by-default descriptions and concrete examples on each service entry screen
+- Changes: added shared `AppServiceAbout` component, wired it into AYAN/UUS/TAL/AGAL pages, added Russian description/example copy in `frontend/i18n/locales/ru.json`, committed `728a5ee`, pushed `front/ayan`, and redeployed the static frontend bundle to VPS
+- Verified: locale JSON parse, targeted eslint on changed files, `frontend npm run typecheck`, `frontend npm run build:static`, VPS head at `728a5ee`, and live `200` checks for `/`, `/ayan`, `/uus`, `/tal`, `/agal`
+- Blockers: no new blocker from this UI slice; broader legal finalization still needs operator details, RF hosting/localization closure, and counsel review
+- Next: continue legal-content finalization or adjust service copy/examples if product wording changes

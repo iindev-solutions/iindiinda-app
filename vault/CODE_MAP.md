@@ -27,6 +27,7 @@
 | `ErrorMessage.vue` | Отображение ошибки |
 | `LoadingSpinner.vue` | Спиннер загрузки |
 | `ServiceCard.vue` | Карточка сервиса на главной |
+| `AppServiceAbout.vue` | Сворачиваемый блок "что это за сервис + примеры" для экранов сервисов |
 
 ### Pages (`frontend/app/pages/`)
 

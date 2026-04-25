@@ -91,9 +91,9 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Latest legal-center commit is `287b95c` `feat(legal): expand platform legal center`
-- Local, GitHub, and VPS repository states are aligned at `287b95c`
-- Live frontend bundle is redeployed with the expanded legal center and service-specific rules pages
+- Latest service-explainer UI commit is `728a5ee` `feat(ui): add collapsible service explainers`
+- Local, GitHub, and VPS repository states are aligned at `728a5ee`
+- Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
 - Latest auth hardening code commit is `af93b9b` `fix(auth): harden tma bootstrap`

@@ -2,6 +2,35 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-25 15:45 - Collapsible Service Explainers Deployed Live
+
+### Done
+
+- Added shared `frontend/app/components/AppServiceAbout.vue` for collapsed-by-default service explanations with examples
+- Updated AYAN, UUS, TAL, and AGAL service entry screens to show one expandable "what this service is + examples" block instead of always-open explanatory cards
+- Added Russian copy for service descriptions/examples in `frontend/i18n/locales/ru.json`
+- Committed UI change as `728a5ee` `feat(ui): add collapsible service explainers`
+- Pushed `front/ayan`, fast-forwarded VPS repo, rebuilt static frontend, and redeployed live bundle
+
+### Verified
+
+- `frontend: JSON.parse(frontend/i18n/locales/ru.json)` ✅
+- `frontend: targeted eslint on changed files` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`728a5ee`)
+- Live root HTML matches current built asset references ✅ (`De5PU_SX.js`, `entry.DHbSU5FY.css`)
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/uus` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/tal` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/agal` ✅ (`200`)
+
+### Important
+
+- Service explanations are now hidden by default and shown only after user expands the block
+- This change affects service-entry UX only; legal center flow remains unchanged
+
 ## 2026-04-25 15:20 - Legal Render Fix Deployed Live
 
 ### Done
