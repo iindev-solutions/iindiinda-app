@@ -122,7 +122,7 @@
 - Runtime change shipped as `5e81817` `fix(ayan): simplify tma create form`
 - Pushed `front/ayan`, fast-forwarded VPS repo, rebuilt static bundle, and redeployed live frontend hosting
 - Live root HTML now references current assets `entry.7LYcEUNC.css` and `DTyp_Z4D.js`
-- Required next proof: real Telegram Mini App retest on the create trip/request flow to confirm whether removing the calendar/popover layer and transition solved the zoom issue
+- Real Telegram Mini App retest is now positive: user confirmed the create flow no longer shows the disruptive zoom after removing the calendar/popover layer and disabling Telegram slideover transition
 
 ## Stop Point
 
@@ -190,11 +190,19 @@
 
 ## Next Action
 
-1. Retest the AYAN create trip/request flow inside the real Telegram Mini App and confirm whether route/date/time/price/comment focus still causes disruptive zoom or viewport jump
-2. Specifically verify that the removed calendar popover and disabled Telegram slideover transition improved the create flow
-3. If any zoom/focus breakage remains, capture the exact affected control/device/timestamp and move the create flow to a dedicated page or simpler custom sheet in the next slice
-4. Continue the pending real Telegram Mini App E2E validation for create/respond/accept/matched/completed/cancelled flows after the zoom issue is either fixed or isolated
-5. Keep the legal gap list parked until operator/hosting facts are ready, then resume the legal-text pass
+1. Continue the pending real Telegram Mini App E2E validation for AYAN after the now-confirmed zoom fix
+2. Manually verify the full AYAN flow on real devices:
+   - create trip
+   - create request
+   - respond
+   - accept
+   - matched
+   - completed
+   - cancelled
+   - contact reveal
+   - status visibility in detail pages and `My`
+3. Capture any remaining Telegram-only UX/runtime bugs from that E2E pass and patch them in focused slices
+4. Keep the legal gap list parked until operator/hosting facts are ready, then resume the legal-text pass
 
 ## API Smoke Snapshot (Live)
 
@@ -215,12 +223,12 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: validate the live AYAN Telegram Mini App create-form simplification.
-1) open `/ayan` from the real Telegram Mini App
-2) test create trip/request form focus on route fields, native date input, time, price, and comment
-3) confirm whether disruptive zoom/viewport jump is gone or still happens on any specific control/device
-4) if issue remains, capture the exact field + device + timestamp; next likely fix is to move create flow out of the slideover
-5) after zoom verification, continue the pending AYAN TMA E2E flow validation and update vault files with the result
+Current task: continue AYAN real-device Telegram Mini App E2E after the confirmed create-form zoom fix.
+1) validate create trip and create request on real devices
+2) validate respond -> accept -> matched -> completed/cancelled
+3) verify contact reveal and status rendering in detail pages and `My`
+4) if a Telegram-only bug appears, capture exact step + timestamp + device and patch in a focused slice
+5) update vault files with the manual verification outcome
 ```
 
 ## Deployment Context
@@ -232,4 +240,4 @@ Current task: validate the live AYAN Telegram Mini App create-form simplificatio
 
 ## One-Line Summary
 
-Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; next safe move is one real Telegram Mini App retest focused on focus/zoom behavior.
+Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; zoom issue is manually confirmed fixed, so next safe move is the remaining full AYAN Telegram Mini App E2E pass.

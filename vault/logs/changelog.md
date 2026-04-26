@@ -33,8 +33,8 @@
 ### Important
 
 - Live AYAN no longer uses the `UPopover + UCalendar` date picker in the create slideover
-- Next proof still requires a real Telegram Mini App retest, because the remaining zoom issue may be tied to the slideover/container behavior rather than only font sizing
-- If zoom still survives after this slice, the next stronger option is to move create flow out of the slideover into a dedicated page or a simpler custom sheet
+- Real Telegram Mini App manual check is now positive: user confirmed the create flow no longer triggers the disruptive zoom after this simplification
+- The next stronger fallback (dedicated create page / simpler custom sheet) is no longer immediately required unless a new device-specific report appears
 
 ## 2026-04-26 04:30 - TMA No-Zoom Fix Deployed Live
 
