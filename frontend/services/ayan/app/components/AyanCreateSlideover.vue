@@ -182,7 +182,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 				@update:model-value="handleTypeChange"
 			/>
 
-			<UForm :state="state" :validate="validate" @submit="onSubmit">
+			<UForm class="tma-no-zoom" :state="state" :validate="validate" @submit="onSubmit">
 				<div class="space-y-4">
 					<UFormField :label="t('ayan.create.from')" name="from_address" required eager-validation>
 						<UInput
@@ -216,12 +216,12 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 									variant="outline"
 									size="lg"
 									icon="i-lucide-calendar"
-									class="w-full justify-between"
+									class="tma-no-zoom-button w-full justify-between"
 								>
 									<span class="truncate">{{ displayDate }}</span>
 								</UButton>
 								<template #content>
-									<UCalendar v-model="calendarValue" :min-value="minCalendarDate" />
+									<UCalendar v-model="calendarValue" :min-value="minCalendarDate" class="tma-no-zoom-calendar" />
 								</template>
 							</UPopover>
 						</UFormField>

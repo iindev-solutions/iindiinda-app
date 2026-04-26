@@ -2,6 +2,62 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 00:40 - TMA No-Zoom Form Fix + AYAN Copy Refresh
+
+### Done
+
+- Added a focused no-zoom fix for the AYAN create slideover in Telegram/iOS-style WebView conditions
+- Updated `frontend/app/assets/css/main.css` with TMA-safe font-size rules for form controls and calendar buttons:
+  - `.tma-no-zoom :is(input, textarea, select)` -> `font-size: 16px !important`
+  - `.tma-no-zoom-button` and `.tma-no-zoom-calendar button` -> `font-size: 16px !important`
+  - added `-webkit-text-size-adjust: 100%`
+- Applied the no-zoom classes in `frontend/services/ayan/app/components/AyanCreateSlideover.vue`:
+  - `UForm` -> `class="tma-no-zoom"`
+  - calendar trigger button -> `class="tma-no-zoom-button ..."`
+  - `UCalendar` -> `class="tma-no-zoom-calendar"`
+- Refreshed AYAN service-explainer copy in `frontend/i18n/locales/ru.json` so examples feel more human and concrete:
+  - recurring driver route example
+  - passenger request example with limited budget / ask-for-a-ride tone
+
+### Verified
+
+- `node -e "JSON.parse(...ru.json...)"` ✅ (`RU_JSON_OK`)
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- This fix is local/source-only in the current workspace; no commit or live redeploy was done in this step
+- Real-device Telegram Mini App retest is still required to confirm the zoom issue is fully removed on the affected input/calendar flow
+
+## 2026-04-26 00:10 - Legal Text Gap Review
+
+### Done
+
+- Reviewed current live/source legal texts in `frontend/i18n/locales/ru.json` across:
+  - legal center copy
+  - user agreement
+  - privacy policy
+  - data-processing consent
+  - support/complaints page
+  - AYAN/UUS/TAL/AGAL service rules
+  - AYAN safety rules
+- Compared current wording with the previously captured RF legal audit constraints in `vault/wiki/architecture/legal-rf-audit.md`
+- Identified the concrete missing content that still blocks a production-grade legal sign-off
+
+### Key Gaps Confirmed
+
+- All legal documents still lack final operator/controller disclosure fields
+- Personal-data localization / hosting geography is still the main unresolved compliance blocker and cannot be fixed by copy alone
+- Privacy/consent texts still need concrete retention periods, processor/hosting disclosure, rights-exercise contact data, and acceptance/revocation mechanics
+- User-agreement text still needs stronger clauses for acceptance method, liability limits, account suspension/appeal flow, dispute handling, and service-availability/no-warranty posture
+- Service-specific rules still need sharper prohibited-category and responsibility wording before legal finalization
+
+### Important
+
+- Do not add false RF-localization claims to public texts until infrastructure actually moves to an RF-compliant setup
+- Next legal-content step is to fill real operator details, decide the hosting/localization posture, then patch each legal document accordingly
+
 ## 2026-04-25 15:45 - Collapsible Service Explainers Deployed Live
 
 ### Done

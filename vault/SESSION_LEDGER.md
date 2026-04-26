@@ -247,3 +247,19 @@
 - Verified: locale JSON parse, targeted eslint on changed files, `frontend npm run typecheck`, `frontend npm run build:static`, VPS head at `728a5ee`, and live `200` checks for `/`, `/ayan`, `/uus`, `/tal`, `/agal`
 - Blockers: no new blocker from this UI slice; broader legal finalization still needs operator details, RF hosting/localization closure, and counsel review
 - Next: continue legal-content finalization or adjust service copy/examples if product wording changes
+
+## 2026-04-26 00:10 — Legal Text Gap Review
+
+- Scope: review all current Russian legal texts and identify what still must be added before production-grade legal sign-off
+- Changes: audited legal center copy, platform docs, AYAN safety/rules, and UUS/TAL/AGAL rules against the RF legal audit notes
+- Verified: reviewed `frontend/i18n/locales/ru.json`, `vault/wiki/architecture/legal-rf-audit.md`, and `vault/CODE_MAP.md`
+- Blockers: operator/controller details, hosting/localization posture, retention/processor disclosure, and final counsel review are still unresolved
+- Next: collect real operator data and hosting facts, then patch each legal text with the missing clauses
+
+## 2026-04-26 00:40 — TMA No-Zoom Fix + AYAN Example Copy
+
+- Scope: quickly reduce Telegram/iOS zoom breakage in the AYAN create flow and make the AYAN explainer examples more concrete
+- Changes: added zoom-safe CSS/classes for AYAN create-form inputs and calendar buttons, updated `AyanCreateSlideover.vue`, and refreshed AYAN service-about copy in `frontend/i18n/locales/ru.json`
+- Verified: `JSON.parse(frontend/i18n/locales/ru.json)`, `frontend npm run typecheck`, `frontend npm run build:static`
+- Blockers: real Telegram device verification is still needed to confirm the zoom issue is fully gone in the affected TMA flow
+- Next: retest create trip/request inside Telegram Mini App and confirm focus/calendar open no longer trigger disruptive zoom

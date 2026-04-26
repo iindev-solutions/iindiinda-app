@@ -18,6 +18,28 @@
   2. server/personal-data hosting is planned to move to RF later
   3. final public contact details are still pending
 
+## Legal Text Gap Review - 2026-04-26 00:10
+
+- Reviewed all current Russian legal texts in `frontend/i18n/locales/ru.json` and captured the missing clauses that still block production-grade legal sign-off
+- Do not patch the texts blindly before factual inputs exist; otherwise the docs risk making false promises about infrastructure, timelines, or verification
+- Platform-wide missing facts still required before the wording pass:
+  1. final operator/controller identity and requisites
+  2. real support email/address for legally significant requests
+  3. real hosting / processor / geography facts for personal-data handling
+  4. retention periods for accounts, logs, support cases, and backups
+  5. chosen age threshold and dispute / claims path
+- Main document-level gaps captured for later patching:
+  1. `userAgreement` still needs acceptance mechanics, age/deal-capacity wording, no-warranty/service-availability posture, content-license/moderation terms, suspension/appeal flow, and dispute handling
+  2. `privacy` still needs operator disclosure, data-source detail, processor/hosting geography disclosure, concrete retention periods, rights-exercise channel, and security/backup wording
+  3. `dataConsent` still needs operator identity, consent duration, explicit acceptance/revocation mechanics, consequences of withdrawal, and transfer/processor wording
+  4. `support` still needs a formal email/address, requester-identification flow, and clearer split for fraud/safety/data-rights requests
+  5. service rules still need sharper wording before final sign-off:
+     - AYAN: stronger anti-dispatch / anti-carrier wording and explicit ride-risk allocation
+     - UUS: stronger anti-employment wording and clearer regulated-category exclusions
+     - TAL: stronger non-medical boundary and no-health-data wording
+     - AGAL: unknown-parcel prohibition, no-insurance/default-compensation wording, and high-risk contents limits
+- Safe follow-up plan: gather factual inputs first, then patch the legal texts in one focused pass
+
 ## Hotfix Update - 2026-04-25 09:25
 
 - Investigated live Telegram/browser errors: blocked JS/CSS with MIME `text/html` and dynamic import failures
@@ -88,11 +110,26 @@
   - `frontend/app/utils/api-base.ts`
 - Latest auth hardening code commit in this session: `af93b9b` `fix(auth): harden tma bootstrap`
 
+## UI Update - 2026-04-26 00:40
+
+- Investigated the reported Telegram Mini App zoom issue in the AYAN create flow where focusing inputs or opening the calendar caused disruptive iOS/WebView zoom
+- Added a quick source-level mitigation in:
+  1. `frontend/app/assets/css/main.css`
+  2. `frontend/services/ayan/app/components/AyanCreateSlideover.vue`
+- Fix shape:
+  - `-webkit-text-size-adjust: 100%`
+  - force `font-size: 16px` for create-form inputs/textarea/select
+  - force `font-size: 16px` for the calendar trigger button and teleported `UCalendar` buttons
+- Refreshed AYAN service-about examples in `frontend/i18n/locales/ru.json` with more human recurring-route / low-budget request wording
+- Local verification is green (`JSON.parse`, `npm run typecheck`, `npm run build:static`), but there was no commit, push, or live redeploy in this step
+- Required next proof: real Telegram Mini App retest on the create trip/request flow to confirm focus and calendar open no longer trigger broken zoom
+
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Latest service-explainer UI commit is `728a5ee` `feat(ui): add collapsible service explainers`
-- Local, GitHub, and VPS repository states are aligned at `728a5ee`
+- Latest committed branch tip remains `728a5ee` `feat(ui): add collapsible service explainers`
+- Local workspace now also contains uncommitted AYAN TMA zoom-fix + copy-refresh changes on top of `728a5ee`
+- GitHub and VPS repository states are still aligned at `728a5ee`
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
@@ -151,10 +188,10 @@
 
 ## Next Action
 
-1. Decide the RF-compliant personal-data localization/hosting plan before any "legal done" claim
-2. Fill final operator/controller details and formal support/requisites in the now-live legal texts
-3. Re-review the live legal pack with RF counsel and patch wording if required
-4. After legal finalization, resume the pending real Telegram Mini App validation if AYAN runtime verification is still the next release gate
+1. Retest the AYAN create trip/request flow inside the real Telegram Mini App and confirm focusing inputs or opening the calendar no longer causes disruptive zoom
+2. If the zoom issue is fixed, commit the local AYAN TMA zoom-fix + copy-refresh slice and redeploy with `npm run build:static`
+3. Continue the pending real Telegram Mini App E2E validation for create/respond/accept/matched/completed/cancelled flows
+4. Keep the legal gap list parked until operator/hosting facts are ready, then resume the legal-text pass
 
 ## API Smoke Snapshot (Live)
 
