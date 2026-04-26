@@ -139,7 +139,8 @@
 - Root `DESIGN.md` now exists as the redesign baseline for colors, typography, spacing, rounding, and shared component patterns
 - First redesign implementation slice is now present in local source for shared shell, home/landing pages, and AYAN/AGAL entry-feed screens
 - Redesigned bottom nav now highlights the tapped service immediately on first tap via optimistic pending-route state
-- Current local redesign should be treated as variant 1 checkpoint before trying a simpler follow-up variant
+- Commit `bc7bdc4` is the saved redesign variant 1 checkpoint
+- Current local working tree is a simpler redesign variant 2 candidate with calmer shell/cards/nav treatment
 - Latest shipped runtime commit is `53af2d7` `feat(agal): ship frontend MVP flow`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
@@ -203,9 +204,9 @@
 
 ## Next Action
 
-1. Keep the current redesign as variant 1 checkpoint
-2. Try a simpler variant 2 next while preserving the same working backend/API behavior
-3. After choosing the better direction, continue into AYAN + AGAL detail pages and create flows
+1. Compare the current local variant 2 against committed variant 1 (`bc7bdc4`)
+2. Choose the better shared shell direction or keep refining variant 2
+3. Only after that choice, continue into AYAN + AGAL detail pages and create flows
 4. Keep scope disciplined:
    - frontend-first
    - no broad backend refactors unless a redesign task clearly requires it
@@ -231,10 +232,10 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: preserve the current redesign as variant 1 and explore a simpler follow-up variant.
+Current task: compare committed redesign variant 1 with the new simpler local variant 2.
 1) keep backend/API contracts as-is unless redesign work clearly needs a targeted change
 2) keep first-tap bottom-nav active behavior intact
-3) simplify shell/home/service/feed presentation next
+3) decide whether variant 2 is better enough to commit
 4) only after choosing direction, redesign detail and create flows
 5) keep legal parked and patch runtime bugs only if they block redesign or live usage
 ```
@@ -248,4 +249,4 @@ Current task: preserve the current redesign as variant 1 and explore a simpler f
 
 ## One-Line Summary
 
-Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign now has both a root DESIGN.md source of truth and a local variant 1 UI checkpoint with fixed first-tap bottom-nav activation.
+Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign now has a root DESIGN.md source of truth, a committed variant 1 checkpoint (`bc7bdc4`), and a simpler local variant 2 candidate for comparison.

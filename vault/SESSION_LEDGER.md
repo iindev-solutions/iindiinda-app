@@ -168,6 +168,14 @@
 - Blockers: redesign can still be simplified further; detail/create screens remain the next large surface
 - Next: commit this state as redesign variant 1, then iterate toward a simpler variant 2
 
+## 2026-04-26 19:20 — Simpler Variant 2
+
+- Scope: try a calmer/simpler redesign direction while preserving the saved variant 1 checkpoint
+- Changes: reduced ambient effects and gradients, flattened shell/cards/nav styling, simplified the home/service presentation, kept the first-tap nav fix, and restored the AYAN access-state gate
+- Verified: `cd frontend && npm run typecheck`; `cd frontend && npm run build:static` (`STATIC_API_BASE_OK`)
+- Blockers: variant 2 is still local-only and needs visual comparison/decision before commit or deploy
+- Next: compare variant 2 against committed variant 1, then either keep refining or commit the chosen direction
+
 ## 2026-04-25 09:25 — Production Asset MIME Hotfix
 
 - Scope: investigate and recover live AYAN startup failures caused by blocked module/CSS loads

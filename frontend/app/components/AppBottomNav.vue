@@ -18,8 +18,7 @@ function isRouteActive(path: string, target: string) {
 }
 
 const activeRoute = computed(() => {
-	const currentPath = route.path
-	const visualPath = pendingRoute.value ?? currentPath
+	const visualPath = pendingRoute.value ?? route.path
 	const match = navItems.find((item) => isRouteActive(visualPath, item.route))
 	return match?.route || '/'
 })
@@ -41,18 +40,17 @@ async function handleNavigate(path: string) {
 <template>
 	<nav class="bottom-nav">
 		<div class="bottom-nav__dock">
-			<NuxtLink
+			<button
 				v-for="item in navItems"
 				:key="item.route"
-				:to="item.route"
+				type="button"
 				class="bottom-nav__item"
 				:class="{ 'bottom-nav__item--active': activeRoute === item.route }"
-				:aria-current="activeRoute === item.route ? 'page' : undefined"
 				@click="handleNavigate(item.route)"
 			>
 				<UIcon :name="item.icon" class="bottom-nav__icon" />
 				<span class="bottom-nav__label">{{ item.label }}</span>
-			</NuxtLink>
+			</button>
 		</div>
 	</nav>
 </template>
@@ -72,13 +70,12 @@ async function handleNavigate(path: string) {
 	margin: 0 auto;
 	display: grid;
 	grid-template-columns: repeat(5, minmax(0, 1fr));
-	gap: 6px;
-	padding: 8px;
-	border: 1px solid rgb(154 166 178 / 0.12);
-	border-radius: 24px;
-	background: rgb(12 16 19 / 0.88);
-	backdrop-filter: blur(18px);
-	box-shadow: 0 18px 48px rgb(0 0 0 / 0.28);
+	gap: 4px;
+	padding: 6px;
+	border: 1px solid var(--border-color);
+	border-radius: 18px;
+	background: rgb(11 15 18 / 0.94);
+	box-shadow: 0 8px 28px rgb(0 0 0 / 0.24);
 }
 
 .bottom-nav__item {
@@ -87,24 +84,18 @@ async function handleNavigate(path: string) {
 	align-items: center;
 	justify-content: center;
 	gap: 4px;
-	min-height: 54px;
-	padding: 8px 4px;
-	border-radius: 18px;
-	color: rgb(125 141 149 / 0.84);
-	text-decoration: none;
+	min-height: 50px;
+	padding: 7px 4px;
+	border-radius: 14px;
+	color: var(--text-muted);
 	transition:
 		background-color 150ms ease-out,
-		color 150ms ease-out,
-		transform 150ms ease-out;
+		color 150ms ease-out;
 }
 
 .bottom-nav__item--active {
-	background: linear-gradient(180deg, rgb(94 218 198 / 0.16), rgb(94 218 198 / 0.1));
+	background: rgb(94 218 198 / 0.08);
 	color: rgb(var(--color-cyan-300));
-}
-
-.bottom-nav__item:active {
-	transform: translateY(1px);
 }
 
 .bottom-nav__icon {

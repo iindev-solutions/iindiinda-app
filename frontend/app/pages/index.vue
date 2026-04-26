@@ -40,15 +40,7 @@ const services = [
 				<p class="app-kicker">iindiinda</p>
 				<AppTitle />
 				<p class="index-page__subtitle">{{ t('home.subtitle') }}</p>
-				<p class="app-copy app-copy--hero">
-					{{ t('home.caption') }}
-				</p>
-				<div class="app-badge-row">
-					<span v-for="service in services" :key="service.id" class="app-chip">
-						<UIcon :name="service.icon" />
-						{{ service.name }}
-					</span>
-				</div>
+				<p class="app-copy app-copy--hero">{{ t('home.caption') }}</p>
 			</div>
 		</section>
 
@@ -71,33 +63,29 @@ const services = [
 
 <style scoped>
 .index-page__hero {
-	margin-bottom: 16px;
-	padding: 20px;
-	border-radius: 28px;
-	background:
-		linear-gradient(135deg, rgb(94 218 198 / 0.1), transparent 40%),
-		linear-gradient(180deg, rgb(23 28 33 / 0.98), rgb(18 22 26 / 0.94));
+	margin-bottom: 14px;
+	padding: 18px;
 }
 
 .index-page__hero-body {
 	display: flex;
 	flex-direction: column;
-	gap: 14px;
+	gap: 12px;
 }
 
 .index-page__subtitle {
-	font-size: 18px;
+	font-size: 16px;
 	font-weight: 600;
-	line-height: 1.3;
+	line-height: 1.35;
 	letter-spacing: -0.02em;
 	color: var(--text-primary);
 	margin: 0;
 }
 
 .index-page__legal {
-	margin-top: 16px;
-	border-radius: 24px;
-	border-color: rgb(154 166 178 / 0.12);
-	background: rgb(18 22 26 / 0.8);
+	margin-top: 14px;
+	border-radius: 20px;
+	border-color: var(--border-color);
+	background: var(--bg-level-1);
 }
 </style>

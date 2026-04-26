@@ -256,8 +256,7 @@ function handleResponseClick(response: AyanResponse) {
 
 <template>
 	<div class="app-page">
-		<!-- <AyanAccessState v-if="accessState !== 'ready'" :state="accessState" /> -->
-		<AyanAccessState v-if="false" :state="accessState" />
+		<AyanAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
 		<template v-else>
 			<AppHero

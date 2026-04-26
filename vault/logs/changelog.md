@@ -2,6 +2,30 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 19:20 - Simpler Redesign Variant 2 Applied
+
+### Done
+
+- Reworked the current redesign toward a simpler visual variant with less glow, fewer gradients, flatter cards, and a calmer shell
+- Simplified shared shell and home/service primitives in:
+  - `frontend/app/assets/css/main.css`
+  - `frontend/app/layouts/default.vue`
+  - `frontend/app/components/AppBottomNav.vue`
+  - `frontend/app/components/ServiceCard.vue`
+  - `frontend/app/pages/index.vue`
+- Kept the first-tap bottom-nav active-state fix intact in the simpler variant
+- Restored the AYAN access-state gate after an accidental disabled-state regression in `frontend/services/ayan/app/pages/ayan/index.vue`
+
+### Verified
+
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- Commit `bc7bdc4` remains the saved redesign **variant 1** checkpoint
+- Current working tree is a simpler **variant 2** candidate and is not committed yet
+
 ## 2026-04-26 18:55 - Redesign V1 Checkpoint + Bottom Nav Fix
 
 ### Done
