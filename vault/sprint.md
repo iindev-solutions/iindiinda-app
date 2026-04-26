@@ -73,9 +73,12 @@ Goal: ship a working AYAN MVP flow:
 
 ## Next Practical Step
 
-1. Decide post-MVP priority: legal finalization vs. next product/service phase
-2. If legal is next, resume from `vault/resume-plan.md` legal gap list and gather operator/hosting facts
-3. If product expansion is next, define the next scoped service milestone (likely UUS, TAL, or AGAL) before implementation
+1. Post-MVP product direction is now chosen: AGAL goes next while legal waits
+2. Use `vault/wiki/services/agal/api-contract.md` as the implementation source of truth for AGAL MVP
+3. First AGAL implementation slice:
+   - align backend placeholder routes to the AYAN-like dual-surface model
+   - scaffold AGAL frontend structure to mirror AYAN
+   - keep scope to create/feed/respond/contact only
 4. Keep AYAN in maintenance mode and patch only if new runtime regressions appear
 
 ## Definition Of Progress For This Sprint
@@ -91,3 +94,4 @@ This sprint is complete only when:
 
 - AYAN MVP sprint can now be treated as complete for runtime/UI scope based on green live API smoke plus user-reported real-device Telegram Mini App verification
 - Remaining legal/compliance work is still important, but it is no longer blocking the AYAN MVP runtime handoff
+- Next execution target is AGAL MVP because it offers the highest AYAN architecture reuse among the remaining service tracks

@@ -136,6 +136,8 @@
 | `README.md` | Концепция |
 | `app/pages/agal.vue` | Parent wrapper → /agal |
 
+**API contract**: `vault/wiki/services/agal/api-contract.md`
+
 ### UUS (`frontend/services/uus/`) — Услуги
 
 | Файл | Назначение |

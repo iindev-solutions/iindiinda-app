@@ -287,3 +287,11 @@
 - Verified: user-reported real-device testing is green; no remaining AYAN blocker was reported for MVP scope
 - Blockers: no active AYAN MVP runtime blocker remains from this manual pass
 - Next: decide whether to switch to legal finalization or the next product/service phase
+
+## 2026-04-26 06:20 — AGAL Chosen As Next Track
+
+- Scope: lock the first post-AYAN implementation target so next sessions do not need to re-decide direction
+- Changes: recorded that AGAL goes next while legal waits, added `vault/wiki/services/agal/api-contract.md`, and updated sprint/resume docs to treat AGAL as the active next build target
+- Verified: reviewed AGAL vision, roadmap, system design, current placeholder AGAL frontend/backend state, and the new AGAL contract doc
+- Blockers: AGAL still has only placeholder code in app/backend and now needs actual implementation slices
+- Next: start AGAL by aligning backend route shape and scaffolding frontend structure to reuse AYAN patterns

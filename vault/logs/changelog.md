@@ -2,6 +2,26 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 06:20 - Post-MVP Direction Switched To AGAL
+
+### Done
+
+- Recorded the product decision to move to AGAL after AYAN MVP instead of starting legal work immediately
+- Added new AGAL implementation source-of-truth doc:
+  - `vault/wiki/services/agal/api-contract.md`
+- Locked the first AGAL implementation strategy around AYAN reuse:
+  - dual-surface model (`routes`, `requests`, `responses`, `my/*`)
+  - same contact-reveal pattern
+  - same lifecycle model (`open`, `matched`, `completed`, `cancelled`)
+  - same create/feed/respond MVP scope
+- Updated `vault/master_index.md`, `vault/sprint.md`, and `vault/resume-plan.md` so future sessions resume directly into AGAL instead of re-deciding the next track
+
+### Important
+
+- AGAL is now the chosen first post-AYAN implementation target
+- Legal/compliance work remains parked, not cancelled
+- Existing backend placeholder `/agal/parcels*` stubs should be treated as temporary and replaced by the new AGAL contract shape
+
 ## 2026-04-26 06:00 - AYAN Manual TMA MVP Verification Green
 
 ### Done

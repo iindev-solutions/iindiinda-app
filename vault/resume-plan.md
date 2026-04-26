@@ -190,11 +190,12 @@
 
 ## Next Action
 
-1. Decide the next post-MVP priority:
-   - legal/compliance finalization, or
-   - next scoped service phase beyond AYAN
-2. If legal is next, resume from the captured legal gap list and gather operator/hosting/retention facts before editing public texts
-3. If product expansion is next, define the next service milestone and success criteria before implementation
+1. Post-MVP direction is chosen: AGAL goes next while legal waits
+2. Use `vault/wiki/services/agal/api-contract.md` as the new AGAL implementation source of truth
+3. Start AGAL with the smallest high-reuse slice:
+   - align backend placeholder endpoints to the AYAN-like `routes / requests / responses / my/*` model
+   - scaffold frontend AGAL pages/composables/types to mirror AYAN structure
+   - keep scope to create/feed/respond/contact only
 4. Keep AYAN in maintenance mode and patch only if new runtime regressions appear
 
 ## API Smoke Snapshot (Live)
@@ -216,11 +217,12 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: AYAN MVP runtime validation is complete.
-Choose next track before coding:
-1) legal/compliance finalization using the captured gap list, or
-2) next scoped service phase after AYAN
-If AYAN regresses on a real device, capture exact step + timestamp + device and patch in a focused slice.
+Current task: start AGAL as the first post-AYAN product track.
+1) read `vault/wiki/services/agal/api-contract.md`
+2) align backend placeholder endpoints to the AGAL dual-surface model
+3) scaffold frontend AGAL structure to reuse AYAN patterns
+4) keep AGAL MVP narrow: create/feed/respond/contact only
+5) if AYAN regresses on a real device, patch it separately without broad refactors
 ```
 
 ## Deployment Context
@@ -232,4 +234,4 @@ If AYAN regresses on a real device, capture exact step + timestamp + device and 
 
 ## One-Line Summary
 
-Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; user-reported manual TMA verification is green, so AYAN MVP can move to maintenance while the team chooses the next post-MVP track.
+Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; user-reported manual TMA verification is green, so AYAN MVP is in maintenance mode and AGAL is the chosen next implementation track.
