@@ -2,6 +2,32 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 09:00 - Redesign Chosen As Next Track
+
+### Done
+
+- Recorded the decision to pause new feature work before broader UI growth and start a project redesign next
+- Captured the current working baseline as:
+  - AYAN runtime/UI is accepted for MVP use
+  - AGAL frontend/backend MVP is live and user-reported as likely fine enough for now
+  - legal/compliance work remains parked
+- Locked the redesign start rule for the next session:
+  - keep backend contracts as the baseline unless a redesign task clearly requires otherwise
+  - begin from shared UI shell and design-system primitives first
+  - then move to home/service landing pages, then feed/detail/create flows
+- Marked current AGAL work as a stable pre-redesign baseline rather than the next active implementation stream
+
+### Verified
+
+- User-reported direction decision: redesign now, before going deeper into UI expansion ✅
+- Current live baseline already recorded in vault from prior verification steps ✅
+
+### Important
+
+- Next session should start redesign work, not new AGAL feature expansion
+- Redesign should stay frontend-first and avoid unnecessary backend contract churn
+- AYAN and AGAL remain patch-only unless a redesign pass or runtime bug requires targeted changes
+
 ## 2026-04-26 08:45 - AGAL Frontend MVP Flow Shipped Live
 
 ### Done

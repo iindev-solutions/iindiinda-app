@@ -319,3 +319,11 @@
 - Verified: locale JSON parse for `ru.json` and `sah.json`, `frontend npm run typecheck`, `frontend npm run build:static`, VPS head at `53af2d7`, live `/agal` `200`, live `/agal/route/1` `200`, live `/api/health` `200`, guest `/api/agal/routes` `401`, and live root HTML still contains `apiBase:"/api"`
 - Blockers: AGAL still lacks real-device Telegram Mini App validation; runtime/device-specific bugs may still surface only after manual testing
 - Next: manually verify AGAL in Telegram/browser runtime and patch any create/respond/contact issues found there
+
+## 2026-04-26 09:00 — Redesign Handoff Locked
+
+- Scope: freeze the current live product state and redirect the next session away from new feature work into redesign
+- Changes: recorded that AYAN and AGAL are acceptable working baselines for now, legal remains parked, and the next session should begin a frontend-first redesign from shared shell/design-system primitives outward
+- Verified: user direction is explicit — redesign now before deeper UI growth; prior live AYAN/AGAL baseline verification already exists in vault
+- Blockers: no redesign spec exists yet, so the next session must first define the visual/system direction before touching many pages
+- Next: start redesign in this order — shared shell/primitives, then home/service landing pages, then feed/detail/create flows

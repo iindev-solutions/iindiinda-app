@@ -199,18 +199,16 @@
 
 ## Next Action
 
-1. Continue AGAL after the shipped frontend-MVP slice
-2. Next AGAL implementation step:
-   - manually verify AGAL in real Telegram Mini App / browser runtime
-   - patch any create/respond/contact bugs found on device
-   - add only small AGAL UX polish that follows directly from runtime findings
-3. Keep AGAL MVP scope narrow:
-   - create
-   - feed
-   - respond
-   - contact reveal
-   - matched/completed/cancelled lifecycle
-4. Keep AYAN in maintenance mode and patch only if new runtime regressions appear
+1. Start the project redesign in the next session
+2. Redesign order:
+   - define shared visual direction, shell, spacing, cards, buttons, inputs, and tabs first
+   - then redesign home + service landing pages
+   - then redesign feed/detail/create flows for AYAN and AGAL on top of the current working backend contracts
+3. Keep scope disciplined:
+   - frontend-first
+   - no broad backend refactors unless a redesign task clearly requires it
+   - treat AYAN and AGAL current behavior as the working baseline to preserve
+4. Keep legal/compliance parked and keep product logic patch-only unless a real runtime issue appears
 
 ## API Smoke Snapshot (Live)
 
@@ -231,12 +229,12 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: continue AGAL after the shipped frontend-MVP slice.
-1) manually validate AGAL in real Telegram/browser runtime
-2) patch any runtime or UX bugs found in create/feed/respond/contact flow
-3) keep AGAL MVP narrow: create/feed/respond/contact only
-4) reuse AYAN lifecycle/contact patterns where still useful
-5) if AYAN regresses on a real device, patch it separately without broad refactors
+Current task: start the project redesign from the now-stable AYAN + AGAL baseline.
+1) keep backend/API contracts as-is unless redesign work clearly needs a targeted change
+2) redesign shared shell and design-system primitives first
+3) then redesign home + service landing pages
+4) then redesign feed/detail/create flows
+5) keep legal parked and patch runtime bugs only if they block redesign or live usage
 ```
 
 ## Deployment Context
@@ -248,4 +246,4 @@ Current task: continue AGAL after the shipped frontend-MVP slice.
 
 ## One-Line Summary
 
-Live AYAN remains green for MVP, and AGAL now has both real backend persistence and a deployed frontend MVP flow on VPS; next step is real-device/runtime validation and focused polish.
+Live AYAN remains green for MVP, AGAL now has a live frontend/backend MVP baseline, and the next session should shift from feature work to a frontend-first project redesign.
