@@ -1,7 +1,7 @@
 # iind.agal — Аҕал (Delivery via existing routes)
 
-**Version**: v0.2
-**Status**: scaffold started after AYAN MVP
+**Version**: v0.3
+**Status**: backend persistence shipped, frontend MVP flow in progress
 
 ## Core concept
 
@@ -69,11 +69,15 @@ GET    /agal/my/responses
 
 ## Current implementation note
 
-Current repository state is the first AGAL scaffold slice:
+Current repository state now includes:
 
-- frontend structure starts mirroring AYAN
-- backend placeholder shape now matches the planned AGAL contract
-- real persistence/controllers/details are still a next slice
+- real backend persistence for `routes / requests / responses / my/*`
+- AGAL frontend feed, create flow, role switcher, and detail pages mirroring AYAN MVP patterns
+- live contact-reveal and lifecycle UI for `open / matched / completed / cancelled`
+
+Still not finished:
+
+- broader UX polish and deeper AGAL-specific refinements beyond the narrow MVP slice
 
 Source of truth:
 
