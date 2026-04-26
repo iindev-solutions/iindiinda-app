@@ -268,6 +268,6 @@
 
 - Scope: ship the AYAN TMA no-zoom fix to production so it can be tested inside the real Telegram Mini App
 - Changes: committed runtime fix `52da837`, pushed `front/ayan`, fast-forwarded VPS repo, redeployed `frontend/.output/public` to live static hosting with directory swap + old-asset cache compatibility, then synced vault notes in `d9ef630`
-- Verified: deployed runtime code at `52da837`, latest local/origin/VPS repo head at `d9ef630`, `frontend npm run typecheck`, `frontend npm run build:static`, live `/`, `/ayan`, `/api/health`, and deployed asset URLs all return `200`
+- Verified: deployed runtime code at `52da837`, local/origin/VPS repo aligned on the latest post-deploy vault-sync tip, `frontend npm run typecheck`, `frontend npm run build:static`, live `/`, `/ayan`, `/api/health`, and deployed asset URLs all return `200`
 - Blockers: only real-device Telegram verification remains for this zoom-specific slice
 - Next: open AYAN in Telegram Mini App and check input focus + calendar open behavior on the create form

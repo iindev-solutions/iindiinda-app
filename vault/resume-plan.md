@@ -131,8 +131,8 @@
 
 - Current branch: `front/ayan`
 - Latest live frontend/runtime code commit is `52da837` `fix(ayan): prevent tma form zoom`
-- Latest branch tip for repository + vault sync is `d9ef630` `docs(vault): record tma zoom deploy`
-- Local, GitHub, and VPS repository states are aligned at `d9ef630`
+- Latest branch tip contains post-deploy vault sync notes for the zoom-fix rollout
+- Local, GitHub, and VPS repository states are aligned on the current branch tip
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
