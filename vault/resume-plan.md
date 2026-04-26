@@ -128,8 +128,8 @@
 
 - Current branch: `front/ayan`
 - Latest live frontend/runtime code commit is `5e81817` `fix(ayan): simplify tma create form`
-- Latest branch tip contains post-deploy vault sync notes for the create-form simplification rollout
 - Local, GitHub, and VPS repository states are aligned on the current branch tip
+- User completed manual Telegram Mini App testing and reported AYAN works end-to-end well enough for MVP acceptance
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
@@ -190,19 +190,12 @@
 
 ## Next Action
 
-1. Continue the pending real Telegram Mini App E2E validation for AYAN after the now-confirmed zoom fix
-2. Manually verify the full AYAN flow on real devices:
-   - create trip
-   - create request
-   - respond
-   - accept
-   - matched
-   - completed
-   - cancelled
-   - contact reveal
-   - status visibility in detail pages and `My`
-3. Capture any remaining Telegram-only UX/runtime bugs from that E2E pass and patch them in focused slices
-4. Keep the legal gap list parked until operator/hosting facts are ready, then resume the legal-text pass
+1. Decide the next post-MVP priority:
+   - legal/compliance finalization, or
+   - next scoped service phase beyond AYAN
+2. If legal is next, resume from the captured legal gap list and gather operator/hosting/retention facts before editing public texts
+3. If product expansion is next, define the next service milestone and success criteria before implementation
+4. Keep AYAN in maintenance mode and patch only if new runtime regressions appear
 
 ## API Smoke Snapshot (Live)
 
@@ -223,12 +216,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: continue AYAN real-device Telegram Mini App E2E after the confirmed create-form zoom fix.
-1) validate create trip and create request on real devices
-2) validate respond -> accept -> matched -> completed/cancelled
-3) verify contact reveal and status rendering in detail pages and `My`
-4) if a Telegram-only bug appears, capture exact step + timestamp + device and patch in a focused slice
-5) update vault files with the manual verification outcome
+Current task: AYAN MVP runtime validation is complete.
+Choose next track before coding:
+1) legal/compliance finalization using the captured gap list, or
+2) next scoped service phase after AYAN
+If AYAN regresses on a real device, capture exact step + timestamp + device and patch in a focused slice.
 ```
 
 ## Deployment Context
@@ -240,4 +232,4 @@ Current task: continue AYAN real-device Telegram Mini App E2E after the confirme
 
 ## One-Line Summary
 
-Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; zoom issue is manually confirmed fixed, so next safe move is the remaining full AYAN Telegram Mini App E2E pass.
+Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; user-reported manual TMA verification is green, so AYAN MVP can move to maintenance while the team chooses the next post-MVP track.

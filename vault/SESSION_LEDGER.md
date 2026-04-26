@@ -279,3 +279,11 @@
 - Verified: locale JSON parse for `ru.json` and `sah.json`, `frontend npm run typecheck`, `frontend npm run build:static`, live `/ayan`, `/api/health`, and current deployed asset URLs return `200`
 - Blockers: no blocker reported for this zoom-specific slice after the real Telegram retest; broader AYAN E2E still remains
 - Next: continue AYAN Telegram Mini App E2E beyond create-form zoom, especially create/respond/accept/matched/completed/cancelled flows
+
+## 2026-04-26 06:00 — AYAN MVP Manual TMA Verification Green
+
+- Scope: capture the completed real-device Telegram Mini App verification outcome for AYAN MVP
+- Changes: recorded the user's final manual QA result that the zoom issue is gone and the AYAN MVP flow is working well enough for MVP acceptance
+- Verified: user-reported real-device testing is green; no remaining AYAN blocker was reported for MVP scope
+- Blockers: no active AYAN MVP runtime blocker remains from this manual pass
+- Next: decide whether to switch to legal finalization or the next product/service phase

@@ -15,16 +15,16 @@ Goal: ship a working AYAN MVP flow:
 3. respond
 4. exchange contact details
 
-## Resume Point - 2026-04-24 20:15
+## Resume Point - 2026-04-26 06:00
 
 - Current branch: `front/ayan`
-- Latest shipped commit is `a3591a0` (`feat(ayan): expand trip/request lifecycle statuses`)
-- Current branch tip for handoff docs/sync is `d019d0c`
+- Latest live runtime code includes the AYAN create-form simplification commit `5e81817` (`fix(ayan): simplify tma create form`)
+- Local, origin, and VPS repositories are aligned on the current branch tip
 - Live HTTPS runtime is available at `https://iindiinda.duckdns.org`
-- Legal routes (`/legal/ayan-terms`, `/legal/privacy`, `/legal/ayan-safety`) are deployed and reachable on live HTTPS
-- Lifecycle statuses (`matched/completed/cancelled`) are now deployed on backend + frontend
-- Live synthetic API smoke for lifecycle transitions is completed and green
-- Local, origin, and VPS repo heads are aligned at `d019d0c`
+- Legal routes are deployed and reachable on live HTTPS
+- Lifecycle statuses (`matched/completed/cancelled`) are deployed on backend + frontend
+- Live synthetic API smoke for lifecycle transitions is green
+- User-reported real-device Telegram Mini App verification is green for AYAN MVP scope
 - Continue from: `vault/resume-plan.md`
 
 ## Current Reality
@@ -33,7 +33,7 @@ Goal: ship a working AYAN MVP flow:
 - Backend AYAN runtime is live on VPS with Laravel + Sanctum + MySQL
 - HTTPS and HTTP -> HTTPS redirect are active for DuckDNS domain
 - `TELEGRAM_BOT_TOKEN` is present on VPS backend env (prior blocker fixed)
-- Role switch UI, detail back button, status cards, price field polish, and no-zoom form sizing are already deployed
+- Role switch UI, detail back button, status cards, and Telegram-safe create form are deployed
 - Legal pages/links are now committed, pushed, and deployed
 - Lifecycle status expansion (`matched/completed/cancelled`) is now committed, pushed, migrated, and deployed
 - Production API behavior for lifecycle states is validated (`open -> matched -> completed/cancelled`)
@@ -52,15 +52,14 @@ Goal: ship a working AYAN MVP flow:
 | 1.7 | Response flow, contact link, accept/reject | DONE | - |
 | 1.8 | Feed filters by route/date | DONE | - |
 | 1.9 | Nuxt UI color alignment | DONE | - |
-| 1.10 | Integration manual Telegram/browser verification | IN_PROGRESS | still pending full real-device pass |
+| 1.10 | Integration manual Telegram/browser verification | DONE | user-reported real-device pass green |
 | 1.11 | Legal pages + footer/access legal links | DONE | shipped in `f13f6b6` |
 | 1.12 | Legal-only commit + VPS deploy | DONE | live on `https://iindiinda.duckdns.org` |
 | 1.13 | Lifecycle status expansion for targets/responses | DONE | shipped in `a3591a0` |
-| 1.14 | QA complete E2E verification | IN_PROGRESS | pending full manual Telegram/browser UI pass |
+| 1.14 | QA complete E2E verification | DONE | user-reported AYAN MVP flow green |
 
 ## Active Blockers
 
-- Full manual Telegram Mini App UI verification is still pending on real devices
 - VPS DB migration flow was recovered after a historical partial apply; monitor schema health in next deploy window
 - No local `php`, `composer`, or `docker` in this environment for full backend execution
 - RF legal closure is still blocked by unresolved personal-data localization and final operator disclosure details
@@ -74,10 +73,10 @@ Goal: ship a working AYAN MVP flow:
 
 ## Next Practical Step
 
-1. Run full manual Telegram/browser UI E2E for create/respond/accept/match-complete/match-cancel flows
-2. Validate lifecycle statuses in live AYAN UI on `/ayan`, `/ayan/trip/:id`, `/ayan/request/:id`, and `My` tab cards
-3. Compare manual UI outcomes with already green API smoke behavior
-4. Record any runtime edge cases from production and patch in a focused follow-up slice
+1. Decide post-MVP priority: legal finalization vs. next product/service phase
+2. If legal is next, resume from `vault/resume-plan.md` legal gap list and gather operator/hosting facts
+3. If product expansion is next, define the next scoped service milestone (likely UUS, TAL, or AGAL) before implementation
+4. Keep AYAN in maintenance mode and patch only if new runtime regressions appear
 
 ## Definition Of Progress For This Sprint
 
@@ -87,3 +86,8 @@ This sprint is complete only when:
 - legal pages and links are committed and live in production
 - lifecycle status expansion is verified and deployed as a separate safe slice
 - `vault/` contains an exact stop point with no hidden chat-only state
+
+## Sprint Status
+
+- AYAN MVP sprint can now be treated as complete for runtime/UI scope based on green live API smoke plus user-reported real-device Telegram Mini App verification
+- Remaining legal/compliance work is still important, but it is no longer blocking the AYAN MVP runtime handoff

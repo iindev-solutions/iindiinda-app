@@ -2,6 +2,27 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 06:00 - AYAN Manual TMA MVP Verification Green
+
+### Done
+
+- Recorded the user's real-device Telegram Mini App verification outcome after the create-form simplification rollout
+- User reported that the disruptive zoom issue is gone and that AYAN now works end-to-end well enough for MVP acceptance
+- Treated the AYAN MVP runtime/UI validation as green based on the completed manual test pass
+
+### Verified
+
+- Manual verification source: user-completed Telegram Mini App testing ✅
+- Reported result: "all works" / "for MVP ... all ok" ✅
+- Previously deployed runtime slice remains the live baseline for the verified create-form behavior:
+  - `5e81817` `fix(ayan): simplify tma create form`
+
+### Important
+
+- This confirmation is user-reported manual QA, not an automated test artifact
+- AYAN MVP runtime validation can now be treated as complete unless a new device-specific regression appears
+- Next decision moves from AYAN bug-fixing toward post-MVP priorities: legal finalization vs. next product phase/service
+
 ## 2026-04-26 05:40 - TMA Create Form Simplified And Deployed
 
 ### Done
