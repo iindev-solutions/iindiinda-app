@@ -110,26 +110,28 @@
   - `frontend/app/utils/api-base.ts`
 - Latest auth hardening code commit in this session: `af93b9b` `fix(auth): harden tma bootstrap`
 
-## UI Update - 2026-04-26 00:40
+## UI Update - 2026-04-26 04:30
 
 - Investigated the reported Telegram Mini App zoom issue in the AYAN create flow where focusing inputs or opening the calendar caused disruptive iOS/WebView zoom
-- Added a quick source-level mitigation in:
+- Shipped the mitigation in:
   1. `frontend/app/assets/css/main.css`
   2. `frontend/services/ayan/app/components/AyanCreateSlideover.vue`
+  3. `frontend/i18n/locales/ru.json`
 - Fix shape:
   - `-webkit-text-size-adjust: 100%`
   - force `font-size: 16px` for create-form inputs/textarea/select
   - force `font-size: 16px` for the calendar trigger button and teleported `UCalendar` buttons
-- Refreshed AYAN service-about examples in `frontend/i18n/locales/ru.json` with more human recurring-route / low-budget request wording
-- Local verification is green (`JSON.parse`, `npm run typecheck`, `npm run build:static`), but there was no commit, push, or live redeploy in this step
+  - refreshed AYAN service-about examples with more human recurring-route / low-budget request wording
+- Committed as `52da837` `fix(ayan): prevent tma form zoom`
+- Pushed `front/ayan`, fast-forwarded VPS repo, rebuilt static bundle, and redeployed live frontend hosting
+- Live root HTML now references current assets `entry.7LYcEUNC.css` and `DjBoV2vJ.js`
 - Required next proof: real Telegram Mini App retest on the create trip/request flow to confirm focus and calendar open no longer trigger broken zoom
 
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Latest committed branch tip remains `728a5ee` `feat(ui): add collapsible service explainers`
-- Local workspace now also contains uncommitted AYAN TMA zoom-fix + copy-refresh changes on top of `728a5ee`
-- GitHub and VPS repository states are still aligned at `728a5ee`
+- Latest committed branch tip is `52da837` `fix(ayan): prevent tma form zoom`
+- Local, GitHub, and VPS repository states are aligned at `52da837`
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
@@ -180,16 +182,18 @@
 - Backend (VPS checkout):
   - `./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php` ✅ (`16 tests, 127 assertions`)
 - Runtime:
+  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`52da837`)
   - `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
   - `curl https://iindiinda.duckdns.org/` contains `apiBase:"/api"` ✅
+  - live root HTML references `entry.7LYcEUNC.css` and `DjBoV2vJ.js` ✅
 
 ## Next Action
 
 1. Retest the AYAN create trip/request flow inside the real Telegram Mini App and confirm focusing inputs or opening the calendar no longer causes disruptive zoom
-2. If the zoom issue is fixed, commit the local AYAN TMA zoom-fix + copy-refresh slice and redeploy with `npm run build:static`
+2. If any zoom/focus breakage remains, capture the exact affected field/device and patch the create UI again in a focused follow-up slice
 3. Continue the pending real Telegram Mini App E2E validation for create/respond/accept/matched/completed/cancelled flows
 4. Keep the legal gap list parked until operator/hosting facts are ready, then resume the legal-text pass
 
@@ -212,12 +216,12 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: ship and validate the local Telegram bootstrap auth fix for AYAN TMA.
-1) note that root cause is split between delayed Telegram bootstrap and poisoned static `apiBase`
-2) use `npm run build:static` for any future VPS static frontend deploy
-3) retry `/ayan` from a real Telegram Mini App and confirm signed `initData` reaches backend auth successfully
-4) if TMA still fails, capture one fresh retry timestamp and correlate the exact `/api/auth/telegram` response path
-5) update vault files with manual verification outcome
+Current task: validate the live AYAN Telegram Mini App create-flow zoom fix.
+1) open `/ayan` from the real Telegram Mini App
+2) test create trip/request form focus on route fields, time, price, comment, and calendar open
+3) confirm whether disruptive zoom is gone or still happens on any specific control/device
+4) if any zoom/focus issue remains, capture the exact field + device + timestamp and patch the create UI in a focused slice
+5) after zoom verification, continue the pending AYAN TMA E2E flow validation and update vault files with the result
 ```
 
 ## Deployment Context
@@ -229,4 +233,4 @@ Current task: ship and validate the local Telegram bootstrap auth fix for AYAN T
 
 ## One-Line Summary
 
-Live HTML is corrected back to same-origin `/api` and source now contains a guarded static deploy path; next safe move is one clean Telegram Mini App retry and immediate log correlation.
+Live AYAN now includes the create-form no-zoom mitigation; next safe move is one real Telegram Mini App retest focused on input focus and calendar open behavior.

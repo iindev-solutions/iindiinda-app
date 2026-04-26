@@ -2,6 +2,34 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 04:30 - TMA No-Zoom Fix Deployed Live
+
+### Done
+
+- Committed the AYAN create-flow zoom mitigation and copy refresh as `52da837` `fix(ayan): prevent tma form zoom`
+- Pushed `front/ayan` to GitHub and fast-forwarded VPS repo `/var/www/iind-app` to the same commit
+- Redeployed the static frontend bundle from `frontend/.output/public` to `/var/www/iind-app/frontend/public` using the safe directory-swap flow
+- Preserved prior hashed assets from `public_prev/assets` for cache-compat safety during rollout
+
+### Verified
+
+- `git rev-parse --short HEAD` ✅ (`52da837`)
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`52da837`)
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- Live root HTML references current assets ✅ (`entry.7LYcEUNC.css`, `DjBoV2vJ.js`)
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/assets/entry.7LYcEUNC.css` ✅ (`200 text/css`)
+- `curl -I https://iindiinda.duckdns.org/assets/DjBoV2vJ.js` ✅ (`200 application/javascript`)
+
+### Important
+
+- The AYAN create-flow no-zoom fix is now live for Telegram Mini App retesting
+- Next required proof is a real-device TMA check that input focus and calendar open no longer trigger disruptive zoom
+
 ## 2026-04-26 00:40 - TMA No-Zoom Form Fix + AYAN Copy Refresh
 
 ### Done
