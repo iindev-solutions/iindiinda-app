@@ -26,8 +26,9 @@
 | `EmptyState.vue` | Пустое состояние списка |
 | `ErrorMessage.vue` | Отображение ошибки |
 | `LoadingSpinner.vue` | Спиннер загрузки |
-| `ServiceCard.vue` | Карточка сервиса на главной |
-| `AppServiceAbout.vue` | Сворачиваемый блок "что это за сервис + примеры" для экранов сервисов |
+| `ServiceCard.vue` | Redesigned home service card with shared shell styling and direct service CTA |
+| `AppServiceAbout.vue` | Redesigned collapsible "what this service is + examples" block for service screens |
+| `AppHero.vue` | Shared redesign hero/header block for home-adjacent and service entry screens |
 
 ### Pages (`frontend/app/pages/`)
 
@@ -249,6 +250,7 @@
 - `backend/routes/api.php` — Все API маршруты
 - `vault/wiki/services/ayan/api-contract.md` — Финальный API контракт AYAN
 - `vault/wiki/services/agal/api-contract.md` — Активный контракт AGAL для post-AYAN build
+- `DESIGN.md` — shared redesign-system source of truth for visual tokens, component patterns, and shared shell direction
 
 ## Audit Notes — 2026-04-23
 
@@ -334,3 +336,29 @@
 - `frontend/scripts/build-static.mjs`: guarded static build wrapper that forces `NUXT_PUBLIC_API_BASE=/api` during VPS-style static builds
 - `frontend/scripts/verify-static-api-base.mjs`: post-build guard that fails if generated HTML bakes any insecure absolute `apiBase`
 - `frontend/.env`: treat as local-only frontend dev convenience; never trust it for production static deploys
+
+## Audit Notes - 2026-04-26 18:25
+
+- First redesign implementation slice now lives in source, not only in `DESIGN.md`
+- Shared redesign primitives currently implemented in:
+  - `frontend/app/assets/css/main.css`
+  - `frontend/app/layouts/default.vue`
+  - `frontend/app/components/AppHero.vue`
+  - `frontend/app/components/AppBottomNav.vue`
+  - `frontend/app/components/AppTitle.vue`
+  - `frontend/app/components/ServiceCard.vue`
+  - `frontend/app/components/AppServiceAbout.vue`
+  - `frontend/app/components/EmptyState.vue`
+- Home + service entry redesign coverage now includes:
+  - `frontend/app/pages/index.vue`
+  - `frontend/services/uus/app/pages/uus.vue`
+  - `frontend/services/tal/app/pages/tal.vue`
+  - `frontend/services/ayan/app/pages/ayan/index.vue`
+  - `frontend/services/agal/app/pages/agal/index.vue`
+- AYAN/AGAL detail pages and create flows are still the next redesign target
+
+## Audit Notes - 2026-04-26 17:20
+
+- Root `DESIGN.md` added as the first redesign artifact for the frontend-first restyling track
+- Current token baseline covers colors, typography, spacing, rounding, and shared components for shell/cards/buttons/inputs/tabs/status badges
+- Validate future edits with `node .tmp-designmd/package/dist/index.js lint DESIGN.md` until the package is installed or wrapped differently in project tooling

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const { hapticFeedback } = useTg()
 
 const services = [
 	{
@@ -32,49 +31,37 @@ const services = [
 		route: '/agal'
 	}
 ]
-
-function handleServiceClick(service: { route: string }) {
-	hapticFeedback('impact')
-	return navigateTo(service.route)
-}
 </script>
 
 <template>
-	<div class="index-page">
-		<div class="index-page__header">
-			<app-title />
-			<p class="index-page__subtitle">{{ t('home.subtitle') }}</p>
-			<p class="index-page__caption">{{ t('home.caption') }}</p>
-		</div>
-
-		<div class="index-page__services">
-			<ServiceCard
-				v-for="service in services"
-				:key="service.id"
-				:service="service"
-				@click="handleServiceClick(service)"
-			/>
-		</div>
-
-		<div class="index-page__partner">
-			<div class="index-page__partner-icon">
-				<UIcon name="i-carbon-user" />
+	<div class="app-page app-page--home">
+		<section class="index-page__hero app-panel">
+			<div class="index-page__hero-body">
+				<p class="app-kicker">iindiinda</p>
+				<AppTitle />
+				<p class="index-page__subtitle">{{ t('home.subtitle') }}</p>
+				<p class="app-copy app-copy--hero">
+					{{ t('home.caption') }}
+				</p>
+				<div class="app-badge-row">
+					<span v-for="service in services" :key="service.id" class="app-chip">
+						<UIcon :name="service.icon" />
+						{{ service.name }}
+					</span>
+				</div>
 			</div>
-			<div class="index-page__partner-content">
-				<h3>Стать партнером</h3>
-				<p>Для бизнеса</p>
-			</div>
-			<UIcon name="i-carbon-chevron-right" class="index-page__partner-arrow" />
-		</div>
+		</section>
 
-		<UCard class="mt-6" variant="outline">
+		<section class="app-section-stack">
+			<ServiceCard v-for="service in services" :key="service.id" :service="service" />
+		</section>
+
+		<UCard class="index-page__legal" variant="outline">
 			<div class="space-y-4">
 				<div class="space-y-2">
-					<p class="text-[10px] font-medium uppercase tracking-[0.18em] text-gray-500">
-						{{ t('legal.badge') }}
-					</p>
-					<h2 class="text-sm font-medium text-cyan-50">{{ t('legal.footer.title') }}</h2>
-					<p class="text-xs leading-relaxed text-gray-400">{{ t('legal.footer.description') }}</p>
+					<p class="app-kicker">{{ t('legal.badge') }}</p>
+					<h2 class="text-sm font-semibold text-cyan-50">{{ t('legal.footer.title') }}</h2>
+					<p class="app-copy">{{ t('legal.footer.description') }}</p>
 				</div>
 				<AppLegalLinks :show-intro="false" />
 			</div>
@@ -83,82 +70,34 @@ function handleServiceClick(service: { route: string }) {
 </template>
 
 <style scoped>
-.index-page {
-	min-height: 100vh;
-	padding: 32px 16px;
-	display: flex;
-	flex-direction: column;
+.index-page__hero {
+	margin-bottom: 16px;
+	padding: 20px;
+	border-radius: 28px;
+	background:
+		linear-gradient(135deg, rgb(94 218 198 / 0.1), transparent 40%),
+		linear-gradient(180deg, rgb(23 28 33 / 0.98), rgb(18 22 26 / 0.94));
 }
 
-.index-page__header {
-	text-align: center;
-	margin-bottom: 40px;
+.index-page__hero-body {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
 }
 
 .index-page__subtitle {
-	font-size: 14px;
-	color: rgb(var(--color-gray-400));
-	margin: 8px 0 0;
-}
-
-.index-page__caption {
-	font-size: 12px;
-	line-height: 1.5;
-	color: rgb(var(--color-gray-500));
-	margin: 10px auto 0;
-	max-width: 320px;
-}
-
-.index-page__services {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
-	flex: 1;
-}
-
-.index-page__partner {
-	display: flex;
-	align-items: center;
-	gap: 16px;
-	padding: 16px;
-	background: rgb(var(--color-gray-800));
-	border-radius: 12px;
-	border: 1px solid rgb(var(--color-gray-700));
-	margin-top: auto;
-	cursor: pointer;
-}
-
-.index-page__partner-icon {
-	width: 48px;
-	height: 48px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: rgb(var(--color-gray-700));
-	border-radius: 12px;
-	font-size: 24px;
-	color: rgb(var(--color-gray-400));
-}
-
-.index-page__partner-content {
-	flex: 1;
-}
-
-.index-page__partner-content h3 {
-	font-size: 16px;
+	font-size: 18px;
 	font-weight: 600;
-	color: rgb(var(--color-gray-100));
+	line-height: 1.3;
+	letter-spacing: -0.02em;
+	color: var(--text-primary);
 	margin: 0;
 }
 
-.index-page__partner-content p {
-	font-size: 14px;
-	color: rgb(var(--color-gray-500));
-	margin: 4px 0 0;
-}
-
-.index-page__partner-arrow {
-	font-size: 20px;
-	color: rgb(var(--color-gray-500));
+.index-page__legal {
+	margin-top: 16px;
+	border-radius: 24px;
+	border-color: rgb(154 166 178 / 0.12);
+	background: rgb(18 22 26 / 0.8);
 }
 </style>

@@ -74,13 +74,17 @@ Goal: ship a working AYAN MVP flow:
 
 ## Next Practical Step
 
-1. Post-MVP product direction is now chosen: AGAL goes next while legal waits
-2. Use `vault/wiki/services/agal/api-contract.md` as the implementation source of truth for AGAL MVP
-3. Product direction has changed again at the UX level: start redesign before deeper feature expansion
-   - freeze the current AYAN + AGAL product behavior as the working baseline
-   - begin with shared frontend shell and design-system primitives
-   - then redesign landing/feed/detail/create surfaces without unnecessary backend churn
-4. Keep AYAN and AGAL in maintenance mode for logic changes unless a redesign pass or runtime regression requires a targeted patch
+1. Shared redesign baseline now exists in root `DESIGN.md`
+2. Use `DESIGN.md` plus the current AYAN + AGAL runtime behavior as the implementation baseline
+3. Implement shared frontend shell and design-system primitives next:
+   - page shell
+   - service cards
+   - content cards
+   - buttons
+   - inputs
+   - tabs
+   - lifecycle/status badges
+4. After primitives land, redesign home + service landing pages, then feed/detail/create surfaces without unnecessary backend churn
 
 ## Definition Of Progress For This Sprint
 
@@ -97,3 +101,5 @@ This sprint is complete only when:
 - Remaining legal/compliance work is still important, but it is no longer blocking the AYAN MVP runtime handoff
 - AGAL remains the newest implemented service track and now has both shipped backend persistence and shipped frontend MVP UI on VPS: feed, filters, role switching, create flow, detail pages, respond flow, contact reveal, and lifecycle actions
 - Immediate next execution target is no longer deeper AGAL feature work; it is a project redesign started while the UI surface is still small enough to change safely
+- Root `DESIGN.md` now exists as the shared redesign baseline and lint passes cleanly
+- First redesign implementation slice is now in source for shared shell, home, UUS/TAL landing pages, and AYAN/AGAL entry-feed screens; next redesign work should move to detail/create surfaces

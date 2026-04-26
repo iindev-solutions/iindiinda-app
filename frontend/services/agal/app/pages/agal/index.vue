@@ -263,371 +263,360 @@ function handleResponseClick(response: AgalResponse) {
 </script>
 
 <template>
-	<div class="min-h-screen px-4 py-6">
-		<div class="mx-auto max-w-[480px]">
-			<AgalAccessState v-if="accessState !== 'ready'" :state="accessState" />
+	<div class="app-page">
+		<AgalAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
-			<template v-else>
-				<header class="mb-6">
-					<div class="mb-1 text-[10px] font-medium uppercase tracking-widest text-gray-400">
-						{{ t('servicePages.agal.badge') }}
-					</div>
-					<h1 class="mb-2 text-2xl font-medium tracking-tight text-cyan-50">
-						{{ t('servicePages.agal.title') }}
-					</h1>
-					<p class="text-sm leading-relaxed text-gray-300">
-						{{ t('servicePages.agal.intro') }}
-					</p>
-					<div class="mt-4">
-						<AppServiceAbout
-							:label="t('serviceAbout.label')"
-							:description="t('serviceAbout.agal.description')"
-							:examples-title="t('serviceAbout.examplesTitle')"
-							:examples="aboutExamples"
-						/>
-					</div>
-					<div class="mt-4">
-						<AgalRoleSwitch @changed="handleRoleChanged" />
-					</div>
-				</header>
+		<template v-else>
+			<AppHero
+				:eyebrow="t('servicePages.agal.badge')"
+				:title="t('servicePages.agal.title')"
+				:description="t('servicePages.agal.intro')"
+				icon="i-lucide-box"
+			>
+				<AppServiceAbout
+					:label="t('serviceAbout.label')"
+					:description="t('serviceAbout.agal.description')"
+					:examples-title="t('serviceAbout.examplesTitle')"
+					:examples="aboutExamples"
+				/>
+				<AgalRoleSwitch @changed="handleRoleChanged" />
+			</AppHero>
 
+			<div class="app-panel app-panel--soft agal-tabs-panel">
 				<UTabs
 					:items="tabs"
 					:model-value="activeTab"
 					variant="pill"
 					size="sm"
-					class="mb-5"
+					class="w-full"
 					@update:model-value="handleTabChange"
 				/>
+			</div>
 
-				<div v-if="activeTab !== 'my'" class="mb-4">
-					<UButton
-						icon="i-lucide-filter"
-						size="sm"
-						variant="ghost"
-						color="neutral"
-						:trailing-icon="filtersOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-						@click="toggleFilters"
-					>
-						{{ t('agal.filter.title') }}
-						<UBadge v-if="hasFilters" color="primary" variant="subtle" size="xs" class="ml-1">
-							{{ activeFilterCount }}
-						</UBadge>
-					</UButton>
+			<div v-if="activeTab !== 'my'" class="app-panel app-panel--soft agal-filter-panel">
+				<UButton
+					icon="i-lucide-filter"
+					size="sm"
+					variant="ghost"
+					color="neutral"
+					:trailing-icon="filtersOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+					@click="toggleFilters"
+				>
+					{{ t('agal.filter.title') }}
+					<UBadge v-if="hasFilters" color="primary" variant="subtle" size="xs" class="ml-1">
+						{{ activeFilterCount }}
+					</UBadge>
+				</UButton>
 
-					<Transition name="filter-slide">
-						<div v-if="filtersOpen" class="mt-3 space-y-3">
-							<div class="grid grid-cols-2 gap-2">
-								<UInput
-									v-model="filterFrom"
-									:placeholder="t('agal.filter.from')"
-									icon="i-lucide-circle-dot"
-									variant="outline"
-									size="sm"
-									class="w-full"
-								/>
-								<UInput
-									v-model="filterTo"
-									:placeholder="t('agal.filter.to')"
-									icon="i-lucide-map-pin"
-									variant="outline"
-									size="sm"
-									class="w-full"
-								/>
-							</div>
+				<Transition name="filter-slide">
+					<div v-if="filtersOpen" class="agal-filter-panel__body">
+						<div class="grid grid-cols-2 gap-2">
+							<UInput
+								v-model="filterFrom"
+								:placeholder="t('agal.filter.from')"
+								icon="i-lucide-circle-dot"
+								variant="outline"
+								size="sm"
+								class="w-full"
+							/>
+							<UInput
+								v-model="filterTo"
+								:placeholder="t('agal.filter.to')"
+								icon="i-lucide-map-pin"
+								variant="outline"
+								size="sm"
+								class="w-full"
+							/>
+						</div>
 
-							<div class="flex flex-wrap gap-2">
-								<UButton
-									v-for="chip in dateChips"
-									:key="chip.value"
-									size="xs"
-									:variant="filterDate === chip.value ? 'soft' : 'ghost'"
-									:color="filterDate === chip.value ? 'primary' : 'neutral'"
-									@click="handleDateChip(chip.value)"
-								>
-									{{ chip.label }}
-								</UButton>
-							</div>
-
+						<div class="flex flex-wrap gap-2">
 							<UButton
-								v-if="hasFilters"
+								v-for="chip in dateChips"
+								:key="chip.value"
 								size="xs"
-								variant="ghost"
-								color="neutral"
-								icon="i-lucide-x"
-								@click="clearFilters"
+								:variant="filterDate === chip.value ? 'soft' : 'ghost'"
+								:color="filterDate === chip.value ? 'primary' : 'neutral'"
+								@click="handleDateChip(chip.value)"
 							>
-								{{ t('agal.filter.clear') }}
+								{{ chip.label }}
 							</UButton>
 						</div>
-					</Transition>
+
+						<UButton
+							v-if="hasFilters"
+							size="xs"
+							variant="ghost"
+							color="neutral"
+							icon="i-lucide-x"
+							@click="clearFilters"
+						>
+							{{ t('agal.filter.clear') }}
+						</UButton>
+					</div>
+				</Transition>
+			</div>
+
+			<div v-if="createMode" class="agal-cta">
+				<UButton icon="i-lucide-plus" size="lg" variant="soft" color="primary" block @click="handleCreate">
+					{{ createLabel }}
+				</UButton>
+			</div>
+
+			<div v-if="loading" class="flex justify-center py-12">
+				<LoadingSpinner />
+			</div>
+
+			<template v-else-if="activeTab === 'routes'">
+				<EmptyState
+					v-if="!filteredRoutes.length"
+					:title="hasFilters ? t('empty.noResults') : t('agal.noRoutes')"
+					:description="hasFilters ? t('empty.noResultsDesc') : t('agal.noRoutesDesc')"
+				/>
+				<div v-else class="app-section-stack">
+					<button
+						v-for="routeItem in filteredRoutes"
+						:key="routeItem.id"
+						type="button"
+						class="app-feed-card"
+						@click="handleRouteClick(routeItem.id)"
+					>
+						<div class="app-feed-card__row">
+							<div class="app-feed-card__main">
+								<div class="app-feed-card__route">
+									<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
+									<span class="app-feed-card__route-text">{{ routeItem.from_address }}</span>
+									<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
+									<span class="app-feed-card__route-text">{{ routeItem.to_address }}</span>
+								</div>
+								<div class="app-feed-card__meta">
+									<span class="app-feed-card__meta-item">{{ routeItem.date }}</span>
+									<span v-if="routeItem.time" class="app-feed-card__meta-item">{{ routeItem.time }}</span>
+									<span class="app-feed-card__meta-item">{{ sizeLabel(routeItem.size_label) }}</span>
+									<span v-if="routeItem.weight_kg_max" class="app-feed-card__meta-item">{{ routeItem.weight_kg_max }} кг</span>
+								</div>
+								<div class="app-feed-card__subtext">{{ routeItem.carrier.name }}</div>
+							</div>
+							<div class="app-feed-card__price">{{ formatMoney(routeItem.price, 'agal.route.priceNegotiable') }}</div>
+						</div>
+					</button>
 				</div>
-
-				<div v-if="createMode" class="mb-4">
-					<UButton icon="i-lucide-plus" size="lg" variant="soft" color="primary" block @click="handleCreate">
-						{{ createLabel }}
-					</UButton>
-				</div>
-
-				<div v-if="loading" class="flex justify-center py-12">
-					<LoadingSpinner />
-				</div>
-
-				<template v-else-if="activeTab === 'routes'">
-					<div v-if="!filteredRoutes.length">
-						<EmptyState
-							:title="hasFilters ? t('empty.noResults') : t('agal.noRoutes')"
-							:description="hasFilters ? t('empty.noResultsDesc') : t('agal.noRoutesDesc')"
-						/>
-					</div>
-					<div v-else class="space-y-3">
-						<UCard
-							v-for="routeItem in filteredRoutes"
-							:key="routeItem.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleRouteClick(routeItem.id)"
-						>
-							<div class="flex items-start justify-between gap-3">
-								<div class="min-w-0 flex-1">
-									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-										<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-										<span class="truncate">{{ routeItem.from_address }}</span>
-										<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-										<span class="truncate">{{ routeItem.to_address }}</span>
-									</div>
-									<div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-400">
-										<span>{{ routeItem.date }}</span>
-										<span v-if="routeItem.time">{{ routeItem.time }}</span>
-										<UBadge color="neutral" variant="subtle" size="xs">
-											{{ sizeLabel(routeItem.size_label) }}
-										</UBadge>
-										<span v-if="routeItem.weight_kg_max">{{ routeItem.weight_kg_max }} кг</span>
-									</div>
-									<div class="mt-1 text-xs text-gray-500">
-										{{ routeItem.carrier.name }}
-									</div>
-								</div>
-								<div class="shrink-0 text-right">
-									<div class="text-sm font-semibold text-cyan-400">
-										{{ formatMoney(routeItem.price, 'agal.route.priceNegotiable') }}
-									</div>
-								</div>
-							</div>
-						</UCard>
-					</div>
-				</template>
-
-				<template v-else-if="activeTab === 'requests'">
-					<div v-if="!filteredRequests.length">
-						<EmptyState
-							:title="hasFilters ? t('empty.noResults') : t('agal.noRequests')"
-							:description="hasFilters ? t('empty.noResultsDesc') : t('agal.noRequestsDesc')"
-						/>
-					</div>
-					<div v-else class="space-y-3">
-						<UCard
-							v-for="requestItem in filteredRequests"
-							:key="requestItem.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleRequestClick(requestItem.id)"
-						>
-							<div class="flex items-start justify-between gap-3">
-								<div class="min-w-0 flex-1">
-									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-										<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-										<span class="truncate">{{ requestItem.from_address }}</span>
-										<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-										<span class="truncate">{{ requestItem.to_address }}</span>
-									</div>
-									<div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-400">
-										<span>{{ requestItem.date }}</span>
-										<span v-if="requestItem.time">{{ requestItem.time }}</span>
-										<UBadge color="neutral" variant="subtle" size="xs">
-											{{ sizeLabel(requestItem.size_label) }}
-										</UBadge>
-										<span v-if="requestItem.weight_kg">{{ requestItem.weight_kg }} кг</span>
-									</div>
-									<div class="mt-1 text-xs text-gray-500">
-										{{ requestItem.sender.name }}
-									</div>
-									<div class="mt-1 text-xs text-gray-400">
-										{{ requestItem.contents_summary }}
-									</div>
-								</div>
-								<div class="shrink-0 text-right">
-									<div class="text-sm font-semibold text-cyan-400">
-										{{ formatMoney(requestItem.budget, 'agal.request.budgetNegotiable') }}
-									</div>
-								</div>
-							</div>
-						</UCard>
-					</div>
-				</template>
-
-				<template v-else>
-					<div v-if="!filteredMyRoutes.length && !filteredMyRequests.length && !myResponses.length">
-						<EmptyState :title="t('agal.noMy')" :description="t('agal.noMyDesc')" />
-					</div>
-					<div v-else class="space-y-3">
-						<UCard
-							v-for="routeItem in filteredMyRoutes"
-							:key="'my-route-' + routeItem.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleRouteClick(routeItem.id)"
-						>
-							<div class="flex items-start justify-between gap-3">
-								<div class="min-w-0 flex-1">
-									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-										<UIcon name="i-lucide-route" class="shrink-0 text-cyan-400" />
-										<span class="truncate">{{ routeItem.from_address }}</span>
-										<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-										<span class="truncate">{{ routeItem.to_address }}</span>
-										<UBadge :color="statusColor(routeItem.status)" variant="subtle" size="xs">
-											{{ t(`agal.status.${routeItem.status}`) }}
-										</UBadge>
-									</div>
-									<div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-400">
-										<span>{{ routeItem.date }}</span>
-										<span v-if="routeItem.time">{{ routeItem.time }}</span>
-										<UBadge color="neutral" variant="subtle" size="xs">
-											{{ sizeLabel(routeItem.size_label) }}
-										</UBadge>
-										<UBadge v-if="isPastTarget(routeItem.date, routeItem.time)" color="neutral" variant="subtle" size="xs">
-											{{ t('agal.status.past') }}
-										</UBadge>
-									</div>
-								</div>
-								<div class="shrink-0 text-right text-sm font-semibold text-cyan-400">
-									{{ formatMoney(routeItem.price, 'agal.route.priceNegotiable') }}
-								</div>
-							</div>
-						</UCard>
-
-						<UCard
-							v-for="requestItem in filteredMyRequests"
-							:key="'my-request-' + requestItem.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleRequestClick(requestItem.id)"
-						>
-							<div class="flex items-start justify-between gap-3">
-								<div class="min-w-0 flex-1">
-									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-										<UIcon name="i-lucide-package-open" class="shrink-0 text-cyan-400" />
-										<span class="truncate">{{ requestItem.from_address }}</span>
-										<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-										<span class="truncate">{{ requestItem.to_address }}</span>
-										<UBadge :color="statusColor(requestItem.status)" variant="subtle" size="xs">
-											{{ t(`agal.status.${requestItem.status}`) }}
-										</UBadge>
-									</div>
-									<div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-gray-400">
-										<span>{{ requestItem.date }}</span>
-										<span v-if="requestItem.time">{{ requestItem.time }}</span>
-										<UBadge color="neutral" variant="subtle" size="xs">
-											{{ sizeLabel(requestItem.size_label) }}
-										</UBadge>
-										<UBadge
-											v-if="isPastTarget(requestItem.date, requestItem.time)"
-											color="neutral"
-											variant="subtle"
-											size="xs"
-										>
-											{{ t('agal.status.past') }}
-										</UBadge>
-									</div>
-									<div class="mt-1 text-xs text-gray-400">
-										{{ requestItem.contents_summary }}
-									</div>
-								</div>
-								<div class="shrink-0 text-right text-sm font-semibold text-cyan-400">
-									{{ formatMoney(requestItem.budget, 'agal.request.budgetNegotiable') }}
-								</div>
-							</div>
-						</UCard>
-
-						<UCard
-							v-for="response in myResponses"
-							:key="'my-response-' + response.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleResponseClick(response)"
-						>
-							<div class="flex items-start justify-between gap-3">
-								<div class="min-w-0 flex-1">
-									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-										<UIcon
-											:name="response.route_id ? 'i-lucide-route' : 'i-lucide-package-open'"
-											class="shrink-0 text-cyan-400"
-										/>
-										<span class="truncate">
-											{{
-												response.route
-													? `${response.route.from_address} → ${response.route.to_address}`
-													: response.request
-														? `${response.request.from_address} → ${response.request.to_address}`
-														: response.route_id
-															? t('agal.myResponse.route')
-															: t('agal.myResponse.request')
-											}}
-										</span>
-										<UBadge :color="responseStatusColor(response.status)" variant="subtle" size="xs">
-											{{ t(`agal.respond.status.${response.status}`) }}
-										</UBadge>
-										<UBadge
-											v-if="response.route?.status || response.request?.status"
-											color="primary"
-											variant="outline"
-											size="xs"
-										>
-											{{ t(`agal.status.${response.route?.status || response.request?.status}`) }}
-										</UBadge>
-									</div>
-									<div class="flex flex-wrap items-center gap-3 text-xs text-gray-500">
-										<span>#{{ response.route_id ?? response.request_id }}</span>
-										<span v-if="response.route?.date || response.request?.date">
-											{{ response.route?.date || response.request?.date }}
-										</span>
-										<span v-if="response.route?.time || response.request?.time">
-											{{ response.route?.time || response.request?.time }}
-										</span>
-									</div>
-									<div class="mt-1 text-xs text-gray-500">
-										{{ response.route?.carrier.name || response.request?.sender.name }}
-									</div>
-									<div v-if="response.message" class="mt-1 text-xs text-gray-400">
-										{{ response.message }}
-									</div>
-								</div>
-							</div>
-						</UCard>
-					</div>
-				</template>
-
-				<AgalCreateSlideover v-model:open="createOpen" @created="handleCreated" />
 			</template>
-		</div>
+
+			<template v-else-if="activeTab === 'requests'">
+				<EmptyState
+					v-if="!filteredRequests.length"
+					:title="hasFilters ? t('empty.noResults') : t('agal.noRequests')"
+					:description="hasFilters ? t('empty.noResultsDesc') : t('agal.noRequestsDesc')"
+				/>
+				<div v-else class="app-section-stack">
+					<button
+						v-for="requestItem in filteredRequests"
+						:key="requestItem.id"
+						type="button"
+						class="app-feed-card"
+						@click="handleRequestClick(requestItem.id)"
+					>
+						<div class="app-feed-card__row">
+							<div class="app-feed-card__main">
+								<div class="app-feed-card__route">
+									<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
+									<span class="app-feed-card__route-text">{{ requestItem.from_address }}</span>
+									<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
+									<span class="app-feed-card__route-text">{{ requestItem.to_address }}</span>
+								</div>
+								<div class="app-feed-card__meta">
+									<span class="app-feed-card__meta-item">{{ requestItem.date }}</span>
+									<span v-if="requestItem.time" class="app-feed-card__meta-item">{{ requestItem.time }}</span>
+									<span class="app-feed-card__meta-item">{{ sizeLabel(requestItem.size_label) }}</span>
+									<span v-if="requestItem.weight_kg" class="app-feed-card__meta-item">{{ requestItem.weight_kg }} кг</span>
+								</div>
+								<div class="app-feed-card__subtext">{{ requestItem.sender.name }}</div>
+								<div class="app-feed-card__subtext app-feed-card__subtext--bright">
+									{{ requestItem.contents_summary }}
+								</div>
+							</div>
+							<div class="app-feed-card__price">
+								{{ formatMoney(requestItem.budget, 'agal.request.budgetNegotiable') }}
+							</div>
+						</div>
+					</button>
+				</div>
+			</template>
+
+			<template v-else>
+				<EmptyState
+					v-if="!filteredMyRoutes.length && !filteredMyRequests.length && !myResponses.length"
+					:title="t('agal.noMy')"
+					:description="t('agal.noMyDesc')"
+				/>
+				<div v-else class="app-section-stack">
+					<button
+						v-for="routeItem in filteredMyRoutes"
+						:key="`my-route-${routeItem.id}`"
+						type="button"
+						class="app-feed-card"
+						@click="handleRouteClick(routeItem.id)"
+					>
+						<div class="app-feed-card__row">
+							<div class="app-feed-card__main">
+								<div class="app-feed-card__route">
+									<UIcon name="i-lucide-route" class="shrink-0 text-cyan-400" />
+									<span class="app-feed-card__route-text">{{ routeItem.from_address }}</span>
+									<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
+									<span class="app-feed-card__route-text">{{ routeItem.to_address }}</span>
+								</div>
+								<div class="mt-3 flex flex-wrap gap-2">
+									<UBadge :color="statusColor(routeItem.status)" variant="subtle" size="xs">
+										{{ t(`agal.status.${routeItem.status}`) }}
+									</UBadge>
+								</div>
+								<div class="app-feed-card__meta">
+									<span class="app-feed-card__meta-item">{{ routeItem.date }}</span>
+									<span v-if="routeItem.time" class="app-feed-card__meta-item">{{ routeItem.time }}</span>
+									<span class="app-feed-card__meta-item">{{ sizeLabel(routeItem.size_label) }}</span>
+									<UBadge v-if="isPastTarget(routeItem.date, routeItem.time)" color="neutral" variant="subtle" size="xs">
+										{{ t('agal.status.past') }}
+									</UBadge>
+								</div>
+							</div>
+							<div class="app-feed-card__price">{{ formatMoney(routeItem.price, 'agal.route.priceNegotiable') }}</div>
+						</div>
+					</button>
+
+					<button
+						v-for="requestItem in filteredMyRequests"
+						:key="`my-request-${requestItem.id}`"
+						type="button"
+						class="app-feed-card"
+						@click="handleRequestClick(requestItem.id)"
+					>
+						<div class="app-feed-card__row">
+							<div class="app-feed-card__main">
+								<div class="app-feed-card__route">
+									<UIcon name="i-lucide-package-open" class="shrink-0 text-cyan-400" />
+									<span class="app-feed-card__route-text">{{ requestItem.from_address }}</span>
+									<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
+									<span class="app-feed-card__route-text">{{ requestItem.to_address }}</span>
+								</div>
+								<div class="mt-3 flex flex-wrap gap-2">
+									<UBadge :color="statusColor(requestItem.status)" variant="subtle" size="xs">
+										{{ t(`agal.status.${requestItem.status}`) }}
+									</UBadge>
+								</div>
+								<div class="app-feed-card__meta">
+									<span class="app-feed-card__meta-item">{{ requestItem.date }}</span>
+									<span v-if="requestItem.time" class="app-feed-card__meta-item">{{ requestItem.time }}</span>
+									<span class="app-feed-card__meta-item">{{ sizeLabel(requestItem.size_label) }}</span>
+									<UBadge v-if="isPastTarget(requestItem.date, requestItem.time)" color="neutral" variant="subtle" size="xs">
+										{{ t('agal.status.past') }}
+									</UBadge>
+								</div>
+								<div class="app-feed-card__subtext app-feed-card__subtext--bright">
+									{{ requestItem.contents_summary }}
+								</div>
+							</div>
+							<div class="app-feed-card__price">
+								{{ formatMoney(requestItem.budget, 'agal.request.budgetNegotiable') }}
+							</div>
+						</div>
+					</button>
+
+					<button
+						v-for="response in myResponses"
+						:key="`my-response-${response.id}`"
+						type="button"
+						class="app-feed-card"
+						@click="handleResponseClick(response)"
+					>
+						<div class="app-feed-card__main">
+							<div class="app-feed-card__route">
+								<UIcon
+									:name="response.route_id ? 'i-lucide-route' : 'i-lucide-package-open'"
+									class="shrink-0 text-cyan-400"
+								/>
+								<span class="app-feed-card__route-text">
+									{{
+										response.route
+											? `${response.route.from_address} → ${response.route.to_address}`
+											: response.request
+												? `${response.request.from_address} → ${response.request.to_address}`
+												: response.route_id
+													? t('agal.myResponse.route')
+													: t('agal.myResponse.request')
+									}}
+								</span>
+							</div>
+							<div class="mt-3 flex flex-wrap gap-2">
+								<UBadge :color="responseStatusColor(response.status)" variant="subtle" size="xs">
+									{{ t(`agal.respond.status.${response.status}`) }}
+								</UBadge>
+								<UBadge v-if="response.route?.status || response.request?.status" color="primary" variant="outline" size="xs">
+									{{ t(`agal.status.${response.route?.status || response.request?.status}`) }}
+								</UBadge>
+							</div>
+							<div class="app-feed-card__meta">
+								<span class="app-feed-card__meta-item">#{{ response.route_id ?? response.request_id }}</span>
+								<span v-if="response.route?.date || response.request?.date" class="app-feed-card__meta-item">
+									{{ response.route?.date || response.request?.date }}
+								</span>
+								<span v-if="response.route?.time || response.request?.time" class="app-feed-card__meta-item">
+									{{ response.route?.time || response.request?.time }}
+								</span>
+							</div>
+							<div class="app-feed-card__subtext">
+								{{ response.route?.carrier.name || response.request?.sender.name }}
+							</div>
+							<div v-if="response.message" class="app-feed-card__subtext app-feed-card__subtext--bright">
+								{{ response.message }}
+							</div>
+						</div>
+					</button>
+				</div>
+			</template>
+
+			<AgalCreateSlideover v-model:open="createOpen" @created="handleCreated" />
+		</template>
 	</div>
 </template>
 
 <style scoped>
+.agal-tabs-panel,
+.agal-filter-panel {
+	padding: 14px;
+	margin-bottom: 12px;
+}
+
+.agal-filter-panel__body {
+	margin-top: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.agal-cta {
+	margin-bottom: 16px;
+}
+
+.app-feed-card__subtext--bright {
+	color: var(--text-secondary);
+}
+
 .filter-slide-enter-active,
 .filter-slide-leave-active {
 	transition: all 150ms ease-out;
 	overflow: hidden;
 }
+
 .filter-slide-enter-from,
 .filter-slide-leave-to {
 	opacity: 0;
 	max-height: 0;
 	margin-top: 0;
 }
+
 .filter-slide-enter-to,
 .filter-slide-leave-from {
 	opacity: 1;
-	max-height: 200px;
+	max-height: 240px;
 }
 </style>

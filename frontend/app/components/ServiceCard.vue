@@ -5,25 +5,41 @@ interface Service {
 	icon: string
 	description: string
 	stats?: string
+	route?: string
 }
 
-defineProps<{
+const props = defineProps<{
 	service: Service
 }>()
+
+const { hapticFeedback } = useTg()
+
+const href = computed(() => props.service.route || `/${props.service.id}`)
+
+function handleClick() {
+	hapticFeedback('impact')
+}
 </script>
 
 <template>
-	<NuxtLink :to="`/${service.id}`" class="service-card">
-		<div class="service-card__icon">
-			<UIcon :name="service.icon" />
+	<NuxtLink :to="href" class="service-card app-panel app-panel--interactive" @click="handleClick">
+		<div class="service-card__top">
+			<div class="service-card__icon">
+				<UIcon :name="service.icon" />
+			</div>
+			<span class="service-card__label">{{ service.name }}</span>
 		</div>
+
 		<div class="service-card__content">
-			<h3 class="service-card__name">{{ service.name }}</h3>
-			<p class="service-card__description">{{ service.description }}</p>
-			<span v-if="service.stats" class="service-card__stats">{{ service.stats }}</span>
+			<h3 class="service-card__name">{{ service.description }}</h3>
+			<p class="service-card__description">{{ service.name }}</p>
 		</div>
-		<div class="service-card__arrow">
-			<UIcon name="i-carbon-chevron-right" />
+
+		<div class="service-card__footer">
+			<span v-if="service.stats" class="service-card__stats">{{ service.stats }}</span>
+			<span class="service-card__arrow">
+				<UIcon name="i-carbon-arrow-up-right" />
+			</span>
 		</div>
 	</NuxtLink>
 </template>
@@ -31,63 +47,89 @@ defineProps<{
 <style scoped>
 .service-card {
 	display: flex;
-	align-items: center;
-	gap: 16px;
-	padding: 16px;
-	background: rgb(var(--color-gray-800));
-	border-radius: 12px;
-	border: 1px solid rgb(var(--color-gray-700));
-	transition: all 0.2s ease;
-	cursor: pointer;
+	flex-direction: column;
+	gap: 18px;
+	padding: 18px;
 	text-decoration: none;
 }
 
-.service-card:hover {
-	background: rgb(var(--color-gray-700));
-	border-color: rgb(var(--color-cyan-500));
+.service-card__top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
 }
 
 .service-card__icon {
-	width: 48px;
-	height: 48px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: rgb(var(--color-cyan-500));
-	border-radius: 12px;
+	width: 52px;
+	height: 52px;
+	border-radius: 18px;
+	background: rgb(94 218 198 / 0.12);
+	border: 1px solid rgb(94 218 198 / 0.18);
 	font-size: 24px;
-	color: rgb(var(--color-gray-900));
-	flex-shrink: 0;
+	color: rgb(var(--color-cyan-300));
+}
+
+.service-card__label {
+	display: inline-flex;
+	align-items: center;
+	padding: 8px 12px;
+	border-radius: 999px;
+	background: rgb(255 255 255 / 0.04);
+	border: 1px solid rgb(255 255 255 / 0.05);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
+	color: rgb(125 141 149 / 0.9);
 }
 
 .service-card__content {
-	flex: 1;
-	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
 }
 
 .service-card__name {
-	font-size: 16px;
+	font-size: 18px;
 	font-weight: 600;
-	color: rgb(var(--color-gray-100));
+	line-height: 1.3;
+	letter-spacing: -0.02em;
+	color: var(--text-primary);
 	margin: 0;
 }
 
 .service-card__description {
-	font-size: 14px;
-	color: rgb(var(--color-gray-400));
-	margin: 4px 0 0;
+	font-size: 13px;
+	line-height: 1.55;
+	color: var(--text-secondary);
+	margin: 0;
+}
+
+.service-card__footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
 }
 
 .service-card__stats {
 	font-size: 12px;
 	color: rgb(var(--color-cyan-400));
-	margin-top: 4px;
-	display: block;
 }
 
 .service-card__arrow {
-	color: rgb(var(--color-gray-500));
-	font-size: 20px;
-	flex-shrink: 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 34px;
+	height: 34px;
+	border-radius: 999px;
+	background: rgb(255 255 255 / 0.04);
+	color: var(--text-secondary);
+	font-size: 16px;
 }
 </style>

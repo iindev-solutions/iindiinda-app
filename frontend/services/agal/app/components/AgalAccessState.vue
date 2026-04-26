@@ -31,19 +31,15 @@ function reloadPage() {
 </script>
 
 <template>
-	<div class="rounded-3xl border border-gray-800 bg-gray-900/70 p-6 text-center shadow-sm shadow-black/20">
-		<div class="mx-auto flex size-14 items-center justify-center rounded-2xl bg-gray-800 text-cyan-400">
+	<div class="app-panel access-state">
+		<div class="access-state__icon">
 			<UIcon :name="icon" :class="state === 'loading' ? 'size-7 animate-spin' : 'size-7'" />
 		</div>
 
-		<h2 class="mt-4 text-lg font-semibold text-cyan-50">
-			{{ title }}
-		</h2>
-		<p class="mt-2 text-sm leading-relaxed text-gray-400">
-			{{ description }}
-		</p>
+		<h2 class="access-state__title">{{ title }}</h2>
+		<p class="access-state__description">{{ description }}</p>
 
-		<div class="mt-5 flex justify-center gap-3">
+		<div class="access-state__actions">
 			<UButton v-if="state === 'auth-error'" color="primary" icon="i-lucide-refresh-ccw" @click="reloadPage">
 				{{ t('common.retry') }}
 			</UButton>
@@ -53,3 +49,45 @@ function reloadPage() {
 		</div>
 	</div>
 </template>
+
+<style scoped>
+.access-state {
+	padding: 28px 22px;
+	text-align: center;
+}
+
+.access-state__icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 64px;
+	height: 64px;
+	margin: 0 auto;
+	border-radius: 20px;
+	background: rgb(94 218 198 / 0.12);
+	border: 1px solid rgb(94 218 198 / 0.16);
+	color: rgb(var(--color-cyan-300));
+}
+
+.access-state__title {
+	margin: 16px 0 0;
+	font-size: 20px;
+	font-weight: 600;
+	line-height: 1.3;
+	color: var(--text-primary);
+}
+
+.access-state__description {
+	margin: 10px 0 0;
+	font-size: 14px;
+	line-height: 1.65;
+	color: var(--text-secondary);
+}
+
+.access-state__actions {
+	margin-top: 18px;
+	display: flex;
+	justify-content: center;
+	gap: 12px;
+}
+</style>

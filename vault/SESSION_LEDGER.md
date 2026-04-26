@@ -144,6 +144,30 @@
 - Blockers: only manual Telegram/browser UI E2E remains
 - Next: tomorrow continue from `d019d0c` using `vault/resume-plan.md`
 
+## 2026-04-26 17:20 — DESIGN.md Baseline
+
+- Scope: start the redesign track by defining a shared design-system source of truth
+- Changes: added root `DESIGN.md` with alpha tokens for colors, typography, spacing, rounding, and shared component patterns; updated vault handoff docs to point next work at shell/primitives implementation
+- Verified: `node .tmp-designmd/package/dist/index.js lint DESIGN.md` (`0 errors, 0 warnings`)
+- Blockers: redesign is still documentation-first; shared frontend components and pages have not been restyled yet
+- Next: implement shared shell, cards, buttons, inputs, tabs, and status badges from `DESIGN.md`
+
+## 2026-04-26 18:25 — Shared Redesign Slice
+
+- Scope: implement the first runtime redesign pass on top of the new `DESIGN.md` baseline
+- Changes: added shared `AppHero`, rebuilt global shell/theme/nav/cards/about/empty primitives, redesigned home + UUS/TAL landing screens, and restyled AYAN/AGAL entry-feed screens plus access/role cards
+- Verified: `cd frontend && npm run typecheck`; `cd frontend && npm run build:static` (`STATIC_API_BASE_OK`)
+- Blockers: AYAN/AGAL detail pages and create flows still keep the older visual treatment
+- Next: redesign detail pages and create surfaces using the same shared primitives
+
+## 2026-04-26 18:55 — Variant 1 Checkpoint + Nav Fix
+
+- Scope: fix first-tap bottom-nav active state and lock the current redesign as variant 1 before trying a simpler direction
+- Changes: updated `frontend/app/components/AppBottomNav.vue` to use `NuxtLink` with optimistic pending-route highlighting; kept current redesign as the first comparison checkpoint
+- Verified: `cd frontend && npm run typecheck`; `cd frontend && npm run build:static` (`STATIC_API_BASE_OK`)
+- Blockers: redesign can still be simplified further; detail/create screens remain the next large surface
+- Next: commit this state as redesign variant 1, then iterate toward a simpler variant 2
+
 ## 2026-04-25 09:25 — Production Asset MIME Hotfix
 
 - Scope: investigate and recover live AYAN startup failures caused by blocked module/CSS loads

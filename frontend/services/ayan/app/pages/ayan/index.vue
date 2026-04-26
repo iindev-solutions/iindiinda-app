@@ -255,255 +255,214 @@ function handleResponseClick(response: AyanResponse) {
 </script>
 
 <template>
-	<div class="min-h-screen px-4 py-6">
-		<div class="mx-auto max-w-[480px]">
-			<AyanAccessState v-if="accessState !== 'ready'" :state="accessState" />
+	<div class="app-page">
+		<!-- <AyanAccessState v-if="accessState !== 'ready'" :state="accessState" /> -->
+		<AyanAccessState v-if="false" :state="accessState" />
 
-			<template v-else>
-				<header class="mb-6">
-					<div class="mb-1 text-[10px] font-medium uppercase tracking-widest text-gray-400">
-						{{ t('ayan.category') }}
-					</div>
-					<h1 class="mb-2 text-2xl font-medium tracking-tight text-cyan-50">
-						{{ t('ayan.name') }}
-					</h1>
-					<p class="text-sm leading-relaxed text-gray-300">
-						{{ t('ayan.desc') }}
-					</p>
-					<div class="mt-4">
-						<AppServiceAbout
-							:label="t('serviceAbout.label')"
-							:description="t('serviceAbout.ayan.description')"
-							:examples-title="t('serviceAbout.examplesTitle')"
-							:examples="aboutExamples"
-						/>
-					</div>
-					<div class="mt-4">
-						<AyanRoleSwitch @changed="handleRoleChanged" />
-					</div>
-				</header>
+		<template v-else>
+			<AppHero
+				:eyebrow="t('ayan.category')"
+				:title="t('ayan.name')"
+				:description="t('ayan.desc')"
+				icon="i-lucide-car-front"
+			>
+				<AppServiceAbout
+					:label="t('serviceAbout.label')"
+					:description="t('serviceAbout.ayan.description')"
+					:examples-title="t('serviceAbout.examplesTitle')"
+					:examples="aboutExamples"
+				/>
+				<AyanRoleSwitch @changed="handleRoleChanged" />
+			</AppHero>
 
+			<div class="app-panel app-panel--soft ayan-tabs-panel">
 				<UTabs
 					:items="tabs"
 					:model-value="activeTab"
 					variant="pill"
 					size="sm"
-					class="mb-5"
+					class="w-full"
 					@update:model-value="handleTabChange"
 				/>
+			</div>
 
-				<div v-if="activeTab !== 'my'" class="mb-4">
-					<UButton
-						icon="i-lucide-filter"
-						size="sm"
-						variant="ghost"
-						color="neutral"
-						:trailing-icon="filtersOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-						@click="toggleFilters"
-					>
-						{{ t('ayan.filter.title') }}
-						<UBadge v-if="hasFilters" color="primary" variant="subtle" size="xs" class="ml-1">
-							{{ activeFilterCount }}
-						</UBadge>
-					</UButton>
+			<div v-if="activeTab !== 'my'" class="app-panel app-panel--soft ayan-filter-panel">
+				<UButton
+					icon="i-lucide-filter"
+					size="sm"
+					variant="ghost"
+					color="neutral"
+					:trailing-icon="filtersOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+					@click="toggleFilters"
+				>
+					{{ t('ayan.filter.title') }}
+					<UBadge v-if="hasFilters" color="primary" variant="subtle" size="xs" class="ml-1">
+						{{ activeFilterCount }}
+					</UBadge>
+				</UButton>
 
-					<Transition name="filter-slide">
-						<div v-if="filtersOpen" class="mt-3 space-y-3">
-							<div class="grid grid-cols-2 gap-2">
-								<UInput
-									v-model="filterFrom"
-									:placeholder="t('ayan.filter.from')"
-									icon="i-lucide-circle-dot"
-									variant="outline"
-									size="sm"
-									class="w-full"
-								/>
-								<UInput
-									v-model="filterTo"
-									:placeholder="t('ayan.filter.to')"
-									icon="i-lucide-map-pin"
-									variant="outline"
-									size="sm"
-									class="w-full"
-								/>
-							</div>
+				<Transition name="filter-slide">
+					<div v-if="filtersOpen" class="ayan-filter-panel__body">
+						<div class="grid grid-cols-2 gap-2">
+							<UInput
+								v-model="filterFrom"
+								:placeholder="t('ayan.filter.from')"
+								icon="i-lucide-circle-dot"
+								variant="outline"
+								size="sm"
+								class="w-full"
+							/>
+							<UInput
+								v-model="filterTo"
+								:placeholder="t('ayan.filter.to')"
+								icon="i-lucide-map-pin"
+								variant="outline"
+								size="sm"
+								class="w-full"
+							/>
+						</div>
 
-							<div class="flex flex-wrap gap-2">
-								<UButton
-									v-for="chip in dateChips"
-									:key="chip.value"
-									size="xs"
-									:variant="filterDate === chip.value ? 'soft' : 'ghost'"
-									:color="filterDate === chip.value ? 'primary' : 'neutral'"
-									@click="handleDateChip(chip.value)"
-								>
-									{{ chip.label }}
-								</UButton>
-							</div>
-
+						<div class="flex flex-wrap gap-2">
 							<UButton
-								v-if="hasFilters"
+								v-for="chip in dateChips"
+								:key="chip.value"
 								size="xs"
-								variant="ghost"
-								color="neutral"
-								icon="i-lucide-x"
-								@click="clearFilters"
+								:variant="filterDate === chip.value ? 'soft' : 'ghost'"
+								:color="filterDate === chip.value ? 'primary' : 'neutral'"
+								@click="handleDateChip(chip.value)"
 							>
-								{{ t('ayan.filter.clear') }}
+								{{ chip.label }}
 							</UButton>
 						</div>
-					</Transition>
-				</div>
 
-				<div v-if="createMode" class="mb-4">
-					<UButton icon="i-lucide-plus" size="lg" variant="soft" color="primary" block @click="handleCreate">
-						{{ createLabel }}
-					</UButton>
-				</div>
-
-				<div v-if="loading" class="flex justify-center py-12">
-					<LoadingSpinner />
-				</div>
-
-				<template v-else-if="activeTab === 'trips'">
-					<div v-if="!filteredTrips.length">
-						<EmptyState
-							:title="hasFilters ? t('empty.noResults') : t('ayan.noRides')"
-							:description="hasFilters ? t('empty.noResultsDesc') : t('ayan.noRidesDesc')"
-						/>
-					</div>
-					<div v-else class="space-y-3">
-						<UCard
-							v-for="trip in filteredTrips"
-							:key="trip.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleTripClick(trip.id)"
+						<UButton
+							v-if="hasFilters"
+							size="xs"
+							variant="ghost"
+							color="neutral"
+							icon="i-lucide-x"
+							@click="clearFilters"
 						>
-							<div class="flex items-start justify-between gap-3">
-								<div class="min-w-0 flex-1">
-									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-										<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-										<span class="truncate">{{ trip.from_address }}</span>
-										<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-										<span class="truncate">{{ trip.to_address }}</span>
-									</div>
-									<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
-										<span>{{ trip.date }}</span>
-										<span v-if="trip.time">{{ trip.time }}</span>
-										<span>{{ trip.seats }} {{ t('ayan.ride.seats') }}</span>
-									</div>
-									<div class="mt-1 text-xs text-gray-500">
-										{{ trip.driver.name }}
-									</div>
-								</div>
-								<div class="shrink-0 text-right">
-									<div class="text-sm font-semibold text-cyan-400">
-										{{ formatTripPrice(trip.price) }}
-									</div>
-								</div>
-							</div>
-						</UCard>
+							{{ t('ayan.filter.clear') }}
+						</UButton>
 					</div>
-				</template>
+				</Transition>
+			</div>
 
-				<template v-else-if="activeTab === 'requests'">
-					<div v-if="!filteredRequests.length">
-						<EmptyState
-							:title="hasFilters ? t('empty.noResults') : t('ayan.noRequests')"
-							:description="hasFilters ? t('empty.noResultsDesc') : t('ayan.noRequestsDesc')"
-						/>
-					</div>
-					<div v-else class="space-y-3">
-						<UCard
-							v-for="request in filteredRequests"
-							:key="request.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleRequestClick(request.id)"
-						>
-							<div class="min-w-0">
-								<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
+			<div v-if="createMode" class="ayan-cta">
+				<UButton icon="i-lucide-plus" size="lg" variant="soft" color="primary" block @click="handleCreate">
+					{{ createLabel }}
+				</UButton>
+			</div>
+
+			<div v-if="loading" class="flex justify-center py-12">
+				<LoadingSpinner />
+			</div>
+
+			<template v-else-if="activeTab === 'trips'">
+				<EmptyState
+					v-if="!filteredTrips.length"
+					:title="hasFilters ? t('empty.noResults') : t('ayan.noRides')"
+					:description="hasFilters ? t('empty.noResultsDesc') : t('ayan.noRidesDesc')"
+				/>
+				<div v-else class="app-section-stack">
+					<button
+						v-for="trip in filteredTrips"
+						:key="trip.id"
+						type="button"
+						class="app-feed-card"
+						@click="handleTripClick(trip.id)"
+					>
+						<div class="app-feed-card__row">
+							<div class="app-feed-card__main">
+								<div class="app-feed-card__route">
 									<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-									<span class="truncate">{{ request.from_address }}</span>
+									<span class="app-feed-card__route-text">{{ trip.from_address }}</span>
 									<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-									<span class="truncate">{{ request.to_address }}</span>
+									<span class="app-feed-card__route-text">{{ trip.to_address }}</span>
 								</div>
-								<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
-									<span>{{ request.date }}</span>
-									<span v-if="request.time">{{ request.time }}</span>
+								<div class="app-feed-card__meta">
+									<span class="app-feed-card__meta-item">{{ trip.date }}</span>
+									<span v-if="trip.time" class="app-feed-card__meta-item">{{ trip.time }}</span>
+									<span class="app-feed-card__meta-item">
+										{{ trip.seats }} {{ t('ayan.ride.seats') }}
+									</span>
 								</div>
-								<div class="mt-1 text-xs text-gray-500">
-									{{ request.passenger.name }}
-								</div>
-								<div v-if="request.description" class="mt-1 text-xs text-gray-400">
-									{{ request.description }}
-								</div>
+								<div class="app-feed-card__subtext">{{ trip.driver.name }}</div>
 							</div>
-						</UCard>
-					</div>
-				</template>
+							<div class="app-feed-card__price">{{ formatTripPrice(trip.price) }}</div>
+						</div>
+					</button>
+				</div>
+			</template>
 
-				<template v-else>
-					<div v-if="!filteredMyTrips.length && !filteredMyRequests.length && !filteredMyResponses.length">
-						<EmptyState :title="t('ayan.noMy')" :description="t('ayan.noMyDesc')" />
-					</div>
-					<div v-else class="space-y-3">
-						<UCard
-							v-for="trip in filteredMyTrips"
-							:key="'my-' + trip.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleTripClick(trip.id)"
-						>
-							<div class="flex items-start justify-between gap-3">
-								<div class="min-w-0 flex-1">
-									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-										<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-										<span class="truncate">{{ trip.from_address }}</span>
-										<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-										<span class="truncate">{{ trip.to_address }}</span>
-									</div>
-									<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
-										<span>{{ trip.date }}</span>
-										<span v-if="trip.time">{{ trip.time }}</span>
-										<span>{{ trip.seats }} {{ t('ayan.ride.seats') }}</span>
-										<UBadge
-											v-if="isPastTrip(trip.date, trip.time)"
-											color="neutral"
-											variant="subtle"
-											size="xs"
-										>
-											{{ t('ayan.status.past') }}
-										</UBadge>
-									</div>
-								</div>
-								<div class="shrink-0 text-right">
-									<div class="text-sm font-semibold text-cyan-400">
-										{{ formatTripPrice(trip.price) }}
-									</div>
-								</div>
+			<template v-else-if="activeTab === 'requests'">
+				<EmptyState
+					v-if="!filteredRequests.length"
+					:title="hasFilters ? t('empty.noResults') : t('ayan.noRequests')"
+					:description="hasFilters ? t('empty.noResultsDesc') : t('ayan.noRequestsDesc')"
+				/>
+				<div v-else class="app-section-stack">
+					<button
+						v-for="request in filteredRequests"
+						:key="request.id"
+						type="button"
+						class="app-feed-card"
+						@click="handleRequestClick(request.id)"
+					>
+						<div class="app-feed-card__main">
+							<div class="app-feed-card__route">
+								<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
+								<span class="app-feed-card__route-text">{{ request.from_address }}</span>
+								<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
+								<span class="app-feed-card__route-text">{{ request.to_address }}</span>
 							</div>
-						</UCard>
-						<UCard
-							v-for="req in filteredMyRequests"
-							:key="'my-req-' + req.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleRequestClick(req.id)"
-						>
-							<div class="min-w-0">
-								<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
+							<div class="app-feed-card__meta">
+								<span class="app-feed-card__meta-item">{{ request.date }}</span>
+								<span v-if="request.time" class="app-feed-card__meta-item">{{ request.time }}</span>
+							</div>
+							<div class="app-feed-card__subtext">{{ request.passenger.name }}</div>
+							<div
+								v-if="request.description"
+								class="app-feed-card__subtext app-feed-card__subtext--bright"
+							>
+								{{ request.description }}
+							</div>
+						</div>
+					</button>
+				</div>
+			</template>
+
+			<template v-else>
+				<EmptyState
+					v-if="!filteredMyTrips.length && !filteredMyRequests.length && !filteredMyResponses.length"
+					:title="t('ayan.noMy')"
+					:description="t('ayan.noMyDesc')"
+				/>
+				<div v-else class="app-section-stack">
+					<button
+						v-for="trip in filteredMyTrips"
+						:key="`my-${trip.id}`"
+						type="button"
+						class="app-feed-card"
+						@click="handleTripClick(trip.id)"
+					>
+						<div class="app-feed-card__row">
+							<div class="app-feed-card__main">
+								<div class="app-feed-card__route">
 									<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
-									<span class="truncate">{{ req.from_address }}</span>
+									<span class="app-feed-card__route-text">{{ trip.from_address }}</span>
 									<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
-									<span class="truncate">{{ req.to_address }}</span>
+									<span class="app-feed-card__route-text">{{ trip.to_address }}</span>
 								</div>
-								<div class="mt-1 flex items-center gap-3 text-xs text-gray-400">
-									<span>{{ req.date }}</span>
-									<span v-if="req.time">{{ req.time }}</span>
+								<div class="app-feed-card__meta">
+									<span class="app-feed-card__meta-item">{{ trip.date }}</span>
+									<span v-if="trip.time" class="app-feed-card__meta-item">{{ trip.time }}</span>
+									<span class="app-feed-card__meta-item">
+										{{ trip.seats }} {{ t('ayan.ride.seats') }}
+									</span>
 									<UBadge
-										v-if="isPastRequest(req.date, req.time)"
+										v-if="isPastTrip(trip.date, trip.time)"
 										color="neutral"
 										variant="subtle"
 										size="xs"
@@ -512,86 +471,148 @@ function handleResponseClick(response: AyanResponse) {
 									</UBadge>
 								</div>
 							</div>
-						</UCard>
-						<UCard
-							v-for="response in filteredMyResponses"
-							:key="'my-response-' + response.id"
-							variant="outline"
-							class="cursor-pointer transition-colors hover:border-cyan-500/30"
-							@click="handleResponseClick(response)"
-						>
-							<div class="flex items-start justify-between gap-3">
-								<div class="min-w-0 flex-1">
-									<div class="mb-1 flex items-center gap-2 text-sm font-medium text-cyan-50">
-										<UIcon
-											:name="response.trip_id ? 'i-lucide-car' : 'i-lucide-map-pin'"
-											class="shrink-0 text-cyan-400"
-										/>
-										<span class="truncate">
-											{{
-												response.trip
-													? `${response.trip.from_address} → ${response.trip.to_address}`
-													: response.request
-														? `${response.request.from_address} → ${response.request.to_address}`
-														: response.trip_id
-															? t('ayan.myResponse.trip')
-															: t('ayan.myResponse.request')
-											}}
-										</span>
-										<UBadge :color="statusColor(response.status)" variant="subtle" size="xs">
-											{{ t(`ayan.respond.status.${response.status}`) }}
-										</UBadge>
-										<UBadge
-											v-if="response.trip?.status || response.request?.status"
-											color="primary"
-											variant="outline"
-											size="xs"
-										>
-											{{ t(`ayan.status.${response.trip?.status || response.request?.status}`) }}
-										</UBadge>
-									</div>
-									<div class="flex items-center gap-3 text-xs text-gray-500">
-										<span>#{{ response.trip_id ?? response.request_id }}</span>
-										<span v-if="response.trip?.date || response.request?.date">
-											{{ response.trip?.date || response.request?.date }}
-										</span>
-										<span v-if="response.trip?.time || response.request?.time">
-											{{ response.trip?.time || response.request?.time }}
-										</span>
-									</div>
-									<div class="mt-1 text-xs text-gray-500">
-										{{ response.trip?.driver.name || response.request?.passenger.name }}
-									</div>
-									<div v-if="response.message" class="mt-1 text-xs text-gray-400">
-										{{ response.message }}
-									</div>
-								</div>
-							</div>
-						</UCard>
-					</div>
-				</template>
+							<div class="app-feed-card__price">{{ formatTripPrice(trip.price) }}</div>
+						</div>
+					</button>
 
-				<AyanCreateSlideover v-model:open="createOpen" @created="handleCreated" />
+					<button
+						v-for="req in filteredMyRequests"
+						:key="`my-req-${req.id}`"
+						type="button"
+						class="app-feed-card"
+						@click="handleRequestClick(req.id)"
+					>
+						<div class="app-feed-card__main">
+							<div class="app-feed-card__route">
+								<UIcon name="i-lucide-map-pin" class="shrink-0 text-cyan-400" />
+								<span class="app-feed-card__route-text">{{ req.from_address }}</span>
+								<UIcon name="i-lucide-arrow-right" class="shrink-0 text-gray-500" />
+								<span class="app-feed-card__route-text">{{ req.to_address }}</span>
+							</div>
+							<div class="app-feed-card__meta">
+								<span class="app-feed-card__meta-item">{{ req.date }}</span>
+								<span v-if="req.time" class="app-feed-card__meta-item">{{ req.time }}</span>
+								<UBadge
+									v-if="isPastRequest(req.date, req.time)"
+									color="neutral"
+									variant="subtle"
+									size="xs"
+								>
+									{{ t('ayan.status.past') }}
+								</UBadge>
+							</div>
+						</div>
+					</button>
+
+					<button
+						v-for="response in filteredMyResponses"
+						:key="`my-response-${response.id}`"
+						type="button"
+						class="app-feed-card"
+						@click="handleResponseClick(response)"
+					>
+						<div class="app-feed-card__main">
+							<div class="app-feed-card__route">
+								<UIcon
+									:name="response.trip_id ? 'i-lucide-car' : 'i-lucide-map-pin'"
+									class="shrink-0 text-cyan-400"
+								/>
+								<span class="app-feed-card__route-text">
+									{{
+										response.trip
+											? `${response.trip.from_address} → ${response.trip.to_address}`
+											: response.request
+												? `${response.request.from_address} → ${response.request.to_address}`
+												: response.trip_id
+													? t('ayan.myResponse.trip')
+													: t('ayan.myResponse.request')
+									}}
+								</span>
+							</div>
+							<div class="mt-3 flex flex-wrap gap-2">
+								<UBadge :color="statusColor(response.status)" variant="subtle" size="xs">
+									{{ t(`ayan.respond.status.${response.status}`) }}
+								</UBadge>
+								<UBadge
+									v-if="response.trip?.status || response.request?.status"
+									color="primary"
+									variant="outline"
+									size="xs"
+								>
+									{{ t(`ayan.status.${response.trip?.status || response.request?.status}`) }}
+								</UBadge>
+							</div>
+							<div class="app-feed-card__meta">
+								<span class="app-feed-card__meta-item">
+									#{{ response.trip_id ?? response.request_id }}
+								</span>
+								<span
+									v-if="response.trip?.date || response.request?.date"
+									class="app-feed-card__meta-item"
+								>
+									{{ response.trip?.date || response.request?.date }}
+								</span>
+								<span
+									v-if="response.trip?.time || response.request?.time"
+									class="app-feed-card__meta-item"
+								>
+									{{ response.trip?.time || response.request?.time }}
+								</span>
+							</div>
+							<div class="app-feed-card__subtext">
+								{{ response.trip?.driver.name || response.request?.passenger.name }}
+							</div>
+							<div v-if="response.message" class="app-feed-card__subtext app-feed-card__subtext--bright">
+								{{ response.message }}
+							</div>
+						</div>
+					</button>
+				</div>
 			</template>
-		</div>
+
+			<AyanCreateSlideover v-model:open="createOpen" @created="handleCreated" />
+		</template>
 	</div>
 </template>
 
 <style scoped>
+.ayan-tabs-panel,
+.ayan-filter-panel {
+	padding: 14px;
+	margin-bottom: 12px;
+}
+
+.ayan-filter-panel__body {
+	margin-top: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.ayan-cta {
+	margin-bottom: 16px;
+}
+
+.app-feed-card__subtext--bright {
+	color: var(--text-secondary);
+}
+
 .filter-slide-enter-active,
 .filter-slide-leave-active {
 	transition: all 150ms ease-out;
 	overflow: hidden;
 }
+
 .filter-slide-enter-from,
 .filter-slide-leave-to {
 	opacity: 0;
 	max-height: 0;
 	margin-top: 0;
 }
+
 .filter-slide-enter-to,
 .filter-slide-leave-from {
 	opacity: 1;
-	max-height: 200px;
+	max-height: 240px;
 }
 </style>

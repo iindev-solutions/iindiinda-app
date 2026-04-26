@@ -50,15 +50,11 @@ async function handleSwitch(role: 'carrier' | 'sender') {
 </script>
 
 <template>
-	<div class="rounded-2xl border border-gray-800/80 bg-gray-900/60 p-3">
-		<div class="mb-2 flex items-center justify-between gap-2">
+	<div class="app-panel app-panel--soft role-switch">
+		<div class="role-switch__head">
 			<div>
-				<div class="text-xs font-medium uppercase tracking-[0.18em] text-gray-500">
-					{{ t('agal.roleSwitcher.title') }}
-				</div>
-				<p class="mt-1 text-xs text-gray-400">
-					{{ t('agal.roleSwitcher.desc') }}
-				</p>
+				<p class="app-kicker">{{ t('agal.roleSwitcher.title') }}</p>
+				<p class="role-switch__copy">{{ t('agal.roleSwitcher.desc') }}</p>
 			</div>
 			<UBadge v-if="currentRole" color="primary" variant="subtle" size="xs">
 				{{ t(`agal.roleSwitcher.current.${currentRole}`) }}
@@ -81,3 +77,24 @@ async function handleSwitch(role: 'carrier' | 'sender') {
 		</div>
 	</div>
 </template>
+
+<style scoped>
+.role-switch {
+	padding: 16px;
+}
+
+.role-switch__head {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+.role-switch__copy {
+	margin: 6px 0 0;
+	font-size: 12px;
+	line-height: 1.55;
+	color: var(--text-secondary);
+}
+</style>

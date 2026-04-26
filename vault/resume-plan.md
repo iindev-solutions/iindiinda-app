@@ -136,6 +136,10 @@
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
 - Latest auth hardening code commit is `af93b9b` `fix(auth): harden tma bootstrap`
 - Static deploy prevention now exists in source via guarded `npm run build:static`
+- Root `DESIGN.md` now exists as the redesign baseline for colors, typography, spacing, rounding, and shared component patterns
+- First redesign implementation slice is now present in local source for shared shell, home/landing pages, and AYAN/AGAL entry-feed screens
+- Redesigned bottom nav now highlights the tapped service immediately on first tap via optimistic pending-route state
+- Current local redesign should be treated as variant 1 checkpoint before trying a simpler follow-up variant
 - Latest shipped runtime commit is `53af2d7` `feat(agal): ship frontend MVP flow`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
@@ -199,16 +203,14 @@
 
 ## Next Action
 
-1. Start the project redesign in the next session
-2. Redesign order:
-   - define shared visual direction, shell, spacing, cards, buttons, inputs, and tabs first
-   - then redesign home + service landing pages
-   - then redesign feed/detail/create flows for AYAN and AGAL on top of the current working backend contracts
-3. Keep scope disciplined:
+1. Keep the current redesign as variant 1 checkpoint
+2. Try a simpler variant 2 next while preserving the same working backend/API behavior
+3. After choosing the better direction, continue into AYAN + AGAL detail pages and create flows
+4. Keep scope disciplined:
    - frontend-first
    - no broad backend refactors unless a redesign task clearly requires it
    - treat AYAN and AGAL current behavior as the working baseline to preserve
-4. Keep legal/compliance parked and keep product logic patch-only unless a real runtime issue appears
+5. Keep legal/compliance parked and keep product logic patch-only unless a real runtime issue appears
 
 ## API Smoke Snapshot (Live)
 
@@ -229,11 +231,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: start the project redesign from the now-stable AYAN + AGAL baseline.
+Current task: preserve the current redesign as variant 1 and explore a simpler follow-up variant.
 1) keep backend/API contracts as-is unless redesign work clearly needs a targeted change
-2) redesign shared shell and design-system primitives first
-3) then redesign home + service landing pages
-4) then redesign feed/detail/create flows
+2) keep first-tap bottom-nav active behavior intact
+3) simplify shell/home/service/feed presentation next
+4) only after choosing direction, redesign detail and create flows
 5) keep legal parked and patch runtime bugs only if they block redesign or live usage
 ```
 
@@ -246,4 +248,4 @@ Current task: start the project redesign from the now-stable AYAN + AGAL baselin
 
 ## One-Line Summary
 
-Live AYAN remains green for MVP, AGAL now has a live frontend/backend MVP baseline, and the next session should shift from feature work to a frontend-first project redesign.
+Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign now has both a root DESIGN.md source of truth and a local variant 1 UI checkpoint with fixed first-tap bottom-nav activation.

@@ -2,6 +2,78 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 18:55 - Redesign V1 Checkpoint + Bottom Nav Fix
+
+### Done
+
+- Fixed the redesigned bottom navigation so the tapped service becomes visually active immediately on first tap
+- Simplified bottom-nav routing by using `NuxtLink` plus an optimistic pending-route state during navigation
+- Preserved the current redesign as the first checkpoint/variant for later comparison against a simpler follow-up variant
+
+### Verified
+
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- Current redesign should now be treated as **variant 1 checkpoint**
+- Next UI pass should explore a simpler variant while keeping this checkpoint available for rollback or comparison
+
+## 2026-04-26 18:25 - Shared Redesign Slice Implemented
+
+### Done
+
+- Implemented the first real frontend redesign slice from `DESIGN.md`
+- Added shared redesign component:
+  - `frontend/app/components/AppHero.vue`
+- Restyled shared frontend shell and primitives:
+  - `frontend/app/assets/css/main.css`
+  - `frontend/app/layouts/default.vue`
+  - `frontend/app/components/AppBottomNav.vue`
+  - `frontend/app/components/AppTitle.vue`
+  - `frontend/app/components/ServiceCard.vue`
+  - `frontend/app/components/AppServiceAbout.vue`
+  - `frontend/app/components/EmptyState.vue`
+- Rebuilt the home/landing surfaces around the new shared shell:
+  - `frontend/app/pages/index.vue`
+  - `frontend/services/uus/app/pages/uus.vue`
+  - `frontend/services/tal/app/pages/tal.vue`
+- Applied the redesign to the current AYAN + AGAL working entry/feed screens:
+  - `frontend/services/ayan/app/pages/ayan/index.vue`
+  - `frontend/services/agal/app/pages/agal/index.vue`
+  - `frontend/services/ayan/app/components/AyanRoleSwitch.vue`
+  - `frontend/services/agal/app/components/AgalRoleSwitch.vue`
+  - `frontend/services/ayan/app/components/AyanAccessState.vue`
+  - `frontend/services/agal/app/components/AgalAccessState.vue`
+
+### Verified
+
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- Redesign implementation has now moved past documentation-only planning and into shared runtime UI
+- Detail pages and create flows still use the older visual treatment and should be the next redesign slice
+
+## 2026-04-26 17:20 - DESIGN.md Redesign Baseline Added
+
+### Done
+
+- Added root `DESIGN.md` as the shared redesign source of truth for frontend visual direction
+- Defined the first alpha token set for colors, typography, rounding, spacing, and shared component patterns
+- Captured redesign guidance for shell, cards, buttons, inputs, tabs, lifecycle badges, and Telegram-safe interaction style
+
+### Verified
+
+- `node .tmp-designmd/package/dist/index.js lint DESIGN.md` ✅ (`0 errors, 0 warnings`)
+
+### Important
+
+- Next redesign slice should implement shared shell/primitives from `DESIGN.md` before page-specific restyling
+- AYAN and AGAL should both consume this shared visual baseline instead of diverging service by service
+
 ## 2026-04-26 09:00 - Redesign Chosen As Next Track
 
 ### Done
