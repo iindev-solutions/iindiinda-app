@@ -2,6 +2,44 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 07:10 - AGAL Scaffold Slice Landed In Source
+
+### Done
+
+- Started the first real AGAL code slice after the post-AYAN direction decision
+- Added AGAL frontend scaffold files:
+  - `frontend/services/agal/app/types/agal.ts`
+  - `frontend/services/agal/app/composables/useAgalRoutes.ts`
+  - `frontend/services/agal/app/composables/useAgalRequests.ts`
+  - `frontend/services/agal/app/composables/useAgalResponses.ts`
+  - `frontend/services/agal/app/composables/useAgalMy.ts`
+  - `frontend/services/agal/app/components/AgalAccessState.vue`
+  - `frontend/services/agal/app/pages/agal/index.vue`
+- Converted `frontend/services/agal/app/pages/agal.vue` into the required parent wrapper that only renders `<NuxtPage />`
+- Added AGAL UI copy for the new scaffold view in:
+  - `frontend/i18n/locales/ru.json`
+  - `frontend/i18n/locales/sah.json`
+- Rewrote `frontend/services/agal/README.md` so the service-layer note matches the new contract and no longer describes the old worldwide-air-delivery concept
+- Replaced temporary backend `/agal/parcels*` route stubs with AGAL contract-shaped scaffold endpoints in `backend/routes/api.php`:
+  - `routes`
+  - `requests`
+  - `responses`
+  - `my/*`
+
+### Verified
+
+- `frontend: JSON.parse(frontend/i18n/locales/ru.json)` ✅
+- `frontend: JSON.parse(frontend/i18n/locales/sah.json)` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `backend: php -l /tmp/agal-api.php` on copied `backend/routes/api.php` ✅ (`No syntax errors detected`)
+
+### Important
+
+- This is a scaffold slice, not full AGAL persistence yet
+- Backend AGAL endpoints now have the correct shape, but detail/update/persistence behavior is still placeholder
+- Next AGAL slice should replace placeholder closures with real controllers/models/migrations and then hook the create/feed flow to real data
+
 ## 2026-04-26 06:20 - Post-MVP Direction Switched To AGAL
 
 ### Done

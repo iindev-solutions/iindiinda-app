@@ -1,26 +1,80 @@
-# iind.agal — Аҕал (Доставка)
+# iind.agal — Аҕал (Delivery via existing routes)
 
-**Версия**: v0.1  
-**Статус**: Концепция
+**Version**: v0.2
+**Status**: scaffold started after AYAN MVP
 
-## Концепция
+## Core concept
 
-Авиа-доставка посылок по всему миру. Отправитель создаёт посылку, попутчик (кто летит в нужном направлении) берёт на доставку.
+AGAL connects two sides:
 
-## API
+1. a **carrier** who is already traveling on a route
+2. a **sender** who needs to send an item in the same direction
 
-| Метод | Эндпоинт                      | Описание          |
-| ----- | ----------------------------- | ----------------- |
-| POST  | `/api/agal/parcels`           | Создать посылку   |
-| GET   | `/api/agal/parcels/open`      | Ищут перевозчика  |
-| POST  | `/api/agal/parcels/{id}/take` | Взять на доставку |
+The platform does **not** deliver the parcel itself.
 
-## Модели
+AGAL is not:
 
-### Parcel
+- a logistics company
+- a courier service
+- a warehouse
+- an insurer
+- a tracking system
 
-`{ from_city, to_city, weight_kg, description, status }`
+It only helps people find each other and agree directly.
 
-### Статусы
+## MVP pattern
 
-`looking_for_carrier → in_transit → delivered`
+AGAL intentionally reuses the AYAN interaction model:
+
+1. carrier creates a route
+2. sender creates a request
+3. both sides browse feed
+4. one side responds
+5. owner accepts one response
+6. contact is revealed
+7. owner marks outcome as `completed` or `cancelled`
+
+## API shape
+
+Base URL:
+
+```text
+/api/agal
+```
+
+Main surfaces:
+
+```text
+GET    /agal/routes
+POST   /agal/routes
+GET    /agal/routes/{id}
+PATCH  /agal/routes/{id}
+
+GET    /agal/requests
+POST   /agal/requests
+GET    /agal/requests/{id}
+PATCH  /agal/requests/{id}
+
+GET    /agal/routes/{id}/responses
+POST   /agal/routes/{id}/responses
+GET    /agal/requests/{id}/responses
+POST   /agal/requests/{id}/responses
+PATCH  /agal/responses/{id}
+DELETE /agal/responses/{id}
+
+GET    /agal/my/routes
+GET    /agal/my/requests
+GET    /agal/my/responses
+```
+
+## Current implementation note
+
+Current repository state is the first AGAL scaffold slice:
+
+- frontend structure starts mirroring AYAN
+- backend placeholder shape now matches the planned AGAL contract
+- real persistence/controllers/details are still a next slice
+
+Source of truth:
+
+- `vault/wiki/services/agal/api-contract.md`

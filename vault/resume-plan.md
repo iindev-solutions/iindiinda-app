@@ -127,7 +127,8 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Latest live frontend/runtime code commit is `5e81817` `fix(ayan): simplify tma create form`
+- Latest live AYAN runtime code remains `5e81817` `fix(ayan): simplify tma create form`
+- AGAL scaffold slice now exists in source but is not deployed as a user-facing live feature yet
 - Local, GitHub, and VPS repository states are aligned on the current branch tip
 - User completed manual Telegram Mini App testing and reported AYAN works end-to-end well enough for MVP acceptance
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
@@ -190,12 +191,17 @@
 
 ## Next Action
 
-1. Post-MVP direction is chosen: AGAL goes next while legal waits
-2. Use `vault/wiki/services/agal/api-contract.md` as the new AGAL implementation source of truth
-3. Start AGAL with the smallest high-reuse slice:
-   - align backend placeholder endpoints to the AYAN-like `routes / requests / responses / my/*` model
-   - scaffold frontend AGAL pages/composables/types to mirror AYAN structure
-   - keep scope to create/feed/respond/contact only
+1. Continue AGAL after the completed scaffold slice
+2. Next AGAL implementation step:
+   - replace backend AGAL placeholder closures with real persistence/controllers
+   - add AGAL create flow UI on top of the new scaffold structure
+   - render real route/request cards instead of scaffold empty states
+3. Keep AGAL MVP scope narrow:
+   - create
+   - feed
+   - respond
+   - contact reveal
+   - matched/completed/cancelled lifecycle
 4. Keep AYAN in maintenance mode and patch only if new runtime regressions appear
 
 ## API Smoke Snapshot (Live)
@@ -217,11 +223,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: start AGAL as the first post-AYAN product track.
-1) read `vault/wiki/services/agal/api-contract.md`
-2) align backend placeholder endpoints to the AGAL dual-surface model
-3) scaffold frontend AGAL structure to reuse AYAN patterns
-4) keep AGAL MVP narrow: create/feed/respond/contact only
+Current task: continue AGAL after scaffold slice.
+1) replace backend placeholder AGAL closures with real persistence/controllers
+2) add create/feed UI on top of the scaffolded AGAL structure
+3) keep AGAL MVP narrow: create/feed/respond/contact only
+4) reuse AYAN lifecycle/contact patterns where possible
 5) if AYAN regresses on a real device, patch it separately without broad refactors
 ```
 
@@ -234,4 +240,4 @@ Current task: start AGAL as the first post-AYAN product track.
 
 ## One-Line Summary
 
-Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; user-reported manual TMA verification is green, so AYAN MVP is in maintenance mode and AGAL is the chosen next implementation track.
+Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; user-reported manual TMA verification is green, so AYAN MVP is in maintenance mode while AGAL moves from contract/scaffold into real implementation.

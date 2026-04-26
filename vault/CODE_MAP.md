@@ -133,8 +133,15 @@
 |------|-----------|
 | `nuxt.config.ts` | Layer config |
 | `package.json` | iind-agal v0.1.0 |
-| `README.md` | Концепция |
+| `README.md` | Service-layer overview aligned to the new contract |
 | `app/pages/agal.vue` | Parent wrapper → /agal |
+| `app/pages/agal/index.vue` | AGAL scaffold page with tabs, access gate, and real API-shaped feed hooks |
+| `app/components/AgalAccessState.vue` | AGAL access-state screen for loading / Telegram-required / auth-failed states |
+| `app/types/agal.ts` | AGAL route/request/response DTOs and status enums |
+| `app/composables/useAgalRoutes.ts` | AGAL route feed/detail/create/update API layer |
+| `app/composables/useAgalRequests.ts` | AGAL request feed/detail/create/update API layer |
+| `app/composables/useAgalResponses.ts` | AGAL response list/create/update/delete API layer |
+| `app/composables/useAgalMy.ts` | AGAL my-routes / my-requests / my-responses API layer |
 
 **API contract**: `vault/wiki/services/agal/api-contract.md`
 
@@ -199,7 +206,13 @@
 - AYAN: `GET /api/ayan/my/trips`, `GET /api/ayan/my/requests`, `GET /api/ayan/my/responses`
 - TAL: `GET /tal/services`, `GET /tal/masters`, `GET /tal/slots`, `POST /tal/bookings`, `DELETE /tal/bookings/{id}`
 - UUS: `POST /uus/tasks`, `GET /uus/tasks/open`, `POST /uus/tasks/{id}/respond`
-- AGAL: `POST /agal/parcels`, `GET /agal/parcels/open`, `POST /agal/parcels/{id}/take`
+- AGAL scaffold routes now match the new contract shape:
+  - `GET/POST /agal/routes`, `GET/PATCH /agal/routes/{id}`
+  - `GET/POST /agal/requests`, `GET/PATCH /agal/requests/{id}`
+  - `GET/POST /agal/routes/{id}/responses`
+  - `GET/POST /agal/requests/{id}/responses`
+  - `PATCH /agal/responses/{id}`, `DELETE /agal/responses/{id}`
+  - `GET /agal/my/routes`, `GET /agal/my/requests`, `GET /agal/my/responses`
 
 ---
 
@@ -210,7 +223,7 @@
 | AYAN | runtime-ready on VPS: migrations + Sanctum + persistence controllers; Telegram verification still stub | pages + composables + types, real API switched on | ayanMock.ts |
 | TAL | routes only (нет контроллеров) | showcase | нет |
 | UUS | routes only | placeholder | нет |
-| AGAL | routes only | placeholder | нет |
+| AGAL | contract-shaped scaffold routes in `backend/routes/api.php`, still placeholder/no persistence yet | scaffold page + composables + types | нет |
 | Auth | partial real: Sanctum token issuance + `/api/user`; Telegram verification still stub | useAuth + init.ts | mockData.ts |
 
 ---

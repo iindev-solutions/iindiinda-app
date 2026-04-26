@@ -295,3 +295,11 @@
 - Verified: reviewed AGAL vision, roadmap, system design, current placeholder AGAL frontend/backend state, and the new AGAL contract doc
 - Blockers: AGAL still has only placeholder code in app/backend and now needs actual implementation slices
 - Next: start AGAL by aligning backend route shape and scaffolding frontend structure to reuse AYAN patterns
+
+## 2026-04-26 07:10 — AGAL Scaffold Slice
+
+- Scope: land the first AGAL code slice by aligning route shape and building the frontend scaffold around the new contract
+- Changes: replaced backend `/agal/parcels*` stubs with contract-shaped scaffold endpoints, added AGAL frontend types/composables/page/component structure, rewrote the AGAL layer README, and updated AGAL locale copy
+- Verified: locale JSON parse, `frontend npm run typecheck`, `frontend npm run build:static`, and remote `php -l` against the changed backend routes file
+- Blockers: AGAL still has placeholder backend behavior only; no real persistence/controllers/details yet
+- Next: replace AGAL placeholder closures with real controllers/models/migrations and then wire create/feed UI to real data
