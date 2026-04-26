@@ -28,6 +28,7 @@
 ### Important
 
 - The AYAN create-flow no-zoom fix is now live for Telegram Mini App retesting
+- Deployed runtime code is `52da837`; repository/vault sync later advanced to `d9ef630`
 - Next required proof is a real-device TMA check that input focus and calendar open no longer trigger disruptive zoom
 
 ## 2026-04-26 00:40 - TMA No-Zoom Form Fix + AYAN Copy Refresh
