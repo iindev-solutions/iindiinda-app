@@ -110,28 +110,25 @@
   - `frontend/app/utils/api-base.ts`
 - Latest auth hardening code commit in this session: `af93b9b` `fix(auth): harden tma bootstrap`
 
-## UI Update - 2026-04-26 04:30
+## UI Update - 2026-04-26 05:40
 
-- Investigated the reported Telegram Mini App zoom issue in the AYAN create flow where focusing inputs or opening the calendar caused disruptive iOS/WebView zoom
-- Shipped the mitigation in:
-  1. `frontend/app/assets/css/main.css`
-  2. `frontend/services/ayan/app/components/AyanCreateSlideover.vue`
-  3. `frontend/i18n/locales/ru.json`
-- Fix shape:
-  - `-webkit-text-size-adjust: 100%`
-  - force `font-size: 16px` for create-form inputs/textarea/select
-  - force `font-size: 16px` for the calendar trigger button and teleported `UCalendar` buttons
-  - refreshed AYAN service-about examples with more human recurring-route / low-budget request wording
-- Committed as `52da837` `fix(ayan): prevent tma form zoom`
+- Initial font-size no-zoom mitigation was not sufficient for the reported Telegram Mini App behavior
+- AYAN create flow was simplified again to reduce slideover/WebView focus instability:
+  1. replaced `UPopover + UCalendar` with a native `type="date"` input
+  2. disabled `USlideover` transition inside Telegram with `:transition="!isInTelegram"`
+  3. kept the prior larger-input/no-zoom styling in place
+  4. made trip comment required in frontend validation/payload
+  5. updated ride comment placeholders in `frontend/i18n/locales/ru.json` and `frontend/i18n/locales/sah.json`
+- Runtime change shipped as `5e81817` `fix(ayan): simplify tma create form`
 - Pushed `front/ayan`, fast-forwarded VPS repo, rebuilt static bundle, and redeployed live frontend hosting
-- Live root HTML now references current assets `entry.7LYcEUNC.css` and `DjBoV2vJ.js`
-- Required next proof: real Telegram Mini App retest on the create trip/request flow to confirm focus and calendar open no longer trigger broken zoom
+- Live root HTML now references current assets `entry.7LYcEUNC.css` and `DTyp_Z4D.js`
+- Required next proof: real Telegram Mini App retest on the create trip/request flow to confirm whether removing the calendar/popover layer and transition solved the zoom issue
 
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Latest live frontend/runtime code commit is `52da837` `fix(ayan): prevent tma form zoom`
-- Latest branch tip contains post-deploy vault sync notes for the zoom-fix rollout
+- Latest live frontend/runtime code commit is `5e81817` `fix(ayan): simplify tma create form`
+- Latest branch tip contains post-deploy vault sync notes for the create-form simplification rollout
 - Local, GitHub, and VPS repository states are aligned on the current branch tip
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
@@ -183,20 +180,21 @@
 - Backend (VPS checkout):
   - `./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php` ✅ (`16 tests, 127 assertions`)
 - Runtime:
-  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`52da837`)
+  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`5e81817` before later vault-sync docs)
   - `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
   - `curl https://iindiinda.duckdns.org/` contains `apiBase:"/api"` ✅
-  - live root HTML references `entry.7LYcEUNC.css` and `DjBoV2vJ.js` ✅
+  - live root HTML references `entry.7LYcEUNC.css` and `DTyp_Z4D.js` ✅
 
 ## Next Action
 
-1. Retest the AYAN create trip/request flow inside the real Telegram Mini App and confirm focusing inputs or opening the calendar no longer causes disruptive zoom
-2. If any zoom/focus breakage remains, capture the exact affected field/device and patch the create UI again in a focused follow-up slice
-3. Continue the pending real Telegram Mini App E2E validation for create/respond/accept/matched/completed/cancelled flows
-4. Keep the legal gap list parked until operator/hosting facts are ready, then resume the legal-text pass
+1. Retest the AYAN create trip/request flow inside the real Telegram Mini App and confirm whether route/date/time/price/comment focus still causes disruptive zoom or viewport jump
+2. Specifically verify that the removed calendar popover and disabled Telegram slideover transition improved the create flow
+3. If any zoom/focus breakage remains, capture the exact affected control/device/timestamp and move the create flow to a dedicated page or simpler custom sheet in the next slice
+4. Continue the pending real Telegram Mini App E2E validation for create/respond/accept/matched/completed/cancelled flows after the zoom issue is either fixed or isolated
+5. Keep the legal gap list parked until operator/hosting facts are ready, then resume the legal-text pass
 
 ## API Smoke Snapshot (Live)
 
@@ -217,11 +215,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: validate the live AYAN Telegram Mini App create-flow zoom fix.
+Current task: validate the live AYAN Telegram Mini App create-form simplification.
 1) open `/ayan` from the real Telegram Mini App
-2) test create trip/request form focus on route fields, time, price, comment, and calendar open
-3) confirm whether disruptive zoom is gone or still happens on any specific control/device
-4) if any zoom/focus issue remains, capture the exact field + device + timestamp and patch the create UI in a focused slice
+2) test create trip/request form focus on route fields, native date input, time, price, and comment
+3) confirm whether disruptive zoom/viewport jump is gone or still happens on any specific control/device
+4) if issue remains, capture the exact field + device + timestamp; next likely fix is to move create flow out of the slideover
 5) after zoom verification, continue the pending AYAN TMA E2E flow validation and update vault files with the result
 ```
 
@@ -234,4 +232,4 @@ Current task: validate the live AYAN Telegram Mini App create-flow zoom fix.
 
 ## One-Line Summary
 
-Live AYAN now includes the create-form no-zoom mitigation; next safe move is one real Telegram Mini App retest focused on input focus and calendar open behavior.
+Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; next safe move is one real Telegram Mini App retest focused on focus/zoom behavior.

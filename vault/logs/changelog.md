@@ -2,6 +2,40 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 05:40 - TMA Create Form Simplified And Deployed
+
+### Done
+
+- Reworked the AYAN create flow to reduce Telegram/iOS WebView zoom/focus instability in the slideover
+- Replaced the slideover date popover/calendar with a native `type="date"` input in `frontend/services/ayan/app/components/AyanCreateSlideover.vue`
+- Disabled slideover transitions inside Telegram via `:transition="!isInTelegram"`
+- Made trip comment textarea required in frontend validation and submit payload
+- Updated ride comment placeholders in:
+  - `frontend/i18n/locales/ru.json`
+  - `frontend/i18n/locales/sah.json`
+- Committed runtime change as `5e81817` `fix(ayan): simplify tma create form`
+- Pushed `front/ayan`, fast-forwarded VPS repo, rebuilt static frontend, and redeployed the live bundle
+
+### Verified
+
+- `frontend: JSON.parse(frontend/i18n/locales/ru.json)` ✅
+- `frontend: JSON.parse(frontend/i18n/locales/sah.json)` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `git rev-parse --short HEAD` ✅ (`5e81817` before vault-sync docs)
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`5e81817` before vault-sync docs)
+- Live root HTML matches current built assets ✅ (`entry.7LYcEUNC.css`, `DTyp_Z4D.js`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/assets/entry.7LYcEUNC.css` ✅ (`200 text/css`)
+- `curl -I https://iindiinda.duckdns.org/assets/DTyp_Z4D.js` ✅ (`200 application/javascript`)
+
+### Important
+
+- Live AYAN no longer uses the `UPopover + UCalendar` date picker in the create slideover
+- Next proof still requires a real Telegram Mini App retest, because the remaining zoom issue may be tied to the slideover/container behavior rather than only font sizing
+- If zoom still survives after this slice, the next stronger option is to move create flow out of the slideover into a dedicated page or a simpler custom sheet
+
 ## 2026-04-26 04:30 - TMA No-Zoom Fix Deployed Live
 
 ### Done

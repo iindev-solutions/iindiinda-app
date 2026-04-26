@@ -271,3 +271,11 @@
 - Verified: deployed runtime code at `52da837`, local/origin/VPS repo aligned on the latest post-deploy vault-sync tip, `frontend npm run typecheck`, `frontend npm run build:static`, live `/`, `/ayan`, `/api/health`, and deployed asset URLs all return `200`
 - Blockers: only real-device Telegram verification remains for this zoom-specific slice
 - Next: open AYAN in Telegram Mini App and check input focus + calendar open behavior on the create form
+
+## 2026-04-26 05:40 — TMA Create Form Simplify + Live Deploy
+
+- Scope: reduce the remaining Telegram Mini App zoom/focus weirdness by simplifying the AYAN create slideover instead of only forcing larger font sizes
+- Changes: replaced the popover calendar with a native date input, disabled slideover transition in Telegram, made trip comment required in frontend validation/payload, updated ride placeholders in RU/SAH, committed `5e81817`, pushed `front/ayan`, and redeployed the live static bundle
+- Verified: locale JSON parse for `ru.json` and `sah.json`, `frontend npm run typecheck`, `frontend npm run build:static`, live `/ayan`, `/api/health`, and current deployed asset URLs return `200`
+- Blockers: still need a real Telegram device check to know whether the remaining issue was caused by the calendar/popover layer or by the slideover container itself
+- Next: retest create trip/request in Telegram Mini App; if zoom still survives, move create flow to a dedicated page or simpler sheet
