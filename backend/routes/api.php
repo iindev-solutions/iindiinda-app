@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\Agal\MyController as AgalMyController;
+use App\Http\Controllers\Agal\RequestController as AgalRequestController;
+use App\Http\Controllers\Agal\ResponseController as AgalResponseController;
+use App\Http\Controllers\Agal\RouteController as AgalRouteController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Ayan\MyController;
-use App\Http\Controllers\Ayan\RequestController;
-use App\Http\Controllers\Ayan\ResponseController;
+use App\Http\Controllers\Ayan\MyController as AyanMyController;
+use App\Http\Controllers\Ayan\RequestController as AyanRequestController;
+use App\Http\Controllers\Ayan\ResponseController as AyanResponseController;
 use App\Http\Controllers\Ayan\TripController;
 use App\Http\Controllers\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', function () {
@@ -24,21 +27,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/ayan/trips/{id}', [TripController::class, 'show']);
     Route::patch('/ayan/trips/{id}', [TripController::class, 'update']);
 
-    Route::get('/ayan/requests', [RequestController::class, 'index']);
-    Route::post('/ayan/requests', [RequestController::class, 'store']);
-    Route::get('/ayan/requests/{id}', [RequestController::class, 'show']);
-    Route::patch('/ayan/requests/{id}', [RequestController::class, 'update']);
+    Route::get('/ayan/requests', [AyanRequestController::class, 'index']);
+    Route::post('/ayan/requests', [AyanRequestController::class, 'store']);
+    Route::get('/ayan/requests/{id}', [AyanRequestController::class, 'show']);
+    Route::patch('/ayan/requests/{id}', [AyanRequestController::class, 'update']);
 
-    Route::get('/ayan/trips/{id}/responses', [ResponseController::class, 'tripIndex']);
-    Route::get('/ayan/requests/{id}/responses', [ResponseController::class, 'requestIndex']);
-    Route::post('/ayan/trips/{id}/responses', [ResponseController::class, 'tripStore']);
-    Route::post('/ayan/requests/{id}/responses', [ResponseController::class, 'requestStore']);
-    Route::patch('/ayan/responses/{id}', [ResponseController::class, 'update']);
-    Route::delete('/ayan/responses/{id}', [ResponseController::class, 'destroy']);
+    Route::get('/ayan/trips/{id}/responses', [AyanResponseController::class, 'tripIndex']);
+    Route::get('/ayan/requests/{id}/responses', [AyanResponseController::class, 'requestIndex']);
+    Route::post('/ayan/trips/{id}/responses', [AyanResponseController::class, 'tripStore']);
+    Route::post('/ayan/requests/{id}/responses', [AyanResponseController::class, 'requestStore']);
+    Route::patch('/ayan/responses/{id}', [AyanResponseController::class, 'update']);
+    Route::delete('/ayan/responses/{id}', [AyanResponseController::class, 'destroy']);
 
-    Route::get('/ayan/my/trips', [MyController::class, 'trips']);
-    Route::get('/ayan/my/requests', [MyController::class, 'requests']);
-    Route::get('/ayan/my/responses', [MyController::class, 'responses']);
+    Route::get('/ayan/my/trips', [AyanMyController::class, 'trips']);
+    Route::get('/ayan/my/requests', [AyanMyController::class, 'requests']);
+    Route::get('/ayan/my/responses', [AyanMyController::class, 'responses']);
 
     Route::get('/tal/services', fn () => response()->json([]));
     Route::get('/tal/masters', fn () => response()->json([]));
@@ -50,148 +53,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/uus/tasks/open', fn () => response()->json([]));
     Route::post('/uus/tasks/{id}/respond', fn () => response()->json([], 201));
 
-    Route::get('/agal/routes', fn () => response()->json(['success' => true, 'data' => []]));
-    Route::post('/agal/routes', function (Request $request) {
-        $user = $request->user();
+    Route::get('/agal/routes', [AgalRouteController::class, 'index']);
+    Route::post('/agal/routes', [AgalRouteController::class, 'store']);
+    Route::get('/agal/routes/{id}', [AgalRouteController::class, 'show']);
+    Route::patch('/agal/routes/{id}', [AgalRouteController::class, 'update']);
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id' => 0,
-                'carrier' => [
-                    'id' => $user?->id ?? 0,
-                    'name' => $user?->first_name ?? 'User',
-                    'username' => $user?->username,
-                ],
-                'from_address' => (string) $request->input('from_address', ''),
-                'to_address' => (string) $request->input('to_address', ''),
-                'date' => (string) $request->input('date', now()->toDateString()),
-                'time' => $request->input('time'),
-                'size_label' => (string) $request->input('size_label', 'small'),
-                'weight_kg_max' => $request->input('weight_kg_max'),
-                'accepted_items' => $request->input('accepted_items'),
-                'restricted_items' => $request->input('restricted_items'),
-                'price' => $request->input('price'),
-                'notes' => $request->input('notes'),
-                'status' => 'open',
-                'created_at' => now()->toIso8601String(),
-            ],
-        ], 201);
-    });
-    Route::get('/agal/routes/{id}', fn () => response()->json(['success' => false, 'message' => 'AGAL route detail not implemented yet'], 501));
-    Route::patch('/agal/routes/{id}', fn () => response()->json(['success' => false, 'message' => 'AGAL route update not implemented yet'], 501));
+    Route::get('/agal/requests', [AgalRequestController::class, 'index']);
+    Route::post('/agal/requests', [AgalRequestController::class, 'store']);
+    Route::get('/agal/requests/{id}', [AgalRequestController::class, 'show']);
+    Route::patch('/agal/requests/{id}', [AgalRequestController::class, 'update']);
 
-    Route::get('/agal/requests', fn () => response()->json(['success' => true, 'data' => []]));
-    Route::post('/agal/requests', function (Request $request) {
-        $user = $request->user();
+    Route::get('/agal/routes/{id}/responses', [AgalResponseController::class, 'routeIndex']);
+    Route::post('/agal/routes/{id}/responses', [AgalResponseController::class, 'routeStore']);
+    Route::get('/agal/requests/{id}/responses', [AgalResponseController::class, 'requestIndex']);
+    Route::post('/agal/requests/{id}/responses', [AgalResponseController::class, 'requestStore']);
+    Route::patch('/agal/responses/{id}', [AgalResponseController::class, 'update']);
+    Route::delete('/agal/responses/{id}', [AgalResponseController::class, 'destroy']);
 
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id' => 0,
-                'sender' => [
-                    'id' => $user?->id ?? 0,
-                    'name' => $user?->first_name ?? 'User',
-                    'username' => $user?->username,
-                ],
-                'from_address' => (string) $request->input('from_address', ''),
-                'to_address' => (string) $request->input('to_address', ''),
-                'date' => (string) $request->input('date', now()->toDateString()),
-                'time' => $request->input('time'),
-                'size_label' => (string) $request->input('size_label', 'small'),
-                'weight_kg' => $request->input('weight_kg'),
-                'contents_summary' => (string) $request->input('contents_summary', ''),
-                'fragility' => (string) $request->input('fragility', 'normal'),
-                'documents_required' => (bool) $request->input('documents_required', false),
-                'budget' => $request->input('budget'),
-                'notes' => $request->input('notes'),
-                'status' => 'open',
-                'created_at' => now()->toIso8601String(),
-            ],
-        ], 201);
-    });
-    Route::get('/agal/requests/{id}', fn () => response()->json(['success' => false, 'message' => 'AGAL request detail not implemented yet'], 501));
-    Route::patch('/agal/requests/{id}', fn () => response()->json(['success' => false, 'message' => 'AGAL request update not implemented yet'], 501));
-
-    Route::get('/agal/routes/{id}/responses', fn () => response()->json(['success' => true, 'data' => []]));
-    Route::post('/agal/routes/{id}/responses', function (Request $request, int $id) {
-        $user = $request->user();
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id' => 0,
-                'route_id' => $id,
-                'request_id' => null,
-                'route' => null,
-                'request' => null,
-                'user' => [
-                    'id' => $user?->id ?? 0,
-                    'name' => $user?->first_name ?? 'User',
-                    'username' => $user?->username,
-                ],
-                'message' => $request->input('message'),
-                'status' => 'pending',
-                'created_at' => now()->toIso8601String(),
-            ],
-        ], 201);
-    });
-    Route::get('/agal/requests/{id}/responses', fn () => response()->json(['success' => true, 'data' => []]));
-    Route::post('/agal/requests/{id}/responses', function (Request $request, int $id) {
-        $user = $request->user();
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id' => 0,
-                'route_id' => null,
-                'request_id' => $id,
-                'route' => null,
-                'request' => null,
-                'user' => [
-                    'id' => $user?->id ?? 0,
-                    'name' => $user?->first_name ?? 'User',
-                    'username' => $user?->username,
-                ],
-                'message' => $request->input('message'),
-                'status' => 'pending',
-                'created_at' => now()->toIso8601String(),
-            ],
-        ], 201);
-    });
-    Route::patch('/agal/responses/{id}', function (Request $request, int $id) {
-        $user = $request->user();
-
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id' => $id,
-                'route_id' => null,
-                'request_id' => null,
-                'route' => null,
-                'request' => null,
-                'user' => [
-                    'id' => $user?->id ?? 0,
-                    'name' => $user?->first_name ?? 'User',
-                    'username' => $user?->username,
-                ],
-                'message' => null,
-                'status' => (string) $request->input('status', 'pending'),
-                'created_at' => now()->toIso8601String(),
-            ],
-        ]);
-    });
-    Route::delete('/agal/responses/{id}', function (int $id) {
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'id' => $id,
-                'deleted' => true,
-            ],
-        ]);
-    });
-
-    Route::get('/agal/my/routes', fn () => response()->json(['success' => true, 'data' => []]));
-    Route::get('/agal/my/requests', fn () => response()->json(['success' => true, 'data' => []]));
-    Route::get('/agal/my/responses', fn () => response()->json(['success' => true, 'data' => []]));
+    Route::get('/agal/my/routes', [AgalMyController::class, 'routes']);
+    Route::get('/agal/my/requests', [AgalMyController::class, 'requests']);
+    Route::get('/agal/my/responses', [AgalMyController::class, 'responses']);
 });
