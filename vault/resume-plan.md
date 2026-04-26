@@ -127,9 +127,9 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Latest branch tip, local, GitHub, and VPS repo state are aligned on the current AGAL frontend-MVP handoff point
-- Latest live AYAN runtime behavior remains green after the previous `5e81817` create-form simplification
-- AGAL backend persistence is shipped on VPS and the first real frontend MVP slice is now live on `/agal` (feed, create, detail, respond, contact reveal, lifecycle actions)
+- Local, GitHub, VPS repo, and live frontend runtime are aligned on redesign variant 3 commit `30b0f40`
+- Latest live AYAN runtime behavior remains green after the redesign deployment and the older `5e81817` create-form simplification still remains part of the stable baseline
+- AGAL backend persistence is shipped on VPS and the redesigned frontend slice is now live on `/agal` (feed, create, detail, respond, contact reveal, lifecycle actions)
 - User completed manual Telegram Mini App testing and reported AYAN works end-to-end well enough for MVP acceptance
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
@@ -137,13 +137,12 @@
 - Latest auth hardening code commit is `af93b9b` `fix(auth): harden tma bootstrap`
 - Static deploy prevention now exists in source via guarded `npm run build:static`
 - Root `DESIGN.md` now exists as the redesign baseline for colors, typography, spacing, rounding, and shared component patterns
-- First redesign implementation slice is now present in local source for shared shell, home/landing pages, and AYAN/AGAL entry-feed screens
 - Redesigned bottom nav now highlights the tapped service immediately on first tap via optimistic pending-route state
 - Commit `bc7bdc4` is the saved redesign variant 1 checkpoint
 - Commit `b22f92c` is the saved redesign variant 2 checkpoint
-- Current local working tree continues redesign variant 3 as the active direction: home, landing, feed, detail, and create surfaces now follow the same calmer daily-use styling
+- Redesign variant 3 is now the active live frontend runtime direction: home, landing, feed, detail, and create surfaces follow the same calmer daily-use styling
 - `iind` remains the cyan brand anchor and the literal home `iindiinda` reminder was removed
-- Latest shipped runtime commit is `53af2d7` `feat(agal): ship frontend MVP flow`
+- Latest shipped runtime commit is `30b0f40` `feat(ui): extend redesign variant 3`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
   - `/`
@@ -194,7 +193,7 @@
   - `./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php` ✅ (`16 tests, 127 assertions`)
   - `./vendor/bin/phpunit tests/Feature/AgalPersistenceTest.php` ✅ (`4 tests, 60 assertions`)
 - Runtime:
-  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (current AGAL frontend-MVP handoff tip)
+  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`30b0f40`)
   - `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/agal` ✅ (`200`)
@@ -206,9 +205,9 @@
 
 ## Next Action
 
-1. Keep pushing variant 3 as the chosen redesign direction unless a visual regression appears
-2. Do final polish on any remaining rough surfaces, then commit/deploy the redesign stack
-3. After deploy, run manual Telegram/browser regression checks on AYAN + AGAL main flows
+1. Run manual Telegram/browser regression checks on the live redesigned AYAN + AGAL flows
+2. Patch only the real regressions found in live use
+3. Keep refining variant 3 only where usage reveals friction
 4. Keep scope disciplined:
    - frontend-first
    - no broad backend refactors unless a redesign task clearly requires it
@@ -234,11 +233,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: continue and finalize redesign variant 3.
+Current task: validate the live redesign variant 3 and patch only real regressions.
 1) keep backend/API contracts as-is unless redesign work clearly needs a targeted change
 2) keep first-tap bottom-nav active behavior intact
 3) maintain cyan `iind` branding and avoid the old `iindiinda` home reminder
-4) polish and then commit/deploy the full redesign
+4) focus on live AYAN + AGAL usage validation next
 5) keep legal parked and patch runtime bugs only if they block redesign or live usage
 ```
 
@@ -251,4 +250,4 @@ Current task: continue and finalize redesign variant 3.
 
 ## One-Line Summary
 
-Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign now has a root DESIGN.md source of truth plus committed checkpoints for variants 1 and 2 while variant 3 is the active local full-surface redesign direction awaiting commit/deploy.
+Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign variant 3 is now pushed, VPS-synced, and deployed live with committed checkpoints for the earlier variants still preserved in history.

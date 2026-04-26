@@ -2,6 +2,30 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 21:45 - Variant 3 Pushed Synced And Deployed
+
+### Done
+
+- Pushed all redesign commits on `front/ayan` to GitHub
+- Fast-forwarded VPS repository `/var/www/iind-app` to the same branch tip
+- Redeployed the frontend static bundle to `/var/www/iind-app/frontend/public` using the safe directory-swap flow
+- Promoted redesign variant 3 from local-only work to the new live frontend runtime
+
+### Verified
+
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`30b0f40`)
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/agal` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- `curl https://iindiinda.duckdns.org/` contains `apiBase:"/api"` ✅
+
+### Important
+
+- Local, GitHub, VPS repo, and live frontend runtime are now aligned on redesign variant 3 commit `30b0f40`
+- Next highest-value step is manual Telegram/browser regression validation on AYAN + AGAL main flows
+
 ## 2026-04-26 21:00 - Variant 3 Redesign Extended To Detail/Create
 
 ### Done

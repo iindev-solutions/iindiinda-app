@@ -192,6 +192,14 @@
 - Blockers: redesign is still local-only and not deployed; final visual preference between committed checkpoints and current variant 3 still depends on human review
 - Next: keep variant 3, polish any remaining rough edges, then commit/deploy the chosen redesign direction
 
+## 2026-04-26 21:45 — Push Sync Deploy Variant 3
+
+- Scope: push all redesign work, sync repository states, and promote variant 3 to the live frontend runtime
+- Changes: pushed `front/ayan`, fast-forwarded VPS repo to `30b0f40`, redeployed `frontend/.output/public` via safe directory swap, and aligned local/GitHub/VPS/live frontend on the same redesign tip
+- Verified: `git push origin front/ayan`; `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` (`30b0f40`); `curl -I` for `/`, `/ayan`, `/agal`, `/api/health`; live root HTML still contains `apiBase:"/api"`
+- Blockers: post-redesign Telegram/browser regression validation is still needed on real usage flows
+- Next: run manual AYAN + AGAL regression checks on the live redesigned build and patch only what fails
+
 ## 2026-04-25 09:25 — Production Asset MIME Hotfix
 
 - Scope: investigate and recover live AYAN startup failures caused by blocked module/CSS loads
