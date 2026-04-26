@@ -95,4 +95,4 @@ This sprint is complete only when:
 - AYAN MVP sprint can now be treated as complete for runtime/UI scope based on green live API smoke plus user-reported real-device Telegram Mini App verification
 - Remaining legal/compliance work is still important, but it is no longer blocking the AYAN MVP runtime handoff
 - Next execution target is AGAL MVP because it offers the highest AYAN architecture reuse among the remaining service tracks
-- AGAL scaffold slice has now started in source: contract locked, backend route shape aligned, frontend structure/pages/composables/types created
+- AGAL scaffold slice has now started and is deployed live: contract locked, backend route shape aligned, frontend structure/pages/composables/types created

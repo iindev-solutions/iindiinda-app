@@ -127,9 +127,9 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Latest live AYAN runtime code remains `5e81817` `fix(ayan): simplify tma create form`
-- AGAL scaffold slice now exists in source but is not deployed as a user-facing live feature yet
-- Local, GitHub, and VPS repository states are aligned on the current branch tip
+- Latest branch tip, local, GitHub, and VPS repo state are aligned at the current AGAL scaffold commit
+- Latest live AYAN runtime behavior remains green after the previous `5e81817` create-form simplification
+- AGAL scaffold slice is now deployed live on `/agal`, but it is still scaffold-only and not a full persisted feature yet
 - User completed manual Telegram Mini App testing and reported AYAN works end-to-end well enough for MVP acceptance
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
@@ -191,7 +191,7 @@
 
 ## Next Action
 
-1. Continue AGAL after the completed scaffold slice
+1. Continue AGAL after the completed scaffold-and-deploy slice
 2. Next AGAL implementation step:
    - replace backend AGAL placeholder closures with real persistence/controllers
    - add AGAL create flow UI on top of the new scaffold structure
@@ -223,7 +223,7 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: continue AGAL after scaffold slice.
+Current task: continue AGAL after the live scaffold slice.
 1) replace backend placeholder AGAL closures with real persistence/controllers
 2) add create/feed UI on top of the scaffolded AGAL structure
 3) keep AGAL MVP narrow: create/feed/respond/contact only
@@ -240,4 +240,4 @@ Current task: continue AGAL after scaffold slice.
 
 ## One-Line Summary
 
-Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; user-reported manual TMA verification is green, so AYAN MVP is in maintenance mode while AGAL moves from contract/scaffold into real implementation.
+Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; user-reported manual TMA verification is green, and AGAL has now moved from contract/scaffold into a deployed scaffold slice ready for real persistence work.

@@ -299,7 +299,7 @@
 ## 2026-04-26 07:10 — AGAL Scaffold Slice
 
 - Scope: land the first AGAL code slice by aligning route shape and building the frontend scaffold around the new contract
-- Changes: replaced backend `/agal/parcels*` stubs with contract-shaped scaffold endpoints, added AGAL frontend types/composables/page/component structure, rewrote the AGAL layer README, and updated AGAL locale copy
-- Verified: locale JSON parse, `frontend npm run typecheck`, `frontend npm run build:static`, and remote `php -l` against the changed backend routes file
+- Changes: replaced backend `/agal/parcels*` stubs with contract-shaped scaffold endpoints, added AGAL frontend types/composables/page/component structure, rewrote the AGAL layer README, updated AGAL locale copy, committed `274e615`, pushed `front/ayan`, synced VPS repo, and redeployed the live frontend bundle
+- Verified: locale JSON parse, `frontend npm run typecheck`, `frontend npm run build:static`, remote `php -l` against the changed backend routes file, live `/agal` `200`, live `/api/health` `200`, and guest `/api/agal/routes` `401` as expected
 - Blockers: AGAL still has placeholder backend behavior only; no real persistence/controllers/details yet
 - Next: replace AGAL placeholder closures with real controllers/models/migrations and then wire create/feed UI to real data

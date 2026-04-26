@@ -2,11 +2,13 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
-## 2026-04-26 07:10 - AGAL Scaffold Slice Landed In Source
+## 2026-04-26 07:10 - AGAL Scaffold Slice Deployed Live
 
 ### Done
 
 - Started the first real AGAL code slice after the post-AYAN direction decision
+- Committed the slice as `274e615` `feat(agal): scaffold first MVP slice`
+- Pushed `front/ayan`, fast-forwarded VPS repo, rebuilt static frontend, and redeployed the live bundle so `/agal` reflects the new scaffold state
 - Added AGAL frontend scaffold files:
   - `frontend/services/agal/app/types/agal.ts`
   - `frontend/services/agal/app/composables/useAgalRoutes.ts`
@@ -33,10 +35,15 @@
 - `frontend: npm run typecheck` ✅
 - `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
 - `backend: php -l /tmp/agal-api.php` on copied `backend/routes/api.php` ✅ (`No syntax errors detected`)
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`274e615`)
+- `curl -I https://iindiinda.duckdns.org/agal` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- `curl -s -o /dev/null -w "%{http_code}" https://iindiinda.duckdns.org/api/agal/routes` ✅ (`401` guest auth gate expected)
 
 ### Important
 
 - This is a scaffold slice, not full AGAL persistence yet
+- Live `/agal` now exposes the new scaffold page, but create/respond/detail behavior is still not a real persisted flow yet
 - Backend AGAL endpoints now have the correct shape, but detail/update/persistence behavior is still placeholder
 - Next AGAL slice should replace placeholder closures with real controllers/models/migrations and then hook the create/feed flow to real data
 
