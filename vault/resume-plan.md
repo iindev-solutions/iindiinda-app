@@ -127,7 +127,7 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Local, GitHub, VPS repo, and live frontend runtime are aligned on redesign variant 3 commit `30b0f40`
+- Local, GitHub, and VPS repository are now also aligned on Coolify prep commit `a333560` `feat(ops): add coolify deployment starter`; live frontend runtime remains on the previously deployed redesign bundle
 - Latest live AYAN runtime behavior remains green after the redesign deployment and the older `5e81817` create-form simplification still remains part of the stable baseline
 - AGAL backend persistence is shipped on VPS and the redesigned frontend slice is now live on `/agal` (feed, create, detail, respond, contact reveal, lifecycle actions)
 - User completed manual Telegram Mini App testing and reported AYAN works end-to-end well enough for MVP acceptance
@@ -145,6 +145,12 @@
   - `ops/coolify/backend.nginx.conf`
   - `ops/coolify/README.md`
   - `ops/coolify/SETUP.md` (exact operator setup guide)
+- Real production-VPS Coolify attempt was started and then paused:
+  - installer source state exists under `/data/coolify/source`
+  - first hard failure captured: Docker pull of `ghcr.io/coollabsio/coolify:4.0.0-beta.474` hit `lookup ghcr.io: i/o timeout`
+  - Docker cleanup reclaimed about `977MB`, increasing free disk to about `5.2GB`
+  - host still has only about `10GB` total disk, far below Coolify's recommended comfort zone
+  - SSH/HTTP were intermittent during install/restart windows, so no more night-time recovery actions should be attempted blindly
 - Root `DESIGN.md` now exists as the redesign baseline for colors, typography, spacing, rounding, and shared component patterns
 - Redesigned bottom nav now highlights the tapped service immediately on first tap via optimistic pending-route state
 - Commit `bc7bdc4` is the saved redesign variant 1 checkpoint
@@ -214,15 +220,19 @@
 
 ## Next Action
 
-1. Treat redesign variant 3 as the current accepted frontend baseline unless real usage reports a concrete regression
-2. Decide the deployment-path next step explicitly:
-   - current VPS path: apply Nginx/static asset hardening and deploy safety checks there
-   - Coolify path: follow `ops/coolify/SETUP.md`, trial the new `docker-compose.coolify.yml` stack on a trial subdomain, and validate `/api` proxying
-3. After that decision, continue hardening on the chosen deployment path instead of reopening redesign by default
-4. Keep scope disciplined:
-   - frontend-first unless a hardening/deploy task clearly requires backend/ops work
-   - treat AYAN and AGAL current behavior as the working baseline to preserve
-5. Keep legal/compliance parked and keep product logic patch-only unless a real runtime issue appears
+1. Tomorrow begin with VPS health/stability checks only:
+   - SSH responsiveness
+   - `systemctl` status for `nginx`, `php8.3-fpm`, `mysql`, `docker`
+   - live route checks for `/` and `/api/health`
+2. If the host is stable, inspect the partial Coolify attempt:
+   - `/data/coolify/source/*.log`
+   - `/etc/docker/daemon.json`
+   - Docker DNS/network behavior against `ghcr.io`
+3. Decide whether to continue on the same VPS or stop because the host is too small/noisy for Coolify:
+   - total disk is only about `10GB`
+   - even after cleanup free disk is only about `5.2GB`
+4. Do **not** reopen redesign during this recovery window
+5. Keep legal/compliance parked and patch runtime bugs only if they block live usage
 
 ## API Smoke Snapshot (Live)
 
@@ -243,12 +253,12 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: keep the accepted variant 3 baseline stable and move to deployment hardening / Coolify evaluation.
-1) keep backend/API contracts as-is unless a hardening/deploy task clearly needs a targeted change
-2) keep first-tap bottom-nav active behavior intact
-3) maintain cyan `iind` branding and avoid the old `iindiinda` home reminder
+Current task: resume the paused production-VPS Coolify attempt carefully.
+1) first verify VPS is healthy before changing anything else
+2) inspect the partial Coolify install and Docker pull/DNS failure around `ghcr.io`
+3) treat current live AYAN/AGAL runtime as primary; recovery/stability comes before Coolify ambition
 4) do not reopen redesign unless real usage reveals concrete friction
-5) keep legal parked and patch runtime bugs only if they block redesign or live usage
+5) keep legal parked and patch runtime bugs only if they block live usage
 ```
 
 ## Deployment Context
@@ -260,4 +270,4 @@ Current task: keep the accepted variant 3 baseline stable and move to deployment
 
 ## One-Line Summary
 
-Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, redesign variant 3 is accepted live, and the repository now also contains a first-pass Coolify deployment starter layout for future deployment-path evaluation.
+Live AYAN remains the intended baseline, AGAL stays stable in source, redesign variant 3 remains accepted, and the repository plus VPS repo now contain Coolify starter prep while the first real production-VPS Coolify install attempt is paused after Docker/DNS instability.

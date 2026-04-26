@@ -2,6 +2,33 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 23:10 - Coolify Prod-VPS Attempt Paused For Morning Resume
+
+### Done
+
+- Committed and pushed the Coolify repository prep as `a333560` `feat(ops): add coolify deployment starter`
+- Synced the VPS repository to `a333560`
+- Attempted an in-place Coolify install on the current production VPS
+- Confirmed the host already has Docker available for a future Coolify path
+- Cleaned unused Docker images/volumes during troubleshooting and reclaimed about `977MB`
+
+### Verified
+
+- VPS before install attempt: Docker present, current live stack still runs through host Nginx/PHP/MySQL
+- Coolify installer created partial source state under `/data/coolify/source`
+- First concrete install failure captured in the Coolify upgrade log:
+  - `failed to copy ... ghcr.io ... lookup ghcr.io: i/o timeout`
+- Host storage warning during install:
+  - total disk about `10GB`
+  - free space improved from about `735MB` to about `5.2GB` after Docker cleanup, but still far below Coolify's recommended headroom
+
+### Important
+
+- Coolify is **not** installed successfully yet
+- No production cutover to Coolify happened
+- SSH/HTTP became intermittent during Docker/Coolify install attempts, so the safest move is to stop and resume in a calmer window
+- Morning resume should start with a live VPS health check before any more Coolify actions
+
 ## 2026-04-26 22:35 - Coolify Exact Setup Guide Added
 
 ### Done

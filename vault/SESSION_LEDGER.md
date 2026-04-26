@@ -224,6 +224,14 @@
 - Blockers: still no local `docker` runtime and no real Coolify deploy feedback yet
 - Next: create the Coolify Docker Compose resource on a trial subdomain and use first deploy logs as the next debugging input
 
+## 2026-04-26 23:10 — Coolify Prod VPS Attempt Paused
+
+- Scope: push the new Coolify prep, sync it to VPS, and test whether the current production VPS can host Coolify directly
+- Changes: committed/pushed `a333560`, synced VPS repo, ran an in-place Coolify install attempt, inspected installer logs, and reclaimed Docker disk space with `docker system prune -af --volumes`
+- Verified: install failure is currently at Docker image pull time for `ghcr.io/coollabsio/coolify:4.0.0-beta.474` with `lookup ghcr.io: i/o timeout`; free disk improved to about `5.2GB` after cleanup but host capacity still remains far below Coolify's recommended headroom
+- Blockers: SSH/HTTP became intermittent during install/restart windows; Coolify source files now exist under `/data/coolify/source`, but the control plane is not installed successfully yet
+- Next: tomorrow start with VPS health/stability checks, then inspect Docker DNS/network behavior and decide whether to keep trying on this small production VPS or switch to a safer Coolify host plan
+
 ## 2026-04-25 09:25 — Production Asset MIME Hotfix
 
 - Scope: investigate and recover live AYAN startup failures caused by blocked module/CSS loads
