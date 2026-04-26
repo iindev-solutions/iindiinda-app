@@ -15,7 +15,7 @@ Goal: ship a working AYAN MVP flow:
 3. respond
 4. exchange contact details
 
-## Resume Point - 2026-04-26 07:20
+## Resume Point - 2026-04-26 08:45
 
 - Current branch: `front/ayan`
 - Latest live AYAN runtime code still includes the create-form simplification commit `5e81817` (`fix(ayan): simplify tma create form`)
@@ -38,7 +38,7 @@ Goal: ship a working AYAN MVP flow:
 - Lifecycle status expansion (`matched/completed/cancelled`) is now committed, pushed, migrated, and deployed
 - Production API behavior for lifecycle states is validated (`open -> matched -> completed/cancelled`)
 - Platform-wide legal-center expansion is now deployed live; do not treat it as final legal closure until operator details and RF data-localization posture are resolved
-- AGAL backend persistence slice is now live on VPS, while AGAL frontend remains scaffold-level and awaits real create/feed/detail UX
+- AGAL backend persistence slice is live on VPS, and the first real AGAL frontend create/feed/detail slice is now also deployed live
 
 ## Sprint Tasks
 
@@ -76,9 +76,9 @@ Goal: ship a working AYAN MVP flow:
 
 1. Post-MVP product direction is now chosen: AGAL goes next while legal waits
 2. Use `vault/wiki/services/agal/api-contract.md` as the implementation source of truth for AGAL MVP
-3. AGAL scaffold slice is done; next AGAL slice is persistence-backed user flow:
-   - replace scaffold empty behavior with real create/feed UI
-   - keep backend persisted `routes / requests / responses / my/*` model already shipped
+3. AGAL frontend MVP slice is now shipped; next AGAL step is runtime validation and edge-case polish:
+   - manually verify AGAL in real Telegram/browser runtime against the persisted backend
+   - patch UX/runtime issues found in create/respond/contact flow
    - keep scope to create/feed/respond/contact only
 4. Keep AYAN in maintenance mode and patch only if new runtime regressions appear
 
@@ -96,4 +96,4 @@ This sprint is complete only when:
 - AYAN MVP sprint can now be treated as complete for runtime/UI scope based on green live API smoke plus user-reported real-device Telegram Mini App verification
 - Remaining legal/compliance work is still important, but it is no longer blocking the AYAN MVP runtime handoff
 - Next execution target is AGAL MVP because it offers the highest AYAN architecture reuse among the remaining service tracks
-- AGAL scaffold slice is deployed live and the first real backend persistence slice is now also shipped: migrations, models, controllers, and targeted PHPUnit are green on VPS
+- AGAL now has both shipped backend persistence and shipped frontend MVP UI on VPS: feed, filters, role switching, create flow, detail pages, respond flow, contact reveal, and lifecycle actions

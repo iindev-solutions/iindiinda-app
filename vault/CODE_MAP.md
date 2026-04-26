@@ -133,15 +133,21 @@
 |------|-----------|
 | `nuxt.config.ts` | Layer config |
 | `package.json` | iind-agal v0.1.0 |
-| `README.md` | Service-layer overview aligned to the new contract |
+| `README.md` | Service-layer overview + current AGAL MVP flow status |
 | `app/pages/agal.vue` | Parent wrapper → /agal |
-| `app/pages/agal/index.vue` | AGAL scaffold page with tabs, access gate, and real API-backed feed hooks |
+| `app/pages/agal/index.vue` | AGAL real feed page: tabs, filters, role switcher, create CTA, my-area cards |
+| `app/pages/agal/route/[id].vue` | AGAL route detail: respond, accept/reject, contact reveal, final status actions |
+| `app/pages/agal/request/[id].vue` | AGAL request detail: respond, accept/reject, contact reveal, final status actions |
 | `app/components/AgalAccessState.vue` | AGAL access-state screen for loading / Telegram-required / auth-failed states |
+| `app/components/AgalRoleSwitch.vue` | AGAL role switcher for `carrier <-> sender` |
+| `app/components/AgalCreateSlideover.vue` | AGAL create form for route/request with Telegram-safe bottom slideover UX |
 | `app/types/agal.ts` | AGAL route/request/response DTOs and status enums |
 | `app/composables/useAgalRoutes.ts` | AGAL route feed/detail/create/update API layer |
 | `app/composables/useAgalRequests.ts` | AGAL request feed/detail/create/update API layer |
 | `app/composables/useAgalResponses.ts` | AGAL response list/create/update/delete API layer |
 | `app/composables/useAgalMy.ts` | AGAL my-routes / my-requests / my-responses API layer |
+| `app/utils/role.ts` | AGAL role helpers: create mode + primary role guard |
+| `app/utils/responses.ts` | AGAL response helpers: find own target response + detail path resolution |
 
 **API contract**: `vault/wiki/services/agal/api-contract.md`
 
@@ -228,7 +234,7 @@
 | AYAN | runtime-ready on VPS: migrations + Sanctum + persistence controllers; Telegram verification still stub | pages + composables + types, real API switched on | ayanMock.ts |
 | TAL | routes only (нет контроллеров) | showcase | нет |
 | UUS | routes only | placeholder | нет |
-| AGAL | runtime-ready first backend slice on VPS: migrations + persistence controllers + targeted PHPUnit green | scaffold page + composables + types, create/feed UI still not finished | нет |
+| AGAL | runtime-ready backend on VPS: migrations + persistence controllers + targeted PHPUnit green | real feed/create/detail slice live on VPS; manual Telegram validation still pending | нет |
 | Auth | partial real: Sanctum token issuance + `/api/user`; Telegram verification still stub | useAuth + init.ts | mockData.ts |
 
 ---

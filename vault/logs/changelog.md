@@ -2,6 +2,47 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 08:45 - AGAL Frontend MVP Flow Shipped Live
+
+### Done
+
+- Replaced the AGAL scaffold page with a real frontend MVP flow on top of the persisted backend
+- Added AGAL frontend role-switch + create-flow components:
+  - `frontend/services/agal/app/components/AgalRoleSwitch.vue`
+  - `frontend/services/agal/app/components/AgalCreateSlideover.vue`
+- Added AGAL frontend helpers:
+  - `frontend/services/agal/app/utils/role.ts`
+  - `frontend/services/agal/app/utils/responses.ts`
+- Added AGAL detail pages:
+  - `frontend/services/agal/app/pages/agal/route/[id].vue`
+  - `frontend/services/agal/app/pages/agal/request/[id].vue`
+- Rebuilt `frontend/services/agal/app/pages/agal/index.vue` into a real feed/my-area screen with filters, cards, role switching, and create CTA
+- Expanded AGAL locale copy in:
+  - `frontend/i18n/locales/ru.json`
+  - `frontend/i18n/locales/sah.json`
+- Updated `frontend/services/agal/README.md` so the status note matches the shipped frontend/backend state
+- Committed runtime slice as `53af2d7` `feat(agal): ship frontend MVP flow`
+- Pushed `front/ayan`, fast-forwarded VPS repo, rebuilt static frontend, and redeployed the live bundle via safe directory swap
+
+### Verified
+
+- `frontend: JSON.parse(frontend/i18n/locales/ru.json)` ✅
+- `frontend: JSON.parse(frontend/i18n/locales/sah.json)` ✅
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`53af2d7` before later vault sync)
+- `curl -I https://iindiinda.duckdns.org/agal` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/agal/route/1` ✅ (`200`, SPA route fallback healthy)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- `curl -s -o /dev/null -w "%{http_code}" https://iindiinda.duckdns.org/api/agal/routes` ✅ (`401` guest auth gate expected)
+- `curl https://iindiinda.duckdns.org/` contains `apiBase:"/api"` ✅
+
+### Important
+
+- AGAL now has a real frontend MVP flow live on top of the real backend persistence layer
+- Real Telegram Mini App validation for AGAL is still pending; treat this as a shipped implementation slice, not a fully device-verified handoff yet
+- AYAN remained untouched except for shared runtime/deploy context
+
 ## 2026-04-26 08:10 - AGAL Backend Persistence Shipped
 
 ### Done

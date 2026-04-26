@@ -127,16 +127,16 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Latest branch tip, local, GitHub, and VPS repo state are aligned on the current AGAL backend-persistence handoff point
+- Latest branch tip, local, GitHub, and VPS repo state are aligned on the current AGAL frontend-MVP handoff point
 - Latest live AYAN runtime behavior remains green after the previous `5e81817` create-form simplification
-- AGAL backend persistence is now shipped on VPS (migrations + models + controllers + targeted PHPUnit green), while the frontend is still scaffold-level on `/agal`
+- AGAL backend persistence is shipped on VPS and the first real frontend MVP slice is now live on `/agal` (feed, create, detail, respond, contact reveal, lifecycle actions)
 - User completed manual Telegram Mini App testing and reported AYAN works end-to-end well enough for MVP acceptance
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
 - Latest auth hardening code commit is `af93b9b` `fix(auth): harden tma bootstrap`
 - Static deploy prevention now exists in source via guarded `npm run build:static`
-- Latest shipped commit is `a3591a0` `feat(ayan): expand trip/request lifecycle statuses`
+- Latest shipped runtime commit is `53af2d7` `feat(agal): ship frontend MVP flow`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
   - `/`
@@ -180,26 +180,30 @@
   - `npm run lint` ✅
   - `npm run typecheck` ✅
   - `npm run build:static` ✅
+  - `JSON.parse(frontend/i18n/locales/ru.json)` ✅
+  - `JSON.parse(frontend/i18n/locales/sah.json)` ✅
   - `npx nuxt build --preset github_pages` + `node scripts/verify-static-api-base.mjs` ✅
 - Backend (VPS checkout):
   - `./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php` ✅ (`16 tests, 127 assertions`)
   - `./vendor/bin/phpunit tests/Feature/AgalPersistenceTest.php` ✅ (`4 tests, 60 assertions`)
 - Runtime:
-  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (current AGAL handoff tip)
+  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (current AGAL frontend-MVP handoff tip)
   - `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+  - `curl -I https://iindiinda.duckdns.org/agal` ✅ (`200`)
+  - `curl -I https://iindiinda.duckdns.org/agal/route/1` ✅ (`200` SPA route fallback)
   - `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+  - `curl -s -o /dev/null -w "%{http_code}" https://iindiinda.duckdns.org/api/agal/routes` ✅ (`401` guest auth gate expected)
   - `curl https://iindiinda.duckdns.org/` contains `apiBase:"/api"` ✅
-  - live root HTML references `entry.7LYcEUNC.css` and `DTyp_Z4D.js` ✅
 
 ## Next Action
 
-1. Continue AGAL after the completed backend-persistence slice
+1. Continue AGAL after the shipped frontend-MVP slice
 2. Next AGAL implementation step:
-   - add AGAL create flow UI on top of the scaffold structure
-   - render real route/request cards instead of scaffold empty states
-   - hook response/contact lifecycle into the frontend detail flow
+   - manually verify AGAL in real Telegram Mini App / browser runtime
+   - patch any create/respond/contact bugs found on device
+   - add only small AGAL UX polish that follows directly from runtime findings
 3. Keep AGAL MVP scope narrow:
    - create
    - feed
@@ -227,11 +231,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: continue AGAL after the shipped backend-persistence slice.
-1) add create/feed UI on top of the scaffolded AGAL structure
-2) render real route/request cards instead of scaffold empty states
-3) hook response/contact lifecycle into the frontend detail flow
-4) keep AGAL MVP narrow: create/feed/respond/contact only
+Current task: continue AGAL after the shipped frontend-MVP slice.
+1) manually validate AGAL in real Telegram/browser runtime
+2) patch any runtime or UX bugs found in create/feed/respond/contact flow
+3) keep AGAL MVP narrow: create/feed/respond/contact only
+4) reuse AYAN lifecycle/contact patterns where still useful
 5) if AYAN regresses on a real device, patch it separately without broad refactors
 ```
 
@@ -244,4 +248,4 @@ Current task: continue AGAL after the shipped backend-persistence slice.
 
 ## One-Line Summary
 
-Live AYAN remains green for MVP, and AGAL now has real backend persistence on VPS; the next slice is frontend create/feed/detail work on top of that backend.
+Live AYAN remains green for MVP, and AGAL now has both real backend persistence and a deployed frontend MVP flow on VPS; next step is real-device/runtime validation and focused polish.

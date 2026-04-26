@@ -311,3 +311,11 @@
 - Verified: remote `php -l` on changed backend files, VPS `php artisan migrate --force`, VPS `./vendor/bin/phpunit tests/Feature/AgalPersistenceTest.php` (`4 tests, 60 assertions`), and VPS `php artisan route:list --path=api/agal`
 - Blockers: AGAL frontend still does not expose the real persisted flow yet; current `/agal` page is scaffold-only
 - Next: build AGAL create/feed/detail frontend on top of the now-live backend persistence layer
+
+## 2026-04-26 08:45 — AGAL Frontend MVP Slice
+
+- Scope: replace the AGAL scaffold UI with a real frontend MVP flow on top of the shipped backend persistence layer
+- Changes: added AGAL role switcher, create slideover, route/request detail pages, AGAL role/response helpers, and rewrote the AGAL index page into a real feed/my-area flow; expanded AGAL locale copy, updated the AGAL README, committed `53af2d7`, pushed `front/ayan`, synced VPS repo, rebuilt static frontend, and redeployed live `/agal`
+- Verified: locale JSON parse for `ru.json` and `sah.json`, `frontend npm run typecheck`, `frontend npm run build:static`, VPS head at `53af2d7`, live `/agal` `200`, live `/agal/route/1` `200`, live `/api/health` `200`, guest `/api/agal/routes` `401`, and live root HTML still contains `apiBase:"/api"`
+- Blockers: AGAL still lacks real-device Telegram Mini App validation; runtime/device-specific bugs may still surface only after manual testing
+- Next: manually verify AGAL in Telegram/browser runtime and patch any create/respond/contact issues found there
