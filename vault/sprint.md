@@ -104,4 +104,5 @@ This sprint is complete only when:
 - Root `DESIGN.md` now exists as the shared redesign baseline and lint passes cleanly
 - Commit `bc7bdc4` locks redesign variant 1, commit `b22f92c` locks redesign variant 2, and the current local working tree continues variant 3 as the active chosen direction
 - Variant 3 now covers home, service landing pages, feed screens, detail pages, and create slideovers and is deployed live on the frontend runtime
+- A first-pass Coolify deployment layout now exists in source as an alternative to the current manual VPS deployment flow, but it is not trial-verified yet
 - Remaining redesign work is now polish/regression-fix work rather than the original shell/feed/detail/create rollout sequence

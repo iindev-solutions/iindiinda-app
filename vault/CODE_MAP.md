@@ -337,6 +337,27 @@
 - `frontend/scripts/verify-static-api-base.mjs`: post-build guard that fails if generated HTML bakes any insecure absolute `apiBase`
 - `frontend/.env`: treat as local-only frontend dev convenience; never trust it for production static deploys
 
+## Audit Notes - 2026-04-26 22:20
+
+- First-pass Coolify deployment files now exist in source:
+  - `.dockerignore`
+  - `.env.coolify.example`
+  - `docker-compose.coolify.yml`
+  - `frontend/Dockerfile.coolify`
+  - `backend/Dockerfile.coolify`
+  - `backend/docker/entrypoint.coolify.sh`
+  - `ops/coolify/frontend.nginx.conf`
+  - `ops/coolify/backend.nginx.conf`
+  - `ops/coolify/README.md`
+  - `ops/coolify/SETUP.md`
+- Coolify starter topology in source is:
+  - `frontend` public Nginx container serving Nuxt static output
+  - same-origin `/api/*` proxy from `frontend` to internal `backend-web`
+  - `backend-web` internal Nginx container forwarding PHP requests to `backend`
+  - `backend` internal PHP-FPM Laravel runtime
+  - `db` MySQL 8.0 with named volume persistence
+- This stack is not runtime-verified yet because local environment has no `docker`
+
 ## Audit Notes - 2026-04-26 21:00
 
 - Variant 3 redesign now extends beyond shell/feed into the main working surfaces

@@ -2,6 +2,66 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 22:35 - Coolify Exact Setup Guide Added
+
+### Done
+
+- Added `ops/coolify/SETUP.md` with an exact first-trial Coolify setup flow for this monorepo
+- Documented the recommended safe rollout order: trial subdomain first, verification, then Telegram/domain cutover
+- Documented exact Coolify resource shape, env variables, public/internal service exposure, verification checklist, and rollback posture
+- Linked `ops/coolify/README.md` to the new exact setup guide
+- Clarified `.env.coolify.example` with a trial-domain example and numeric Telegram bot id example
+
+### Verified
+
+- `ops/coolify/SETUP.md` written and cross-linked from `ops/coolify/README.md` ✅
+- No runtime deploy verification yet; this remains documentation/source preparation only
+
+### Important
+
+- The next real step is now operator execution in Coolify, not more repository-side guessing
+- First deploy should target a trial subdomain and preserve the current VPS production path until validation is green
+
+## 2026-04-26 22:20 - Coolify Starter Deployment Layout Added
+
+### Done
+
+- Added a first-pass Coolify deployment layout for the monorepo
+- Added `frontend/Dockerfile.coolify` to build the Nuxt static bundle and serve it with Nginx
+- Added `ops/coolify/frontend.nginx.conf` so the public frontend keeps SPA fallback while proxying same-origin `/api/*` to the internal Laravel web service
+- Added `backend/Dockerfile.coolify` with separate `php` and `nginx` targets for Laravel runtime and internal web serving
+- Added `backend/docker/entrypoint.coolify.sh` for Laravel startup preparation and optional migrations
+- Added `docker-compose.coolify.yml`, `.env.coolify.example`, and `ops/coolify/README.md` as the starter Coolify stack documentation
+- Added `.dockerignore` to keep image build contexts smaller and cleaner
+
+### Verified
+
+- `node` YAML parse of `docker-compose.coolify.yml` ✅ (services: `frontend`, `backend`, `backend-web`, `db`)
+- `sh -n backend/docker/entrypoint.coolify.sh` ✅
+- Local Docker/Coolify runtime verification was not possible in this environment because `docker` is unavailable
+
+### Important
+
+- This Coolify layout is source-only and not deployed yet
+- The next practical step is a real Coolify trial deploy with environment variables, domain routing, and `/api` proxy validation
+
+## 2026-04-26 21:55 - Manual Variant 3 Validation Green
+
+### Done
+
+- Recorded user-reported manual validation result after the redesign variant 3 deployment
+- User checked the redesigned runtime manually and reported that everything looks and works fine
+
+### Verified
+
+- Manual user validation on the live redesigned build ✅
+- No immediate regression reports for the current AYAN + AGAL redesigned runtime ✅
+
+### Important
+
+- "Real pain" now means only concrete user-facing friction found in real usage, not speculative redesign tweaks
+- Since manual validation is green, the next highest-value work shifts from redesign changes to freeze/hardening/next product decision work
+
 ## 2026-04-26 21:45 - Variant 3 Pushed Synced And Deployed
 
 ### Done

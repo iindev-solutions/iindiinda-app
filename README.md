@@ -45,7 +45,8 @@ iindiinda-app/
 │       ├── uus-vision.md       # UUS: услуги
 │       ├── tal-vision.md       # TAL: запись
 │       └── agal-vision.md      # AGAL: доставка
-├── docker-compose.yml          # PHP 8.2 + MySQL 8.0
+├── docker-compose.yml          # Local dev compose (legacy/simple)
+├── docker-compose.coolify.yml  # Coolify deployment stack
 └── .env.example
 ```
 
@@ -85,6 +86,17 @@ npm run dev
 docker-compose up -d
 # → http://localhost:8000
 ```
+
+### Coolify start
+
+Starter Coolify files now live in:
+
+- `docker-compose.coolify.yml`
+- `frontend/Dockerfile.coolify`
+- `backend/Dockerfile.coolify`
+- `ops/coolify/README.md`
+
+Use `.env.coolify.example` as the env baseline and expose only the `frontend` service publicly.
 
 ---
 

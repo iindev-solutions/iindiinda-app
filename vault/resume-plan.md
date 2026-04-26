@@ -136,6 +136,15 @@
 - Live frontend bundle is redeployed with corrected same-origin `apiBase:"/api"`
 - Latest auth hardening code commit is `af93b9b` `fix(auth): harden tma bootstrap`
 - Static deploy prevention now exists in source via guarded `npm run build:static`
+- Source now also includes a first-pass Coolify deployment starter layout:
+  - `docker-compose.coolify.yml`
+  - `frontend/Dockerfile.coolify`
+  - `backend/Dockerfile.coolify`
+  - `backend/docker/entrypoint.coolify.sh`
+  - `ops/coolify/frontend.nginx.conf`
+  - `ops/coolify/backend.nginx.conf`
+  - `ops/coolify/README.md`
+  - `ops/coolify/SETUP.md` (exact operator setup guide)
 - Root `DESIGN.md` now exists as the redesign baseline for colors, typography, spacing, rounding, and shared component patterns
 - Redesigned bottom nav now highlights the tapped service immediately on first tap via optimistic pending-route state
 - Commit `bc7bdc4` is the saved redesign variant 1 checkpoint
@@ -205,12 +214,13 @@
 
 ## Next Action
 
-1. Run manual Telegram/browser regression checks on the live redesigned AYAN + AGAL flows
-2. Patch only the real regressions found in live use
-3. Keep refining variant 3 only where usage reveals friction
+1. Treat redesign variant 3 as the current accepted frontend baseline unless real usage reports a concrete regression
+2. Decide the deployment-path next step explicitly:
+   - current VPS path: apply Nginx/static asset hardening and deploy safety checks there
+   - Coolify path: follow `ops/coolify/SETUP.md`, trial the new `docker-compose.coolify.yml` stack on a trial subdomain, and validate `/api` proxying
+3. After that decision, continue hardening on the chosen deployment path instead of reopening redesign by default
 4. Keep scope disciplined:
-   - frontend-first
-   - no broad backend refactors unless a redesign task clearly requires it
+   - frontend-first unless a hardening/deploy task clearly requires backend/ops work
    - treat AYAN and AGAL current behavior as the working baseline to preserve
 5. Keep legal/compliance parked and keep product logic patch-only unless a real runtime issue appears
 
@@ -233,11 +243,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: validate the live redesign variant 3 and patch only real regressions.
-1) keep backend/API contracts as-is unless redesign work clearly needs a targeted change
+Current task: keep the accepted variant 3 baseline stable and move to deployment hardening / Coolify evaluation.
+1) keep backend/API contracts as-is unless a hardening/deploy task clearly needs a targeted change
 2) keep first-tap bottom-nav active behavior intact
 3) maintain cyan `iind` branding and avoid the old `iindiinda` home reminder
-4) focus on live AYAN + AGAL usage validation next
+4) do not reopen redesign unless real usage reveals concrete friction
 5) keep legal parked and patch runtime bugs only if they block redesign or live usage
 ```
 
@@ -250,4 +260,4 @@ Current task: validate the live redesign variant 3 and patch only real regressio
 
 ## One-Line Summary
 
-Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign variant 3 is now pushed, VPS-synced, and deployed live with committed checkpoints for the earlier variants still preserved in history.
+Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, redesign variant 3 is accepted live, and the repository now also contains a first-pass Coolify deployment starter layout for future deployment-path evaluation.

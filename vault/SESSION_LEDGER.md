@@ -200,6 +200,30 @@
 - Blockers: post-redesign Telegram/browser regression validation is still needed on real usage flows
 - Next: run manual AYAN + AGAL regression checks on the live redesigned build and patch only what fails
 
+## 2026-04-26 21:55 — Manual Redesign Validation Green
+
+- Scope: capture the user's manual live-check result after the variant 3 deployment
+- Changes: recorded that the redesigned runtime was checked manually and that everything appears fine in current use
+- Verified: user-reported manual validation on the live AYAN + AGAL redesigned build
+- Blockers: no active runtime UX blocker reported in this check
+- Next: freeze redesign, focus on production hardening / observation / next roadmap choice instead of more speculative UI churn
+
+## 2026-04-26 22:20 — Coolify Starter Layout
+
+- Scope: start the repository-side Coolify migration path by adding deployable container files instead of only discussing architecture
+- Changes: added `docker-compose.coolify.yml`, `frontend/Dockerfile.coolify`, `backend/Dockerfile.coolify`, `backend/docker/entrypoint.coolify.sh`, `ops/coolify/*.conf`, `.env.coolify.example`, `.dockerignore`, and starter docs in `ops/coolify/README.md`
+- Verified: parsed `docker-compose.coolify.yml` with Node YAML tooling available through local frontend dependencies; `sh -n backend/docker/entrypoint.coolify.sh`
+- Blockers: no local `docker` runtime exists in this environment, so the new Coolify stack is not build-tested or deploy-tested yet
+- Next: either trial this stack in Coolify or refine it after a first real deploy error/output pass
+
+## 2026-04-26 22:35 — Coolify Exact Setup Doc
+
+- Scope: turn the new Coolify starter files into an operator-usable deployment procedure
+- Changes: added `ops/coolify/SETUP.md`, linked it from `ops/coolify/README.md`, and clarified `.env.coolify.example` for trial-domain and Telegram bot id usage
+- Verified: new setup doc exists in source and references the current Coolify stack files
+- Blockers: still no local `docker` runtime and no real Coolify deploy feedback yet
+- Next: create the Coolify Docker Compose resource on a trial subdomain and use first deploy logs as the next debugging input
+
 ## 2026-04-25 09:25 — Production Asset MIME Hotfix
 
 - Scope: investigate and recover live AYAN startup failures caused by blocked module/CSS loads
