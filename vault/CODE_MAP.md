@@ -135,7 +135,7 @@
 | `package.json` | iind-agal v0.1.0 |
 | `README.md` | Service-layer overview aligned to the new contract |
 | `app/pages/agal.vue` | Parent wrapper → /agal |
-| `app/pages/agal/index.vue` | AGAL scaffold page with tabs, access gate, and real API-shaped feed hooks |
+| `app/pages/agal/index.vue` | AGAL scaffold page with tabs, access gate, and real API-backed feed hooks |
 | `app/components/AgalAccessState.vue` | AGAL access-state screen for loading / Telegram-required / auth-failed states |
 | `app/types/agal.ts` | AGAL route/request/response DTOs and status enums |
 | `app/composables/useAgalRoutes.ts` | AGAL route feed/detail/create/update API layer |
@@ -158,7 +158,7 @@
 
 ## Backend: `backend/`
 
-**Статус**: In progress. Laravel runtime восстановлен, AYAN contract-aligned backend поднят на VPS и переведён на MySQL persistence. Реальная Telegram `initData` verification ещё не finished.
+**Статус**: In progress. Laravel runtime восстановлен, AYAN contract-aligned backend поднят на VPS и переведён на MySQL persistence; AGAL now also has a first real persistence-backed backend slice on VPS. Реальная Telegram `initData` verification ещё не finished.
 
 ### Controllers
 
@@ -172,6 +172,11 @@
 | `Ayan/ResponseController.php` | Реальные AYAN responses endpoints через Eloquent/MySQL, accept/reject, delete own response |
 | `Ayan/MyController.php` | Реальные my trips/requests/responses через authenticated user |
 | `Ayan/Concerns/SerializesAyanData.php` | Сериализация payload shape под фронтовые типы AYAN |
+| `Agal/RouteController.php` | Реальные AGAL route endpoints через Eloquent/MySQL |
+| `Agal/RequestController.php` | Реальные AGAL request endpoints через Eloquent/MySQL |
+| `Agal/ResponseController.php` | Реальные AGAL responses endpoints, accept/reject, delete own response |
+| `Agal/MyController.php` | Реальные AGAL my routes/requests/responses через authenticated user |
+| `Agal/Concerns/SerializesAgalData.php` | Сериализация payload shape под фронтовые типы AGAL |
 | `Http/Middleware/ForceJsonResponse.php` | Форсит JSON transport для `api` middleware group, чтобы guest protected routes возвращали `401`, не HTML redirect |
 
 ### Runtime Base
@@ -206,7 +211,7 @@
 - AYAN: `GET /api/ayan/my/trips`, `GET /api/ayan/my/requests`, `GET /api/ayan/my/responses`
 - TAL: `GET /tal/services`, `GET /tal/masters`, `GET /tal/slots`, `POST /tal/bookings`, `DELETE /tal/bookings/{id}`
 - UUS: `POST /uus/tasks`, `GET /uus/tasks/open`, `POST /uus/tasks/{id}/respond`
-- AGAL scaffold routes now match the new contract shape:
+- AGAL routes now match the new persisted contract shape:
   - `GET/POST /agal/routes`, `GET/PATCH /agal/routes/{id}`
   - `GET/POST /agal/requests`, `GET/PATCH /agal/requests/{id}`
   - `GET/POST /agal/routes/{id}/responses`
@@ -223,7 +228,7 @@
 | AYAN | runtime-ready on VPS: migrations + Sanctum + persistence controllers; Telegram verification still stub | pages + composables + types, real API switched on | ayanMock.ts |
 | TAL | routes only (нет контроллеров) | showcase | нет |
 | UUS | routes only | placeholder | нет |
-| AGAL | contract-shaped scaffold routes in `backend/routes/api.php`, still placeholder/no persistence yet | scaffold page + composables + types | нет |
+| AGAL | runtime-ready first backend slice on VPS: migrations + persistence controllers + targeted PHPUnit green | scaffold page + composables + types, create/feed UI still not finished | нет |
 | Auth | partial real: Sanctum token issuance + `/api/user`; Telegram verification still stub | useAuth + init.ts | mockData.ts |
 
 ---
@@ -237,6 +242,7 @@
 - `frontend/app/config/api.config.ts` — Mock/real toggle
 - `backend/routes/api.php` — Все API маршруты
 - `vault/wiki/services/ayan/api-contract.md` — Финальный API контракт AYAN
+- `vault/wiki/services/agal/api-contract.md` — Активный контракт AGAL для post-AYAN build
 
 ## Audit Notes — 2026-04-23
 

@@ -2,6 +2,45 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 08:10 - AGAL Backend Persistence Shipped
+
+### Done
+
+- Replaced AGAL backend placeholder closures with real persistence-backed implementation
+- Added AGAL backend models:
+  - `backend/app/Models/AgalRoute.php`
+  - `backend/app/Models/AgalRequest.php`
+  - `backend/app/Models/AgalResponse.php`
+- Added AGAL backend controllers:
+  - `backend/app/Http/Controllers/Agal/RouteController.php`
+  - `backend/app/Http/Controllers/Agal/RequestController.php`
+  - `backend/app/Http/Controllers/Agal/ResponseController.php`
+  - `backend/app/Http/Controllers/Agal/MyController.php`
+  - `backend/app/Http/Controllers/Agal/Concerns/SerializesAgalData.php`
+- Added AGAL backend migrations:
+  - `2026_04_26_071000_create_agal_routes_table.php`
+  - `2026_04_26_071001_create_agal_requests_table.php`
+  - `2026_04_26_071002_create_agal_responses_table.php`
+- Added targeted backend regression coverage:
+  - `backend/tests/Feature/AgalPersistenceTest.php`
+- Updated `backend/routes/api.php` so AGAL endpoints now use the real controllers instead of scaffold closures
+- Committed backend slice as `4fa4f53` `feat(agal): persist backend MVP slice`
+- Pushed `front/ayan`, fast-forwarded VPS repo, ran migrations on VPS, and verified the new AGAL backend routes there
+
+### Verified
+
+- `backend: php -l` on all changed AGAL backend files ✅
+- `ssh iind-vps "cd /var/www/iind-app/backend && php artisan migrate --force"` ✅
+- `ssh iind-vps "cd /var/www/iind-app/backend && ./vendor/bin/phpunit tests/Feature/AgalPersistenceTest.php"` ✅ (`4 tests, 60 assertions`)
+- `ssh iind-vps "cd /var/www/iind-app/backend && php artisan route:list --path=api/agal"` ✅ (`17 AGAL routes`)
+- VPS repo fast-forward after push ✅
+
+### Important
+
+- AGAL backend is now real and persistence-backed on VPS
+- AGAL frontend is still only scaffold-level; create/feed/detail UX is the next slice
+- AYAN remains in maintenance mode and was not refactored as part of this change
+
 ## 2026-04-26 07:10 - AGAL Scaffold Slice Deployed Live
 
 ### Done

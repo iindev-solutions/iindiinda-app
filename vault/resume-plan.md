@@ -127,9 +127,9 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Latest branch tip, local, GitHub, and VPS repo state are aligned at the current AGAL scaffold commit
+- Latest branch tip, local, GitHub, and VPS repo state are aligned on the current AGAL backend-persistence handoff point
 - Latest live AYAN runtime behavior remains green after the previous `5e81817` create-form simplification
-- AGAL scaffold slice is now deployed live on `/agal`, but it is still scaffold-only and not a full persisted feature yet
+- AGAL backend persistence is now shipped on VPS (migrations + models + controllers + targeted PHPUnit green), while the frontend is still scaffold-level on `/agal`
 - User completed manual Telegram Mini App testing and reported AYAN works end-to-end well enough for MVP acceptance
 - Live frontend bundle is redeployed with collapsed-by-default service explainers on AYAN, UUS, TAL, and AGAL entry screens
 - Legal docs now render via `rt()` on live build and legal navigation is reduced to the home bottom card only
@@ -147,9 +147,12 @@
   - `/legal/tal-rules`
   - `/legal/agal-rules`
   - `/api/health`
-- Backend migrations are now fully applied, including lifecycle migration:
+- Backend migrations are now fully applied, including:
   - `2026_04_24_120000_expand_ayan_target_statuses`
-- Live lifecycle API smoke is green for both trip and request target flows
+  - `2026_04_26_071000_create_agal_routes_table`
+  - `2026_04_26_071001_create_agal_requests_table`
+  - `2026_04_26_071002_create_agal_responses_table`
+- Live lifecycle API smoke is green for both AYAN trip and request target flows
 
 ## What Shipped In Lifecycle Slice
 
@@ -180,8 +183,9 @@
   - `npx nuxt build --preset github_pages` + `node scripts/verify-static-api-base.mjs` ✅
 - Backend (VPS checkout):
   - `./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php` ✅ (`16 tests, 127 assertions`)
+  - `./vendor/bin/phpunit tests/Feature/AgalPersistenceTest.php` ✅ (`4 tests, 60 assertions`)
 - Runtime:
-  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`5e81817` before later vault-sync docs)
+  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (current AGAL handoff tip)
   - `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
@@ -191,11 +195,11 @@
 
 ## Next Action
 
-1. Continue AGAL after the completed scaffold-and-deploy slice
+1. Continue AGAL after the completed backend-persistence slice
 2. Next AGAL implementation step:
-   - replace backend AGAL placeholder closures with real persistence/controllers
-   - add AGAL create flow UI on top of the new scaffold structure
+   - add AGAL create flow UI on top of the scaffold structure
    - render real route/request cards instead of scaffold empty states
+   - hook response/contact lifecycle into the frontend detail flow
 3. Keep AGAL MVP scope narrow:
    - create
    - feed
@@ -223,11 +227,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: continue AGAL after the live scaffold slice.
-1) replace backend placeholder AGAL closures with real persistence/controllers
-2) add create/feed UI on top of the scaffolded AGAL structure
-3) keep AGAL MVP narrow: create/feed/respond/contact only
-4) reuse AYAN lifecycle/contact patterns where possible
+Current task: continue AGAL after the shipped backend-persistence slice.
+1) add create/feed UI on top of the scaffolded AGAL structure
+2) render real route/request cards instead of scaffold empty states
+3) hook response/contact lifecycle into the frontend detail flow
+4) keep AGAL MVP narrow: create/feed/respond/contact only
 5) if AYAN regresses on a real device, patch it separately without broad refactors
 ```
 
@@ -240,4 +244,4 @@ Current task: continue AGAL after the live scaffold slice.
 
 ## One-Line Summary
 
-Live AYAN now includes a simplified create form with native date input and Telegram-slideover transition disabled; user-reported manual TMA verification is green, and AGAL has now moved from contract/scaffold into a deployed scaffold slice ready for real persistence work.
+Live AYAN remains green for MVP, and AGAL now has real backend persistence on VPS; the next slice is frontend create/feed/detail work on top of that backend.

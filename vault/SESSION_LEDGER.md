@@ -303,3 +303,11 @@
 - Verified: locale JSON parse, `frontend npm run typecheck`, `frontend npm run build:static`, remote `php -l` against the changed backend routes file, live `/agal` `200`, live `/api/health` `200`, and guest `/api/agal/routes` `401` as expected
 - Blockers: AGAL still has placeholder backend behavior only; no real persistence/controllers/details yet
 - Next: replace AGAL placeholder closures with real controllers/models/migrations and then wire create/feed UI to real data
+
+## 2026-04-26 08:10 — AGAL Backend Persistence Slice
+
+- Scope: replace AGAL placeholder backend behavior with real persisted routes/requests/responses before moving on to frontend create/feed UX
+- Changes: added AGAL migrations, models, controllers, serializer trait, and targeted PHPUnit coverage; replaced AGAL placeholder route closures with real controllers; committed `4fa4f53`, pushed `front/ayan`, synced VPS repo, and ran live VPS migration/test verification
+- Verified: remote `php -l` on changed backend files, VPS `php artisan migrate --force`, VPS `./vendor/bin/phpunit tests/Feature/AgalPersistenceTest.php` (`4 tests, 60 assertions`), and VPS `php artisan route:list --path=api/agal`
+- Blockers: AGAL frontend still does not expose the real persisted flow yet; current `/agal` page is scaffold-only
+- Next: build AGAL create/feed/detail frontend on top of the now-live backend persistence layer
