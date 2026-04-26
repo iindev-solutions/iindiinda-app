@@ -7,11 +7,11 @@
 	--bg-level-2: #151a1f;
 	--bg-level-3: #1b2229;
 	--border-color: rgb(154 166 178 / 0.12);
-	--border-color-strong: rgb(94 218 198 / 0.18);
+	--border-color-strong: rgb(94 218 198 / 0.2);
 	--text-primary: #f3f6f8;
 	--text-secondary: #9aa6b2;
 	--text-muted: #6f7c87;
-	--shadow-soft: 0 10px 32px rgb(0 0 0 / 0.18);
+	--shadow-soft: 0 8px 24px rgb(0 0 0 / 0.16);
 }
 
 @theme static {
@@ -130,13 +130,13 @@ select {
 }
 
 .app-page--home {
-	padding-top: 24px;
+	padding-top: 22px;
 }
 
 .app-panel {
 	border: 1px solid var(--border-color);
 	background: var(--bg-level-1);
-	border-radius: 20px;
+	border-radius: 18px;
 	box-shadow: var(--shadow-soft);
 }
 
@@ -148,13 +148,15 @@ select {
 .app-panel--interactive {
 	transition:
 		border-color 150ms ease-out,
-		background-color 150ms ease-out;
+		background-color 150ms ease-out,
+		transform 150ms ease-out;
 }
 
 .app-panel--interactive:hover,
 .app-panel--interactive:active {
 	border-color: var(--border-color-strong);
 	background: var(--bg-level-2);
+	transform: translateY(-1px);
 }
 
 .app-kicker {
@@ -167,7 +169,7 @@ select {
 }
 
 .app-heading {
-	font-size: clamp(26px, 6vw, 34px);
+	font-size: clamp(26px, 6vw, 32px);
 	line-height: 1.08;
 	font-weight: 700;
 	letter-spacing: -0.03em;
@@ -191,10 +193,9 @@ select {
 
 .app-hero__frame {
 	padding: 18px;
-	border: 1px solid var(--border-color);
-	border-radius: 22px;
-	background: var(--bg-level-1);
-	box-shadow: var(--shadow-soft);
+	border: 1px solid rgb(94 218 198 / 0.14);
+	border-radius: 20px;
+	background: linear-gradient(180deg, rgb(17 20 24 / 1), rgb(21 26 31 / 1));
 }
 
 .app-hero__top {
@@ -215,20 +216,20 @@ select {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 44px;
-	height: 44px;
+	width: 42px;
+	height: 42px;
 	border-radius: 14px;
 	background: rgb(94 218 198 / 0.1);
-	color: rgb(var(--color-cyan-300));
+	color: rgb(var(--color-cyan-400));
 	border: 1px solid rgb(94 218 198 / 0.14);
 	flex-shrink: 0;
 }
 
 .app-hero__body {
-	margin-top: 16px;
+	margin-top: 14px;
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 10px;
 }
 
 .app-badge-row {
@@ -260,19 +261,21 @@ select {
 	width: 100%;
 	display: block;
 	text-align: left;
-	padding: 16px;
+	padding: 15px 16px;
 	border: 1px solid var(--border-color);
-	border-radius: 18px;
+	border-radius: 16px;
 	background: var(--bg-level-1);
 	transition:
 		border-color 150ms ease-out,
-		background-color 150ms ease-out;
+		background-color 150ms ease-out,
+		transform 150ms ease-out;
 }
 
 .app-feed-card:hover,
 .app-feed-card:active {
 	border-color: var(--border-color-strong);
 	background: var(--bg-level-2);
+	transform: translateY(-1px);
 }
 
 .app-feed-card__row {
@@ -338,10 +341,10 @@ select {
 	padding: 0;
 	border: 0;
 	background: transparent;
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 700;
 	line-height: 1.2;
-	color: rgb(var(--color-cyan-300));
+	color: rgb(var(--color-cyan-400));
 	white-space: nowrap;
 }
 
@@ -354,17 +357,17 @@ select {
 
 @media (max-width: 420px) {
 	.app-heading {
-		font-size: 26px;
+		font-size: 25px;
 	}
 
 	.app-hero__frame,
 	.app-panel {
-		border-radius: 18px;
+		border-radius: 16px;
 	}
 
 	.app-feed-card {
-		padding: 15px;
-		border-radius: 16px;
+		padding: 14px 15px;
+		border-radius: 15px;
 	}
 
 	.app-feed-card__row {

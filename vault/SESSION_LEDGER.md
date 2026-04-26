@@ -176,6 +176,14 @@
 - Blockers: variant 2 is still local-only and needs visual comparison/decision before commit or deploy
 - Next: compare variant 2 against committed variant 1, then either keep refining or commit the chosen direction
 
+## 2026-04-26 20:05 — Variant 2 Commit + Variant 3 Start
+
+- Scope: checkpoint variant 2, then push a third redesign pass toward simpler daily-use UX
+- Changes: committed variant 2 as `b22f92c`, then simplified shared shell/nav/about/empty/role-switch styling again and locked `iind` to cyan brand color in the new local variant 3 work
+- Verified: `cd frontend && npm run typecheck`; `cd frontend && npm run build:static` (`STATIC_API_BASE_OK`)
+- Blockers: variant 3 is still local-only and needs visual review before commit or deploy
+- Next: compare variant 3 against committed variants 1 and 2, then commit the winner before moving into detail/create redesign
+
 ## 2026-04-25 09:25 — Production Asset MIME Hotfix
 
 - Scope: investigate and recover live AYAN startup failures caused by blocked module/CSS loads

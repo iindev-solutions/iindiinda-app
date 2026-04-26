@@ -80,7 +80,7 @@ async function handleSwitch(role: 'driver' | 'passenger') {
 
 <style scoped>
 .role-switch {
-	padding: 16px;
+	padding: 14px;
 }
 
 .role-switch__head {
@@ -88,13 +88,13 @@ async function handleSwitch(role: 'driver' | 'passenger') {
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: 12px;
-	margin-bottom: 12px;
+	margin-bottom: 10px;
 }
 
 .role-switch__copy {
-	margin: 6px 0 0;
+	margin: 4px 0 0;
 	font-size: 12px;
-	line-height: 1.55;
+	line-height: 1.5;
 	color: var(--text-secondary);
 }
 </style>

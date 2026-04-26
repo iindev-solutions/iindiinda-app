@@ -25,7 +25,7 @@ const defaultIcon = 'i-carbon-search'
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 32px 24px;
+	padding: 28px 20px;
 	text-align: center;
 }
 
@@ -33,18 +33,17 @@ const defaultIcon = 'i-carbon-search'
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 56px;
-	height: 56px;
-	border-radius: 18px;
-	background: rgb(94 218 198 / 0.1);
-	border: 1px solid rgb(94 218 198 / 0.14);
-	font-size: 28px;
+	width: 44px;
+	height: 44px;
+	border-radius: 14px;
+	background: rgb(94 218 198 / 0.08);
+	font-size: 24px;
 	color: rgb(var(--color-cyan-300));
-	margin-bottom: 14px;
+	margin-bottom: 12px;
 }
 
 .empty-state__title {
-	font-size: 16px;
+	font-size: 15px;
 	font-weight: 600;
 	line-height: 1.35;
 	color: var(--text-primary);

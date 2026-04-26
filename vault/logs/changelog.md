@@ -2,6 +2,34 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 20:05 - Redesign Variant 2 Committed + Variant 3 Started
+
+### Done
+
+- Committed the calmer redesign direction as `b22f92c` `feat(ui): simplify redesign variant 2`
+- Started a third redesign iteration focused on daily-use clarity and stronger brand consistency
+- Kept the bottom-nav first-tap active-state fix intact in the new local iteration
+- Updated shared styling so `iind` stays in the product cyan brand color
+- Simplified additional shared UI pieces in local source:
+  - `frontend/app/assets/css/main.css`
+  - `frontend/app/components/AppBottomNav.vue`
+  - `frontend/app/components/AppTitle.vue`
+  - `frontend/app/components/AppServiceAbout.vue`
+  - `frontend/app/components/EmptyState.vue`
+  - `frontend/services/ayan/app/components/AyanRoleSwitch.vue`
+  - `frontend/services/agal/app/components/AgalRoleSwitch.vue`
+
+### Verified
+
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- `bc7bdc4` = redesign variant 1 checkpoint
+- `b22f92c` = redesign variant 2 checkpoint
+- current working tree = redesign variant 3 candidate, not committed yet
+
 ## 2026-04-26 19:20 - Simpler Redesign Variant 2 Applied
 
 ### Done

@@ -140,7 +140,8 @@
 - First redesign implementation slice is now present in local source for shared shell, home/landing pages, and AYAN/AGAL entry-feed screens
 - Redesigned bottom nav now highlights the tapped service immediately on first tap via optimistic pending-route state
 - Commit `bc7bdc4` is the saved redesign variant 1 checkpoint
-- Current local working tree is a simpler redesign variant 2 candidate with calmer shell/cards/nav treatment
+- Commit `b22f92c` is the saved redesign variant 2 checkpoint
+- Current local working tree is a redesign variant 3 candidate focused on daily-use clarity and stronger brand consistency (`iind` in cyan)
 - Latest shipped runtime commit is `53af2d7` `feat(agal): ship frontend MVP flow`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
@@ -204,8 +205,8 @@
 
 ## Next Action
 
-1. Compare the current local variant 2 against committed variant 1 (`bc7bdc4`)
-2. Choose the better shared shell direction or keep refining variant 2
+1. Compare the current local variant 3 against committed variants 1 (`bc7bdc4`) and 2 (`b22f92c`)
+2. Choose the best shared shell direction or refine variant 3 once more
 3. Only after that choice, continue into AYAN + AGAL detail pages and create flows
 4. Keep scope disciplined:
    - frontend-first
@@ -232,10 +233,10 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: compare committed redesign variant 1 with the new simpler local variant 2.
+Current task: compare local redesign variant 3 with committed variants 1 and 2.
 1) keep backend/API contracts as-is unless redesign work clearly needs a targeted change
 2) keep first-tap bottom-nav active behavior intact
-3) decide whether variant 2 is better enough to commit
+3) decide whether variant 3 is good enough to commit
 4) only after choosing direction, redesign detail and create flows
 5) keep legal parked and patch runtime bugs only if they block redesign or live usage
 ```
@@ -249,4 +250,4 @@ Current task: compare committed redesign variant 1 with the new simpler local va
 
 ## One-Line Summary
 
-Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign now has a root DESIGN.md source of truth, a committed variant 1 checkpoint (`bc7bdc4`), and a simpler local variant 2 candidate for comparison.
+Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign now has a root DESIGN.md source of truth plus committed checkpoints for variant 1 (`bc7bdc4`) and variant 2 (`b22f92c`) while a more daily-use-focused variant 3 remains local for comparison.

@@ -102,5 +102,5 @@ This sprint is complete only when:
 - AGAL remains the newest implemented service track and now has both shipped backend persistence and shipped frontend MVP UI on VPS: feed, filters, role switching, create flow, detail pages, respond flow, contact reveal, and lifecycle actions
 - Immediate next execution target is no longer deeper AGAL feature work; it is a project redesign started while the UI surface is still small enough to change safely
 - Root `DESIGN.md` now exists as the shared redesign baseline and lint passes cleanly
-- Commit `bc7bdc4` locks redesign variant 1, while the current local working tree is a simpler variant 2 candidate under comparison
-- Detail/create redesign should resume only after the better shared direction is chosen between the two variants
+- Commit `bc7bdc4` locks redesign variant 1, commit `b22f92c` locks redesign variant 2, and the current local working tree is a variant 3 candidate under comparison
+- Detail/create redesign should resume only after the better shared direction is chosen between the three shared-shell variants

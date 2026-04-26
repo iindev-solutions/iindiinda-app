@@ -48,7 +48,9 @@ async function handleNavigate(path: string) {
 				:class="{ 'bottom-nav__item--active': activeRoute === item.route }"
 				@click="handleNavigate(item.route)"
 			>
-				<UIcon :name="item.icon" class="bottom-nav__icon" />
+				<span class="bottom-nav__icon-wrap">
+					<UIcon :name="item.icon" class="bottom-nav__icon" />
+				</span>
 				<span class="bottom-nav__label">{{ item.label }}</span>
 			</button>
 		</div>
@@ -74,8 +76,8 @@ async function handleNavigate(path: string) {
 	padding: 6px;
 	border: 1px solid var(--border-color);
 	border-radius: 18px;
-	background: rgb(11 15 18 / 0.94);
-	box-shadow: 0 8px 28px rgb(0 0 0 / 0.24);
+	background: rgb(11 15 18 / 0.96);
+	box-shadow: 0 8px 24px rgb(0 0 0 / 0.22);
 }
 
 .bottom-nav__item {
@@ -84,8 +86,8 @@ async function handleNavigate(path: string) {
 	align-items: center;
 	justify-content: center;
 	gap: 4px;
-	min-height: 50px;
-	padding: 7px 4px;
+	min-height: 52px;
+	padding: 6px 4px;
 	border-radius: 14px;
 	color: var(--text-muted);
 	transition:
@@ -95,11 +97,24 @@ async function handleNavigate(path: string) {
 
 .bottom-nav__item--active {
 	background: rgb(94 218 198 / 0.08);
-	color: rgb(var(--color-cyan-300));
+	color: rgb(var(--color-cyan-400));
+}
+
+.bottom-nav__icon-wrap {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	border-radius: 999px;
+}
+
+.bottom-nav__item--active .bottom-nav__icon-wrap {
+	background: rgb(94 218 198 / 0.12);
 }
 
 .bottom-nav__icon {
-	font-size: 17px;
+	font-size: 16px;
 }
 
 .bottom-nav__label {
