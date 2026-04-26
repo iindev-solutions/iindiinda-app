@@ -337,6 +337,26 @@
 - `frontend/scripts/verify-static-api-base.mjs`: post-build guard that fails if generated HTML bakes any insecure absolute `apiBase`
 - `frontend/.env`: treat as local-only frontend dev convenience; never trust it for production static deploys
 
+## Audit Notes - 2026-04-26 21:00
+
+- Variant 3 redesign now extends beyond shell/feed into the main working surfaces
+- Shared redesign styling in `frontend/app/assets/css/main.css` now also includes detail-card, section-title, inline-link, and form-card helpers
+- AYAN redesign coverage now includes:
+  - `frontend/services/ayan/app/pages/ayan/index.vue`
+  - `frontend/services/ayan/app/pages/ayan/trip/[id].vue`
+  - `frontend/services/ayan/app/pages/ayan/request/[id].vue`
+  - `frontend/services/ayan/app/components/AyanCreateSlideover.vue`
+  - `frontend/services/ayan/app/components/AyanRoleSwitch.vue`
+  - `frontend/services/ayan/app/components/AyanAccessState.vue`
+- AGAL redesign coverage now includes:
+  - `frontend/services/agal/app/pages/agal/index.vue`
+  - `frontend/services/agal/app/pages/agal/route/[id].vue`
+  - `frontend/services/agal/app/pages/agal/request/[id].vue`
+  - `frontend/services/agal/app/components/AgalCreateSlideover.vue`
+  - `frontend/services/agal/app/components/AgalRoleSwitch.vue`
+  - `frontend/services/agal/app/components/AgalAccessState.vue`
+- Home hero no longer shows the literal `iindiinda`; keep `iind` as the cyan brand anchor
+
 ## Audit Notes - 2026-04-26 18:25
 
 - First redesign implementation slice now lives in source, not only in `DESIGN.md`

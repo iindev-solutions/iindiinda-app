@@ -37,7 +37,6 @@ const services = [
 	<div class="app-page app-page--home">
 		<section class="index-page__hero app-panel">
 			<div class="index-page__hero-body">
-				<p class="app-kicker">iindiinda</p>
 				<AppTitle />
 				<p class="index-page__subtitle">{{ t('home.subtitle') }}</p>
 				<p class="app-copy app-copy--hero">{{ t('home.caption') }}</p>

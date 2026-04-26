@@ -184,6 +184,14 @@
 - Blockers: variant 3 is still local-only and needs visual review before commit or deploy
 - Next: compare variant 3 against committed variants 1 and 2, then commit the winner before moving into detail/create redesign
 
+## 2026-04-26 21:00 — Variant 3 Full Surface Pass
+
+- Scope: continue variant 3 without stopping at shell/feed screens and carry it into the main working surfaces
+- Changes: removed the home `iindiinda` reminder, kept `iind` cyan, added shared detail/form styling, redesigned AYAN/AGAL detail pages, and redesigned both AYAN/AGAL create slideovers
+- Verified: `cd frontend && npm run typecheck`; `cd frontend && npm run build:static` (`STATIC_API_BASE_OK`)
+- Blockers: redesign is still local-only and not deployed; final visual preference between committed checkpoints and current variant 3 still depends on human review
+- Next: keep variant 3, polish any remaining rough edges, then commit/deploy the chosen redesign direction
+
 ## 2026-04-25 09:25 — Production Asset MIME Hotfix
 
 - Scope: investigate and recover live AYAN startup failures caused by blocked module/CSS loads

@@ -221,192 +221,204 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 		:title="createMode === 'route' ? t('agal.route.create') : t('agal.request.create')"
 		:description="createMode === 'route' ? t('agal.route.createDesc') : t('agal.request.createDesc')"
 		:transition="!isInTelegram"
-		:ui="{ content: 'sm:max-w-sm mx-auto max-h-[85dvh] rounded-t-2xl' }"
+		:ui="{ content: 'sm:max-w-sm mx-auto max-h-[88dvh] rounded-t-[20px] border border-gray-800 bg-[#111418]' }"
 		side="bottom"
 	>
 		<template #body>
-			<UForm class="tma-no-zoom" :state="state" :validate="validate" @submit="onSubmit">
-				<div class="space-y-4">
-					<UFormField :label="t('agal.create.from')" name="from_address" required eager-validation>
-						<UInput
-							v-model="state.from_address"
-							fixed
-							:placeholder="t('agal.create.from')"
-							icon="i-lucide-circle-dot"
-							variant="outline"
-							size="lg"
-							class="w-full"
-						/>
-					</UFormField>
+			<div class="create-sheet-body">
+				<UForm class="tma-no-zoom" :state="state" :validate="validate" @submit="onSubmit">
+					<div class="app-panel app-panel--soft app-form-card">
+						<div class="create-sheet-grid">
+							<UFormField :label="t('agal.create.from')" name="from_address" required eager-validation>
+								<UInput
+									v-model="state.from_address"
+									fixed
+									:placeholder="t('agal.create.from')"
+									icon="i-lucide-circle-dot"
+									variant="outline"
+									size="lg"
+									class="w-full"
+								/>
+							</UFormField>
 
-					<UFormField :label="t('agal.create.to')" name="to_address" required eager-validation>
-						<UInput
-							v-model="state.to_address"
-							fixed
-							:placeholder="t('agal.create.to')"
-							icon="i-lucide-map-pin"
-							variant="outline"
-							size="lg"
-							class="w-full"
-						/>
-					</UFormField>
+							<UFormField :label="t('agal.create.to')" name="to_address" required eager-validation>
+								<UInput
+									v-model="state.to_address"
+									fixed
+									:placeholder="t('agal.create.to')"
+									icon="i-lucide-map-pin"
+									variant="outline"
+									size="lg"
+									class="w-full"
+								/>
+							</UFormField>
 
-					<div class="grid grid-cols-2 gap-3">
-						<UFormField :label="t('agal.create.date')" name="date" required eager-validation>
-							<UInput
-								v-model="state.date"
+							<div class="grid grid-cols-2 gap-3">
+								<UFormField :label="t('agal.create.date')" name="date" required eager-validation>
+									<UInput
+										v-model="state.date"
+										fixed
+										type="date"
+										:min="todayDate"
+										icon="i-lucide-calendar"
+										variant="outline"
+										size="lg"
+										class="w-full"
+									/>
+								</UFormField>
+								<UFormField :label="t('agal.create.time')" name="time">
+									<UInput
+										v-model="state.time"
+										fixed
+										type="time"
+										icon="i-lucide-clock"
+										variant="outline"
+										size="lg"
+										placeholder="--:--"
+										class="w-full"
+									/>
+								</UFormField>
+							</div>
+
+							<UFormField :label="t('agal.create.size')" name="size_label" required eager-validation>
+								<USelect v-model="state.size_label" :items="sizeOptions" size="lg" class="w-full" />
+							</UFormField>
+						</div>
+					</div>
+
+					<div class="app-panel app-panel--soft app-form-card">
+						<template v-if="createMode === 'route'">
+							<div class="create-sheet-grid">
+								<div class="grid grid-cols-2 gap-3">
+									<UFormField :label="t('agal.route.weightMax')" name="weight_kg_max" eager-validation>
+										<UInput
+											:model-value="state.weight_kg_max"
+											fixed
+											inputmode="decimal"
+											placeholder="0"
+											size="lg"
+											class="w-full"
+											@update:model-value="handleDecimalInput('weight_kg_max', $event)"
+										>
+											<template #trailing>
+												<span class="text-sm text-gray-500">кг</span>
+											</template>
+										</UInput>
+									</UFormField>
+									<UFormField :label="t('agal.route.price')" name="price" eager-validation>
+										<UInput
+											:model-value="state.price"
+											fixed
+											inputmode="numeric"
+											placeholder="0"
+											size="lg"
+											class="w-full"
+											@update:model-value="handleIntegerInput('price', $event)"
+										>
+											<template #trailing>
+												<span class="text-sm text-gray-500">₽</span>
+											</template>
+										</UInput>
+									</UFormField>
+								</div>
+
+								<UFormField :label="t('agal.route.acceptedItems')" name="accepted_items">
+									<UTextarea
+										v-model="state.accepted_items"
+										fixed
+										:placeholder="t('agal.route.acceptedItemsPlaceholder')"
+										:rows="2"
+										autoresize
+										class="w-full"
+									/>
+								</UFormField>
+
+								<UFormField :label="t('agal.route.restrictedItems')" name="restricted_items">
+									<UTextarea
+										v-model="state.restricted_items"
+										fixed
+										:placeholder="t('agal.route.restrictedItemsPlaceholder')"
+										:rows="2"
+										autoresize
+										class="w-full"
+									/>
+								</UFormField>
+							</div>
+						</template>
+
+						<template v-else>
+							<div class="create-sheet-grid">
+								<div class="grid grid-cols-2 gap-3">
+									<UFormField :label="t('agal.request.weight')" name="weight_kg" eager-validation>
+										<UInput
+											:model-value="state.weight_kg"
+											fixed
+											inputmode="decimal"
+											placeholder="0"
+											size="lg"
+											class="w-full"
+											@update:model-value="handleDecimalInput('weight_kg', $event)"
+										>
+											<template #trailing>
+												<span class="text-sm text-gray-500">кг</span>
+											</template>
+										</UInput>
+									</UFormField>
+									<UFormField :label="t('agal.request.budget')" name="budget" eager-validation>
+										<UInput
+											:model-value="state.budget"
+											fixed
+											inputmode="numeric"
+											placeholder="0"
+											size="lg"
+											class="w-full"
+											@update:model-value="handleIntegerInput('budget', $event)"
+										>
+											<template #trailing>
+												<span class="text-sm text-gray-500">₽</span>
+											</template>
+										</UInput>
+									</UFormField>
+								</div>
+
+								<UFormField :label="t('agal.request.contentsSummary')" name="contents_summary" required eager-validation>
+									<UTextarea
+										v-model="state.contents_summary"
+										fixed
+										:placeholder="t('agal.request.contentsSummaryPlaceholder')"
+										:rows="2"
+										autoresize
+										class="w-full"
+									/>
+								</UFormField>
+
+								<div class="grid grid-cols-2 gap-3">
+									<UFormField :label="t('agal.request.fragilityLabel')" name="fragility">
+										<USelect v-model="state.fragility" :items="fragilityOptions" size="lg" class="w-full" />
+									</UFormField>
+									<UFormField :label="t('agal.request.documentsRequired')" name="documents_required">
+										<div class="flex min-h-11 items-center justify-between rounded-xl border border-gray-800 px-3">
+											<span class="text-sm text-cyan-50">{{ t('agal.request.documentsRequiredSwitch') }}</span>
+											<USwitch v-model="state.documents_required" />
+										</div>
+									</UFormField>
+								</div>
+							</div>
+						</template>
+					</div>
+
+					<div class="app-panel app-panel--soft app-form-card">
+						<UFormField :label="t('agal.notes')" name="notes">
+							<UTextarea
+								v-model="state.notes"
 								fixed
-								type="date"
-								:min="todayDate"
-								icon="i-lucide-calendar"
-								variant="outline"
-								size="lg"
-								class="w-full"
-							/>
-						</UFormField>
-						<UFormField :label="t('agal.create.time')" name="time">
-							<UInput
-								v-model="state.time"
-								fixed
-								type="time"
-								icon="i-lucide-clock"
-								variant="outline"
-								size="lg"
-								placeholder="--:--"
+								:placeholder="t('agal.notesPlaceholder')"
+								:rows="3"
+								autoresize
 								class="w-full"
 							/>
 						</UFormField>
 					</div>
-
-					<UFormField :label="t('agal.create.size')" name="size_label" required eager-validation>
-						<USelect v-model="state.size_label" :items="sizeOptions" size="lg" class="w-full" />
-					</UFormField>
-
-					<template v-if="createMode === 'route'">
-						<div class="grid grid-cols-2 gap-3">
-							<UFormField :label="t('agal.route.weightMax')" name="weight_kg_max" eager-validation>
-								<UInput
-									:model-value="state.weight_kg_max"
-									fixed
-									inputmode="decimal"
-									placeholder="0"
-									size="lg"
-									class="w-full"
-									@update:model-value="handleDecimalInput('weight_kg_max', $event)"
-								>
-									<template #trailing>
-										<span class="text-sm text-gray-500">кг</span>
-									</template>
-								</UInput>
-							</UFormField>
-							<UFormField :label="t('agal.route.price')" name="price" eager-validation>
-								<UInput
-									:model-value="state.price"
-									fixed
-									inputmode="numeric"
-									placeholder="0"
-									size="lg"
-									class="w-full"
-									@update:model-value="handleIntegerInput('price', $event)"
-								>
-									<template #trailing>
-										<span class="text-sm text-gray-500">₽</span>
-									</template>
-								</UInput>
-							</UFormField>
-						</div>
-
-						<UFormField :label="t('agal.route.acceptedItems')" name="accepted_items">
-							<UTextarea
-								v-model="state.accepted_items"
-								fixed
-								:placeholder="t('agal.route.acceptedItemsPlaceholder')"
-								:rows="2"
-								autoresize
-								class="w-full"
-							/>
-						</UFormField>
-
-						<UFormField :label="t('agal.route.restrictedItems')" name="restricted_items">
-							<UTextarea
-								v-model="state.restricted_items"
-								fixed
-								:placeholder="t('agal.route.restrictedItemsPlaceholder')"
-								:rows="2"
-								autoresize
-								class="w-full"
-							/>
-						</UFormField>
-					</template>
-
-					<template v-else>
-						<div class="grid grid-cols-2 gap-3">
-							<UFormField :label="t('agal.request.weight')" name="weight_kg" eager-validation>
-								<UInput
-									:model-value="state.weight_kg"
-									fixed
-									inputmode="decimal"
-									placeholder="0"
-									size="lg"
-									class="w-full"
-									@update:model-value="handleDecimalInput('weight_kg', $event)"
-								>
-									<template #trailing>
-										<span class="text-sm text-gray-500">кг</span>
-									</template>
-								</UInput>
-							</UFormField>
-							<UFormField :label="t('agal.request.budget')" name="budget" eager-validation>
-								<UInput
-									:model-value="state.budget"
-									fixed
-									inputmode="numeric"
-									placeholder="0"
-									size="lg"
-									class="w-full"
-									@update:model-value="handleIntegerInput('budget', $event)"
-								>
-									<template #trailing>
-										<span class="text-sm text-gray-500">₽</span>
-									</template>
-								</UInput>
-							</UFormField>
-						</div>
-
-						<UFormField :label="t('agal.request.contentsSummary')" name="contents_summary" required eager-validation>
-							<UTextarea
-								v-model="state.contents_summary"
-								fixed
-								:placeholder="t('agal.request.contentsSummaryPlaceholder')"
-								:rows="2"
-								autoresize
-								class="w-full"
-							/>
-						</UFormField>
-
-						<div class="grid grid-cols-2 gap-3">
-							<UFormField :label="t('agal.request.fragilityLabel')" name="fragility">
-								<USelect v-model="state.fragility" :items="fragilityOptions" size="lg" class="w-full" />
-							</UFormField>
-							<UFormField :label="t('agal.request.documentsRequired')" name="documents_required">
-								<div class="flex min-h-11 items-center justify-between rounded-xl border border-gray-800 px-3">
-									<span class="text-sm text-cyan-50">{{ t('agal.request.documentsRequiredSwitch') }}</span>
-									<USwitch v-model="state.documents_required" />
-								</div>
-							</UFormField>
-						</div>
-					</template>
-
-					<UFormField :label="t('agal.notes')" name="notes">
-						<UTextarea
-							v-model="state.notes"
-							fixed
-							:placeholder="t('agal.notesPlaceholder')"
-							:rows="3"
-							autoresize
-							class="w-full"
-						/>
-					</UFormField>
 
 					<UButton
 						type="submit"
@@ -416,8 +428,22 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 						:loading="submitting"
 						:label="createMode === 'route' ? t('agal.route.create') : t('agal.request.create')"
 					/>
-				</div>
-			</UForm>
+				</UForm>
+			</div>
 		</template>
 	</USlideover>
 </template>
+
+<style scoped>
+.create-sheet-body {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.create-sheet-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+</style>

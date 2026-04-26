@@ -141,7 +141,8 @@
 - Redesigned bottom nav now highlights the tapped service immediately on first tap via optimistic pending-route state
 - Commit `bc7bdc4` is the saved redesign variant 1 checkpoint
 - Commit `b22f92c` is the saved redesign variant 2 checkpoint
-- Current local working tree is a redesign variant 3 candidate focused on daily-use clarity and stronger brand consistency (`iind` in cyan)
+- Current local working tree continues redesign variant 3 as the active direction: home, landing, feed, detail, and create surfaces now follow the same calmer daily-use styling
+- `iind` remains the cyan brand anchor and the literal home `iindiinda` reminder was removed
 - Latest shipped runtime commit is `53af2d7` `feat(agal): ship frontend MVP flow`
 - Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
 - Verified live routes (`200`):
@@ -205,9 +206,9 @@
 
 ## Next Action
 
-1. Compare the current local variant 3 against committed variants 1 (`bc7bdc4`) and 2 (`b22f92c`)
-2. Choose the best shared shell direction or refine variant 3 once more
-3. Only after that choice, continue into AYAN + AGAL detail pages and create flows
+1. Keep pushing variant 3 as the chosen redesign direction unless a visual regression appears
+2. Do final polish on any remaining rough surfaces, then commit/deploy the redesign stack
+3. After deploy, run manual Telegram/browser regression checks on AYAN + AGAL main flows
 4. Keep scope disciplined:
    - frontend-first
    - no broad backend refactors unless a redesign task clearly requires it
@@ -233,11 +234,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: compare local redesign variant 3 with committed variants 1 and 2.
+Current task: continue and finalize redesign variant 3.
 1) keep backend/API contracts as-is unless redesign work clearly needs a targeted change
 2) keep first-tap bottom-nav active behavior intact
-3) decide whether variant 3 is good enough to commit
-4) only after choosing direction, redesign detail and create flows
+3) maintain cyan `iind` branding and avoid the old `iindiinda` home reminder
+4) polish and then commit/deploy the full redesign
 5) keep legal parked and patch runtime bugs only if they block redesign or live usage
 ```
 
@@ -250,4 +251,4 @@ Current task: compare local redesign variant 3 with committed variants 1 and 2.
 
 ## One-Line Summary
 
-Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign now has a root DESIGN.md source of truth plus committed checkpoints for variant 1 (`bc7bdc4`) and variant 2 (`b22f92c`) while a more daily-use-focused variant 3 remains local for comparison.
+Live AYAN remains green for MVP, AGAL keeps a stable frontend/backend baseline, and redesign now has a root DESIGN.md source of truth plus committed checkpoints for variants 1 and 2 while variant 3 is the active local full-surface redesign direction awaiting commit/deploy.

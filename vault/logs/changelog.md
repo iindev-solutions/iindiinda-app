@@ -2,6 +2,38 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 21:00 - Variant 3 Redesign Extended To Detail/Create
+
+### Done
+
+- Continued redesign work on the chosen variant 3 direction instead of pausing at shell/feed screens
+- Removed the unnecessary literal `iindiinda` reminder from the home hero while keeping `iind` as the cyan brand anchor
+- Added shared detail/form utility styling in `frontend/app/assets/css/main.css`
+- Extended the redesign across AYAN and AGAL detail pages:
+  - `frontend/services/ayan/app/pages/ayan/trip/[id].vue`
+  - `frontend/services/ayan/app/pages/ayan/request/[id].vue`
+  - `frontend/services/agal/app/pages/agal/route/[id].vue`
+  - `frontend/services/agal/app/pages/agal/request/[id].vue`
+- Extended the redesign across both create slideovers:
+  - `frontend/services/ayan/app/components/AyanCreateSlideover.vue`
+  - `frontend/services/agal/app/components/AgalCreateSlideover.vue`
+- Further refined shared variant-3 components:
+  - `frontend/app/components/AppTitle.vue`
+  - `frontend/app/components/AppServiceAbout.vue`
+  - `frontend/app/components/EmptyState.vue`
+  - `frontend/app/components/AppBottomNav.vue`
+- Kept the first-tap bottom-nav active-state fix intact through the redesign pass
+
+### Verified
+
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- Variant 3 is now the active local redesign direction across home, landing, feed, detail, and create surfaces
+- This work is still local and not deployed yet
+
 ## 2026-04-26 20:05 - Redesign Variant 2 Committed + Variant 3 Started
 
 ### Done

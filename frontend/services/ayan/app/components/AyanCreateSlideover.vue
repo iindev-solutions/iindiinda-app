@@ -155,124 +155,127 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 		:title="formType === 'trip' ? t('ayan.ride.create') : t('ayan.request.create')"
 		:description="formType === 'trip' ? t('ayan.ride.createDesc') : t('ayan.request.createDesc')"
 		:transition="!isInTelegram"
-		:ui="{ content: 'sm:max-w-sm mx-auto max-h-[85dvh] rounded-t-2xl' }"
+		:ui="{ content: 'sm:max-w-sm mx-auto max-h-[88dvh] rounded-t-[20px] border border-gray-800 bg-[#111418]' }"
 		side="bottom"
 	>
 		<template #body>
-			<UTabs
-				v-if="typeOptions.length > 1"
-				:items="typeOptions"
-				:model-value="formType"
-				variant="pill"
-				size="sm"
-				class="mb-5"
-				@update:model-value="handleTypeChange"
-			/>
+			<div class="create-sheet-body">
+				<div v-if="typeOptions.length > 1" class="app-panel app-panel--soft app-form-card create-sheet-tabs">
+					<UTabs
+						:items="typeOptions"
+						:model-value="formType"
+						variant="pill"
+						size="sm"
+						@update:model-value="handleTypeChange"
+					/>
+				</div>
 
-			<UForm class="tma-no-zoom" :state="state" :validate="validate" @submit="onSubmit">
-				<div class="space-y-4">
-					<UFormField :label="t('ayan.create.from')" name="from_address" required eager-validation>
-						<UInput
-							v-model="state.from_address"
-							fixed
-							:placeholder="t('ayan.create.from')"
-							icon="i-lucide-circle-dot"
-							variant="outline"
-							size="lg"
-							class="w-full"
-						/>
-					</UFormField>
-
-					<UFormField :label="t('ayan.create.to')" name="to_address" required eager-validation>
-						<UInput
-							v-model="state.to_address"
-							fixed
-							:placeholder="t('ayan.create.to')"
-							icon="i-lucide-map-pin"
-							variant="outline"
-							size="lg"
-							class="w-full"
-						/>
-					</UFormField>
-
-					<div class="grid grid-cols-2 gap-3">
-						<UFormField :label="t('ayan.create.date')" name="date" required eager-validation>
-							<UInput
-								v-model="state.date"
-								fixed
-								type="date"
-								:min="todayDate"
-								icon="i-lucide-calendar"
-								variant="outline"
-								size="lg"
-								class="w-full"
-							/>
-						</UFormField>
-						<UFormField
-							:label="t('ayan.create.time')"
-							name="time"
-							:required="formType === 'trip'"
-							eager-validation
-						>
-							<UInput
-								v-model="state.time"
-								fixed
-								type="time"
-								icon="i-lucide-clock"
-								variant="outline"
-								size="lg"
-								placeholder="--:--"
-								class="w-full"
-							/>
-						</UFormField>
-					</div>
-
-					<template v-if="formType === 'trip'">
-						<div class="grid grid-cols-2 gap-3">
-							<UFormField :label="t('ayan.ride.seatsAvailable')" name="seats" required eager-validation>
-								<UInputNumber v-model="state.seats" fixed :min="1" :max="10" size="lg" class="w-full" />
-							</UFormField>
-							<UFormField :label="t('ayan.ride.price')" name="price" required eager-validation>
+				<UForm class="tma-no-zoom" :state="state" :validate="validate" @submit="onSubmit">
+					<div class="app-panel app-panel--soft app-form-card">
+						<div class="create-sheet-grid">
+							<UFormField :label="t('ayan.create.from')" name="from_address" required eager-validation>
 								<UInput
-									:model-value="state.price"
-									inputmode="numeric"
+									v-model="state.from_address"
 									fixed
-									placeholder="0"
+									:placeholder="t('ayan.create.from')"
+									icon="i-lucide-circle-dot"
+									variant="outline"
 									size="lg"
 									class="w-full"
-									@update:model-value="handlePriceInput"
-								>
-									<template #trailing>
-										<span class="text-sm text-gray-500">₽</span>
-									</template>
-								</UInput>
+								/>
 							</UFormField>
+
+							<UFormField :label="t('ayan.create.to')" name="to_address" required eager-validation>
+								<UInput
+									v-model="state.to_address"
+									fixed
+									:placeholder="t('ayan.create.to')"
+									icon="i-lucide-map-pin"
+									variant="outline"
+									size="lg"
+									class="w-full"
+								/>
+							</UFormField>
+
+							<div class="grid grid-cols-2 gap-3">
+								<UFormField :label="t('ayan.create.date')" name="date" required eager-validation>
+									<UInput
+										v-model="state.date"
+										fixed
+										type="date"
+										:min="todayDate"
+										icon="i-lucide-calendar"
+										variant="outline"
+										size="lg"
+										class="w-full"
+									/>
+								</UFormField>
+								<UFormField :label="t('ayan.create.time')" name="time" :required="formType === 'trip'" eager-validation>
+									<UInput
+										v-model="state.time"
+										fixed
+										type="time"
+										icon="i-lucide-clock"
+										variant="outline"
+										size="lg"
+										placeholder="--:--"
+										class="w-full"
+									/>
+								</UFormField>
+							</div>
 						</div>
+					</div>
 
-						<UFormField :label="t('ayan.ride.comment')" name="comment" required eager-validation>
-							<UTextarea
-								v-model="state.comment"
-								fixed
-								:placeholder="t('ayan.ride.commentPlaceholder')"
-								:rows="3"
-								autoresize
-								class="w-full"
-							/>
-						</UFormField>
-					</template>
+					<div class="app-panel app-panel--soft app-form-card">
+						<template v-if="formType === 'trip'">
+							<div class="create-sheet-grid">
+								<div class="grid grid-cols-2 gap-3">
+									<UFormField :label="t('ayan.ride.seatsAvailable')" name="seats" required eager-validation>
+										<UInputNumber v-model="state.seats" fixed :min="1" :max="10" size="lg" class="w-full" />
+									</UFormField>
+									<UFormField :label="t('ayan.ride.price')" name="price" required eager-validation>
+										<UInput
+											:model-value="state.price"
+											inputmode="numeric"
+											fixed
+											placeholder="0"
+											size="lg"
+											class="w-full"
+											@update:model-value="handlePriceInput"
+										>
+											<template #trailing>
+												<span class="text-sm text-gray-500">₽</span>
+											</template>
+										</UInput>
+									</UFormField>
+								</div>
 
-					<template v-else>
-						<UFormField :label="t('ayan.request.comment')" name="description">
-							<UTextarea
-								v-model="state.description"
-								fixed
-								:placeholder="t('ayan.request.commentPlaceholder')"
-								:rows="3"
-								autoresize
-								class="w-full"
-							/>
-						</UFormField>
-					</template>
+								<UFormField :label="t('ayan.ride.comment')" name="comment" required eager-validation>
+									<UTextarea
+										v-model="state.comment"
+										fixed
+										:placeholder="t('ayan.ride.commentPlaceholder')"
+										:rows="3"
+										autoresize
+										class="w-full"
+									/>
+								</UFormField>
+							</div>
+						</template>
+
+						<template v-else>
+							<UFormField :label="t('ayan.request.comment')" name="description">
+								<UTextarea
+									v-model="state.description"
+									fixed
+									:placeholder="t('ayan.request.commentPlaceholder')"
+									:rows="3"
+									autoresize
+									class="w-full"
+								/>
+							</UFormField>
+						</template>
+					</div>
 
 					<UButton
 						type="submit"
@@ -282,8 +285,26 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 						:loading="submitting"
 						:label="formType === 'trip' ? t('ayan.ride.create') : t('ayan.request.create')"
 					/>
-				</div>
-			</UForm>
+				</UForm>
+			</div>
 		</template>
 	</USlideover>
 </template>
+
+<style scoped>
+.create-sheet-body {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.create-sheet-tabs {
+	padding: 10px;
+}
+
+.create-sheet-grid {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+</style>
