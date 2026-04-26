@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
-import type { CalendarDate } from '@internationalized/date'
-import { getLocalTimeZone, parseDate, today } from '@internationalized/date'
+import { getLocalTimeZone, today } from '@internationalized/date'
 import type { AyanTripCreate, AyanRequestCreate } from '../types/ayan'
 
 import { parsePriceInput, sanitizePriceInput } from '../utils/create-form'
@@ -11,7 +10,7 @@ const emit = defineEmits<{ created: [] }>()
 
 const { t } = useI18n()
 const toast = useToast()
-const { hapticFeedback } = useTg()
+const { hapticFeedback, isInTelegram } = useTg()
 const { user } = useAuth()
 const { createTrip } = useAyanTrips()
 const { createRequest } = useAyanRequests()
@@ -32,7 +31,6 @@ const state = reactive({
 })
 
 const submitting = ref(false)
-const datePickerOpen = ref(false)
 
 const allowedFormType = computed<'trip' | 'request' | null>(() => {
 	return getAyanCreateMode(user.value?.role)
@@ -90,24 +88,12 @@ const validate = (s: typeof state): FormError[] => {
 		if (!s.time) errors.push({ name: 'time', message: t('ayan.validation.required') })
 		if (s.seats < 1) errors.push({ name: 'seats', message: t('ayan.validation.minSeats') })
 		if (parsePriceInput(s.price) < 0) errors.push({ name: 'price', message: t('ayan.validation.minPrice') })
+		if (!s.comment.trim()) errors.push({ name: 'comment', message: t('ayan.validation.required') })
 	}
 	return errors
 }
 
 const todayDate = computed(() => today(getLocalTimeZone()).toString())
-const minCalendarDate = computed(() => parseDate(todayDate.value))
-
-const calendarValue = computed<CalendarDate | undefined>({
-	get() {
-		return state.date ? parseDate(state.date) : undefined
-	},
-	set(value) {
-		state.date = value ? value.toString() : ''
-		datePickerOpen.value = false
-	}
-})
-
-const displayDate = computed(() => state.date || t('ayan.create.datePlaceholder'))
 
 function handlePriceInput(value: string | number) {
 	state.price = sanitizePriceInput(String(value ?? ''))
@@ -124,7 +110,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 				time: state.time,
 				seats: state.seats,
 				price: parsePriceInput(state.price),
-				comment: state.comment || undefined
+				comment: state.comment.trim()
 			}
 			await createTrip(payload)
 		} else {
@@ -168,6 +154,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 		v-model:open="open"
 		:title="formType === 'trip' ? t('ayan.ride.create') : t('ayan.request.create')"
 		:description="formType === 'trip' ? t('ayan.ride.createDesc') : t('ayan.request.createDesc')"
+		:transition="!isInTelegram"
 		:ui="{ content: 'sm:max-w-sm mx-auto max-h-[85dvh] rounded-t-2xl' }"
 		side="bottom"
 	>
@@ -210,20 +197,16 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 
 					<div class="grid grid-cols-2 gap-3">
 						<UFormField :label="t('ayan.create.date')" name="date" required eager-validation>
-							<UPopover v-model:open="datePickerOpen">
-								<UButton
-									color="neutral"
-									variant="outline"
-									size="lg"
-									icon="i-lucide-calendar"
-									class="tma-no-zoom-button w-full justify-between"
-								>
-									<span class="truncate">{{ displayDate }}</span>
-								</UButton>
-								<template #content>
-									<UCalendar v-model="calendarValue" :min-value="minCalendarDate" class="tma-no-zoom-calendar" />
-								</template>
-							</UPopover>
+							<UInput
+								v-model="state.date"
+								fixed
+								type="date"
+								:min="todayDate"
+								icon="i-lucide-calendar"
+								variant="outline"
+								size="lg"
+								class="w-full"
+							/>
 						</UFormField>
 						<UFormField
 							:label="t('ayan.create.time')"
@@ -266,7 +249,7 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 							</UFormField>
 						</div>
 
-						<UFormField :label="t('ayan.ride.comment')" name="comment">
+						<UFormField :label="t('ayan.ride.comment')" name="comment" required eager-validation>
 							<UTextarea
 								v-model="state.comment"
 								fixed
