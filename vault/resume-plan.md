@@ -151,6 +151,7 @@
   - Docker cleanup reclaimed about `977MB`, increasing free disk to about `5.2GB`
   - host still has only about `10GB` total disk, far below Coolify's recommended comfort zone
   - SSH/HTTP were intermittent during install/restart windows, so no more night-time recovery actions should be attempted blindly
+  - latest recheck after pausing still showed degraded health: SSH only worked intermittently after several retries, while repeated HTTPS root checks timed out
 - Root `DESIGN.md` now exists as the redesign baseline for colors, typography, spacing, rounding, and shared component patterns
 - Redesigned bottom nav now highlights the tapped service immediately on first tap via optimistic pending-route state
 - Commit `bc7bdc4` is the saved redesign variant 1 checkpoint
@@ -220,19 +221,20 @@
 
 ## Next Action
 
-1. Tomorrow begin with VPS health/stability checks only:
+1. First use the VPS/provider panel for a clean reboot if the host is still unstable when work resumes
+2. Then perform VPS health/stability checks only:
    - SSH responsiveness
    - `systemctl` status for `nginx`, `php8.3-fpm`, `mysql`, `docker`
    - live route checks for `/` and `/api/health`
-2. If the host is stable, inspect the partial Coolify attempt:
+3. If the host is stable, inspect the partial Coolify attempt:
    - `/data/coolify/source/*.log`
    - `/etc/docker/daemon.json`
    - Docker DNS/network behavior against `ghcr.io`
-3. Decide whether to continue on the same VPS or stop because the host is too small/noisy for Coolify:
+4. Decide whether to continue on the same VPS or stop because the host is too small/noisy for Coolify:
    - total disk is only about `10GB`
    - even after cleanup free disk is only about `5.2GB`
-4. Do **not** reopen redesign during this recovery window
-5. Keep legal/compliance parked and patch runtime bugs only if they block live usage
+5. Do **not** reopen redesign during this recovery window
+6. Keep legal/compliance parked and patch runtime bugs only if they block live usage
 
 ## API Smoke Snapshot (Live)
 

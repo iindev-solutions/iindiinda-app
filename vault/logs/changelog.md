@@ -2,6 +2,24 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-04-26 23:25 - VPS Health Recheck Still Unstable
+
+### Done
+
+- Rechecked the current production VPS after the paused Coolify attempt
+- Retried both SSH reachability and live HTTPS reachability instead of assuming the host recovered on its own
+
+### Verified
+
+- SSH remains intermittent: multiple connection timeouts, with only occasional successful login after retries
+- HTTPS root route remains unhealthy in current checks: repeated `curl -I https://iindiinda.duckdns.org/` timeouts
+- This is no longer only a Coolify-install problem; host stability itself is still degraded
+
+### Important
+
+- Do not continue Coolify actions on this VPS until base host health is recovered
+- Best next operational move is an out-of-band VPS/provider-panel reboot followed by minimal health checks only
+
 ## 2026-04-26 23:10 - Coolify Prod-VPS Attempt Paused For Morning Resume
 
 ### Done

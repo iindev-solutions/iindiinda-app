@@ -232,6 +232,14 @@
 - Blockers: SSH/HTTP became intermittent during install/restart windows; Coolify source files now exist under `/data/coolify/source`, but the control plane is not installed successfully yet
 - Next: tomorrow start with VPS health/stability checks, then inspect Docker DNS/network behavior and decide whether to keep trying on this small production VPS or switch to a safer Coolify host plan
 
+## 2026-04-26 23:25 — VPS Recheck Still Bad
+
+- Scope: verify whether the production VPS had recovered enough to continue after the paused Coolify attempt
+- Changes: retried SSH and HTTPS checks against the current VPS/live domain
+- Verified: SSH is still intermittent and only sometimes accepts a session after retries; live HTTPS root checks still time out in repeated attempts
+- Blockers: host health is still degraded, so application/Coolify work would be guesswork right now
+- Next: use the provider panel for a clean VPS reboot, then perform only basic service/route health checks before any deeper action
+
 ## 2026-04-25 09:25 — Production Asset MIME Hotfix
 
 - Scope: investigate and recover live AYAN startup failures caused by blocked module/CSS loads
