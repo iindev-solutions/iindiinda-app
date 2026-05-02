@@ -13,7 +13,7 @@
  */
 
 // ⚡️ ПЕРЕКЛЮЧАТЕЛЬ API ⚡️
-export const USE_MOCK_API = true
+export const USE_MOCK_API = false
 
 // Дополнительные настройки мока
 export const MOCK_CONFIG = {

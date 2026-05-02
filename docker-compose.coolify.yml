@@ -1,0 +1,86 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile.coolify
+      args:
+        NUXT_PUBLIC_API_BASE: /api
+        NUXT_PUBLIC_TELEGRAM_BOT_ID: ${NUXT_PUBLIC_TELEGRAM_BOT_ID:-}
+    depends_on:
+      - backend-web
+    expose:
+      - '80'
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.coolify
+      target: php
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      APP_DEBUG: 'false'
+      APP_URL: ${APP_URL}
+      APP_KEY: ${APP_KEY}
+      APP_NAME: ${APP_NAME:-iind}
+      APP_LOCALE: ${APP_LOCALE:-en}
+      APP_FALLBACK_LOCALE: ${APP_FALLBACK_LOCALE:-en}
+      LOG_CHANNEL: ${LOG_CHANNEL:-stack}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      SESSION_DRIVER: file
+      SESSION_LIFETIME: 120
+      CACHE_STORE: file
+      QUEUE_CONNECTION: sync
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      RUN_MIGRATIONS: ${RUN_MIGRATIONS:-true}
+    volumes:
+      - backend_storage:/var/www/backend/storage
+      - backend_cache:/var/www/backend/bootstrap/cache
+    expose:
+      - '9000'
+    restart: unless-stopped
+
+  backend-web:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile.coolify
+      target: nginx
+    depends_on:
+      - backend
+    volumes:
+      - backend_storage:/var/www/backend/storage:ro
+    expose:
+      - '80'
+    restart: unless-stopped
+
+  db:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+  backend_storage:
+  backend_cache:

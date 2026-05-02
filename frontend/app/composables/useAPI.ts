@@ -1,12 +1,21 @@
 import { USE_MOCK_API } from '~/config/api.config'
 import { mockApiResponses, getMockAuthResponse, getMockCurrentUser } from '~/config/mockData'
+import { resolveRuntimeApiBase } from '~/utils/api-base'
 
 export const useAPI = () => {
 	const config = useRuntimeConfig()
 	const { initData } = useTg()
 	const token = useState<string | null>('auth-token', () => null)
 
-	const baseURL = computed(() => (config.public.apiBase as string) || '/api')
+	const baseURL = computed(() => {
+		const rawApiBase = (config.public.apiBase as string) || '/api'
+
+		if (import.meta.client) {
+			return resolveRuntimeApiBase(rawApiBase, window.location.protocol)
+		}
+
+		return rawApiBase
+	})
 
 	const headers = computed(() => {
 		const h: Record<string, string> = {

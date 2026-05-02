@@ -1,10 +1,28 @@
-<script setup lang="ts"></script>
-
 <template>
-	<h1 class="text-5xl sm:text-7xl text-highlighted tracking-tight">
-		<span class="text-primary">iind.</span>
-		<span class="text-3xl sm:text-5xl text-muted">app</span>
-	</h1>
+	<div class="app-title">
+		<span class="app-title__mark">iind</span>
+		<span class="app-title__suffix">.app</span>
+	</div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.app-title {
+	display: inline-flex;
+	align-items: flex-end;
+	gap: 4px;
+	font-weight: 700;
+	letter-spacing: -0.04em;
+	line-height: 0.95;
+}
+
+.app-title__mark {
+	font-size: clamp(40px, 11vw, 68px);
+	color: rgb(var(--color-cyan-500));
+}
+
+.app-title__suffix {
+	font-size: clamp(22px, 6vw, 36px);
+	color: var(--text-secondary);
+	margin-bottom: 4px;
+}
+</style>

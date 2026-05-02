@@ -1,97 +1,106 @@
-# Sprint — Phase 1 AYAN MVP
+# Sprint - Phase 1 AYAN MVP
 
-> Roadmap: vault/wiki/architecture/roadmap.md
-> API: vault/wiki/services/ayan/api-contract.md
-> Code: vault/CODE_MAP.md
+> Roadmap: `vault/wiki/architecture/roadmap.md`
+> API contract: `vault/wiki/services/ayan/api-contract.md`
+> Code map: `vault/CODE_MAP.md`
 
----
+## Scope
 
-## Phase 1: AYAN MVP
+Start date: `2026-04-19`
 
-Начало: 2026-04-19
-Цель: Рабочий MVP попуток (создание поездки/запроса → лента → отклик → контакт)
+Goal: ship a working AYAN MVP flow:
 
-### Задачи
+1. create trip or ride request
+2. browse feed with filters
+3. respond
+4. exchange contact details
 
-| # | Задача | Статус | Блокеры |
-|---|--------|--------|---------|
-| 1.1 | Backend: миграции (users, trips, requests, responses) | TODO | — |
-| 1.2 | Backend: модели + контроллеры AYAN | TODO | 1.1 |
-| 1.3 | Frontend: структура AYAN (pages, composables, types) | DONE | — |
-| 1.4 | Frontend: создание поездки (форма + API + validation + w-full + labels) | DONE* | — |
-| 1.5 | Frontend: создание запроса (форма + API + validation + w-full + labels) | DONE* | — |
-| 1.6 | Frontend: лента поездок/запросов + фильтры | IN_PROGRESS | — |
-| 1.7 | Frontend: отклик + контакт | IN_PROGRESS | — |
-| 1.8 | Frontend: performance (lazy, useLazyAsyncData, loader overlay, prefetch) | DONE | — |
-| 1.9 | Integration: mock → real API | TODO | 1.2 |
-| 1.10 | QA: все flow работают E2E | TODO | 1.9 |
+## Resume Point - 2026-04-26 09:00
 
-\* 1.4 и 1.5 — формы и composables работают на mock API. При переключении на real API нужно проверить валидацию ответов.
+- Current branch: `front/ayan`
+- Latest live AYAN runtime code still includes the create-form simplification commit `5e81817` (`fix(ayan): simplify tma create form`)
+- Local, origin, and VPS repositories are aligned on the current branch tip
+- Live HTTPS runtime is available at `https://iindiinda.duckdns.org`
+- Legal routes are deployed and reachable on live HTTPS
+- Lifecycle statuses (`matched/completed/cancelled`) are deployed on backend + frontend
+- Live synthetic API smoke for lifecycle transitions is green
+- User-reported real-device Telegram Mini App verification is green for AYAN MVP scope
+- Continue from: `vault/resume-plan.md`
 
-Статусы: `TODO` `IN_PROGRESS` `DONE` `BLOCKED`
+## Current Reality
 
-### Блокеры
+- Fresh VPS manual rebuild is now live again on `https://iindiinda.duckdns.org`
+- Current live restore scope matches the intended shipped baseline:
+  - AYAN real backend + frontend
+  - AGAL real backend + frontend
+  - legal center/routes
+  - UUS/TAL landing pages only
+- The rebuilt host now runs the manual deployment baseline again:
+  - `nginx + php8.3-fpm + mysql`
+  - Laravel backend in `/var/www/iind-app/backend`
+  - Nuxt static frontend in `/var/www/iind-app/frontend/public`
+  - same-origin `/api`
+- SSH automation via `iind-vps` is restored
+- HTTPS is restored and live route checks are green again
+- Live AYAN + AGAL lifecycle smoke is green again after the rebuild
+- Nginx static handling is hardened so missing `/assets/*` returns `404`
+- Coolify remains explicitly paused
 
-Пока нет
+## Sprint Tasks
 
-### Решения
+| # | Task | Status | Blockers |
+|---|------|--------|----------|
+| 1.1 | Backend migrations (`users`, `trips`, `requests`, `responses`) | DONE | - |
+| 1.2 | Backend AYAN models and controllers | DONE | - |
+| 1.3 | Frontend AYAN structure (`pages`, `composables`, `types`) | DONE | - |
+| 1.4 | Frontend create flow (`slideover`, form switching) | DONE | - |
+| 1.5 | Frontend feed, tabs, filters, empty states | DONE | - |
+| 1.6 | Frontend performance pass (`lazy`, `useLazyAsyncData`) | DONE | - |
+| 1.7 | Response flow, contact link, accept/reject | DONE | - |
+| 1.8 | Feed filters by route/date | DONE | - |
+| 1.9 | Nuxt UI color alignment | DONE | - |
+| 1.10 | Integration manual Telegram/browser verification | DONE | user-reported real-device pass green |
+| 1.11 | Legal pages + footer/access legal links | DONE | shipped in `f13f6b6` |
+| 1.12 | Legal-only commit + VPS deploy | DONE | live on `https://iindiinda.duckdns.org` |
+| 1.13 | Lifecycle status expansion for targets/responses | DONE | shipped in `a3591a0` |
+| 1.14 | QA complete E2E verification | DONE | user-reported AYAN MVP flow green |
 
-- **Ограниченная палитра `ui.theme.colors`** — убрана. Вызывала отсутствие error/success/warning цветов в Nuxt UI компонентах (FormField не мог передать `color="error"` инпуту)
-- **`pageTransition` убран** — конфликтует с `lazy: true` страницами (Suspense рендерит fragment, Transition требует один root). Overlay loader заменяет.
-- **`useLazyAsyncData`** вместо `useAsyncData` — навигация мгновенная, данные грузятся после. `await` блокировал рендер страницы.
-- **`deep: false`** для списков — нет нужды в глубокой реактивности для API-ответов, экономит proxy overhead.
-- **Дубликат `app.config.ts`** — удалён корневой `frontend/app.config.ts`, всё в `frontend/app/app.config.ts` (тот, что реально импортируется билдом)
+## Active Blockers
 
----
+- Real Telegram Mini App end-to-end verification on the rebuilt host is still pending
+- No local `php`, `composer`, or `docker` in this environment for full backend execution outside the VPS
+- RF legal closure is still blocked by unresolved personal-data localization and final operator disclosure details
 
-## Next Steps (priority order)
+## Decisions Already Taken
 
-### 1.6 Лента — фильтры по маршруту
-- [ ] Добавить UInput поиска (откуда/куда) поверх ленты
-- [ ] Фильтр по дате (сегодня/завтра/выбрать)
-- [ ] Пустой результат → EmptyState с подсказкой
+- Use `useLazyAsyncData` for AYAN pages
+- Keep app dark-only with Nuxt UI primary/neutral colors
+- Keep browser flow TMA-first for production auth behavior
+- Ship legal pack first as isolated deploy, then continue lifecycle feature work
 
-### 1.7 Отклик + контакт
-- [ ] trip/[id].vue — форма отклика (сообщение + отправка)
-- [ ] request/[id].vue — форма отклика
-- [ ] После принятия отклика → показать контакт (telegram username)
-- [ ] Статусы отклика: pending → accepted/rejected
+## Next Practical Step
 
-### 1.8 TS: cyan/gray типы
-- [ ] BackButton.vue, ErrorMessage.vue — color="cyan" → color="primary" или тип-окаст
-- [ ] ui.vue (dev page) — аналогично
+1. Run one real Telegram Mini App login pass on the rebuilt host
+2. If login is green, consider the rebuild complete and keep Coolify paused
+3. If login fails, inspect the first `/api/auth/telegram` request/response on the rebuilt host immediately while the timestamp is fresh
 
-### 1.9 Mock → Real API
-- [ ] `api.config.ts` → `USE_MOCK_API = false`
-- [ ] Проверить все composables на реальном API
-- [ ] Обработка 401, 403, 404, 500
+## Definition Of Progress For This Sprint
 
-### 1.10 QA E2E
-- [ ] Создание поездки → появляется в ленте
-- [ ] Создание запроса → появляется в ленте
-- [ ] Отклик → статус меняется → контакт доступен
-- [ ] Мои поездки/запросы → отображаются
-- [ ] Ошибки валидации на формах
-- [ ] Навигация между сервисами — нет пустого экрана
+This sprint is complete only when:
 
-- Telegram initData validation (real, не mock)
-- JWT → Sanctum
-- Единый профиль
-- i18n 完善
+- AYAN flows work against real backend on live HTTPS deployment
+- legal pages and links are committed and live in production
+- lifecycle status expansion is verified and deployed as a separate safe slice
+- `vault/` contains an exact stop point with no hidden chat-only state
 
----
+## Sprint Status
 
-## Done: Phase 0 — Foundation ✅
-
-2026-04-18 — 2026-04-19
-
-- 0.1 Очистка старого кода ✅
-- 0.2 Composables (useAuth, useUtils) ✅
-- 0.3 Components (7 шт) ✅
-- 0.4 Types & i18n ✅
-- 0.5 Layout & Pages ✅
-- 0.6 Mock APIs ✅
-- 0.7 Auth & Security ✅
-- 0.8 Error & Validation ✅
-- 0.9 Storage & Network ✅
-- 0.10 i18n & Polish ✅
+- AYAN MVP sprint can now be treated as complete for runtime/UI scope based on green live API smoke plus user-reported real-device Telegram Mini App verification
+- Remaining legal/compliance work is still important, but it is no longer blocking the AYAN MVP runtime handoff
+- AGAL remains the newest implemented service track and now has both shipped backend persistence and shipped frontend MVP UI on VPS: feed, filters, role switching, create flow, detail pages, respond flow, contact reveal, and lifecycle actions
+- Immediate next execution target is no longer deeper AGAL feature work; it is validating one real Mini App login against the otherwise-green manual baseline
+- Root `DESIGN.md` now exists as the shared redesign baseline and lint passes cleanly
+- Commit `bc7bdc4` locks redesign variant 1, commit `b22f92c` locks redesign variant 2, and the current local working tree continues variant 3 as the active chosen direction
+- Variant 3 now covers home, service landing pages, feed screens, detail pages, and create slideovers and is deployed live on the frontend runtime
+- A first-pass Coolify deployment layout now exists in source as an alternative to the current manual VPS deployment flow, but it is not trial-verified yet
+- Remaining redesign work is now lower priority than restoring VPS reachability and deciding whether this host should carry any Coolify ambition at all

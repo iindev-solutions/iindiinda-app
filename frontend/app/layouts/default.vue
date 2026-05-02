@@ -1,6 +1,6 @@
 <template>
 	<div class="tma-layout">
-		<main class="tma-main">
+		<main class="tma-main l-wrapper">
 			<slot />
 		</main>
 		<AppBottomNav />
@@ -10,9 +10,10 @@
 <style>
 .tma-layout {
 	min-height: 100dvh;
-	background: var(--bg-level-0);
+	background: transparent;
 }
+
 .tma-main {
-	padding-bottom: calc(52px + env(safe-area-inset-bottom, 0px));
+	padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
 }
 </style>

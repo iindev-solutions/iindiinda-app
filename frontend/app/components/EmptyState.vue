@@ -9,7 +9,7 @@ const defaultIcon = 'i-carbon-search'
 </script>
 
 <template>
-	<div class="empty-state">
+	<div class="app-panel app-panel--soft empty-state">
 		<div class="empty-state__icon">
 			<UIcon :name="icon || defaultIcon" />
 		</div>
@@ -25,26 +25,36 @@ const defaultIcon = 'i-carbon-search'
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	padding: 48px 24px;
+	padding: 28px 20px;
 	text-align: center;
 }
 
 .empty-state__icon {
-	font-size: 48px;
-	color: rgb(var(--color-gray-600));
-	margin-bottom: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 44px;
+	height: 44px;
+	border-radius: 14px;
+	background: rgb(94 218 198 / 0.08);
+	font-size: 24px;
+	color: rgb(var(--color-cyan-300));
+	margin-bottom: 12px;
 }
 
 .empty-state__title {
-	font-size: 16px;
+	font-size: 15px;
 	font-weight: 600;
-	color: rgb(var(--color-gray-200));
+	line-height: 1.35;
+	color: var(--text-primary);
 	margin: 0;
 }
 
 .empty-state__description {
-	font-size: 14px;
-	color: rgb(var(--color-gray-400));
+	max-width: 28ch;
+	font-size: 13px;
+	line-height: 1.6;
+	color: var(--text-secondary);
 	margin: 8px 0 0;
 }
 </style>

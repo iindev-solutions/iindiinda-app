@@ -1,0 +1,37 @@
+FROM composer:2 AS vendor
+WORKDIR /var/www/backend
+
+COPY backend/composer.json backend/composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader --no-scripts
+
+COPY backend ./
+RUN composer install --no-dev --prefer-dist --no-interaction --optimize-autoloader
+
+FROM php:8.3-fpm-alpine AS php
+WORKDIR /var/www/backend
+
+RUN apk add --no-cache icu-dev oniguruma-dev \
+    && docker-php-ext-install pdo_mysql mbstring bcmath intl opcache
+
+COPY --from=vendor /var/www/backend /var/www/backend
+COPY backend/docker/entrypoint.coolify.sh /usr/local/bin/entrypoint.coolify.sh
+
+RUN chmod +x /usr/local/bin/entrypoint.coolify.sh \
+    && mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/testing storage/framework/views storage/logs bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
+
+EXPOSE 9000
+ENTRYPOINT ["/usr/local/bin/entrypoint.coolify.sh"]
+CMD ["php-fpm", "-F"]
+
+FROM nginx:1.27-alpine AS nginx
+WORKDIR /var/www/backend
+
+COPY ops/coolify/backend.nginx.conf /etc/nginx/conf.d/default.conf
+COPY backend /var/www/backend
+
+RUN mkdir -p /var/www/backend/storage/app/public \
+    && ln -sf /var/www/backend/storage/app/public /var/www/backend/public/storage
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

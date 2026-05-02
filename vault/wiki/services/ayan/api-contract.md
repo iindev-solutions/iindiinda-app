@@ -11,7 +11,12 @@
 
 ## Authentication
 
-All endpoints require `Authorization: Bearer {token}` header (JWT from Telegram initData).
+All protected endpoints require `Authorization: Bearer {token}` header.
+
+- Login entrypoint: `POST /api/auth/telegram`
+- Backend currently issues Sanctum personal access token, not JWT
+- Production login must use signed Telegram `initData`
+- Local/testing may use `init_data = test`
 
 ---
 
@@ -160,6 +165,29 @@ List all open requests (with optional filters).
 
 ---
 
+#### GET /ayan/requests/{id}
+Get single request details.
+
+**Response:**
+```json
+{
+  success: true,
+  data: {
+    id: number,
+    passenger: { id, name, username },
+    from_address: string,
+    to_address: string,
+    date: string,
+    time: string | null,
+    description: string | null,
+    status: 'open' | 'closed',
+    created_at: string
+  }
+}
+```
+
+---
+
 #### POST /ayan/requests
 Create a new request (passenger only).
 
@@ -207,8 +235,11 @@ Get responses for a trip (owner only).
   data: [
     {
       id: number,
+      trip_id: number | null,
+      request_id: number | null,
       user: { id, name, username },
       message: string | null,
+      status: 'pending' | 'accepted' | 'rejected',
       created_at: string
     }
   ]
@@ -243,6 +274,24 @@ Respond to a request (driver).
   message: string | null
 }
 ```
+
+---
+
+#### PATCH /ayan/responses/{id}
+Update response status (owner only).
+
+**Body:**
+```json
+{
+  status: 'accepted' | 'rejected'
+}
+```
+
+**Rules:**
+- only trip owner / request owner may update
+- only pending response may be updated
+- accepting closes parent trip/request
+- accepting auto-rejects other pending responses for same target
 
 ---
 

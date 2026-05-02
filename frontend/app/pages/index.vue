@@ -1,142 +1,90 @@
 <script setup lang="ts">
 const { t } = useI18n()
-const { hapticFeedback } = useTg()
 
 const services = [
 	{
 		id: 'ayan',
-		name: 'AYAN',
+		name: t('services.ayan.name'),
 		icon: 'i-carbon-car',
-		description: t('ayan.desc'),
+		description: t('services.ayan.desc'),
 		route: '/ayan'
 	},
 	{
 		id: 'uus',
-		name: 'UUS',
+		name: t('services.uus.name'),
 		icon: 'i-carbon-tool-kit',
-		description: 'Услуги',
+		description: t('services.uus.desc'),
 		route: '/uus'
 	},
 	{
 		id: 'tal',
-		name: 'TAL',
+		name: t('services.tal.name'),
 		icon: 'i-carbon-calendar',
-		description: 'Запись',
+		description: t('services.tal.desc'),
 		route: '/tal'
 	},
 	{
 		id: 'agal',
-		name: 'AGAL',
+		name: t('services.agal.name'),
 		icon: 'i-carbon-box',
-		description: 'Посылки',
+		description: t('services.agal.desc'),
 		route: '/agal'
 	}
 ]
-
-function handleServiceClick(service: { route: string }) {
-	hapticFeedback('impact')
-	navigateTo(service.route)
-}
 </script>
 
 <template>
-	<div class="index-page">
-		<div class="index-page__header">
-			<app-title />
-			<p class="index-page__subtitle">Городские сервисы</p>
-		</div>
-
-		<div class="index-page__services">
-			<ServiceCard
-				v-for="service in services"
-				:key="service.id"
-				:service="service"
-				@click="handleServiceClick(service)"
-			/>
-		</div>
-
-		<div class="index-page__partner">
-			<div class="index-page__partner-icon">
-				<UIcon name="i-carbon-users" />
+	<div class="app-page app-page--home">
+		<section class="index-page__hero app-panel">
+			<div class="index-page__hero-body">
+				<AppTitle />
+				<p class="index-page__subtitle">{{ t('home.subtitle') }}</p>
+				<p class="app-copy app-copy--hero">{{ t('home.caption') }}</p>
 			</div>
-			<div class="index-page__partner-content">
-				<h3>Стать партнером</h3>
-				<p>Для бизнеса</p>
+		</section>
+
+		<section class="app-section-stack">
+			<ServiceCard v-for="service in services" :key="service.id" :service="service" />
+		</section>
+
+		<UCard class="index-page__legal" variant="outline">
+			<div class="space-y-4">
+				<div class="space-y-2">
+					<p class="app-kicker">{{ t('legal.badge') }}</p>
+					<h2 class="text-sm font-semibold text-cyan-50">{{ t('legal.footer.title') }}</h2>
+					<p class="app-copy">{{ t('legal.footer.description') }}</p>
+				</div>
+				<AppLegalLinks :show-intro="false" />
 			</div>
-			<UIcon name="i-carbon-chevron-right" class="index-page__partner-arrow" />
-		</div>
+		</UCard>
 	</div>
 </template>
 
 <style scoped>
-.index-page {
-	min-height: 100vh;
-	padding: 32px 16px;
-	display: flex;
-	flex-direction: column;
+.index-page__hero {
+	margin-bottom: 14px;
+	padding: 18px;
 }
 
-.index-page__header {
-	text-align: center;
-	margin-bottom: 40px;
-}
-
-.index-page__subtitle {
-	font-size: 14px;
-	color: rgb(var(--color-gray-400));
-	margin: 8px 0 0;
-}
-
-.index-page__services {
+.index-page__hero-body {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
-	flex: 1;
 }
 
-.index-page__partner {
-	display: flex;
-	align-items: center;
-	gap: 16px;
-	padding: 16px;
-	background: rgb(var(--color-gray-800));
-	border-radius: 12px;
-	border: 1px solid rgb(var(--color-gray-700));
-	margin-top: auto;
-	cursor: pointer;
-}
-
-.index-page__partner-icon {
-	width: 48px;
-	height: 48px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background: rgb(var(--color-gray-700));
-	border-radius: 12px;
-	font-size: 24px;
-	color: rgb(var(--color-gray-400));
-}
-
-.index-page__partner-content {
-	flex: 1;
-}
-
-.index-page__partner-content h3 {
+.index-page__subtitle {
 	font-size: 16px;
 	font-weight: 600;
-	color: rgb(var(--color-gray-100));
+	line-height: 1.35;
+	letter-spacing: -0.02em;
+	color: var(--text-primary);
 	margin: 0;
 }
 
-.index-page__partner-content p {
-	font-size: 14px;
-	color: rgb(var(--color-gray-500));
-	margin: 4px 0 0;
-}
-
-.index-page__partner-arrow {
-	font-size: 20px;
-	color: rgb(var(--color-gray-500));
+.index-page__legal {
+	margin-top: 14px;
+	border-radius: 20px;
+	border-color: var(--border-color);
+	background: var(--bg-level-1);
 }
 </style>

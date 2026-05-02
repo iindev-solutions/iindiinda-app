@@ -1,4 +1,5 @@
-export type AyanStatus = 'open' | 'closed'
+export type AyanStatus = 'open' | 'matched' | 'completed' | 'cancelled'
+export type AyanResponseStatus = 'pending' | 'accepted' | 'rejected'
 
 export interface AyanTripDriver {
 	id: number
@@ -46,8 +47,13 @@ export interface AyanResponseUser {
 
 export interface AyanResponse {
 	id: number
+	trip_id?: number | null
+	request_id?: number | null
+	trip?: AyanTrip | null
+	request?: AyanRequest | null
 	user: AyanResponseUser
 	message: string | null
+	status: AyanResponseStatus
 	created_at: string
 }
 
@@ -78,6 +84,12 @@ export interface AyanTripUpdate {
 	price?: number
 	comment?: string
 	status?: AyanStatus
+}
+
+export interface AyanRequestUpdate {
+	status?: AyanStatus
+	time?: string | null
+	description?: string | null
 }
 
 export interface AyanFilters {

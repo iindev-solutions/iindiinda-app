@@ -1,82 +1,90 @@
-# Master Index — iindev-vault
+# Master Index — iindiinda Vault
 
-## Project Overview
+## Overview
 
-> iindiinda — делаем сложные вещи просто.
+`vault/` is the project knowledge base and the canonical source of truth for the current state of the repository.
 
-**iind.app** — платформа из 4 сервисов, где люди решают повседневные задачи через других людей. Бесплатно для заказчиков. Платят исполнители.
+Project: `https://github.com/iindiinda/iindiinda-app`
 
-Проект: https://github.com/iindiinda/iindiinda-app
-Стек: Nuxt 4 (frontend) + Laravel (backend)
-Статус: **Phase 1 — AYAN MVP** (Foundation COMPLETE)
+Stack:
 
-### Roadmap
+- Nuxt 4 frontend
+- Laravel backend
 
-**Phase 0:** Foundation ✅ COMPLETE
-**Phase 1:** AYAN MVP 🔄 CURRENT — sprint.md
-**Phase 2:** Auth & Platform Foundation
-**Phase 3:** UUS MVP
-**Phase 4:** TAL MVP
-**Phase 5:** AGAL MVP
+Current phase: **Phase 1 — AYAN MVP**
 
-Full roadmap: vault/wiki/architecture/roadmap.md
+## Start Here
 
----
+Read these files at the start of every session:
 
-## Active Tasks
+1. `vault/master_index.md`
+2. `vault/WORKFLOW.md`
+3. `vault/sprint.md`
+4. `vault/resume-plan.md`
 
-**Sprint:** vault/sprint.md — Phase 1 AYAN MVP (9 задач)
+## English Rule
 
----
+All new content written under `vault/` must be in English.
 
-## Key Docs
+## Roadmap
 
-### Code Inventory
-- **vault/CODE_MAP.md** — инвентарь кода: composables, components, pages, API, статус реализации
+- Phase 0: Foundation
+- Phase 1: AYAN MVP
+- Phase 2: Auth & Platform Foundation
+- Phase 3: UUS MVP
+- Phase 4: TAL MVP
+- Phase 5: AGAL MVP
 
-### Wiki (vault/wiki/)
+See: `vault/wiki/architecture/roadmap.md`
 
-#### Architecture
-**Platform:**
-- vault/wiki/architecture/iind-app-vision.md — главный vision iind.app
-- vault/wiki/architecture/system-design.md — системный дизайн платформы
-- vault/wiki/architecture/roadmap.md — implementation roadmap (phases, scope)
-- vault/wiki/architecture/auth-flow.md — авторизация (TMA + OAuth)
+## Core Vault Files
 
-**Service Visions (4/4):**
-- vault/wiki/architecture/ayan-vision.md — AYAN — попутки
-- vault/wiki/architecture/uus-vision.md — UUS — услуги
-- vault/wiki/architecture/tal-vision.md — TAL — запись к мастерам
-- vault/wiki/architecture/agal-vision.md — AGAL — доставка через людей
+| File | Purpose |
+|------|---------|
+| `vault/WORKFLOW.md` | Required vault operating protocol |
+| `vault/SESSION_LEDGER.md` | Session-by-session short log |
+| `vault/sprint.md` | Current sprint state, priorities, blockers |
+| `vault/resume-plan.md` | Exact stop point, next task, and deployment handoff |
+| `vault/CODE_MAP.md` | Code inventory and key implementation notes |
+| `vault/logs/changelog.md` | Change log and verification record |
 
-**UI/UX:**
-- vault/wiki/architecture/browser-back-button.md — BackButton компонент
+## Wiki
 
-#### Services (Implementation Docs)
-**AYAN:**
-- vault/wiki/services/ayan/api-contract.md — API контракт (эндпоинты, модели, валидация)
+### Architecture
 
-### Raw (vault/raw/)
+- `vault/wiki/architecture/iind-app-vision.md`
+- `vault/wiki/architecture/system-design.md`
+- `vault/wiki/architecture/roadmap.md`
+- `vault/wiki/architecture/auth-flow.md`
+- `vault/wiki/architecture/browser-back-button.md`
+- `vault/wiki/architecture/legal-rf-audit.md`
 
-**Пустой** — отработанные спеки удалены.
-Правило: raw = черновик → wiki = финал → raw чистим.
+### Services
 
-### Logs
-- vault/logs/changelog.md — история изменений
+- `vault/wiki/services/ayan/api-contract.md`
+- `vault/wiki/services/ayan/backend-bringup.md`
+- `vault/wiki/services/agal/api-contract.md`
 
----
+## Current Branches
 
-## Active Branches
 - `main` — production
-- `dev` — разработка
-- `front/ayan` — AYAN MVP (текущий)
+- `dev` — development
+- `front/ayan` — active AYAN branch
 
-## AYAN MVP Summary
+## Current Focus
 
-**MVP:**
-1. Создать поездку (откуда, куда, когда, места, цена)
-2. Создать запрос (пассажир ищет попутку)
-3. Лента поездок/запросов с фильтром по маршруту
-4. Откликнуться → получить контакт
+AYAN MVP scope:
 
-**NO на MVP:** Карты, геокодинг, трекинг, push, рейтинги, оплата
+1. Create a trip
+2. Create a ride request
+3. Browse trips and requests with filters
+4. Respond and exchange contact details
+
+Out of scope for AYAN MVP:
+
+- maps
+- geocoding
+- tracking
+- push notifications
+- ratings
+- payments

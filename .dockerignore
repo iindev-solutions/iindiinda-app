@@ -1,0 +1,17 @@
+.git
+.gitignore
+.claude
+.kiro
+.opencode
+.tmp-designmd
+docs
+vault
+node_modules
+backend/vendor
+frontend/node_modules
+frontend/.nuxt
+frontend/.output
+frontend/dist
+frontend/.env
+backend/.env
+*.log
