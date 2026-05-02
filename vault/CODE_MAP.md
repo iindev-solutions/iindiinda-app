@@ -252,7 +252,7 @@
 |--------|---------|----------|-----------|
 | AYAN | runtime-ready on VPS: migrations + Sanctum + persistence controllers; Telegram verification still stub | pages + composables + types, real API switched on | ayanMock.ts |
 | TAL | routes only (нет контроллеров) | showcase | нет |
-| UUS | local source MVP slice: persistence controllers + response-cap rule, verified in temp VPS test DB, not deployed yet | local source real feed/create/detail slice, not deployed yet | нет |
+| UUS | runtime-ready backend on VPS: migrations + persistence controllers + response-cap rule | first real feed/create/detail slice now deployed on VPS; manual Telegram validation still pending | нет |
 | AGAL | runtime-ready backend on VPS: migrations + persistence controllers + targeted PHPUnit green | real feed/create/detail slice live on VPS; manual Telegram validation still pending | нет |
 | Auth | partial real: Sanctum token issuance + `/api/user`; Telegram verification still stub | useAuth + init.ts | mockData.ts |
 

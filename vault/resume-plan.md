@@ -1,4 +1,4 @@
-# Resume Plan - 2026-05-02 12:10
+# Resume Plan - 2026-05-02 12:55
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
 
@@ -166,12 +166,12 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Current committed branch tip is `80ec116` `ops(vps): record fresh rebuild baseline`
-- Local working tree now contains an uncommitted but source-verified UUS MVP slice:
-  - locked `vault/wiki/services/uus/api-contract.md`
-  - real backend source added for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
-  - real frontend source added for feed/create/detail/my-area under `frontend/services/uus/app/`
-  - UUS page structure now follows the mandatory wrapper + nested index pattern
+- Current committed `front/ayan` tip is `e25bb96` `feat(uus): ship first MVP slice`
+- `main` now also includes the UUS slice via merge commit `0f638eb`
+- UUS first real MVP slice is now committed, pushed, deployed, and live-smoked:
+  - real backend persistence for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
+  - real frontend feed/create/detail/my-area under `frontend/services/uus/app/`
+  - UUS page structure follows the mandatory wrapper + nested index pattern
 - Fresh VPS manual deployment baseline is restored and reachable on `https://iindiinda.duckdns.org`
 - Live route checks are green again for `/`, `/ayan`, `/agal`, `/legal`, and `/api/health`
 - Live guest auth gate is green again (`401` on protected API)
@@ -182,6 +182,7 @@
   - AGAL request flow `accepted -> cancelled`
 - Synthetic smoke records/tokens were cleaned back out of MySQL after verification
 - Fresh manual runtime baseline is now green again in real Telegram use, not only command-level smoke
+- Live UUS HTTPS/API smoke is green after deploy
 - Coolify remains paused and should stay paused while the manual baseline is now healthy again
 - Latest live AYAN runtime behavior remains green after the redesign deployment and the older `5e81817` create-form simplification still remains part of the stable baseline
 - AGAL backend persistence is shipped on VPS and the redesigned frontend slice is now live on `/agal` (feed, create, detail, respond, contact reveal, lifecycle actions)
@@ -276,16 +277,16 @@
 
 ## Next Action
 
-1. Commit the current UUS MVP source slice on `front/ayan`
-2. Push it and fast-forward the VPS repository
-3. Deploy backend + frontend to VPS
-4. Verify live UUS over HTTPS:
-   - `/uus`
-   - `/uus/task/{id}` SPA route
-   - guest `401` on protected UUS API
-   - synthetic create -> respond -> accept -> completed/cancelled flow
-5. After live UUS is green, decide whether to keep polishing UUS or start TAL
-6. Keep Coolify paused and do not reopen deployment experiments during the UUS rollout
+1. Run one real manual Telegram Mini App pass on the live UUS flow:
+   - create task
+   - respond from another account if available
+   - accept
+   - contact reveal
+   - complete/cancel
+2. If UUS manual validation is green, decide the next product target:
+   - UUS polish from real usage feedback
+   - or TAL first real MVP slice
+3. Keep Coolify paused and do not reopen deployment experiments during this service rollout phase
 
 ## API Smoke Snapshot (Live)
 
@@ -324,4 +325,4 @@ Current task: recover the production VPS enough to make a go/no-go decision on t
 
 ## One-Line Summary
 
-Fresh VPS manual baseline is green again, a first real UUS backend+frontend MVP slice now exists locally and is source-verified, and the next step is commit/push/deploy plus live UUS smoke.
+Fresh VPS manual baseline is green again, UUS first MVP slice is now live and smoke-verified on HTTPS, and the next choice is manual UUS validation plus either UUS polish or TAL start.
