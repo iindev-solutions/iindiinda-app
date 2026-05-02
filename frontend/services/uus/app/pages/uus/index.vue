@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UusResponse, UusTask } from '../../types/uus'
+import type { UusCategory, UusResponse, UusTask } from '../../types/uus'
 
 import { getAyanAccessState } from '~/utils/auth'
 
@@ -7,9 +7,12 @@ definePageMeta({ lazy: true })
 
 const { t } = useI18n()
 const { hapticFeedback, isInTelegram } = useTg()
-const { user: authUser, isAuthenticated, isLoading: authLoading, authError } = useAuth()
+const { isAuthenticated, isLoading: authLoading, authError } = useAuth()
 
+const activeTab = ref<'feed' | 'my-tasks' | 'my-responses'>('feed')
 const createOpen = ref(false)
+const filtersOpen = ref(false)
+
 const filterCategory = ref('')
 const filterLocation = ref('')
 const filterUrgency = ref('')
@@ -59,7 +62,11 @@ const {
 	immediate: canUseUus.value
 })
 
-const loading = computed(() => tasksLoading.value || myTasksLoading.value || myResponsesLoading.value)
+const tabs = computed(() => [
+	{ label: t('uus.tabs.feed'), value: 'feed', icon: 'i-lucide-list' },
+	{ label: t('uus.tabs.myTasks'), value: 'my-tasks', icon: 'i-lucide-clipboard-list' },
+	{ label: t('uus.tabs.myResponses'), value: 'my-responses', icon: 'i-lucide-message-square' }
+])
 
 const categoryOptions = computed(() => [
 	{ label: t('uus.filters.allCategories'), value: '' },
@@ -83,6 +90,36 @@ const desiredWhenOptions = computed(() => [
 	{ label: t('uus.when.flexible'), value: 'flexible' }
 ])
 
+const aboutExamples = computed(() => [
+	{
+		title: t('serviceAbout.uus.examples.cleaning.title'),
+		description: t('serviceAbout.uus.examples.cleaning.description')
+	},
+	{
+		title: t('serviceAbout.uus.examples.repair.title'),
+		description: t('serviceAbout.uus.examples.repair.description')
+	}
+])
+
+const hasFilters = computed(
+	() => !!filterCategory.value || !!filterLocation.value || !!filterUrgency.value || !!filterDesiredWhen.value
+)
+
+const activeFilterCount = computed(() => {
+	let n = 0
+	if (filterCategory.value) n++
+	if (filterLocation.value) n++
+	if (filterUrgency.value) n++
+	if (filterDesiredWhen.value) n++
+	return n
+})
+
+const loading = computed(() => {
+	if (activeTab.value === 'feed') return tasksLoading.value
+	if (activeTab.value === 'my-tasks') return myTasksLoading.value
+	return myResponsesLoading.value
+})
+
 function matchTask(task: UusTask) {
 	if (filterCategory.value && task.category !== filterCategory.value) return false
 	if (filterUrgency.value && task.urgency !== filterUrgency.value) return false
@@ -91,9 +128,23 @@ function matchTask(task: UusTask) {
 	return true
 }
 
-const filteredTasks = computed(() => (tasks.value ?? []).filter(matchTask))
-const filteredMyTasks = computed(() => (myTasks.value ?? []).filter(matchTask))
-const filteredMyResponses = computed(() => myResponses.value ?? [])
+const filteredTasks = computed(() => {
+	if (!tasks.value) return []
+	if (!hasFilters.value) return tasks.value
+	return tasks.value.filter(matchTask)
+})
+
+const filteredMyTasks = computed(() => {
+	if (!myTasks.value) return []
+	if (!hasFilters.value) return myTasks.value
+	return myTasks.value.filter(matchTask)
+})
+
+const filteredMyResponses = computed(() => {
+	if (!myResponses.value) return []
+	if (!hasFilters.value) return myResponses.value
+	return myResponses.value.filter((response) => (response.task ? matchTask(response.task) : false))
+})
 
 function formatBudget(task: UusTask | UusResponse['task']) {
 	if (!task) return '—'
@@ -105,8 +156,19 @@ function categoryLabel(category: UusTask['category']) {
 	return t(`uus.category.${category}`)
 }
 
+function categoryIcon(category: UusCategory) {
+	if (category === 'home') return 'i-lucide-house'
+	if (category === 'repair') return 'i-lucide-hammer'
+	if (category === 'delivery') return 'i-lucide-package'
+	return 'i-lucide-briefcase-business'
+}
+
 function urgencyLabel(urgency: UusTask['urgency']) {
 	return t(`uus.urgency.${urgency}`)
+}
+
+function urgencyColor(urgency: UusTask['urgency']) {
+	return urgency === 'urgent' ? 'error' : 'primary'
 }
 
 function whenLabel(task: UusTask) {
@@ -127,6 +189,23 @@ function responseStatusColor(status: UusResponse['status']) {
 	return 'neutral'
 }
 
+function clearFilters() {
+	filterCategory.value = ''
+	filterLocation.value = ''
+	filterUrgency.value = ''
+	filterDesiredWhen.value = ''
+}
+
+function handleTabChange(val: string | number) {
+	activeTab.value = val as 'feed' | 'my-tasks' | 'my-responses'
+	hapticFeedback('impact')
+}
+
+function toggleFilters() {
+	filtersOpen.value = !filtersOpen.value
+	hapticFeedback('impact')
+}
+
 function handleCreated() {
 	refreshTasks()
 	refreshMyTasks()
@@ -142,6 +221,17 @@ function openTask(id: number) {
 	hapticFeedback('impact')
 	navigateTo(`/uus/task/${id}`)
 }
+
+watch(
+	canUseUus,
+	(ready) => {
+		if (!ready) {
+			createOpen.value = false
+			filtersOpen.value = false
+		}
+	},
+	{ immediate: true }
+)
 </script>
 
 <template>
@@ -149,111 +239,303 @@ function openTask(id: number) {
 		<UusAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
 		<template v-else>
-			<section class="app-panel app-detail-hero">
-				<div class="flex items-start justify-between gap-4">
-					<div>
-						<p class="app-detail-muted">{{ t('uus.badge') }}</p>
-						<h1 class="app-detail-title">{{ t('uus.title') }}</h1>
-						<p class="app-detail-copy mt-2">{{ t('uus.intro') }}</p>
-					</div>
-					<UButton color="primary" icon="i-lucide-plus" @click="openCreate">
-						{{ t('uus.create.cta') }}
-					</UButton>
-				</div>
-			</section>
+			<AppHero
+				:eyebrow="t('servicePages.uus.badge')"
+				:title="t('servicePages.uus.title')"
+				:description="t('servicePages.uus.intro')"
+				icon="i-lucide-wrench"
+			>
+				<AppServiceAbout
+					:label="t('serviceAbout.label')"
+					:description="t('serviceAbout.uus.description')"
+					:examples-title="t('serviceAbout.examplesTitle')"
+					:examples="aboutExamples"
+				/>
+			</AppHero>
 
-			<section class="app-panel app-panel--soft app-detail-card">
-				<h2 class="app-section-title mb-4">{{ t('uus.filters.title') }}</h2>
-				<div class="grid gap-3 md:grid-cols-2">
-					<USelect v-model="filterCategory" :items="categoryOptions" size="lg" class="w-full" />
-					<UInput v-model="filterLocation" :placeholder="t('uus.filters.location')" size="lg" class="w-full" />
-					<USelect v-model="filterUrgency" :items="urgencyOptions" size="lg" class="w-full" />
-					<USelect v-model="filterDesiredWhen" :items="desiredWhenOptions" size="lg" class="w-full" />
-				</div>
-			</section>
+			<div class="app-panel app-panel--soft uus-tabs-panel">
+				<UTabs
+					:items="tabs"
+					:model-value="activeTab"
+					variant="pill"
+					size="sm"
+					class="w-full"
+					@update:model-value="handleTabChange"
+				/>
+			</div>
+
+			<div class="app-panel app-panel--soft uus-filter-panel">
+				<UButton
+					icon="i-lucide-filter"
+					size="sm"
+					variant="ghost"
+					color="neutral"
+					:trailing-icon="filtersOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+					@click="toggleFilters"
+				>
+					{{ t('uus.filters.title') }}
+					<UBadge v-if="hasFilters" color="primary" variant="subtle" size="xs" class="ml-1">
+						{{ activeFilterCount }}
+					</UBadge>
+				</UButton>
+
+				<Transition name="filter-slide">
+					<div v-if="filtersOpen" class="uus-filter-panel__body">
+						<div class="grid gap-2 sm:grid-cols-2">
+							<USelect v-model="filterCategory" :items="categoryOptions" size="sm" class="w-full" />
+							<UInput
+								v-model="filterLocation"
+								:placeholder="t('uus.filters.location')"
+								icon="i-lucide-map-pin"
+								variant="outline"
+								size="sm"
+								class="w-full"
+							/>
+							<USelect v-model="filterUrgency" :items="urgencyOptions" size="sm" class="w-full" />
+							<USelect v-model="filterDesiredWhen" :items="desiredWhenOptions" size="sm" class="w-full" />
+						</div>
+
+						<UButton
+							v-if="hasFilters"
+							size="xs"
+							variant="ghost"
+							color="neutral"
+							icon="i-lucide-x"
+							@click="clearFilters"
+						>
+							{{ t('uus.filters.clear') }}
+						</UButton>
+					</div>
+				</Transition>
+			</div>
+
+			<div class="uus-cta">
+				<UButton icon="i-lucide-plus" size="lg" variant="soft" color="primary" block @click="openCreate">
+					{{ t('uus.create.cta') }}
+				</UButton>
+			</div>
 
 			<div v-if="loading" class="flex justify-center py-12">
 				<LoadingSpinner />
 			</div>
 
-			<template v-else>
-				<section class="app-section-stack">
-					<h2 class="app-section-title">{{ t('uus.my.tasksTitle') }}</h2>
-					<EmptyState v-if="!filteredMyTasks.length" :title="t('uus.my.noTasksTitle')" :description="t('uus.my.noTasksDesc')" />
-					<button
-						v-for="task in filteredMyTasks"
-						:key="`my-task-${task.id}`"
-						type="button"
-						class="app-panel app-panel--soft app-list-card text-left"
-						@click="openTask(task.id)"
-					>
-						<div class="app-list-card__header">
-							<h3 class="app-list-card__title">{{ categoryLabel(task.category) }}</h3>
-							<UBadge :color="taskStatusColor(task.status)" variant="subtle" size="xs">
-								{{ t(`uus.status.${task.status}`) }}
-							</UBadge>
-						</div>
-						<p class="app-list-card__description">{{ task.description }}</p>
-						<div class="app-list-card__meta">
-							<span class="app-chip">{{ task.location }}</span>
-							<span class="app-chip">{{ whenLabel(task) }}</span>
-							<span class="app-chip">{{ formatBudget(task) }}</span>
-						</div>
-					</button>
-				</section>
-
-				<section class="app-section-stack">
-					<h2 class="app-section-title">{{ t('uus.my.responsesTitle') }}</h2>
-					<EmptyState v-if="!filteredMyResponses.length" :title="t('uus.my.noResponsesTitle')" :description="t('uus.my.noResponsesDesc')" />
-					<button
-						v-for="response in filteredMyResponses"
-						:key="`my-response-${response.id}`"
-						type="button"
-						class="app-panel app-panel--soft app-list-card text-left"
-						@click="openTask(response.task_id)"
-					>
-						<div class="app-list-card__header">
-							<h3 class="app-list-card__title">{{ response.task ? categoryLabel(response.task.category) : t('uus.response.title') }}</h3>
-							<UBadge :color="responseStatusColor(response.status)" variant="subtle" size="xs">
-								{{ t(`uus.respond.status.${response.status}`) }}
-							</UBadge>
-						</div>
-						<p class="app-list-card__description">{{ response.task?.description || response.message }}</p>
-						<div class="app-list-card__meta">
-							<span v-if="response.task" class="app-chip">{{ response.task.location }}</span>
-							<span v-if="response.offered_price !== null" class="app-chip">{{ formatPrice(response.offered_price, '₽') }}</span>
-						</div>
-					</button>
-				</section>
-
-				<section class="app-section-stack">
-					<h2 class="app-section-title">{{ t('uus.feed.title') }}</h2>
-					<EmptyState v-if="!filteredTasks.length" :title="t('uus.feed.emptyTitle')" :description="t('uus.feed.emptyDesc')" />
+			<template v-else-if="activeTab === 'feed'">
+				<EmptyState
+					v-if="!filteredTasks.length"
+					:title="hasFilters ? t('empty.noResults') : t('uus.feed.emptyTitle')"
+					:description="hasFilters ? t('empty.noResultsDesc') : t('uus.feed.emptyDesc')"
+				/>
+				<div v-else class="app-section-stack">
 					<button
 						v-for="task in filteredTasks"
 						:key="task.id"
 						type="button"
-						class="app-panel app-panel--soft app-list-card text-left"
+						class="app-feed-card"
 						@click="openTask(task.id)"
 					>
-						<div class="app-list-card__header">
-							<h3 class="app-list-card__title">{{ categoryLabel(task.category) }}</h3>
-							<UBadge :color="taskStatusColor(task.status)" variant="subtle" size="xs">
-								{{ urgencyLabel(task.urgency) }}
-							</UBadge>
-						</div>
-						<p class="app-list-card__description">{{ task.description }}</p>
-						<div class="app-list-card__meta">
-							<span class="app-chip">{{ task.location }}</span>
-							<span class="app-chip">{{ whenLabel(task) }}</span>
-							<span class="app-chip">{{ formatBudget(task) }}</span>
-							<span class="app-chip">{{ t('uus.responseLimit', { count: task.response_limit }) }}</span>
+						<div class="app-feed-card__row">
+							<div class="app-feed-card__main">
+								<div class="app-feed-card__route">
+									<UIcon :name="categoryIcon(task.category)" class="shrink-0 text-cyan-400" />
+									<span class="app-feed-card__route-text">{{ categoryLabel(task.category) }}</span>
+								</div>
+								<div class="mt-3 flex flex-wrap gap-2">
+									<UBadge :color="urgencyColor(task.urgency)" variant="subtle" size="xs">
+										{{ urgencyLabel(task.urgency) }}
+									</UBadge>
+									<UBadge color="primary" variant="outline" size="xs">
+										{{ t('uus.responseLimit', { count: task.response_limit }) }}
+									</UBadge>
+								</div>
+								<div class="app-feed-card__meta">
+									<span class="app-feed-card__meta-item">
+										<UIcon name="i-lucide-map-pin" class="size-3.5" />
+										{{ task.location }}
+									</span>
+									<span class="app-feed-card__meta-item">
+										<UIcon name="i-lucide-calendar" class="size-3.5" />
+										{{ whenLabel(task) }}
+									</span>
+									<span class="app-feed-card__meta-item">
+										<UIcon name="i-lucide-user" class="size-3.5" />
+										{{ task.customer.name }}
+									</span>
+								</div>
+								<div class="app-feed-card__subtext app-feed-card__subtext--bright">
+									{{ task.description }}
+								</div>
+							</div>
+							<div class="app-feed-card__price">{{ formatBudget(task) }}</div>
 						</div>
 					</button>
-				</section>
+				</div>
+			</template>
+
+			<template v-else-if="activeTab === 'my-tasks'">
+				<EmptyState
+					v-if="!filteredMyTasks.length"
+					:title="hasFilters ? t('empty.noResults') : t('uus.my.noTasksTitle')"
+					:description="hasFilters ? t('empty.noResultsDesc') : t('uus.my.noTasksDesc')"
+				/>
+				<div v-else class="app-section-stack">
+					<button
+						v-for="task in filteredMyTasks"
+						:key="`my-task-${task.id}`"
+						type="button"
+						class="app-feed-card"
+						@click="openTask(task.id)"
+					>
+						<div class="app-feed-card__row">
+							<div class="app-feed-card__main">
+								<div class="app-feed-card__route">
+									<UIcon :name="categoryIcon(task.category)" class="shrink-0 text-cyan-400" />
+									<span class="app-feed-card__route-text">{{ categoryLabel(task.category) }}</span>
+								</div>
+								<div class="mt-3 flex flex-wrap gap-2">
+									<UBadge :color="taskStatusColor(task.status)" variant="subtle" size="xs">
+										{{ t(`uus.status.${task.status}`) }}
+									</UBadge>
+									<UBadge :color="urgencyColor(task.urgency)" variant="outline" size="xs">
+										{{ urgencyLabel(task.urgency) }}
+									</UBadge>
+								</div>
+								<div class="app-feed-card__meta">
+									<span class="app-feed-card__meta-item">
+										<UIcon name="i-lucide-map-pin" class="size-3.5" />
+										{{ task.location }}
+									</span>
+									<span class="app-feed-card__meta-item">
+										<UIcon name="i-lucide-calendar" class="size-3.5" />
+										{{ whenLabel(task) }}
+									</span>
+									<span class="app-feed-card__meta-item">
+										<UIcon name="i-lucide-users" class="size-3.5" />
+										{{ t('uus.responseLimit', { count: task.response_limit }) }}
+									</span>
+								</div>
+								<div class="app-feed-card__subtext app-feed-card__subtext--bright">
+									{{ task.description }}
+								</div>
+							</div>
+							<div class="app-feed-card__price">{{ formatBudget(task) }}</div>
+						</div>
+					</button>
+				</div>
+			</template>
+
+			<template v-else>
+				<EmptyState
+					v-if="!filteredMyResponses.length"
+					:title="hasFilters ? t('empty.noResults') : t('uus.my.noResponsesTitle')"
+					:description="hasFilters ? t('empty.noResultsDesc') : t('uus.my.noResponsesDesc')"
+				/>
+				<div v-else class="app-section-stack">
+					<button
+						v-for="response in filteredMyResponses"
+						:key="`my-response-${response.id}`"
+						type="button"
+						class="app-feed-card"
+						@click="openTask(response.task_id)"
+					>
+						<div class="app-feed-card__row">
+							<div class="app-feed-card__main">
+								<div class="app-feed-card__route">
+									<UIcon
+										:name="
+											response.task
+												? categoryIcon(response.task.category)
+												: 'i-lucide-message-square'
+										"
+										class="shrink-0 text-cyan-400"
+									/>
+									<span class="app-feed-card__route-text">
+										{{
+											response.task
+												? categoryLabel(response.task.category)
+												: t('uus.response.title')
+										}}
+									</span>
+								</div>
+								<div class="mt-3 flex flex-wrap gap-2">
+									<UBadge :color="responseStatusColor(response.status)" variant="subtle" size="xs">
+										{{ t(`uus.respond.status.${response.status}`) }}
+									</UBadge>
+									<UBadge
+										v-if="response.task"
+										:color="taskStatusColor(response.task.status)"
+										variant="outline"
+										size="xs"
+									>
+										{{ t(`uus.status.${response.task.status}`) }}
+									</UBadge>
+								</div>
+								<div class="app-feed-card__meta">
+									<span v-if="response.task" class="app-feed-card__meta-item">
+										<UIcon name="i-lucide-map-pin" class="size-3.5" />
+										{{ response.task.location }}
+									</span>
+									<span v-if="response.task" class="app-feed-card__meta-item">
+										<UIcon name="i-lucide-calendar" class="size-3.5" />
+										{{ whenLabel(response.task) }}
+									</span>
+									<span v-if="response.offered_price !== null" class="app-feed-card__meta-item">
+										<UIcon name="i-lucide-badge-russian-ruble" class="size-3.5" />
+										{{ formatPrice(response.offered_price, '₽') }}
+									</span>
+								</div>
+								<div class="app-feed-card__subtext app-feed-card__subtext--bright">
+									{{ response.task?.description || response.message || t('uus.responses.noMessage') }}
+								</div>
+							</div>
+							<div class="app-feed-card__price">{{ formatBudget(response.task) }}</div>
+						</div>
+					</button>
+				</div>
 			</template>
 		</template>
 
 		<UusCreateSlideover v-model:open="createOpen" @created="handleCreated" />
 	</div>
 </template>
+
+<style scoped>
+.uus-tabs-panel,
+.uus-filter-panel {
+	padding: 14px;
+	margin-bottom: 12px;
+}
+
+.uus-filter-panel__body {
+	margin-top: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.uus-cta {
+	margin-bottom: 16px;
+}
+
+.app-feed-card__subtext--bright {
+	color: var(--text-secondary);
+}
+
+.filter-slide-enter-active,
+.filter-slide-leave-active {
+	transition: all 150ms ease-out;
+	overflow: hidden;
+}
+
+.filter-slide-enter-from,
+.filter-slide-leave-to {
+	opacity: 0;
+	max-height: 0;
+	margin-top: 0;
+}
+
+.filter-slide-enter-to,
+.filter-slide-leave-from {
+	opacity: 1;
+	max-height: 260px;
+}
+</style>

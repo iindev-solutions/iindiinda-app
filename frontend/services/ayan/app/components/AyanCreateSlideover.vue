@@ -10,7 +10,7 @@ const emit = defineEmits<{ created: [] }>()
 
 const { t } = useI18n()
 const toast = useToast()
-const { hapticFeedback, isInTelegram } = useTg()
+const { hapticFeedback } = useTg()
 const { user } = useAuth()
 const { createTrip } = useAyanTrips()
 const { createRequest } = useAyanRequests()
@@ -154,7 +154,6 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 		v-model:open="open"
 		:title="formType === 'trip' ? t('ayan.ride.create') : t('ayan.request.create')"
 		:description="formType === 'trip' ? t('ayan.ride.createDesc') : t('ayan.request.createDesc')"
-		:transition="!isInTelegram"
 		:ui="{ content: 'sm:max-w-sm mx-auto max-h-[88dvh] rounded-t-[20px] border border-gray-800 bg-[#111418]' }"
 		side="bottom"
 	>
@@ -210,7 +209,12 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 										class="w-full"
 									/>
 								</UFormField>
-								<UFormField :label="t('ayan.create.time')" name="time" :required="formType === 'trip'" eager-validation>
+								<UFormField
+									:label="t('ayan.create.time')"
+									name="time"
+									:required="formType === 'trip'"
+									eager-validation
+								>
 									<UInput
 										v-model="state.time"
 										fixed
@@ -230,8 +234,20 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 						<template v-if="formType === 'trip'">
 							<div class="create-sheet-grid">
 								<div class="grid grid-cols-2 gap-3">
-									<UFormField :label="t('ayan.ride.seatsAvailable')" name="seats" required eager-validation>
-										<UInputNumber v-model="state.seats" fixed :min="1" :max="10" size="lg" class="w-full" />
+									<UFormField
+										:label="t('ayan.ride.seatsAvailable')"
+										name="seats"
+										required
+										eager-validation
+									>
+										<UInputNumber
+											v-model="state.seats"
+											fixed
+											:min="1"
+											:max="10"
+											size="lg"
+											class="w-full"
+										/>
 									</UFormField>
 									<UFormField :label="t('ayan.ride.price')" name="price" required eager-validation>
 										<UInput

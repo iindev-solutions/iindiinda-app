@@ -9,7 +9,7 @@ const emit = defineEmits<{ created: [] }>()
 
 const { t } = useI18n()
 const toast = useToast()
-const { hapticFeedback, isInTelegram } = useTg()
+const { hapticFeedback } = useTg()
 const { user } = useAuth()
 const { createRoute } = useAgalRoutes()
 const { createRequest } = useAgalRequests()
@@ -220,7 +220,6 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 		v-model:open="open"
 		:title="createMode === 'route' ? t('agal.route.create') : t('agal.request.create')"
 		:description="createMode === 'route' ? t('agal.route.createDesc') : t('agal.request.createDesc')"
-		:transition="!isInTelegram"
 		:ui="{ content: 'sm:max-w-sm mx-auto max-h-[88dvh] rounded-t-[20px] border border-gray-800 bg-[#111418]' }"
 		side="bottom"
 	>
@@ -290,7 +289,11 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 						<template v-if="createMode === 'route'">
 							<div class="create-sheet-grid">
 								<div class="grid grid-cols-2 gap-3">
-									<UFormField :label="t('agal.route.weightMax')" name="weight_kg_max" eager-validation>
+									<UFormField
+										:label="t('agal.route.weightMax')"
+										name="weight_kg_max"
+										eager-validation
+									>
 										<UInput
 											:model-value="state.weight_kg_max"
 											fixed
@@ -381,7 +384,12 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 									</UFormField>
 								</div>
 
-								<UFormField :label="t('agal.request.contentsSummary')" name="contents_summary" required eager-validation>
+								<UFormField
+									:label="t('agal.request.contentsSummary')"
+									name="contents_summary"
+									required
+									eager-validation
+								>
 									<UTextarea
 										v-model="state.contents_summary"
 										fixed
@@ -394,11 +402,20 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 
 								<div class="grid grid-cols-2 gap-3">
 									<UFormField :label="t('agal.request.fragilityLabel')" name="fragility">
-										<USelect v-model="state.fragility" :items="fragilityOptions" size="lg" class="w-full" />
+										<USelect
+											v-model="state.fragility"
+											:items="fragilityOptions"
+											size="lg"
+											class="w-full"
+										/>
 									</UFormField>
 									<UFormField :label="t('agal.request.documentsRequired')" name="documents_required">
-										<div class="flex min-h-11 items-center justify-between rounded-xl border border-gray-800 px-3">
-											<span class="text-sm text-cyan-50">{{ t('agal.request.documentsRequiredSwitch') }}</span>
+										<div
+											class="flex min-h-11 items-center justify-between rounded-xl border border-gray-800 px-3"
+										>
+											<span class="text-sm text-cyan-50">
+												{{ t('agal.request.documentsRequiredSwitch') }}
+											</span>
 											<USwitch v-model="state.documents_required" />
 										</div>
 									</UFormField>

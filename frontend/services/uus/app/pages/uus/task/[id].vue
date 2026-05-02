@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UusResponse, UusTaskStatus } from '../../../types/uus'
+import type { UusCategory, UusResponse, UusTaskStatus } from '../../../types/uus'
 
 import { getApiErrorMessage } from '~/utils/api-error'
 import { getAyanAccessState } from '~/utils/auth'
@@ -62,8 +62,19 @@ function responseStatusColor(status: UusResponse['status']) {
 	return 'neutral'
 }
 
+function urgencyColor(urgency: 'urgent' | 'normal') {
+	return urgency === 'urgent' ? 'error' : 'primary'
+}
+
 function categoryLabel(category: string) {
 	return t(`uus.category.${category}`)
+}
+
+function categoryIcon(category: UusCategory) {
+	if (category === 'home') return 'i-lucide-house'
+	if (category === 'repair') return 'i-lucide-hammer'
+	if (category === 'delivery') return 'i-lucide-package'
+	return 'i-lucide-briefcase-business'
 }
 
 function whenLabel() {
@@ -76,6 +87,14 @@ function budgetLabel() {
 	if (!task.value) return '—'
 	if (task.value.budget === null) return t('uus.budgetNegotiable')
 	return formatPrice(task.value.budget, '₽')
+}
+
+function sanitizeIntegerInput(value: string | number) {
+	return String(value ?? '').replace(/[^\d]/g, '')
+}
+
+function handlePriceInput(value: string | number) {
+	responsePrice.value = sanitizeIntegerInput(value)
 }
 
 function parsePrice(value: string) {
@@ -113,29 +132,52 @@ async function handleRespond() {
 		responseMessage.value = ''
 		responsePrice.value = ''
 		hapticFeedback('notification')
-		toast.add({ title: t('uus.respond.successTitle'), description: t('uus.respond.successDesc'), color: 'success', icon: 'i-lucide-check-circle', duration: 3000 })
+		toast.add({
+			title: t('uus.respond.successTitle'),
+			description: t('uus.respond.successDesc'),
+			color: 'success',
+			icon: 'i-lucide-check-circle',
+			duration: 3000
+		})
 	} catch (error) {
 		hapticFeedback('impact')
-		toast.add({ title: getApiErrorMessage(error, t('common.error')), color: 'error', icon: 'i-lucide-x-circle', duration: 4000 })
+		toast.add({
+			title: getApiErrorMessage(error, t('common.error')),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
 	} finally {
 		responding.value = false
 	}
 }
 
 async function handleCancelOwnResponse() {
-		if (!myResponse.value) return
-		cancellingResponse.value = true
-		try {
-			await cancelResponse(myResponse.value.id)
-			await loadMyResponses()
-			hapticFeedback('notification')
-			toast.add({ title: t('uus.respond.cancelledTitle'), description: t('uus.respond.cancelledDesc'), color: 'success', icon: 'i-lucide-check-circle', duration: 3000 })
-		} catch (error) {
-			hapticFeedback('impact')
-			toast.add({ title: getApiErrorMessage(error, t('common.error')), color: 'error', icon: 'i-lucide-x-circle', duration: 4000 })
-		} finally {
-			cancellingResponse.value = false
-		}
+	if (!myResponse.value) return
+
+	cancellingResponse.value = true
+	try {
+		await cancelResponse(myResponse.value.id)
+		await loadMyResponses()
+		hapticFeedback('notification')
+		toast.add({
+			title: t('uus.respond.cancelledTitle'),
+			description: t('uus.respond.cancelledDesc'),
+			color: 'success',
+			icon: 'i-lucide-check-circle',
+			duration: 3000
+		})
+	} catch (error) {
+		hapticFeedback('impact')
+		toast.add({
+			title: getApiErrorMessage(error, t('common.error')),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
+	} finally {
+		cancellingResponse.value = false
+	}
 }
 
 async function handleAccept(response: UusResponse) {
@@ -146,7 +188,12 @@ async function handleAccept(response: UusResponse) {
 		await loadResponses()
 	} catch (error) {
 		hapticFeedback('impact')
-		toast.add({ title: getApiErrorMessage(error, t('common.error')), color: 'error', icon: 'i-lucide-x-circle', duration: 4000 })
+		toast.add({
+			title: getApiErrorMessage(error, t('common.error')),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
 	}
 }
 
@@ -157,7 +204,12 @@ async function handleReject(response: UusResponse) {
 		await loadResponses()
 	} catch (error) {
 		hapticFeedback('impact')
-		toast.add({ title: getApiErrorMessage(error, t('common.error')), color: 'error', icon: 'i-lucide-x-circle', duration: 4000 })
+		toast.add({
+			title: getApiErrorMessage(error, t('common.error')),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
 	}
 }
 
@@ -171,7 +223,12 @@ async function handleTaskOutcome(status: 'completed' | 'cancelled') {
 		await loadResponses()
 	} catch (error) {
 		hapticFeedback('impact')
-		toast.add({ title: getApiErrorMessage(error, t('common.error')), color: 'error', icon: 'i-lucide-x-circle', duration: 4000 })
+		toast.add({
+			title: getApiErrorMessage(error, t('common.error')),
+			color: 'error',
+			icon: 'i-lucide-x-circle',
+			duration: 4000
+		})
 	}
 }
 
@@ -217,10 +274,21 @@ watch(
 
 		<template v-else-if="task">
 			<section class="app-panel app-detail-hero">
-				<h1 class="app-detail-title">{{ categoryLabel(task.category) }}</h1>
+				<div class="flex items-start justify-between gap-4">
+					<div class="min-w-0 flex-1">
+						<p class="app-kicker">{{ t('uus.badge') }}</p>
+						<h1 class="app-detail-title mt-2">{{ categoryLabel(task.category) }}</h1>
+					</div>
+					<div class="uus-task-icon">
+						<UIcon :name="categoryIcon(task.category)" class="size-6" />
+					</div>
+				</div>
 				<div class="app-detail-meta">
 					<UBadge :color="taskStatusColor(task.status)" variant="subtle" size="xs">
 						{{ t(`uus.status.${task.status}`) }}
+					</UBadge>
+					<UBadge :color="urgencyColor(task.urgency)" variant="outline" size="xs">
+						{{ t(`uus.urgency.${task.urgency}`) }}
 					</UBadge>
 					<span class="app-chip">{{ task.location }}</span>
 					<span class="app-chip">{{ whenLabel() }}</span>
@@ -235,30 +303,62 @@ watch(
 						<span class="app-detail-value">{{ task.customer.name }}</span>
 					</div>
 					<div class="app-detail-row">
-						<span class="app-detail-label">{{ t('uus.task.urgency') }}</span>
-						<span class="app-detail-value">{{ t(`uus.urgency.${task.urgency}`) }}</span>
+						<span class="app-detail-label">{{ t('uus.create.when') }}</span>
+						<span class="app-detail-value">{{ whenLabel() }}</span>
+					</div>
+					<div class="app-detail-row">
+						<span class="app-detail-label">{{ t('uus.create.budget') }}</span>
+						<span class="app-detail-value">{{ budgetLabel() }}</span>
 					</div>
 					<div class="app-detail-row">
 						<span class="app-detail-label">{{ t('uus.task.responseLimit') }}</span>
 						<span class="app-detail-value">{{ task.response_limit }}</span>
 					</div>
+					<div class="app-detail-divider">
+						<span class="app-detail-label">{{ t('uus.create.description') }}</span>
+						<p class="app-detail-copy">{{ task.description }}</p>
+					</div>
 				</div>
-				<div class="app-detail-copy mt-4">{{ task.description }}</div>
 			</section>
 
 			<section v-if="canRespond" class="app-panel app-panel--soft app-detail-card">
-				<h2 class="app-section-title mb-3">{{ t('uus.respond.title') }}</h2>
-				<div class="grid gap-3">
-					<UTextarea v-model="responseMessage" :rows="4" :placeholder="t('uus.respond.messagePlaceholder')" />
-					<UInput v-model="responsePrice" inputmode="numeric" :placeholder="t('uus.respond.pricePlaceholder')" />
-					<UButton color="primary" :loading="responding" @click="handleRespond">
-						{{ t('uus.respond.button') }}
-					</UButton>
+				<h2 class="app-section-title">{{ t('uus.respond.title') }}</h2>
+				<div class="app-detail-stack">
+					<UTextarea
+						v-model="responseMessage"
+						fixed
+						:rows="3"
+						autoresize
+						:placeholder="t('uus.respond.messagePlaceholder')"
+						class="w-full"
+					/>
+					<UInput
+						:model-value="responsePrice"
+						fixed
+						inputmode="numeric"
+						variant="outline"
+						size="lg"
+						:placeholder="t('uus.respond.pricePlaceholder')"
+						class="w-full"
+						@update:model-value="handlePriceInput"
+					>
+						<template #trailing>
+							<span class="text-sm text-gray-500">₽</span>
+						</template>
+					</UInput>
+					<UButton
+						block
+						color="primary"
+						:loading="responding"
+						icon="i-lucide-send"
+						:label="t('uus.respond.button')"
+						@click="handleRespond"
+					/>
 				</div>
 			</section>
 
 			<section v-else-if="myResponse" class="app-panel app-panel--soft app-detail-card">
-				<div class="flex items-start justify-between gap-3">
+				<div class="flex items-center justify-between gap-3">
 					<div>
 						<h2 class="app-section-title mb-1">{{ t('uus.myResponse.title') }}</h2>
 						<p class="app-detail-muted">{{ t('uus.myResponse.desc') }}</p>
@@ -267,14 +367,29 @@ watch(
 						{{ t(`uus.respond.status.${myResponse.status}`) }}
 					</UBadge>
 				</div>
-				<div v-if="myResponse.message" class="app-detail-copy mt-3">{{ myResponse.message }}</div>
-				<div v-if="myResponse.offered_price !== null" class="app-detail-copy mt-2">{{ formatPrice(myResponse.offered_price, '₽') }}</div>
-				<div v-if="myResponse.status === 'accepted' && task.customer.username" class="mt-3">
-					<a :href="`https://t.me/${task.customer.username.replace('@', '')}`" target="_blank" class="app-inline-link">
+				<div v-if="myResponse.message" class="app-detail-copy">{{ myResponse.message }}</div>
+				<div v-if="myResponse.offered_price !== null" class="app-detail-copy">
+					{{ formatPrice(myResponse.offered_price, '₽') }}
+				</div>
+				<div v-if="myResponse.status === 'accepted' && task.customer.username">
+					<a
+						:href="`https://t.me/${task.customer.username.replace('@', '')}`"
+						target="_blank"
+						class="app-inline-link"
+					>
+						<UIcon name="i-lucide-send" class="size-4" />
 						{{ task.customer.username }}
 					</a>
 				</div>
-				<UButton v-if="myResponse.status === 'pending'" class="mt-4" color="neutral" variant="outline" :loading="cancellingResponse" @click="handleCancelOwnResponse">
+				<UButton
+					v-if="myResponse.status === 'pending'"
+					class="mt-4"
+					color="neutral"
+					variant="outline"
+					block
+					:loading="cancellingResponse"
+					@click="handleCancelOwnResponse"
+				>
 					{{ t('uus.respond.cancelOwn') }}
 				</UButton>
 			</section>
@@ -290,42 +405,93 @@ watch(
 					</UBadge>
 				</div>
 
-				<EmptyState v-if="!responses.length" :title="t('uus.responses.emptyTitle')" :description="t('uus.responses.emptyDesc')" />
+				<EmptyState
+					v-if="!responses.length"
+					:title="t('uus.responses.emptyTitle')"
+					:description="t('uus.responses.emptyDesc')"
+				/>
 
-				<div v-for="response in responses" :key="response.id" class="app-panel app-panel--soft mt-4">
-					<div class="flex items-start justify-between gap-3">
-						<div>
-							<p class="font-medium text-white">{{ response.user.name }}</p>
-							<p class="app-detail-muted">{{ response.message || t('uus.responses.noMessage') }}</p>
+				<div v-else class="app-detail-stack mt-4">
+					<div
+						v-for="response in responses"
+						:key="response.id"
+						class="app-panel app-panel--soft app-detail-card app-detail-card--compact"
+					>
+						<div class="flex items-start justify-between gap-3">
+							<div class="min-w-0 flex-1">
+								<div class="flex flex-wrap items-center gap-2">
+									<span class="app-detail-value !text-left">{{ response.user.name }}</span>
+									<UBadge :color="responseStatusColor(response.status)" variant="subtle" size="xs">
+										{{ t(`uus.respond.status.${response.status}`) }}
+									</UBadge>
+									<span v-if="response.offered_price !== null" class="app-chip">
+										{{ formatPrice(response.offered_price, '₽') }}
+									</span>
+								</div>
+								<div class="app-detail-muted mt-2">
+									{{ response.message || t('uus.responses.noMessage') }}
+								</div>
+								<div v-if="response.status === 'accepted' && response.user.username" class="mt-3">
+									<a
+										:href="`https://t.me/${response.user.username.replace('@', '')}`"
+										target="_blank"
+										class="app-inline-link"
+									>
+										<UIcon name="i-lucide-send" class="size-3" />
+										{{ response.user.username }}
+									</a>
+								</div>
+							</div>
 						</div>
-						<UBadge :color="responseStatusColor(response.status)" variant="subtle" size="xs">
-							{{ t(`uus.respond.status.${response.status}`) }}
-						</UBadge>
-					</div>
-					<div v-if="response.offered_price !== null" class="app-detail-copy mt-3">{{ formatPrice(response.offered_price, '₽') }}</div>
-					<div v-if="response.status === 'pending' && task.status === 'open'" class="mt-4 flex flex-wrap gap-3">
-						<UButton color="primary" @click="handleAccept(response)">{{ t('uus.responses.accept') }}</UButton>
-						<UButton color="neutral" variant="outline" @click="handleReject(response)">{{ t('uus.responses.reject') }}</UButton>
-					</div>
-					<div v-if="response.status === 'accepted' && response.user.username" class="mt-3">
-						<a :href="`https://t.me/${response.user.username.replace('@', '')}`" target="_blank" class="app-inline-link">
-							{{ response.user.username }}
-						</a>
+						<div
+							v-if="response.status === 'pending' && task.status === 'open'"
+							class="mt-4 grid grid-cols-2 gap-2"
+						>
+							<UButton color="success" variant="soft" @click="handleAccept(response)">
+								{{ t('uus.responses.accept') }}
+							</UButton>
+							<UButton color="error" variant="soft" @click="handleReject(response)">
+								{{ t('uus.responses.reject') }}
+							</UButton>
+						</div>
 					</div>
 				</div>
 			</section>
 
 			<section v-if="isOwner && task.status === 'matched'" class="app-panel app-panel--soft app-detail-card">
 				<h2 class="app-section-title mb-3">{{ t('uus.task.outcomeTitle') }}</h2>
-				<div class="flex flex-wrap gap-3">
-					<UButton color="primary" @click="handleTaskOutcome('completed')">{{ t('uus.task.complete') }}</UButton>
-					<UButton color="neutral" variant="outline" @click="handleTaskOutcome('cancelled')">{{ t('uus.task.cancel') }}</UButton>
+				<div class="grid grid-cols-2 gap-2">
+					<UButton color="success" variant="soft" @click="handleTaskOutcome('completed')">
+						{{ t('uus.task.complete') }}
+					</UButton>
+					<UButton color="error" variant="soft" @click="handleTaskOutcome('cancelled')">
+						{{ t('uus.task.cancel') }}
+					</UButton>
 				</div>
 			</section>
 
 			<section v-else-if="isOwner && task.status === 'open'" class="app-panel app-panel--soft app-detail-card">
-				<UButton color="neutral" variant="outline" @click="handleTaskOutcome('cancelled')">{{ t('uus.task.cancel') }}</UButton>
+				<UButton block color="neutral" variant="outline" @click="handleTaskOutcome('cancelled')">
+					{{ t('uus.task.cancel') }}
+				</UButton>
 			</section>
 		</template>
+
+		<EmptyState v-else :title="t('common.error')" />
 	</div>
 </template>
+
+<style scoped>
+.uus-task-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 46px;
+	height: 46px;
+	border-radius: 16px;
+	border: 1px solid rgb(94 218 198 / 0.16);
+	background: rgb(94 218 198 / 0.1);
+	color: rgb(var(--color-cyan-300));
+	flex-shrink: 0;
+}
+</style>

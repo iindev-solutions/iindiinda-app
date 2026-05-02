@@ -7,7 +7,7 @@ const emit = defineEmits<{ created: [] }>()
 
 const { t } = useI18n()
 const toast = useToast()
-const { hapticFeedback, isInTelegram } = useTg()
+const { hapticFeedback } = useTg()
 const { createTask } = useUusTasks()
 
 const open = defineModel<boolean>('open', { default: false })
@@ -25,6 +25,7 @@ const state = reactive({
 
 const submitting = ref(false)
 const todayDate = computed(() => today(getLocalTimeZone()).toString())
+const responseLimitPreview = computed(() => (state.urgency === 'urgent' ? 3 : 5))
 
 const categoryOptions = computed(() => [
 	{ label: t('uus.category.home'), value: 'home' as const },
@@ -131,7 +132,6 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 		v-model:open="open"
 		:title="t('uus.create.title')"
 		:description="t('uus.create.desc')"
-		:transition="!isInTelegram"
 		:ui="{ content: 'sm:max-w-sm mx-auto max-h-[88dvh] rounded-t-[20px] border border-gray-800 bg-[#111418]' }"
 		side="bottom"
 	>
@@ -144,44 +144,96 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 								<USelect v-model="state.category" :items="categoryOptions" size="lg" class="w-full" />
 							</UFormField>
 
-							<UFormField :label="t('uus.create.description')" name="description" required eager-validation>
+							<UFormField
+								:label="t('uus.create.description')"
+								name="description"
+								required
+								eager-validation
+							>
 								<UTextarea
 									v-model="state.description"
+									fixed
 									:rows="4"
+									autoresize
 									:placeholder="t('uus.create.descriptionPlaceholder')"
-									size="lg"
 									class="w-full"
 								/>
 							</UFormField>
 
 							<UFormField :label="t('uus.create.location')" name="location" required eager-validation>
-								<UInput v-model="state.location" fixed :placeholder="t('uus.create.locationPlaceholder')" size="lg" class="w-full" />
+								<UInput
+									v-model="state.location"
+									fixed
+									icon="i-lucide-map-pin"
+									variant="outline"
+									size="lg"
+									:placeholder="t('uus.create.locationPlaceholder')"
+									class="w-full"
+								/>
+							</UFormField>
+						</div>
+					</div>
+
+					<div class="app-panel app-panel--soft app-form-card">
+						<div class="create-sheet-grid">
+							<UFormField :label="t('uus.create.when')" name="desired_when" required eager-validation>
+								<USelect
+									v-model="state.desired_when"
+									:items="desiredWhenOptions"
+									size="lg"
+									class="w-full"
+								/>
 							</UFormField>
 
-							<div class="grid grid-cols-2 gap-3">
-								<UFormField :label="t('uus.create.when')" name="desired_when" required eager-validation>
-									<USelect v-model="state.desired_when" :items="desiredWhenOptions" size="lg" class="w-full" />
-								</UFormField>
-
-								<UFormField v-if="state.desired_when === 'date'" :label="t('uus.create.date')" name="date" required eager-validation>
-									<UInput v-model="state.date" fixed type="date" :min="todayDate" size="lg" class="w-full" />
-								</UFormField>
-							</div>
+							<UFormField
+								v-if="state.desired_when === 'date'"
+								:label="t('uus.create.date')"
+								name="date"
+								required
+								eager-validation
+							>
+								<UInput
+									v-model="state.date"
+									fixed
+									type="date"
+									:min="todayDate"
+									icon="i-lucide-calendar"
+									variant="outline"
+									size="lg"
+									class="w-full"
+								/>
+							</UFormField>
 
 							<div class="grid grid-cols-2 gap-3">
 								<UFormField :label="t('uus.create.budget')" name="budget">
 									<UInput
 										:model-value="state.budget"
+										fixed
 										inputmode="numeric"
-										:placeholder="t('uus.create.budgetPlaceholder')"
+										variant="outline"
 										size="lg"
+										:placeholder="t('uus.create.budgetPlaceholder')"
 										class="w-full"
 										@update:model-value="state.budget = sanitizeIntegerInput($event)"
-									/>
+									>
+										<template #trailing>
+											<span class="text-sm text-gray-500">₽</span>
+										</template>
+									</UInput>
 								</UFormField>
 
-								<UFormField :label="t('uus.create.budgetType')" name="budget_type" required eager-validation>
-									<USelect v-model="state.budget_type" :items="budgetTypeOptions" size="lg" class="w-full" />
+								<UFormField
+									:label="t('uus.create.budgetType')"
+									name="budget_type"
+									required
+									eager-validation
+								>
+									<USelect
+										v-model="state.budget_type"
+										:items="budgetTypeOptions"
+										size="lg"
+										class="w-full"
+									/>
 								</UFormField>
 							</div>
 
@@ -191,11 +243,21 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 						</div>
 					</div>
 
-					<div class="mt-4 grid gap-3">
-						<UButton type="submit" size="lg" color="primary" block :loading="submitting">
-							{{ t('uus.create.submit') }}
-						</UButton>
+					<div class="app-panel app-panel--soft app-form-card create-sheet-summary">
+						<div>
+							<p class="app-section-title mb-2">{{ t('uus.task.responseLimit') }}</p>
+							<p class="create-sheet-summary__value">
+								{{ t('uus.responseLimit', { count: responseLimitPreview }) }}
+							</p>
+						</div>
+						<UBadge :color="state.urgency === 'urgent' ? 'error' : 'primary'" variant="subtle" size="sm">
+							{{ t(`uus.urgency.${state.urgency}`) }}
+						</UBadge>
 					</div>
+
+					<UButton type="submit" block size="xl" color="primary" :loading="submitting">
+						{{ t('uus.create.submit') }}
+					</UButton>
 				</UForm>
 			</div>
 		</template>
@@ -204,11 +266,29 @@ async function onSubmit(_event: FormSubmitEvent<typeof state>) {
 
 <style scoped>
 .create-sheet-body {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 	padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 8px);
 }
 
 .create-sheet-grid {
-	display: grid;
-	gap: 16px;
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.create-sheet-summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.create-sheet-summary__value {
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 1.45;
+	color: var(--text-primary);
 }
 </style>

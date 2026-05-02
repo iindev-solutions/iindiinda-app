@@ -873,12 +873,18 @@
 			"normal": "Обычная",
 			"urgent": "Срочно"
 		},
+		"tabs": {
+			"feed": "Открытые",
+			"myTasks": "Мои задачи",
+			"myResponses": "Отклики"
+		},
 		"filters": {
 			"title": "Фильтры",
 			"allCategories": "Все категории",
 			"allUrgency": "Любая срочность",
 			"allWhen": "Любое время",
-			"location": "Район или улица"
+			"location": "Район или улица",
+			"clear": "Сбросить"
 		},
 		"my": {
 			"tasksTitle": "Мои задачи",
