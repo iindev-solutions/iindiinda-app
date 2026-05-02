@@ -816,5 +816,130 @@
 				}
 			]
 		}
+	},
+	"uus": {
+		"badge": "УСЛУГИ",
+		"title": "Уус",
+		"intro": "Создайте задачу, дождитесь откликов и выберите исполнителя напрямую.",
+		"create": {
+			"cta": "Создать задачу",
+			"title": "Новая задача",
+			"desc": "Опишите, что нужно сделать, где и когда",
+			"category": "Категория",
+			"description": "Что нужно сделать",
+			"descriptionPlaceholder": "Например: нужно собрать шкаф сегодня вечером",
+			"location": "Где",
+			"locationPlaceholder": "Район, улица или ориентир",
+			"when": "Когда нужно",
+			"date": "Дата",
+			"budget": "Бюджет",
+			"budgetPlaceholder": "Например 2000",
+			"budgetType": "Тип бюджета",
+			"urgency": "Срочность",
+			"submit": "Опубликовать задачу",
+			"successTitle": "Задача создана",
+			"successDesc": "Теперь исполнители смогут откликнуться",
+			"error": "Не удалось создать задачу. Попробуйте ещё раз"
+		},
+		"validation": {
+			"required": "Заполните поле",
+			"dateFuture": "Дата должна быть сегодня или позже"
+		},
+		"access": {
+			"loadingTitle": "Проверяем вход через Telegram",
+			"loadingDesc": "Подождите немного, мы открываем UUS и загружаем ваши данные.",
+			"telegramOnlyTitle": "Откройте UUS из Telegram",
+			"telegramOnlyDesc": "Полноценный вход сейчас работает через Telegram Mini App.",
+			"authFailedTitle": "Не удалось войти",
+			"authFailedDesc": "Авторизация Telegram не завершилась. Откройте Mini App снова из бота."
+		},
+		"category": {
+			"home": "Дом",
+			"repair": "Ремонт",
+			"delivery": "Доставка",
+			"other": "Другое"
+		},
+		"when": {
+			"today": "Сегодня",
+			"tomorrow": "Завтра",
+			"date": "В конкретную дату",
+			"flexible": "Можно позже"
+		},
+		"budgetType": {
+			"fixed": "Фиксированный",
+			"negotiable": "Договорная"
+		},
+		"urgency": {
+			"normal": "Обычная",
+			"urgent": "Срочно"
+		},
+		"filters": {
+			"title": "Фильтры",
+			"allCategories": "Все категории",
+			"allUrgency": "Любая срочность",
+			"allWhen": "Любое время",
+			"location": "Район или улица"
+		},
+		"my": {
+			"tasksTitle": "Мои задачи",
+			"noTasksTitle": "Пока нет задач",
+			"noTasksDesc": "Создайте первую задачу — она появится здесь.",
+			"responsesTitle": "Мои отклики",
+			"noResponsesTitle": "Пока нет откликов",
+			"noResponsesDesc": "Откликнитесь на задачу — она появится здесь."
+		},
+		"feed": {
+			"title": "Открытые задачи",
+			"emptyTitle": "Пока нет задач",
+			"emptyDesc": "Попробуйте убрать фильтры или зайдите позже."
+		},
+		"status": {
+			"open": "Открыта",
+			"matched": "Договорились",
+			"completed": "Завершена",
+			"cancelled": "Отменена"
+		},
+		"responseLimit": "{count} откликов максимум",
+		"budgetNegotiable": "Договорная",
+		"task": {
+			"customer": "Заказчик",
+			"urgency": "Срочность",
+			"responseLimit": "Лимит откликов",
+			"outcomeTitle": "Чем всё закончилось?",
+			"complete": "Отметить как выполнено",
+			"cancel": "Отменить задачу"
+		},
+		"respond": {
+			"title": "Откликнуться",
+			"messagePlaceholder": "Напишите коротко, когда сможете помочь",
+			"pricePlaceholder": "Ваша цена, если нужна",
+			"button": "Отправить отклик",
+			"successTitle": "Отклик отправлен",
+			"successDesc": "Заказчик увидит ваш отклик",
+			"cancelOwn": "Удалить отклик",
+			"cancelledTitle": "Отклик удалён",
+			"cancelledDesc": "Вы можете откликнуться на другие задачи",
+			"status": {
+				"pending": "Ждёт решения",
+				"accepted": "Принят",
+				"rejected": "Отклонён"
+			}
+		},
+		"myResponse": {
+			"title": "Ваш отклик",
+			"desc": "Статус вашего отклика на эту задачу"
+		},
+		"responses": {
+			"title": "Отклики",
+			"desc": "Выберите исполнителя и после этого свяжитесь напрямую.",
+			"emptyTitle": "Пока никто не откликнулся",
+			"emptyDesc": "Когда появятся отклики, они будут показаны здесь.",
+			"noMessage": "Без сообщения",
+			"accept": "Выбрать",
+			"reject": "Отклонить"
+		},
+		"response": {
+			"title": "Отклик"
+		}
 	}
 }

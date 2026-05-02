@@ -385,5 +385,130 @@
 				}
 			]
 		}
+	},
+	"uus": {
+		"badge": "УСЛУГИ",
+		"title": "Уус",
+		"intro": "Сорудаҕы оҥор, хоруйдары күүт уонна толорор киһини талы.",
+		"create": {
+			"cta": "Сорудаҕы оҥор",
+			"title": "Саҥа сорудах",
+			"desc": "Туох буоларын, ханна уонна хаһан кирэҕин суруй",
+			"category": "Категория",
+			"description": "Туох оҥоһуллуохтаах",
+			"descriptionPlaceholder": "Холобур: бүгүн эһиэхэ шкаф холбоон биэрэри",
+			"location": "Ханна",
+			"locationPlaceholder": "Оройуон, уулусса эбэтэр бэлиэтээһин",
+			"when": "Хаһан наада",
+			"date": "Күнэ",
+			"budget": "Бюджет",
+			"budgetPlaceholder": "Холобур 2000",
+			"budgetType": "Бюджет көрүҥэ",
+			"urgency": "Түргэннээх",
+			"submit": "Сорудаҕы таһаар",
+			"successTitle": "Сорудах оҥоһулунна",
+			"successDesc": "Билигин толорор дьон хоруйдуохтарын сөп",
+			"error": "Сорудаҕы оҥорор сатаммата. Өссө хатылаа"
+		},
+		"validation": {
+			"required": "Хамсаны толор",
+			"dateFuture": "Күн бүгүн эбэтэр кэнники буолуохтаах"
+		},
+		"access": {
+			"loadingTitle": "Telegram киириитин көрөбүт",
+			"loadingDesc": "Кыратык күтө туруй, UUS арыйыллар уонна дааннайдар киллэриллэр.",
+			"telegramOnlyTitle": "UUS-у Telegram-тан арый",
+			"telegramOnlyDesc": "Төппүт киирии билигин Telegram Mini App нөҥүө үлэлиир.",
+			"authFailedTitle": "Киирии сатаммата",
+			"authFailedDesc": "Telegram авторизация түмүктэнбэтэ. Mini App-ы боттан хат арый."
+		},
+		"category": {
+			"home": "Дьиэ",
+			"repair": "Өҥөлөөһүн",
+			"delivery": "Тиэрдии",
+			"other": "Атын"
+		},
+		"when": {
+			"today": "Бүгүн",
+			"tomorrow": "Сарсын",
+			"date": "Биллибэт күнгэ",
+			"flexible": "Кэнники сөп"
+		},
+		"budgetType": {
+			"fixed": "Бэкиппит",
+			"negotiable": "Кэпсэтиллэр"
+		},
+		"urgency": {
+			"normal": "Куруук",
+			"urgent": "Түргэн"
+		},
+		"filters": {
+			"title": "Талба",
+			"allCategories": "Бары категориялар",
+			"allUrgency": "Ханнык баҕар түргэн",
+			"allWhen": "Ханнык баҕар кэм",
+			"location": "Оройуон эбэтэр уулусса"
+		},
+		"my": {
+			"tasksTitle": "Мин сорудахтарым",
+			"noTasksTitle": "Сорудах суох",
+			"noTasksDesc": "Бастакы сорудаххыны оҥор — манна көстүөҕэ.",
+			"responsesTitle": "Мин хоруйдарым",
+			"noResponsesTitle": "Хоруй суох",
+			"noResponsesDesc": "Сорудахха хоруйдаа — манна көстүөҕэ."
+		},
+		"feed": {
+			"title": "Арыллыбыт сорудахтар",
+			"emptyTitle": "Сорудах суох",
+			"emptyDesc": "Талбаны сот эбэтэр кэнники киир."
+		},
+		"status": {
+			"open": "Арыллыбыт",
+			"matched": "Кэпсэтиллибит",
+			"completed": "Түмүктэммит",
+			"cancelled": "Салҕаммат"
+		},
+		"responseLimit": "Максимум {count} хоруй",
+		"budgetNegotiable": "Кэпсэтиллэр",
+		"task": {
+			"customer": "Заказчик",
+			"urgency": "Түргэн",
+			"responseLimit": "Хоруй лимита",
+			"outcomeTitle": "Түмүгү туох буолла?",
+			"complete": "Толоруллубут диэн биллэр",
+			"cancel": "Сорудаҕы тохтот"
+		},
+		"respond": {
+			"title": "Хоруйдаа",
+			"messagePlaceholder": "Киминиҥ көмөлөһүөҕүн кыратык суруй",
+			"pricePlaceholder": "Баһаҕын суруй",
+			"button": "Хоруйу ыыт",
+			"successTitle": "Хоруй ыытылынна",
+			"successDesc": "Заказчик эйигин хоруйгун көрүө",
+			"cancelOwn": "Хоруйу сот",
+			"cancelledTitle": "Хоруй сотулунна",
+			"cancelledDesc": "Атын сорудахтарга хоруйдуоххун сөп",
+			"status": {
+				"pending": "Күүтэр",
+				"accepted": "Ылыныллыбыт",
+				"rejected": "Ытыллыбыт"
+			}
+		},
+		"myResponse": {
+			"title": "Эн хоруйгун",
+			"desc": "Бу сорудахха эн хоруйгун туругун"
+		},
+		"responses": {
+			"title": "Хоруйдар",
+			"desc": "Толорор киһини талы уонна онтон тіккэ холбоһ.",
+			"emptyTitle": "Кими да хоруйдаабата",
+			"emptyDesc": "Хоруйдар баар буоллахтарына манна көстүөхтэр.",
+			"noMessage": "Сурук суох",
+			"accept": "Тал",
+			"reject": "Ытаар"
+		},
+		"response": {
+			"title": "Хоруй"
+		}
 	}
 }

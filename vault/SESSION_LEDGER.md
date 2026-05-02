@@ -455,3 +455,11 @@
 - Verified: `ssh iind-vps`; `systemctl is-active nginx php8.3-fpm mysql`; `php artisan migrate --force`; `php artisan route:list --path=api`; live `301` HTTP -> HTTPS; live `200` for `/`, `/ayan`, `/agal`, `/legal`, `/api/health`; guest protected API `401`; root HTML contains `apiBase:"/api"`; missing `/assets/*` returns `404`; AYAN + AGAL smoke lifecycle flows green; invalid `/api/auth/telegram` payload now returns `422 Telegram user data is invalid.`; bot API `getMe` resolves to `@iind_app_bot`; default menu button is `web_app` -> `https://iindiinda.duckdns.org/`
 - Blockers: only one fresh real Telegram Mini App login retest is still missing on the rebuilt host
 - Next: open the Mini App now, confirm login succeeds, and only inspect `/api/auth/telegram` immediately if that real retest fails
+
+## 2026-05-02 11:10 — UUS First Real Source Slice
+
+- Scope: start the next service track by moving UUS beyond concept/placeholder state into the first real MVP implementation slice in source
+- Changes: added `vault/wiki/services/uus/api-contract.md`; rewrote `frontend/services/uus/README.md`; converted `frontend/services/uus/app/pages/uus.vue` into the required wrapper-only parent route; added `frontend/services/uus/app/pages/uus/index.vue`, `frontend/services/uus/app/pages/uus/task/[id].vue`, `frontend/services/uus/app/components/UusAccessState.vue`, `frontend/services/uus/app/components/UusCreateSlideover.vue`, `frontend/services/uus/app/types/uus.ts`, `frontend/services/uus/app/composables/useUusTasks.ts`, `frontend/services/uus/app/composables/useUusResponses.ts`, `frontend/services/uus/app/composables/useUusMy.ts`; added real backend UUS migrations/models/controllers/serializer/tests; replaced UUS route closures in `backend/routes/api.php`; added RU+SAH runtime copy for the new UUS flow
+- Verified: `frontend npm run typecheck`; `frontend npm run build:static`; VPS PHP lint across all changed UUS backend files; isolated VPS temp backend copy with dev deps + separate MySQL test DB -> `./vendor/bin/phpunit tests/Feature/UusPersistenceTest.php` (`3 tests, 40 assertions`)
+- Blockers: this UUS slice is still local/source-only and not deployed live yet
+- Next: commit/push/deploy the UUS slice, then run live HTTPS + Telegram verification for create/respond/accept/finalize
