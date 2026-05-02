@@ -1,193 +1,60 @@
-# IIND.TAL - Booking Service
+# TAL service layer
 
-**TAL** (from Sakha "Tal" - choose/select) is an online appointment booking system for beauty salons, barbers, and medical services with visual time-slot calendar.
+TAL is the lightweight booking surface inside iind.app.
 
-## Features
+## Product shape
 
-- Service selection with pricing
-- Master/specialist selection with ratings
-- Visual calendar with available time slots
-- Booking confirmation flow
-- Real-time availability updates
+First real MVP slice focuses on:
 
-## Architecture
+1. master publishes an availability card
+2. client browses the feed
+3. client sends a booking request
+4. master accepts or rejects
+5. Telegram contact is revealed after acceptance
 
-### State Management
+This slice does **not** implement:
 
-State is managed using native `useState` composables in `useTalStore.ts`:
+- medical or clinic flows
+- automatic slot reservation
+- calendar/time-slot engine
+- ratings/reviews
+- public fallback requests yet
 
-```typescript
-interface TalState {
-	selectedService: Service | null
-	selectedMaster: Master | null
-	selectedDate: string | null
-	selectedTimeSlot: TimeSlot | null
-	availableSlots: TimeSlot[]
-	masters: Master[]
-	services: Service[]
-	currentBooking: Booking | null
-	isLoading: boolean
-}
-```
+## Current source routes
 
-### API Endpoints
+- `/tal` — TAL feed, filters, role helper, create CTA, my-area tabs
+- `/tal/master/[id]` — TAL master detail, booking form, owner-side bookings, final actions
+- `/tal-showcase` — old visual sandbox, no longer the main TAL runtime path
 
-All API calls use the `useAPI` wrapper from `app/composables/useAPI.ts` to ensure Telegram InitData headers are attached.
+## Frontend files
 
-#### 1. Fetch Services
+- `app/pages/tal.vue` — wrapper-only parent route
+- `app/pages/tal/index.vue` — live TAL entry/feed page
+- `app/pages/tal/master/[id].vue` — TAL detail page
+- `app/components/TalAccessState.vue` — Telegram/auth access states
+- `app/components/TalRoleSwitch.vue` — TAL helper to enter/leave master mode
+- `app/components/TalCreateSlideover.vue` — create availability card form
+- `app/types/tal.ts` — TAL DTOs and enums
+- `app/composables/useTalMasters.ts` — feed/detail/create/update API layer
+- `app/composables/useTalBookings.ts` — booking list/create/update/delete API layer
+- `app/composables/useTalMy.ts` — my TAL cards and bookings API layer
 
-```typescript
-GET /api/tal/services
+## Backend/API
 
-Response: Service[]
-{
-  id: string
-  name: string
-  duration: number  // minutes
-  price: number     // rubles
-}
-```
+Canonical contract:
 
-#### 2. Fetch Masters
+- `vault/wiki/services/tal/api-contract.md`
 
-```typescript
-GET /api/tal/masters?serviceId={serviceId}
+First persisted slice uses:
 
-Response: Master[]
-{
-  id: string
-  name: string
-  avatar?: string
-  specialization: string
-  rating: number
-  reviewCount: number
-}
-```
+- `GET/POST /api/tal/masters`
+- `GET/PATCH /api/tal/masters/{id}`
+- `GET/POST /api/tal/masters/{id}/bookings`
+- `PATCH/DELETE /api/tal/bookings/{id}`
+- `GET /api/tal/my/masters`
+- `GET /api/tal/my/bookings`
 
-#### 3. Fetch Available Slots
+## Deployment status
 
-```typescript
-GET /api/tal/slots?masterId={masterId}&date={YYYY-MM-DD}
-
-Response: TimeSlot[]
-{
-  id: string
-  time: string      // HH:MM format
-  date: string      // YYYY-MM-DD
-  available: boolean
-}
-```
-
-#### 4. Create Booking
-
-```typescript
-POST /api/tal/bookings
-
-Request Body:
-{
-  serviceId: string
-  masterId: string
-  timeSlotId: string
-  date: string      // YYYY-MM-DD
-}
-
-Response: Booking
-{
-  serviceId: string
-  masterId: string
-  timeSlotId: string
-  date: string
-  time: string
-  status: 'pending' | 'confirmed' | 'cancelled'
-}
-```
-
-#### 5. Cancel Booking
-
-```typescript
-DELETE /api/tal/bookings/{bookingId}
-
-Response: void
-```
-
-## Design System
-
-All components use CSS variables from `app/assets/css/main.css`:
-
-- Primary accent: `--color-cyan-500` (#5edac6)
-- Background: `--color-background` (#0a0c0e)
-- Surface: `--color-surface` (#0f1113)
-- Text: `--color-cyan-50` (#eff3f5)
-- Borders: `--color-cyan-800`, `--color-cyan-900`
-
-## Pages
-
-### `/tal-showcase`
-
-Visual showcase demonstrating all booking flow states:
-
-1. Service selection
-2. Master selection
-3. Date & time slot selection
-4. Booking confirmation
-
-## Usage Example
-
-```vue
-<script setup lang="ts">
-import { useTalStore } from '../composables/useTalStore'
-import { useTalAPI } from '../composables/useTalAPI'
-
-const store = useTalStore()
-const api = useTalAPI()
-
-// Load services
-const services = await api.fetchServices()
-
-// Select service
-store.selectService(services[0])
-
-// Load masters for selected service
-const masters = await api.fetchMasters(store.state.value.selectedService.id)
-
-// Select master
-store.selectMaster(masters[0])
-
-// Load available slots
-const slots = await api.fetchAvailableSlots(store.state.value.selectedMaster.id, '2026-02-20')
-
-// Select slot
-store.selectTimeSlot(slots[0])
-
-// Create booking
-const booking = await api.createBooking({
-	serviceId: store.state.value.selectedService.id,
-	masterId: store.state.value.selectedMaster.id,
-	timeSlotId: store.state.value.selectedTimeSlot.id,
-	date: store.state.value.selectedDate
-})
-</script>
-```
-
-## Localization
-
-All UI strings must use `$t()` helper for Sakha and Russian translations.
-
-Example keys needed in `locales/ru.json` and `locales/sakha.json`:
-
-```json
-{
-	"tal": {
-		"title": "Бронирование",
-		"selectService": "Выберите услугу",
-		"selectMaster": "Выберите мастера",
-		"selectTime": "Выберите время",
-		"confirm": "Подтвердить",
-		"cancel": "Отменить",
-		"duration": "Длительность",
-		"price": "Цена",
-		"rating": "Рейтинг",
-		"reviews": "отзывов"
-	}
-}
-```
+- current deployment status: TAL is still landing/showcase-only on live runtime
+- latest real TAL MVP slice in this README is source work until a dedicated TAL deploy happens

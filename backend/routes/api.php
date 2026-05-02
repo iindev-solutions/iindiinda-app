@@ -10,6 +10,9 @@ use App\Http\Controllers\Ayan\RequestController as AyanRequestController;
 use App\Http\Controllers\Ayan\ResponseController as AyanResponseController;
 use App\Http\Controllers\Ayan\TripController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Tal\BookingController as TalBookingController;
+use App\Http\Controllers\Tal\MasterController as TalMasterController;
+use App\Http\Controllers\Tal\MyController as TalMyController;
 use App\Http\Controllers\Uus\MyController as UusMyController;
 use App\Http\Controllers\Uus\ResponseController as UusResponseController;
 use App\Http\Controllers\Uus\TaskController as UusTaskController;
@@ -46,11 +49,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/ayan/my/requests', [AyanMyController::class, 'requests']);
     Route::get('/ayan/my/responses', [AyanMyController::class, 'responses']);
 
-    Route::get('/tal/services', fn () => response()->json([]));
-    Route::get('/tal/masters', fn () => response()->json([]));
-    Route::get('/tal/slots', fn () => response()->json([]));
-    Route::post('/tal/bookings', fn () => response()->json([], 201));
-    Route::delete('/tal/bookings/{id}', fn () => response()->json([], 204));
+    Route::get('/tal/masters', [TalMasterController::class, 'index']);
+    Route::post('/tal/masters', [TalMasterController::class, 'store']);
+    Route::get('/tal/masters/{id}', [TalMasterController::class, 'show']);
+    Route::patch('/tal/masters/{id}', [TalMasterController::class, 'update']);
+    Route::get('/tal/masters/{id}/bookings', [TalBookingController::class, 'masterIndex']);
+    Route::post('/tal/masters/{id}/bookings', [TalBookingController::class, 'masterStore']);
+    Route::patch('/tal/bookings/{id}', [TalBookingController::class, 'update']);
+    Route::delete('/tal/bookings/{id}', [TalBookingController::class, 'destroy']);
+    Route::get('/tal/my/masters', [TalMyController::class, 'masters']);
+    Route::get('/tal/my/bookings', [TalMyController::class, 'bookings']);
 
     Route::get('/uus/tasks', [UusTaskController::class, 'index']);
     Route::post('/uus/tasks', [UusTaskController::class, 'store']);
