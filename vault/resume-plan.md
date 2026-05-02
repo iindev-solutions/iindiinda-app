@@ -188,7 +188,7 @@
 - User-reported manual UUS Telegram validation is green for the core create/respond/accept/finalize flow
 - Current deployed UUS runtime/code slice is now `5b23ae5` `feat(uus): polish dashboard tabs`
 - Current live UUS frontend now includes the dashboard split into tabs plus collapsible filters
-- Current local working tree only keeps vault synchronization edits after the runtime/frontend deploy
+- Local, origin, and VPS repositories are now aligned on the latest vault-sync tip `8569438`
 - `main` now also includes the UUS slice plus the latest vault sync via merge commit `c12330c`
 - UUS first real MVP slice is now committed, pushed, deployed, and live-smoked:
   - real backend persistence for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
@@ -236,8 +236,8 @@
 - Commit `b22f92c` is the saved redesign variant 2 checkpoint
 - Redesign variant 3 is now the active live frontend runtime direction: home, landing, feed, detail, and create surfaces follow the same calmer daily-use styling
 - `iind` remains the cyan brand anchor and the literal home `iindiinda` reminder was removed
-- Latest shipped runtime commit is `30b0f40` `feat(ui): extend redesign variant 3`
-- Live deployment baseline was HTTPS at `https://iindiinda.duckdns.org`, but as of `2026-04-29 13:36` both HTTPS and SSH checks time out from this environment
+- Latest shipped frontend runtime commit is `5b23ae5` `feat(uus): polish dashboard tabs`
+- Live deployment baseline is again healthy at `https://iindiinda.duckdns.org` after the VPS rebuild and the UUS tabs deploy
 - Verified live routes (`200`):
   - `/`
   - `/ayan`
@@ -288,11 +288,12 @@
   - `./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php` ✅ (`16 tests, 127 assertions`)
   - `./vendor/bin/phpunit tests/Feature/AgalPersistenceTest.php` ✅ (`4 tests, 60 assertions`)
 - Runtime:
-  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`30b0f40`)
+  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`8569438`)
   - `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/agal` ✅ (`200`)
-  - `curl -I https://iindiinda.duckdns.org/agal/route/1` ✅ (`200` SPA route fallback)
+  - `curl -I https://iindiinda.duckdns.org/uus` ✅ (`200`)
+  - `curl -I https://iindiinda.duckdns.org/uus/task/1` ✅ (`200` SPA route fallback)
   - `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
   - `curl -s -o /dev/null -w "%{http_code}" https://iindiinda.duckdns.org/api/agal/routes` ✅ (`401` guest auth gate expected)
