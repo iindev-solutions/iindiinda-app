@@ -103,6 +103,12 @@ function parsePrice(value: string) {
 	return Number.isFinite(parsed) ? parsed : null
 }
 
+function blurActiveField() {
+	if (typeof document === 'undefined') return
+	const activeElement = document.activeElement
+	if (activeElement instanceof HTMLElement) activeElement.blur()
+}
+
 async function loadResponses() {
 	try {
 		responses.value = await fetchTaskResponses(taskId.value)
@@ -122,6 +128,7 @@ async function loadMyResponses() {
 }
 
 async function handleRespond() {
+	blurActiveField()
 	responding.value = true
 	try {
 		await createTaskResponse(taskId.value, {
@@ -303,14 +310,6 @@ watch(
 						<span class="app-detail-value">{{ task.customer.name }}</span>
 					</div>
 					<div class="app-detail-row">
-						<span class="app-detail-label">{{ t('uus.create.when') }}</span>
-						<span class="app-detail-value">{{ whenLabel() }}</span>
-					</div>
-					<div class="app-detail-row">
-						<span class="app-detail-label">{{ t('uus.create.budget') }}</span>
-						<span class="app-detail-value">{{ budgetLabel() }}</span>
-					</div>
-					<div class="app-detail-row">
 						<span class="app-detail-label">{{ t('uus.task.responseLimit') }}</span>
 						<span class="app-detail-value">{{ task.response_limit }}</span>
 					</div>
@@ -321,7 +320,7 @@ watch(
 				</div>
 			</section>
 
-			<section v-if="canRespond" class="app-panel app-panel--soft app-detail-card">
+			<section v-if="canRespond" class="app-panel app-panel--soft app-detail-card tma-no-zoom">
 				<h2 class="app-section-title">{{ t('uus.respond.title') }}</h2>
 				<div class="app-detail-stack">
 					<UTextarea
@@ -330,7 +329,7 @@ watch(
 						:rows="3"
 						autoresize
 						:placeholder="t('uus.respond.messagePlaceholder')"
-						class="w-full"
+						class="w-full uus-response-field"
 					/>
 					<UInput
 						:model-value="responsePrice"
@@ -339,7 +338,7 @@ watch(
 						variant="outline"
 						size="lg"
 						:placeholder="t('uus.respond.pricePlaceholder')"
-						class="w-full"
+						class="w-full uus-response-field"
 						@update:model-value="handlePriceInput"
 					>
 						<template #trailing>
@@ -348,6 +347,7 @@ watch(
 					</UInput>
 					<UButton
 						block
+						class="tma-no-zoom-button"
 						color="primary"
 						:loading="responding"
 						icon="i-lucide-send"
@@ -400,9 +400,7 @@ watch(
 						<h2 class="app-section-title mb-1">{{ t('uus.responses.title') }}</h2>
 						<p class="app-detail-muted">{{ t('uus.responses.desc') }}</p>
 					</div>
-					<UBadge color="primary" variant="outline" size="xs">
-						{{ responses.length }} / {{ task.response_limit }}
-					</UBadge>
+					<span class="uus-response-counter">{{ responses.length }}/{{ task.response_limit }}</span>
 				</div>
 
 				<EmptyState
@@ -493,5 +491,21 @@ watch(
 	background: rgb(94 218 198 / 0.1);
 	color: rgb(var(--color-cyan-300));
 	flex-shrink: 0;
+}
+
+.uus-response-counter {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 24px;
+	padding: 0 10px;
+	border-radius: 999px;
+	border: 1px solid rgb(94 218 198 / 0.2);
+	background: rgb(94 218 198 / 0.08);
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+	color: var(--text-primary);
 }
 </style>
