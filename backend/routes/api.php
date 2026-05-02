@@ -10,6 +10,9 @@ use App\Http\Controllers\Ayan\RequestController as AyanRequestController;
 use App\Http\Controllers\Ayan\ResponseController as AyanResponseController;
 use App\Http\Controllers\Ayan\TripController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Uus\MyController as UusMyController;
+use App\Http\Controllers\Uus\ResponseController as UusResponseController;
+use App\Http\Controllers\Uus\TaskController as UusTaskController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/health', function () {
@@ -49,9 +52,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/tal/bookings', fn () => response()->json([], 201));
     Route::delete('/tal/bookings/{id}', fn () => response()->json([], 204));
 
-    Route::post('/uus/tasks', fn () => response()->json([], 201));
-    Route::get('/uus/tasks/open', fn () => response()->json([]));
-    Route::post('/uus/tasks/{id}/respond', fn () => response()->json([], 201));
+    Route::get('/uus/tasks', [UusTaskController::class, 'index']);
+    Route::post('/uus/tasks', [UusTaskController::class, 'store']);
+    Route::get('/uus/tasks/{id}', [UusTaskController::class, 'show']);
+    Route::patch('/uus/tasks/{id}', [UusTaskController::class, 'update']);
+    Route::get('/uus/tasks/{id}/responses', [UusResponseController::class, 'taskIndex']);
+    Route::post('/uus/tasks/{id}/responses', [UusResponseController::class, 'taskStore']);
+    Route::patch('/uus/responses/{id}', [UusResponseController::class, 'update']);
+    Route::delete('/uus/responses/{id}', [UusResponseController::class, 'destroy']);
+    Route::get('/uus/my/tasks', [UusMyController::class, 'tasks']);
+    Route::get('/uus/my/responses', [UusMyController::class, 'responses']);
 
     Route::get('/agal/routes', [AgalRouteController::class, 'index']);
     Route::post('/agal/routes', [AgalRouteController::class, 'store']);

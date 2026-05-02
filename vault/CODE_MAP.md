@@ -158,8 +158,18 @@
 |------|-----------|
 | `nuxt.config.ts` | Layer config |
 | `package.json` | iind-uus v0.1.0 |
-| `README.md` | Концепция |
+| `README.md` | UUS source status + MVP route shape |
 | `app/pages/uus.vue` | Parent wrapper → /uus |
+| `app/pages/uus/index.vue` | Real UUS source feed/my-area/create entry page |
+| `app/pages/uus/task/[id].vue` | UUS task detail: respond, accept/reject, contact reveal, final status actions |
+| `app/components/UusAccessState.vue` | UUS access-state screen for loading / Telegram-required / auth-failed states |
+| `app/components/UusCreateSlideover.vue` | UUS create form for task creation with Telegram-safe bottom slideover UX |
+| `app/types/uus.ts` | UUS task/response DTOs and enums |
+| `app/composables/useUusTasks.ts` | UUS task feed/detail/create/update API layer |
+| `app/composables/useUusResponses.ts` | UUS response list/create/update/delete API layer |
+| `app/composables/useUusMy.ts` | UUS my-tasks / my-responses API layer |
+
+**API contract**: `vault/wiki/services/uus/api-contract.md`
 
 ---
 
@@ -184,6 +194,10 @@
 | `Agal/ResponseController.php` | Реальные AGAL responses endpoints, accept/reject, delete own response |
 | `Agal/MyController.php` | Реальные AGAL my routes/requests/responses через authenticated user |
 | `Agal/Concerns/SerializesAgalData.php` | Сериализация payload shape под фронтовые типы AGAL |
+| `Uus/TaskController.php` | Реальные UUS task endpoints через Eloquent/MySQL (local source slice, not deployed) |
+| `Uus/ResponseController.php` | Реальные UUS responses endpoints, accept/reject, delete own response, response-limit guard (local source slice, not deployed) |
+| `Uus/MyController.php` | Реальные UUS my tasks/responses через authenticated user (local source slice, not deployed) |
+| `Uus/Concerns/SerializesUusData.php` | Сериализация payload shape под фронтовые типы UUS |
 | `Http/Middleware/ForceJsonResponse.php` | Форсит JSON transport для `api` middleware group, чтобы guest protected routes возвращали `401`, не HTML redirect |
 
 ### Runtime Base
@@ -217,7 +231,11 @@
 - AYAN: `PATCH /api/ayan/responses/{id}`, `DELETE /api/ayan/responses/{id}`
 - AYAN: `GET /api/ayan/my/trips`, `GET /api/ayan/my/requests`, `GET /api/ayan/my/responses`
 - TAL: `GET /tal/services`, `GET /tal/masters`, `GET /tal/slots`, `POST /tal/bookings`, `DELETE /tal/bookings/{id}`
-- UUS: `POST /uus/tasks`, `GET /uus/tasks/open`, `POST /uus/tasks/{id}/respond`
+- UUS local source now has the first real persisted route shape:
+  - `GET/POST /uus/tasks`, `GET/PATCH /uus/tasks/{id}`
+  - `GET/POST /uus/tasks/{id}/responses`
+  - `PATCH/DELETE /uus/responses/{id}`
+  - `GET /uus/my/tasks`, `GET /uus/my/responses`
 - AGAL routes now match the new persisted contract shape:
   - `GET/POST /agal/routes`, `GET/PATCH /agal/routes/{id}`
   - `GET/POST /agal/requests`, `GET/PATCH /agal/requests/{id}`
@@ -234,7 +252,7 @@
 |--------|---------|----------|-----------|
 | AYAN | runtime-ready on VPS: migrations + Sanctum + persistence controllers; Telegram verification still stub | pages + composables + types, real API switched on | ayanMock.ts |
 | TAL | routes only (нет контроллеров) | showcase | нет |
-| UUS | routes only | placeholder | нет |
+| UUS | local source MVP slice: persistence controllers + response-cap rule, verified in temp VPS test DB, not deployed yet | local source real feed/create/detail slice, not deployed yet | нет |
 | AGAL | runtime-ready backend on VPS: migrations + persistence controllers + targeted PHPUnit green | real feed/create/detail slice live on VPS; manual Telegram validation still pending | нет |
 | Auth | partial real: Sanctum token issuance + `/api/user`; Telegram verification still stub | useAuth + init.ts | mockData.ts |
 
@@ -250,6 +268,7 @@
 - `backend/routes/api.php` — Все API маршруты
 - `vault/wiki/services/ayan/api-contract.md` — Финальный API контракт AYAN
 - `vault/wiki/services/agal/api-contract.md` — Активный контракт AGAL для post-AYAN build
+- `vault/wiki/services/uus/api-contract.md` — Locked first MVP contract for UUS
 - `DESIGN.md` — shared redesign-system source of truth for visual tokens, component patterns, and shared shell direction
 
 ## Audit Notes — 2026-04-23

@@ -1,26 +1,46 @@
-# iind.uus — Мастера
+# iind.uus
 
-**Версия**: v0.1  
-**Статус**: Концепция
+UUS is the local task-and-response service of iind.app.
 
-## Концепция
+## Current Status
 
-Поиск мастеров на любую задачу — муж на час, ремонт, монтаж, установка. Пользователь создаёт задачу, мастера откликаются.
+- current frontend source: first real MVP slice exists (`/uus` feed/my-area/create + `/uus/task/[id]` detail/respond)
+- current backend source: first real persisted MVP slice exists (`tasks`, `responses`, `my/*`, response-cap rule)
+- current deployment status: not deployed live yet
 
-## API
+## Intended MVP
 
-| Метод | Эндпоинт                      | Описание        |
-| ----- | ----------------------------- | --------------- |
-| POST  | `/api/uus/tasks`              | Создать задачу  |
-| GET   | `/api/uus/tasks/open`         | Открытые задачи |
-| POST  | `/api/uus/tasks/{id}/respond` | Откликнуться    |
+1. customer creates a task
+2. executors browse open tasks with filters
+3. executors respond with a short message
+4. customer accepts one response
+5. contact is revealed
+6. customer marks result as `completed` or `cancelled`
 
-## Модели
+## Service-Specific Rule
 
-### Task
+UUS keeps a response cap per task:
 
-`{ title, description, category, budget, status }`
+- urgent task -> max `3` responses
+- normal task -> max `5` responses
 
-### Response
+## Contract
 
-`{ task_id, master_id, message, price }`
+See:
+
+- `vault/wiki/services/uus/api-contract.md`
+
+## Planned Frontend Shape
+
+- `/uus` -> feed + filters + create CTA
+- `/uus/task/[id]` -> task detail + respond / accept flow
+- shared my-area cards on the main UUS screen
+
+## Planned Backend Shape
+
+- `GET/POST /api/uus/tasks`
+- `GET/PATCH /api/uus/tasks/{id}`
+- `GET/POST /api/uus/tasks/{id}/responses`
+- `PATCH/DELETE /api/uus/responses/{id}`
+- `GET /api/uus/my/tasks`
+- `GET /api/uus/my/responses`

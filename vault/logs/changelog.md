@@ -2,6 +2,53 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-02 11:10 - UUS First Real MVP Slice Started In Source
+
+### Done
+
+- Locked the first real UUS MVP contract in `vault/wiki/services/uus/api-contract.md`
+- Reframed `frontend/services/uus/README.md` from a vague concept note into the current MVP direction and route shape
+- Aligned the UUS service page structure to the mandatory Nuxt nested pattern:
+  - `frontend/services/uus/app/pages/uus.vue` is now wrapper-only
+  - `frontend/services/uus/app/pages/uus/index.vue` now holds the real source feed/my-area/create entry page
+  - `frontend/services/uus/app/pages/uus/task/[id].vue` now exists for the task detail/respond flow
+- Added the first real UUS frontend source slice:
+  - `frontend/services/uus/app/types/uus.ts`
+  - `frontend/services/uus/app/composables/useUusTasks.ts`
+  - `frontend/services/uus/app/composables/useUusResponses.ts`
+  - `frontend/services/uus/app/composables/useUusMy.ts`
+  - `frontend/services/uus/app/components/UusAccessState.vue`
+  - `frontend/services/uus/app/components/UusCreateSlideover.vue`
+- Added the first real UUS backend source slice:
+  - `backend/database/migrations/2026_05_02_111500_create_uus_tasks_table.php`
+  - `backend/database/migrations/2026_05_02_111501_create_uus_responses_table.php`
+  - `backend/app/Models/UusTask.php`
+  - `backend/app/Models/UusResponse.php`
+  - `backend/app/Http/Controllers/Uus/TaskController.php`
+  - `backend/app/Http/Controllers/Uus/ResponseController.php`
+  - `backend/app/Http/Controllers/Uus/MyController.php`
+  - `backend/app/Http/Controllers/Uus/Concerns/SerializesUusData.php`
+  - `backend/tests/Feature/UusPersistenceTest.php`
+- Replaced the old UUS placeholder route closures in `backend/routes/api.php` with real controller routes
+- Implemented the UUS-specific response-cap rule in source:
+  - urgent task -> `3`
+  - normal task -> `5`
+- Updated vault indexes/maps so future sessions can resume UUS from the new contract and source slice instead of rediscovering the service shape again
+
+### Verified
+
+- `frontend: npm run typecheck` ✅
+- `frontend: npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `php -l` across all changed UUS backend files on VPS PHP 8.3 ✅
+- temp VPS backend copy + isolated MySQL test DB:
+  - `composer install` with dev deps in `/tmp/iind-uus-backend` ✅
+  - `./vendor/bin/phpunit tests/Feature/UusPersistenceTest.php` ✅ (`3 tests, 40 assertions`)
+
+### Important
+
+- This UUS slice is currently local/source-verified only; it is not committed, pushed, or deployed yet
+- Current next execution target is to commit/push this UUS slice, deploy it to VPS, and run live HTTPS/Telegram verification
+
 ## 2026-05-02 07:46 - Fresh VPS Manual Rebuild Restored
 
 ### Done
