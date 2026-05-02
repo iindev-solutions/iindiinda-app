@@ -377,6 +377,28 @@
   - `db` MySQL 8.0 with named volume persistence
 - This stack is not runtime-verified yet because local environment has no `docker`
 
+## Audit Notes - 2026-05-02 16:20
+
+- `frontend/services/uus/app/pages/uus/index.vue` now follows the same high-level dashboard pattern as AYAN/AGAL instead of stacking all sections in one scroll:
+  - pill tabs for `open tasks` / `my tasks` / `my responses`
+  - collapsible filter panel with active-filter counter
+  - create CTA below filters
+- UUS redesign coverage now includes:
+  - `frontend/services/uus/app/pages/uus/index.vue`
+  - `frontend/services/uus/app/pages/uus/task/[id].vue`
+  - `frontend/services/uus/app/components/UusCreateSlideover.vue`
+- UUS feed/my-area cards now use the shared redesign primitives (`AppHero`, `AppServiceAbout`, `app-feed-card`, `app-detail-card`) instead of the old undefined `app-list-card` styling path
+- AYAN, AGAL, and UUS create slideovers no longer keep the removed Telegram-specific slideover transition toggle wired through local `isInTelegram` destructuring
+
+## Audit Notes - 2026-05-02 15:20
+
+- UUS redesign coverage now includes:
+  - `frontend/services/uus/app/pages/uus/index.vue`
+  - `frontend/services/uus/app/pages/uus/task/[id].vue`
+  - `frontend/services/uus/app/components/UusCreateSlideover.vue`
+- UUS feed/my-area cards now use the shared redesign primitives (`AppHero`, `AppServiceAbout`, `app-feed-card`, `app-detail-card`) instead of the old undefined `app-list-card` styling path
+- AYAN, AGAL, and UUS create slideovers no longer keep the removed Telegram-specific slideover transition toggle wired through local `isInTelegram` destructuring
+
 ## Audit Notes - 2026-04-26 21:00
 
 - Variant 3 redesign now extends beyond shell/feed into the main working surfaces

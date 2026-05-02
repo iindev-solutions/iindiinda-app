@@ -6,7 +6,7 @@ UUS is the local task-and-response service of iind.app.
 
 - current frontend source: first real MVP slice exists (`/uus` feed/my-area/create + `/uus/task/[id]` detail/respond)
 - current backend source: first real persisted MVP slice exists (`tasks`, `responses`, `my/*`, response-cap rule)
-- current deployment status: first real MVP slice is deployed live; latest UI polish pass is still local/source-only until the next frontend deploy
+- current deployment status: first real MVP slice is deployed live, including the tabs/collapsible-filter dashboard polish
 
 ## Intended MVP
 

@@ -471,3 +471,19 @@
 - Verified: live `200` for `/uus` and `/uus/task/1`; guest `401` for `/api/uus/tasks`; root HTML still contains `apiBase:"/api"`; live UUS smoke passed create -> respond -> accept -> complete; accepted-response delete guard returns `422`; urgent-task 4th response blocked with `422 Response limit reached`; smoke users cleaned; `main` pushed at `0f638eb`
 - Blockers: real manual Telegram/browser validation for UUS is still pending even though command-level live smoke is green
 - Next: run a manual UUS pass, then decide whether to polish UUS further or start TAL
+
+## 2026-05-02 15:20 — UUS UI Polish Pass
+
+- Scope: polish the rough UUS Telegram UI after the user confirmed the live logic works
+- Changes: redesigned the UUS feed/my-area/task/create surfaces, switched UUS cards to shared redesign primitives, added clearer task/response hierarchy, and cleaned unused Telegram transition-toggle state from AYAN/AGAL/UUS create slideovers
+- Verified: `cd frontend && npx eslint services/uus/app/pages/uus/index.vue services/uus/app/pages/uus/task/[id].vue services/uus/app/components/UusCreateSlideover.vue services/ayan/app/components/AyanCreateSlideover.vue services/agal/app/components/AgalCreateSlideover.vue`; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`
+- Blockers: local UI pass is not committed or deployed yet; final human approval in TMA/browser is still needed before ship
+- Next: review the new UUS screens, then commit/push/deploy if accepted
+
+## 2026-05-02 16:20 — UUS Tabs Deploy
+
+- Scope: split the crowded UUS dashboard into clearer sections and ship the fix for real Telegram review
+- Changes: rebuilt `frontend/services/uus/app/pages/uus/index.vue` around AYAN-like tabs + collapsible filters, added UUS tab/filter i18n copy, committed `5b23ae5`, pushed `front/ayan`, synced VPS, and redeployed the frontend static bundle
+- Verified: focused eslint on changed UUS/AYAN/AGAL UI files; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`; VPS HEAD `5b23ae5`; live `200` for `/uus`, `/uus/task/1`, and `/api/health`; root HTML still contains `apiBase:"/api"`
+- Blockers: waiting for one fresh Telegram visual pass on the new UUS tabs/filter layout
+- Next: collect Telegram feedback, then decide whether more UUS polish is needed or TAL should start

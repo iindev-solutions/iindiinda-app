@@ -1,6 +1,25 @@
-# Resume Plan - 2026-05-02 12:55
+# Resume Plan - 2026-05-02 16:20
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
+
+## UUS Tabs Deploy Update - 2026-05-02 16:20
+
+- User had already confirmed that the live UUS logic works in Telegram Mini App; main remaining feedback was the crowded dashboard layout
+- UUS dashboard is now shipped with AYAN-like sectioning instead of stacking everything on one page:
+  1. tabs for `open tasks` / `my tasks` / `my responses`
+  2. collapsible filter panel with active-filter count
+  3. create CTA below filters
+- This pass still avoids Telegram-specific slideover transition gating like `:transition="!isInTelegram"`
+- AYAN, AGAL, and UUS create slideovers also had the now-unused `isInTelegram` destructuring cleaned up in source
+- Shipped runtime/frontend commit for this pass: `5b23ae5` `feat(uus): polish dashboard tabs`
+- Verification is green:
+  - `cd frontend && npx eslint services/uus/app/pages/uus/index.vue services/uus/app/pages/uus/task/[id].vue services/uus/app/components/UusCreateSlideover.vue services/ayan/app/components/AyanCreateSlideover.vue services/agal/app/components/AgalCreateSlideover.vue`
+  - `cd frontend && npm run typecheck`
+  - `cd frontend && npm run build:static`
+  - `git push origin front/ayan`
+  - VPS checkout fast-forward to `5b23ae5`
+  - live `200` for `/uus`, `/uus/task/1`, and `/api/health`
+  - live root HTML still contains `apiBase:"/api"`
 
 ## Legal Update - 2026-04-25 14:30
 
@@ -166,8 +185,10 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Current deployed UUS runtime/code slice is `e25bb96` `feat(uus): ship first MVP slice`
-- Latest `front/ayan` tip is now `6c66a98` `docs(vault): record uus live deploy`
+- User-reported manual UUS Telegram validation is green for the core create/respond/accept/finalize flow
+- Current deployed UUS runtime/code slice is now `5b23ae5` `feat(uus): polish dashboard tabs`
+- Current live UUS frontend now includes the dashboard split into tabs plus collapsible filters
+- Current local working tree only keeps vault synchronization edits after the runtime/frontend deploy
 - `main` now also includes the UUS slice plus the latest vault sync via merge commit `c12330c`
 - UUS first real MVP slice is now committed, pushed, deployed, and live-smoked:
   - real backend persistence for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
@@ -258,6 +279,7 @@
   - `npm run test` ✅
   - `npm run lint` ✅
   - `npm run typecheck` ✅
+  - focused eslint on current UUS/AYAN/AGAL UI files ✅
   - `npm run build:static` ✅
   - `JSON.parse(frontend/i18n/locales/ru.json)` ✅
   - `JSON.parse(frontend/i18n/locales/sah.json)` ✅
@@ -278,16 +300,12 @@
 
 ## Next Action
 
-1. Run one real manual Telegram Mini App pass on the live UUS flow:
-   - create task
-   - respond from another account if available
-   - accept
-   - contact reveal
-   - complete/cancel
-2. If UUS manual validation is green, decide the next product target:
-   - UUS polish from real usage feedback
-   - or TAL first real MVP slice
-3. Keep Coolify paused and do not reopen deployment experiments during this service rollout phase
+1. Run one fresh Telegram Mini App visual pass on the shipped UUS layout with focus on:
+   - tabs separation for `open tasks` / `my tasks` / `my responses`
+   - collapsible filter UX
+   - overall scanability on `/uus`
+2. If green, choose between more UUS polish or TAL start
+3. Keep Coolify paused; do not reopen infra experiments during this product pass
 
 ## API Smoke Snapshot (Live)
 
@@ -308,13 +326,13 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: recover the production VPS enough to make a go/no-go decision on the paused Coolify attempt.
-1) assume the VPS is currently down/unreachable until proven otherwise
-2) use the provider panel or recovery console first; normal SSH and HTTPS checks timed out on 2026-04-29 13:36
-3) after reboot, verify only basic health (`ssh`, `systemctl`, `/`, `/api/health`, `df -h /`)
-4) only if the host is stable again, inspect the partial Coolify install and Docker pull/DNS failure around `ghcr.io`
-5) if the host is still too small/noisy, stop Coolify on this VPS instead of forcing it
-6) do not reopen redesign; keep legal parked; patch runtime bugs only if they block live usage
+Current task: evaluate the shipped UUS tabs/filter layout after deploy.
+1) start from deployed runtime commit 5b23ae5 on front/ayan
+2) collect real Telegram feedback on /uus tabs and collapsible filters
+3) patch only issues found in that real use pass
+4) keep shared redesign primitives; do not reintroduce Telegram-specific slideover transition gating
+5) verify with focused eslint, npm run typecheck, and npm run build:static before any next deploy
+6) keep Coolify paused and leave TAL parked until the UUS UI decision is made
 ```
 
 ## Deployment Context
@@ -326,4 +344,4 @@ Current task: recover the production VPS enough to make a go/no-go decision on t
 
 ## One-Line Summary
 
-Fresh VPS manual baseline is green again, UUS first MVP slice is now live and smoke-verified on HTTPS, and the next choice is manual UUS validation plus either UUS polish or TAL start.
+UUS core logic is already user-validated, the tabs/filter dashboard polish is now pushed and deployed as `5b23ae5`, and the next step is one fresh Telegram visual review.

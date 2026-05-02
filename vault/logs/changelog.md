@@ -2,6 +2,58 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-02 16:20 - UUS Tabs And Collapsible Filters Deployed
+
+### Done
+
+- Reworked the live UUS dashboard so `my tasks`, `my responses`, and `open tasks` are no longer stacked in one long screen
+- Changed `frontend/services/uus/app/pages/uus/index.vue` to the same general pattern already used by AYAN/AGAL:
+  - pill tabs for main sections
+  - collapsible filter panel
+  - create CTA below filters
+- Added short UUS tab labels plus filter-reset copy in `frontend/i18n/locales/ru.json` and `frontend/i18n/locales/sah.json`
+- Committed the frontend UUS polish pass as `5b23ae5` `feat(uus): polish dashboard tabs`
+- Pushed `front/ayan`, fast-forwarded the VPS checkout, rebuilt static output locally, and redeployed the frontend bundle to VPS
+
+### Verified
+
+- `cd frontend && npx eslint services/uus/app/pages/uus/index.vue services/uus/app/pages/uus/task/[id].vue services/uus/app/components/UusCreateSlideover.vue services/ayan/app/components/AyanCreateSlideover.vue services/agal/app/components/AgalCreateSlideover.vue` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`5b23ae5`)
+- Live route checks ✅
+  - `GET /uus` -> `200`
+  - `GET /uus/task/1` -> `200`
+  - `GET /api/health` -> `200`
+  - root HTML still contains `apiBase:"/api"`
+
+### Important
+
+- User already confirmed the UUS core logic works in real Telegram use; this deploy specifically targets the reported dashboard/layout UX issue
+- Next value is one real Telegram visual pass on the new tabs/filter layout
+
+## 2026-05-02 15:20 - UUS UI Polish Pass
+
+### Done
+
+- Reworked the local UUS frontend surfaces after the user-reported real Telegram Mini App logic pass
+- Redesigned `frontend/services/uus/app/pages/uus/index.vue` around shared redesign primitives (`AppHero`, `AppServiceAbout`, `app-feed-card`) and replaced the broken undefined `app-list-card` styling path
+- Redesigned `frontend/services/uus/app/pages/uus/task/[id].vue` for clearer task meta, response cards, contact reveal, and owner outcome actions
+- Redesigned `frontend/services/uus/app/components/UusCreateSlideover.vue` into a calmer multi-panel form with a response-limit preview and without any Telegram-specific slideover transition toggle
+- Removed now-unused `isInTelegram` destructuring from AYAN/AGAL create slideovers after the transition-toggle cleanup
+
+### Verified
+
+- `cd frontend && npx eslint services/uus/app/pages/uus/index.vue services/uus/app/pages/uus/task/[id].vue services/uus/app/components/UusCreateSlideover.vue services/ayan/app/components/AyanCreateSlideover.vue services/agal/app/components/AgalCreateSlideover.vue` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- User-reported manual UUS Telegram check is green for core logic/runtime behavior; remaining issues are visual polish and deployment choice
+- This redesign pass is currently local/source-verified only; it is not committed, pushed, or deployed yet
+
 ## 2026-05-02 12:55 - UUS First MVP Slice Pushed Deployed And Live-Smoked
 
 ### Done
