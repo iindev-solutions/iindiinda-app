@@ -166,8 +166,9 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Current committed `front/ayan` tip is `e25bb96` `feat(uus): ship first MVP slice`
-- `main` now also includes the UUS slice via merge commit `0f638eb`
+- Current deployed UUS runtime/code slice is `e25bb96` `feat(uus): ship first MVP slice`
+- Latest `front/ayan` tip is now `6c66a98` `docs(vault): record uus live deploy`
+- `main` now also includes the UUS slice plus the latest vault sync via merge commit `c12330c`
 - UUS first real MVP slice is now committed, pushed, deployed, and live-smoked:
   - real backend persistence for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
   - real frontend feed/create/detail/my-area under `frontend/services/uus/app/`
