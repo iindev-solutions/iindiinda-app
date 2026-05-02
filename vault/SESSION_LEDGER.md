@@ -463,3 +463,11 @@
 - Verified: `frontend npm run typecheck`; `frontend npm run build:static`; VPS PHP lint across all changed UUS backend files; isolated VPS temp backend copy with dev deps + separate MySQL test DB -> `./vendor/bin/phpunit tests/Feature/UusPersistenceTest.php` (`3 tests, 40 assertions`)
 - Blockers: this UUS slice is still local/source-only and not deployed live yet
 - Next: commit/push/deploy the UUS slice, then run live HTTPS + Telegram verification for create/respond/accept/finalize
+
+## 2026-05-02 12:55 — UUS Live Deploy Green
+
+- Scope: ship the first real UUS MVP slice to production and verify it on the restored manual VPS baseline
+- Changes: committed `e25bb96`, pushed `front/ayan`, fast-forwarded VPS repo, ran UUS migrations, redeployed the frontend static bundle, live-smoked UUS API flows with cleanup, and merged the shipped branch back into `main`
+- Verified: live `200` for `/uus` and `/uus/task/1`; guest `401` for `/api/uus/tasks`; root HTML still contains `apiBase:"/api"`; live UUS smoke passed create -> respond -> accept -> complete; accepted-response delete guard returns `422`; urgent-task 4th response blocked with `422 Response limit reached`; smoke users cleaned; `main` pushed at `0f638eb`
+- Blockers: real manual Telegram/browser validation for UUS is still pending even though command-level live smoke is green
+- Next: run a manual UUS pass, then decide whether to polish UUS further or start TAL

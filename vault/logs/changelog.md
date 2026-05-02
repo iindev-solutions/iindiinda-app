@@ -2,6 +2,42 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-02 12:55 - UUS First MVP Slice Pushed Deployed And Live-Smoked
+
+### Done
+
+- Committed the first real UUS MVP slice as `e25bb96` `feat(uus): ship first MVP slice`
+- Pushed `front/ayan` and fast-forwarded the VPS repository to the same commit
+- Ran UUS backend migrations on VPS
+- Deployed the rebuilt frontend static bundle to VPS
+- Live-smoked the new UUS backend flow on `https://iindiinda.duckdns.org`
+- Merged `front/ayan` into `main` and pushed `main` as `0f638eb`
+
+### Verified
+
+- `git push origin front/ayan` ✅
+- VPS repo head `e25bb96` ✅
+- `php artisan migrate --force` on VPS added:
+  - `2026_05_02_111500_create_uus_tasks_table`
+  - `2026_05_02_111501_create_uus_responses_table`
+- live route checks ✅
+  - `GET /uus` -> `200`
+  - `GET /uus/task/1` -> `200` (SPA route fallback)
+  - guest `GET /api/uus/tasks` -> `401`
+  - root HTML still contains `apiBase:"/api"`
+- live UUS synthetic smoke ✅
+  - create task -> respond -> accept -> complete
+  - responder `my/responses` includes `task.status = completed`
+  - deleting accepted response returns `422`
+  - urgent task 4th response is blocked with `422 Response limit reached`
+- UUS smoke cleanup ✅ (`COUNT(users where telegram_id in 920001..920006) = 0`)
+- `main` pushed after merge ✅ (`0f638eb`)
+
+### Important
+
+- UUS is no longer a placeholder-only service in production source/runtime; it now has a first real deployed MVP slice
+- Remaining next-value work is no longer backend bring-up for UUS; it is live manual Telegram/browser validation plus product decision: UUS polish vs TAL start
+
 ## 2026-05-02 11:10 - UUS First Real MVP Slice Started In Source
 
 ### Done
