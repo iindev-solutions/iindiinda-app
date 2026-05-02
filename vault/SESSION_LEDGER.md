@@ -487,3 +487,11 @@
 - Verified: focused eslint on changed UUS/AYAN/AGAL UI files; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`; VPS HEAD `5b23ae5`; live `200` for `/uus`, `/uus/task/1`, and `/api/health`; root HTML still contains `apiBase:"/api"`
 - Blockers: waiting for one fresh Telegram visual pass on the new UUS tabs/filter layout
 - Next: collect Telegram feedback, then decide whether more UUS polish is needed or TAL should start
+
+## 2026-05-02 16:35 — UUS Task Detail Follow-Up Deploy
+
+- Scope: fix the first user-reported post-deploy issues on the UUS task detail page without touching working business logic
+- Changes: replaced the crooked responses counter badge with a dedicated counter pill, removed duplicated task meta rows from the detail card, added `tma-no-zoom` protection to the response form, blurred the active field before submit, committed `4216d98`, pushed `front/ayan`, synced VPS, and redeployed the frontend static bundle
+- Verified: `cd frontend && npx eslint services/uus/app/pages/uus/task/[id].vue`; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`; VPS HEAD `4216d98`; live `200` for `/uus/task/1` and `/api/health`
+- Blockers: one more real Telegram check is still needed to confirm the response-form zoom is truly gone on device
+- Next: have the user retest the UUS task detail page in Telegram, then either close UUS polish or patch any remaining visual rough edges

@@ -377,6 +377,14 @@
   - `db` MySQL 8.0 with named volume persistence
 - This stack is not runtime-verified yet because local environment has no `docker`
 
+## Audit Notes - 2026-05-02 16:35
+
+- `frontend/services/uus/app/pages/uus/task/[id].vue` received the first post-deploy Telegram feedback follow-up:
+  - owner response count now uses a dedicated counter pill instead of the old misaligned badge rendering
+  - repeated `when` and `budget` rows were removed from the detail card; top chips remain the single primary location for that meta
+  - the inline response form now uses `tma-no-zoom` protection plus active-field blur on submit to reduce Telegram/iPhone viewport zoom jumps
+- UUS detail-page work remains presentation-only; no task/response business logic changed
+
 ## Audit Notes - 2026-05-02 16:20
 
 - `frontend/services/uus/app/pages/uus/index.vue` now follows the same high-level dashboard pattern as AYAN/AGAL instead of stacking all sections in one scroll:

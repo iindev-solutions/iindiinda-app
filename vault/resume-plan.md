@@ -1,6 +1,26 @@
-# Resume Plan - 2026-05-02 16:20
+# Resume Plan - 2026-05-02 16:35
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
+
+## UUS Task Detail Follow-Up - 2026-05-02 16:35
+
+- User checked the shipped UUS tabs deploy in Telegram and said the overall direction is good, but reported three specific task-detail issues:
+  1. owner responses counter looked visually crooked (`1/3` alignment)
+  2. task detail repeated top-level meta unnecessarily
+  3. the inline response form could still trigger disruptive zoom while typing/submitting
+- Source/runtime follow-up is now shipped in `4216d98` `fix(uus): refine task response ui`
+- `frontend/services/uus/app/pages/uus/task/[id].vue` now:
+  1. uses a dedicated counter pill for the owner responses count
+  2. keeps `when` / `budget` primarily in the hero chips instead of repeating them in the detail card
+  3. wraps the inline response form in `tma-no-zoom` protection and blurs the active field before submit
+- This pass still avoids Telegram-specific slideover transition gating like `:transition="!isInTelegram"`
+- Verification is green:
+  - `cd frontend && npx eslint services/uus/app/pages/uus/task/[id].vue`
+  - `cd frontend && npm run typecheck`
+  - `cd frontend && npm run build:static`
+  - `git push origin front/ayan`
+  - VPS checkout fast-forward to `4216d98`
+  - live `200` for `/uus/task/1` and `/api/health`
 
 ## UUS Tabs Deploy Update - 2026-05-02 16:20
 
@@ -186,9 +206,9 @@
 
 - Current branch: `front/ayan`
 - User-reported manual UUS Telegram validation is green for the core create/respond/accept/finalize flow
-- Current deployed UUS runtime/code slice is now `5b23ae5` `feat(uus): polish dashboard tabs`
-- Current live UUS frontend now includes the dashboard split into tabs plus collapsible filters
-- Local, origin, and VPS repositories are now aligned on the latest vault-sync tip `8569438`
+- Current deployed UUS runtime/code slice is now `4216d98` `fix(uus): refine task response ui`
+- Current live UUS frontend now includes the dashboard split into tabs plus collapsible filters plus the task-detail counter/no-zoom follow-up
+- Local, origin, and VPS repositories are aligned again on the latest branch tip at session close
 - `main` now also includes the UUS slice plus the latest vault sync via merge commit `c12330c`
 - UUS first real MVP slice is now committed, pushed, deployed, and live-smoked:
   - real backend persistence for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
@@ -301,10 +321,10 @@
 
 ## Next Action
 
-1. Run one fresh Telegram Mini App visual pass on the shipped UUS layout with focus on:
-   - tabs separation for `open tasks` / `my tasks` / `my responses`
-   - collapsible filter UX
-   - overall scanability on `/uus`
+1. Run one fresh Telegram Mini App retest on the shipped UUS task detail with focus on:
+   - owner responses counter alignment
+   - removed duplicate task meta in the detail card
+   - response-form zoom behavior while typing and on submit
 2. If green, choose between more UUS polish or TAL start
 3. Keep Coolify paused; do not reopen infra experiments during this product pass
 
@@ -327,9 +347,9 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: evaluate the shipped UUS tabs/filter layout after deploy.
-1) start from deployed runtime commit 5b23ae5 on front/ayan
-2) collect real Telegram feedback on /uus tabs and collapsible filters
+Current task: evaluate the shipped UUS task-detail follow-up after deploy.
+1) start from deployed runtime commit 4216d98 on front/ayan
+2) collect real Telegram feedback on /uus/task/[id], especially counter alignment and zoom behavior
 3) patch only issues found in that real use pass
 4) keep shared redesign primitives; do not reintroduce Telegram-specific slideover transition gating
 5) verify with focused eslint, npm run typecheck, and npm run build:static before any next deploy
@@ -345,4 +365,4 @@ Current task: evaluate the shipped UUS tabs/filter layout after deploy.
 
 ## One-Line Summary
 
-UUS core logic is already user-validated, the tabs/filter dashboard polish is now pushed and deployed as `5b23ae5`, and the next step is one fresh Telegram visual review.
+UUS core logic is already user-validated, the tabs/filter dashboard plus task-detail follow-up are now deployed through `4216d98`, and the next step is one fresh Telegram retest for the response UX.

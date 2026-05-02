@@ -2,6 +2,36 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-02 16:35 - UUS Task Detail Follow-Up Deployed
+
+### Done
+
+- Applied the first real Telegram-feedback follow-up on the live UUS task detail page after the tabs deploy
+- Fixed the owner-side responses counter presentation in `frontend/services/uus/app/pages/uus/task/[id].vue` by replacing the crooked badge rendering with a dedicated numeric counter pill
+- Removed repeated `when` and `budget` rows from the UUS task detail card so the detail screen no longer repeats the same top-level meta twice
+- Hardened the UUS response form against Telegram/iPhone zoom issues by:
+  - wrapping the detail response form in the existing `tma-no-zoom` protection
+  - adding button-side no-zoom styling
+  - blurring the active field before submit
+- Committed the runtime fix as `4216d98` `fix(uus): refine task response ui`
+- Pushed `front/ayan`, fast-forwarded the VPS checkout, rebuilt static output locally, and redeployed the frontend bundle to VPS
+
+### Verified
+
+- `cd frontend && npx eslint services/uus/app/pages/uus/task/[id].vue` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`4216d98` before later vault sync)
+- Live route checks ✅
+  - `GET /uus/task/1` -> `200`
+  - `GET /api/health` -> `200`
+
+### Important
+
+- User feedback is now: overall UUS works well, but the next real Telegram retest should confirm the response-form zoom issue is actually gone on device
+- Keep the fix scoped; no UUS business logic changes were introduced
+
 ## 2026-05-02 16:20 - UUS Tabs And Collapsible Filters Deployed
 
 ### Done
