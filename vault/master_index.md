@@ -65,6 +65,7 @@ See: `vault/wiki/architecture/roadmap.md`
 - `vault/wiki/services/ayan/backend-bringup.md`
 - `vault/wiki/services/agal/api-contract.md`
 - `vault/wiki/services/uus/api-contract.md`
+- `vault/wiki/services/tal/api-contract.md`
 
 ## Current Branches
 

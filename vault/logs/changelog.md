@@ -2,6 +2,102 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-02 18:00 - TAL First MVP Slice Deployed Live
+
+### Done
+
+- Committed the first real TAL availability + booking slice as `ff0fedd` `feat(tal): add booking MVP slice`
+- Pushed `front/ayan`, fast-forwarded the VPS checkout, and deployed the rebuilt frontend static bundle to VPS
+- Activated the new TAL Laravel routes on VPS by clearing stale cached bootstrap artifacts after pull
+- Ran the new TAL database migrations on VPS:
+  - `2026_05_02_170000_create_tal_masters_table`
+  - `2026_05_02_170001_create_tal_bookings_table`
+- Updated `frontend/services/tal/README.md` deployment status after ship
+
+### Verified
+
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`ff0fedd` before later vault sync)
+- `ssh iind-vps "cd /var/www/iind-app/backend && php artisan optimize:clear"` ✅
+- `ssh iind-vps "cd /var/www/iind-app/backend && php artisan migrate --force"` ✅
+- `ssh iind-vps "cd /var/www/iind-app/backend && php artisan route:list --path=api/tal"` ✅ (`10` TAL routes)
+- `ssh iind-vps "php -l ...Tal*.php"` across changed TAL backend files ✅
+- temp VPS backend copy + isolated MySQL test DB ✅
+  - `composer install` with dev deps in `/tmp/iind-tal-backend`
+  - `./vendor/bin/phpunit tests/Feature/TalPersistenceTest.php` ✅ (`3 tests, 36 assertions`)
+- live TAL synthetic smoke ✅
+  - create master availability card -> book -> accept -> complete
+  - client `GET /api/tal/my/bookings` returns linked `tal_master.status = completed`
+  - deleting accepted booking returns `422`
+  - smoke users/tokens cleaned back out after verification
+- live route checks ✅
+  - `GET /tal` -> `200`
+  - `GET /tal/master/1` -> `200` (SPA route fallback)
+  - `GET /api/health` -> `200`
+  - guest `GET /api/tal/masters` -> `401`
+
+### Important
+
+- TAL is no longer landing/showcase-only in live runtime; it now has the first real deployed MVP slice
+- Current TAL scope is intentionally the availability-core flow only:
+  1. master publishes availability
+  2. client sends booking request
+  3. master accepts/rejects
+  4. Telegram contact reveal after acceptance
+- Public fallback client requests are still deferred for a later TAL pass
+- Next value is one real Telegram Mini App visual pass on the shipped TAL flow
+
+## 2026-05-02 17:40 - TAL First Real Source Slice
+
+### Done
+
+- Started the next service track after the accepted UUS pass by moving TAL beyond landing/showcase-only state in source
+- Added a first real TAL service contract at `vault/wiki/services/tal/api-contract.md`
+- Replaced the old `/tal` placeholder page structure with the mandatory wrapper + nested index pattern:
+  - `frontend/services/tal/app/pages/tal.vue`
+  - `frontend/services/tal/app/pages/tal/index.vue`
+  - `frontend/services/tal/app/pages/tal/master/[id].vue`
+- Added real TAL frontend primitives in source:
+  - `TalAccessState.vue`
+  - `TalRoleSwitch.vue`
+  - `TalCreateSlideover.vue`
+  - `tal.ts`
+  - `useTalMasters.ts`
+  - `useTalBookings.ts`
+  - `useTalMy.ts`
+- Added the first real TAL backend source slice:
+  - `TalMaster` + `TalBooking` models
+  - TAL controllers + serializer concern
+  - TAL migrations for master cards and bookings
+  - TAL PHPUnit feature test scaffold
+  - real TAL route wiring in `backend/routes/api.php`
+- Rewrote `frontend/services/tal/README.md` so TAL no longer describes the old medical/calendar showcase shape
+- Added RU + SAH TAL runtime copy for the new feed/detail/create flow
+
+### Scope Decision
+
+- This first real TAL slice intentionally ships the availability-core flow only:
+  1. master publishes an availability card
+  2. client sends a booking request
+  3. master accepts/rejects
+  4. Telegram contact is revealed after acceptance
+- Deferred on purpose for a later TAL pass:
+  - public fallback client requests
+  - calendar/time-slot engine
+  - medical/clinic scenarios
+
+### Verified
+
+- `node -e "const fs = require('fs'); JSON.parse(fs.readFileSync('frontend/i18n/locales/ru.json','utf8')); JSON.parse(fs.readFileSync('frontend/i18n/locales/sah.json','utf8'))"` ✅
+- `cd frontend && npx eslint services/tal/app/pages/tal/index.vue services/tal/app/pages/tal/master/[id].vue services/tal/app/components/TalAccessState.vue services/tal/app/components/TalRoleSwitch.vue services/tal/app/components/TalCreateSlideover.vue services/tal/app/composables/useTalMasters.ts services/tal/app/composables/useTalBookings.ts services/tal/app/composables/useTalMy.ts services/tal/app/types/tal.ts` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- This TAL slice is still local/source-only in this session: not committed, not pushed, and not deployed yet
+- Backend runtime verification is still pending because this environment has no local `php` / `composer`; next safe step is backend-focused verification before any TAL deploy
+
 ## 2026-05-02 16:35 - UUS Task Detail Follow-Up Deployed
 
 ### Done

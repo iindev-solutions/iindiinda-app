@@ -1,6 +1,66 @@
-# Resume Plan - 2026-05-02 16:35
+# Resume Plan - 2026-05-02 18:00
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
+
+## TAL First MVP Deploy - 2026-05-02 18:00
+
+- User accepted the current UUS pass well enough to move to TAL next
+- TAL is no longer only a landing/showcase concept; the first real availability + booking slice is now shipped live as `ff0fedd` `feat(tal): add booking MVP slice`
+- Current TAL live scope is intentionally the availability-core flow only:
+  1. master publishes an availability card
+  2. client sends a booking request
+  3. master accepts or rejects
+  4. Telegram contact is revealed after acceptance
+- Public fallback client requests are intentionally deferred for a later TAL pass
+- VPS backend needed one important post-pull fix before verification/deploy was truly green:
+  - `php artisan optimize:clear` was required so stale cached routes stopped hiding the new TAL endpoints
+- Verification is now green across source + VPS runtime:
+  - locale JSON parse for `frontend/i18n/locales/{ru,sah}.json`
+  - `cd frontend && npx eslint services/tal/app/pages/tal/index.vue services/tal/app/pages/tal/master/[id].vue services/tal/app/components/TalAccessState.vue services/tal/app/components/TalRoleSwitch.vue services/tal/app/components/TalCreateSlideover.vue services/tal/app/composables/useTalMasters.ts services/tal/app/composables/useTalBookings.ts services/tal/app/composables/useTalMy.ts services/tal/app/types/tal.ts`
+  - `cd frontend && npm run typecheck`
+  - `cd frontend && npm run build:static`
+  - `git push origin front/ayan`
+  - VPS checkout fast-forward to `ff0fedd`
+  - `php artisan migrate --force` added TAL master + booking tables
+  - `php artisan route:list --path=api/tal` now shows `10` TAL routes
+  - temp VPS backend copy + isolated MySQL test DB -> `./vendor/bin/phpunit tests/Feature/TalPersistenceTest.php` ✅ (`3 tests, 36 assertions`)
+  - live TAL synthetic smoke passed: create availability -> book -> accept -> complete; accepted-booking delete returns `422`
+  - live `200` for `/tal`, `/tal/master/1`, and `/api/health`; guest `401` for `/api/tal/masters`
+
+## TAL First Real Source Slice - 2026-05-02 17:40
+
+- User accepted the current UUS pass well enough to move to TAL next
+- TAL is no longer only a landing/showcase concept in local source
+- Source now contains the first real TAL availability-core slice:
+  1. master publishes an availability card
+  2. client sends a booking request
+  3. master accepts or rejects
+  4. Telegram contact is revealed after acceptance
+- Implemented source coverage includes:
+  - `frontend/services/tal/app/pages/tal.vue`
+  - `frontend/services/tal/app/pages/tal/index.vue`
+  - `frontend/services/tal/app/pages/tal/master/[id].vue`
+  - `frontend/services/tal/app/components/TalAccessState.vue`
+  - `frontend/services/tal/app/components/TalRoleSwitch.vue`
+  - `frontend/services/tal/app/components/TalCreateSlideover.vue`
+  - `frontend/services/tal/app/types/tal.ts`
+  - `frontend/services/tal/app/composables/useTalMasters.ts`
+  - `frontend/services/tal/app/composables/useTalBookings.ts`
+  - `frontend/services/tal/app/composables/useTalMy.ts`
+  - `backend/app/Http/Controllers/Tal/*`
+  - `backend/app/Models/TalMaster.php`
+  - `backend/app/Models/TalBooking.php`
+  - `backend/database/migrations/2026_05_02_170000_create_tal_masters_table.php`
+  - `backend/database/migrations/2026_05_02_170001_create_tal_bookings_table.php`
+  - `backend/tests/Feature/TalPersistenceTest.php`
+  - `vault/wiki/services/tal/api-contract.md`
+- Important scope decision: public fallback client requests are intentionally deferred for a later TAL pass; this first slice ships availability + booking only
+- Verification currently green on frontend/source side:
+  - locale JSON parse for `frontend/i18n/locales/{ru,sah}.json`
+  - `cd frontend && npx eslint services/tal/app/pages/tal/index.vue services/tal/app/pages/tal/master/[id].vue services/tal/app/components/TalAccessState.vue services/tal/app/components/TalRoleSwitch.vue services/tal/app/components/TalCreateSlideover.vue services/tal/app/composables/useTalMasters.ts services/tal/app/composables/useTalBookings.ts services/tal/app/composables/useTalMy.ts services/tal/app/types/tal.ts`
+  - `cd frontend && npm run typecheck`
+  - `cd frontend && npm run build:static`
+- This TAL slice is still local/source-only and not committed, pushed, or deployed yet
 
 ## UUS Task Detail Follow-Up - 2026-05-02 16:35
 
@@ -206,16 +266,18 @@
 
 - Current branch: `front/ayan`
 - User-reported manual UUS Telegram validation is green for the core create/respond/accept/finalize flow
-- Current deployed UUS runtime/code slice is now `4216d98` `fix(uus): refine task response ui`
-- Current live UUS frontend now includes the dashboard split into tabs plus collapsible filters plus the task-detail counter/no-zoom follow-up
-- Local, origin, and VPS repositories are aligned again on the latest branch tip at session close
+- Current deployed TAL runtime/code slice is now `ff0fedd` `feat(tal): add booking MVP slice`
+- Current live UUS frontend still includes the dashboard split into tabs plus collapsible filters plus the task-detail counter/no-zoom follow-up
+- Current live TAL frontend now includes `/tal` feed tabs + filters + create status flow and `/tal/master/[id]` booking detail flow
+- Current local working tree is clean at session close
+- Local, origin, and VPS repositories are aligned on the latest branch tip after the TAL deploy plus vault sync
 - `main` now also includes the UUS slice plus the latest vault sync via merge commit `c12330c`
 - UUS first real MVP slice is now committed, pushed, deployed, and live-smoked:
   - real backend persistence for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
   - real frontend feed/create/detail/my-area under `frontend/services/uus/app/`
   - UUS page structure follows the mandatory wrapper + nested index pattern
 - Fresh VPS manual deployment baseline is restored and reachable on `https://iindiinda.duckdns.org`
-- Live route checks are green again for `/`, `/ayan`, `/agal`, `/legal`, and `/api/health`
+- Live route checks are green again for `/`, `/ayan`, `/agal`, `/tal`, `/legal`, and `/api/health`
 - Live guest auth gate is green again (`401` on protected API)
 - Live AYAN + AGAL API smoke is green again after rebuild:
   - AYAN trip flow `accepted -> completed`
@@ -225,6 +287,7 @@
 - Synthetic smoke records/tokens were cleaned back out of MySQL after verification
 - Fresh manual runtime baseline is now green again in real Telegram use, not only command-level smoke
 - Live UUS HTTPS/API smoke is green after deploy
+- Live TAL HTTPS/API smoke is now also green after deploy
 - Coolify remains paused and should stay paused while the manual baseline is now healthy again
 - Latest live AYAN runtime behavior remains green after the redesign deployment and the older `5e81817` create-form simplification still remains part of the stable baseline
 - AGAL backend persistence is shipped on VPS and the redesigned frontend slice is now live on `/agal` (feed, create, detail, respond, contact reveal, lifecycle actions)
@@ -256,11 +319,13 @@
 - Commit `b22f92c` is the saved redesign variant 2 checkpoint
 - Redesign variant 3 is now the active live frontend runtime direction: home, landing, feed, detail, and create surfaces follow the same calmer daily-use styling
 - `iind` remains the cyan brand anchor and the literal home `iindiinda` reminder was removed
-- Latest shipped frontend runtime commit is `5b23ae5` `feat(uus): polish dashboard tabs`
-- Live deployment baseline is again healthy at `https://iindiinda.duckdns.org` after the VPS rebuild and the UUS tabs deploy
+- Latest shipped frontend runtime commit is `ff0fedd` `feat(tal): add booking MVP slice`
+- Live deployment baseline is again healthy at `https://iindiinda.duckdns.org` after the VPS rebuild, the UUS passes, and the TAL deploy
 - Verified live routes (`200`):
   - `/`
   - `/ayan`
+  - `/tal`
+  - `/tal/master/1`
   - `/legal`
   - `/legal/ayan-terms`
   - `/legal/uus-rules`
@@ -272,6 +337,8 @@
   - `2026_04_26_071000_create_agal_routes_table`
   - `2026_04_26_071001_create_agal_requests_table`
   - `2026_04_26_071002_create_agal_responses_table`
+  - `2026_05_02_170000_create_tal_masters_table`
+  - `2026_05_02_170001_create_tal_bookings_table`
 - Live lifecycle API smoke is green for both AYAN trip and request target flows
 
 ## What Shipped In Lifecycle Slice
@@ -304,28 +371,36 @@
   - `JSON.parse(frontend/i18n/locales/ru.json)` ✅
   - `JSON.parse(frontend/i18n/locales/sah.json)` ✅
   - `npx nuxt build --preset github_pages` + `node scripts/verify-static-api-base.mjs` ✅
-- Backend (VPS checkout):
+- Backend (VPS checkout / temp test copy):
   - `./vendor/bin/phpunit tests/Feature/AuthApiTest.php tests/Feature/AyanAuthTest.php tests/Feature/AyanPersistenceTest.php` ✅ (`16 tests, 127 assertions`)
   - `./vendor/bin/phpunit tests/Feature/AgalPersistenceTest.php` ✅ (`4 tests, 60 assertions`)
+  - temp copy `./vendor/bin/phpunit tests/Feature/TalPersistenceTest.php` ✅ (`3 tests, 36 assertions`)
 - Runtime:
-  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`8569438`)
+  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`ff0fedd` before later vault sync)
   - `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/agal` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/uus` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/uus/task/1` ✅ (`200` SPA route fallback)
+  - `curl -I https://iindiinda.duckdns.org/tal` ✅ (`200`)
+  - `curl -I https://iindiinda.duckdns.org/tal/master/1` ✅ (`200` SPA route fallback)
   - `curl -I https://iindiinda.duckdns.org/legal/ayan-terms` ✅ (`200`)
   - `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
   - `curl -s -o /dev/null -w "%{http_code}" https://iindiinda.duckdns.org/api/agal/routes` ✅ (`401` guest auth gate expected)
+  - `curl -s -o /dev/null -w "%{http_code}" https://iindiinda.duckdns.org/api/tal/masters` ✅ (`401` guest auth gate expected)
+  - live TAL synthetic smoke ✅ (`create -> book -> accept -> complete`, accepted delete -> `422`)
   - `curl https://iindiinda.duckdns.org/` contains `apiBase:"/api"` ✅
 
 ## Next Action
 
-1. Run one fresh Telegram Mini App retest on the shipped UUS task detail with focus on:
-   - owner responses counter alignment
-   - removed duplicate task meta in the detail card
-   - response-form zoom behavior while typing and on submit
-2. If green, choose between more UUS polish or TAL start
+1. Run one fresh Telegram Mini App visual pass on the shipped TAL flow with focus on:
+   - role switching into `master`
+   - create availability slideover stability
+   - `/tal` feed tabs + filters
+   - `/tal/master/[id]` booking / accept / contact reveal / final status UX
+2. If green, choose between:
+   - TAL polish from real usage feedback
+   - or the next TAL feature: public fallback client requests
 3. Keep Coolify paused; do not reopen infra experiments during this product pass
 
 ## API Smoke Snapshot (Live)
@@ -347,13 +422,13 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: evaluate the shipped UUS task-detail follow-up after deploy.
-1) start from deployed runtime commit 4216d98 on front/ayan
-2) collect real Telegram feedback on /uus/task/[id], especially counter alignment and zoom behavior
+Current task: evaluate the shipped TAL availability + booking slice after deploy.
+1) start from deployed runtime commit ff0fedd on front/ayan
+2) collect real Telegram feedback on /tal and /tal/master/[id]
 3) patch only issues found in that real use pass
-4) keep shared redesign primitives; do not reintroduce Telegram-specific slideover transition gating
-5) verify with focused eslint, npm run typecheck, and npm run build:static before any next deploy
-6) keep Coolify paused and leave TAL parked until the UUS UI decision is made
+4) keep TAL scope limited to availability cards + booking requests; do not add fallback public requests yet unless explicitly chosen next
+5) verify with locale JSON parse, focused eslint, npm run typecheck, and npm run build:static before any next deploy
+6) keep Coolify paused and do not reopen infra experiments during this product pass
 ```
 
 ## Deployment Context
@@ -365,4 +440,4 @@ Current task: evaluate the shipped UUS task-detail follow-up after deploy.
 
 ## One-Line Summary
 
-UUS core logic is already user-validated, the tabs/filter dashboard plus task-detail follow-up are now deployed through `4216d98`, and the next step is one fresh Telegram retest for the response UX.
+UUS is accepted well enough to move on, TAL now has its first real deployed availability + booking MVP slice on live runtime, and the next step is one real Telegram visual pass.

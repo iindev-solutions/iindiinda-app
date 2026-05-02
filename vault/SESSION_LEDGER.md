@@ -495,3 +495,19 @@
 - Verified: `cd frontend && npx eslint services/uus/app/pages/uus/task/[id].vue`; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`; VPS HEAD `4216d98`; live `200` for `/uus/task/1` and `/api/health`
 - Blockers: one more real Telegram check is still needed to confirm the response-form zoom is truly gone on device
 - Next: have the user retest the UUS task detail page in Telegram, then either close UUS polish or patch any remaining visual rough edges
+
+## 2026-05-02 17:40 — TAL First Real Source Slice
+
+- Scope: start TAL properly after the accepted UUS pass by replacing the old landing/showcase-only state with a first real availability + booking slice in source
+- Changes: added the first TAL API contract, rewrote TAL README, converted `/tal` to wrapper + nested index/detail pages, added TAL access/role/create primitives plus TAL types/composables, wired real TAL backend models/controllers/migrations/tests/routes, and added RU+SAH copy for the new flow
+- Verified: locale JSON parse; `cd frontend && npx eslint services/tal/app/pages/tal/index.vue services/tal/app/pages/tal/master/[id].vue services/tal/app/components/TalAccessState.vue services/tal/app/components/TalRoleSwitch.vue services/tal/app/components/TalCreateSlideover.vue services/tal/app/composables/useTalMasters.ts services/tal/app/composables/useTalBookings.ts services/tal/app/composables/useTalMy.ts services/tal/app/types/tal.ts`; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`
+- Blockers: TAL slice is still local/source-only; backend runtime verification and any deploy are still pending
+- Next: verify the TAL backend slice, then decide whether to ship the first TAL MVP slice live or patch source issues first
+
+## 2026-05-02 18:00 — TAL First MVP Deploy
+
+- Scope: verify, ship, and smoke the first real TAL availability + booking slice
+- Changes: committed `ff0fedd`, pushed `front/ayan`, synced VPS, cleared stale Laravel route cache, ran TAL migrations, verified the backend in a temp VPS copy with dev deps plus isolated MySQL test DB, deployed the rebuilt frontend static bundle, and live-smoked the TAL create -> book -> accept -> complete path with cleanup
+- Verified: VPS HEAD `ff0fedd`; `php artisan optimize:clear`; `php artisan migrate --force`; `php artisan route:list --path=api/tal`; `php -l` on changed TAL backend files; temp-copy `./vendor/bin/phpunit tests/Feature/TalPersistenceTest.php` (`3 tests, 36 assertions`); live `200` for `/tal`, `/tal/master/1`, `/api/health`; guest `401` for `/api/tal/masters`; accepted-booking delete guard returns `422`
+- Blockers: one real Telegram visual pass is still needed on the shipped TAL flow
+- Next: open TAL in Telegram, test create/book/accept UX, then decide whether more TAL polish is needed or fallback public requests should be the next TAL feature

@@ -56,5 +56,5 @@ First persisted slice uses:
 
 ## Deployment status
 
-- current deployment status: TAL is still landing/showcase-only on live runtime
-- latest real TAL MVP slice in this README is source work until a dedicated TAL deploy happens
+- current deployment status: the first real TAL availability + booking MVP slice is now deployed live
+- live runtime now includes `/tal` feed tabs, `/tal/master/[id]`, create availability, booking requests, accept/reject, contact reveal, and final outcome actions

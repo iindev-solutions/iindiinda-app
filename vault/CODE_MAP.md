@@ -116,18 +116,28 @@
 **API контракт**: `vault/wiki/services/ayan/api-contract.md`
 **Composables**: используют корневой `useAPI()` для HTTP, mock данные в `ayanMock.ts`
 
-### TAL (`frontend/services/tal/`) — Запись к мастерам
+### TAL (`frontend/services/tal/`) — Master availability + booking
 
-| Файл | Назначение |
-|------|-----------|
+| File | Purpose |
+|------|---------|
 | `nuxt.config.ts` | Layer config |
 | `package.json` | iind-tal v0.1.0 |
-| `README.md` | Концепция, API, архитектура |
-| `app/composables/useTalAPI.ts` | TAL API клиент |
-| `app/composables/useTalStore.ts` | TAL store |
-| `app/pages/tal.vue` | Parent wrapper → /tal |
-| `app/pages/tal-showcase.vue` | Шоукейс |
+| `README.md` | Current TAL MVP slice status + route/API overview |
+| `app/pages/tal.vue` | Wrapper-only parent route for `/tal` |
+| `app/pages/tal/index.vue` | Real TAL source feed page: tabs, filters, role helper, create CTA, my-area cards |
+| `app/pages/tal/master/[id].vue` | TAL detail page: book, accept/reject, contact reveal, final status actions |
+| `app/components/TalAccessState.vue` | TAL access-state screen for loading / Telegram-required / auth-failed states |
+| `app/components/TalRoleSwitch.vue` | TAL helper to enter or leave master mode (`passenger <-> master`) |
+| `app/components/TalCreateSlideover.vue` | TAL master availability create form with Telegram-safe bottom slideover UX |
+| `app/types/tal.ts` | TAL master/booking DTOs and enums |
+| `app/composables/useTalMasters.ts` | TAL feed/detail/create/update API layer |
+| `app/composables/useTalBookings.ts` | TAL booking list/create/update/delete API layer |
+| `app/composables/useTalMy.ts` | TAL my-master-cards / my-bookings API layer |
+| `app/pages/tal-showcase.vue` | Legacy visual sandbox route; no longer the main TAL runtime path |
+| `app/composables/useTalAPI.ts` | Legacy showcase helper |
+| `app/composables/useTalStore.ts` | Legacy showcase state |
 
+**API contract**: `vault/wiki/services/tal/api-contract.md`
 ### AGAL (`frontend/services/agal/`) — Доставка
 
 | Файл | Назначение |
@@ -194,6 +204,10 @@
 | `Agal/ResponseController.php` | Реальные AGAL responses endpoints, accept/reject, delete own response |
 | `Agal/MyController.php` | Реальные AGAL my routes/requests/responses через authenticated user |
 | `Agal/Concerns/SerializesAgalData.php` | Сериализация payload shape под фронтовые типы AGAL |
+| `Tal/MasterController.php` | TAL persisted master-card endpoints via Eloquent/MySQL, now deployed on VPS |
+| `Tal/BookingController.php` | TAL persisted booking endpoints, accept/reject, delete own booking, busy/duplicate guards, now deployed on VPS |
+| `Tal/MyController.php` | TAL my master cards / my bookings via authenticated user, now deployed on VPS |
+| `Tal/Concerns/SerializesTalData.php` | TAL payload serialization for frontend DTO shape |
 | `Uus/TaskController.php` | Реальные UUS task endpoints через Eloquent/MySQL (local source slice, not deployed) |
 | `Uus/ResponseController.php` | Реальные UUS responses endpoints, accept/reject, delete own response, response-limit guard (local source slice, not deployed) |
 | `Uus/MyController.php` | Реальные UUS my tasks/responses через authenticated user (local source slice, not deployed) |
@@ -230,7 +244,11 @@
 - AYAN: `GET/POST /api/ayan/requests/{id}/responses`
 - AYAN: `PATCH /api/ayan/responses/{id}`, `DELETE /api/ayan/responses/{id}`
 - AYAN: `GET /api/ayan/my/trips`, `GET /api/ayan/my/requests`, `GET /api/ayan/my/responses`
-- TAL: `GET /tal/services`, `GET /tal/masters`, `GET /tal/slots`, `POST /tal/bookings`, `DELETE /tal/bookings/{id}`
+- TAL routes now match the first real persisted contract shape on VPS:
+  - `GET/POST /tal/masters`, `GET/PATCH /tal/masters/{id}`
+  - `GET/POST /tal/masters/{id}/bookings`
+  - `PATCH/DELETE /tal/bookings/{id}`
+  - `GET /tal/my/masters`, `GET /tal/my/bookings`
 - UUS local source now has the first real persisted route shape:
   - `GET/POST /uus/tasks`, `GET/PATCH /uus/tasks/{id}`
   - `GET/POST /uus/tasks/{id}/responses`
@@ -251,7 +269,7 @@
 | Сервис | Backend | Frontend | Mock Data |
 |--------|---------|----------|-----------|
 | AYAN | runtime-ready on VPS: migrations + Sanctum + persistence controllers; Telegram verification still stub | pages + composables + types, real API switched on | ayanMock.ts |
-| TAL | routes only (нет контроллеров) | showcase | нет |
+| TAL | runtime-ready backend on VPS: migrations + persistence controllers + temp-copy PHPUnit green | first real feed/create/detail slice live on VPS; Telegram visual validation still pending | нет |
 | UUS | runtime-ready backend on VPS: migrations + persistence controllers + response-cap rule | first real feed/create/detail slice now deployed on VPS; manual Telegram validation still pending | нет |
 | AGAL | runtime-ready backend on VPS: migrations + persistence controllers + targeted PHPUnit green | real feed/create/detail slice live on VPS; manual Telegram validation still pending | нет |
 | Auth | partial real: Sanctum token issuance + `/api/user`; Telegram verification still stub | useAuth + init.ts | mockData.ts |
@@ -376,6 +394,39 @@
   - `backend` internal PHP-FPM Laravel runtime
   - `db` MySQL 8.0 with named volume persistence
 - This stack is not runtime-verified yet because local environment has no `docker`
+
+## Audit Notes - 2026-05-02 18:00
+
+- TAL availability + booking slice is now deployed live on VPS.
+- One operational note from deploy: after pulling the TAL backend code on VPS, `php artisan optimize:clear` was required so stale cached routes stopped exposing the old placeholder TAL endpoints.
+- Public fallback client requests are still deferred; the live TAL scope remains availability card -> booking request -> accept/reject -> contact reveal.
+
+## Audit Notes - 2026-05-02 17:40
+
+- TAL is no longer only a landing/showcase concept in local source.
+- New TAL source coverage now includes:
+  - `frontend/services/tal/app/pages/tal/index.vue`
+  - `frontend/services/tal/app/pages/tal/master/[id].vue`
+  - `frontend/services/tal/app/components/TalAccessState.vue`
+  - `frontend/services/tal/app/components/TalRoleSwitch.vue`
+  - `frontend/services/tal/app/components/TalCreateSlideover.vue`
+  - `frontend/services/tal/app/types/tal.ts`
+  - `frontend/services/tal/app/composables/useTalMasters.ts`
+  - `frontend/services/tal/app/composables/useTalBookings.ts`
+  - `frontend/services/tal/app/composables/useTalMy.ts`
+  - `backend/app/Http/Controllers/Tal/*`
+  - `backend/app/Models/TalMaster.php`
+  - `backend/app/Models/TalBooking.php`
+  - `backend/database/migrations/2026_05_02_170000_create_tal_masters_table.php`
+  - `backend/database/migrations/2026_05_02_170001_create_tal_bookings_table.php`
+  - `backend/tests/Feature/TalPersistenceTest.php`
+  - `vault/wiki/services/tal/api-contract.md`
+- First real TAL slice intentionally ships the availability-core flow only:
+  - master publishes availability
+  - client sends booking request
+  - master accepts/rejects
+  - contact reveal after acceptance
+- Public fallback client requests are still deferred for a later TAL pass.
 
 ## Audit Notes - 2026-05-02 16:35
 

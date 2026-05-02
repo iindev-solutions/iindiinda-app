@@ -30,12 +30,12 @@ Goal: ship a working AYAN MVP flow:
 ## Current Reality
 
 - Fresh VPS manual rebuild is now live again on `https://iindiinda.duckdns.org`
-- Current live restore scope now includes three real service/runtime tracks plus TAL landing only:
+- Current live restore scope now includes four real service/runtime tracks:
   - AYAN real backend + frontend
   - AGAL real backend + frontend
   - UUS first real backend + frontend MVP slice
+  - TAL first real backend + frontend MVP slice
   - legal center/routes
-  - TAL landing page only
 - The rebuilt host now runs the manual deployment baseline again:
   - `nginx + php8.3-fpm + mysql`
   - Laravel backend in `/var/www/iind-app/backend`
@@ -46,7 +46,8 @@ Goal: ship a working AYAN MVP flow:
 - Live AYAN + AGAL lifecycle smoke is green again after the rebuild
 - Live UUS smoke is now also green after the first deploy
 - User reported that the rebuilt Telegram Mini App runtime works again
-- User also reported that the live UUS logic works in Telegram Mini App; current remaining feedback is UI polish, not flow breakage
+- User already reported that the live UUS logic works in Telegram Mini App well enough to move on
+- Newly shipped TAL flow now becomes the next service needing real Telegram visual feedback
 - Nginx static handling is hardened so missing `/assets/*` returns `404`
 - Coolify remains explicitly paused
 
@@ -71,8 +72,7 @@ Goal: ship a working AYAN MVP flow:
 
 ## Active Blockers
 
-- Latest UUS task-detail follow-up still needs one real Telegram recheck, specifically for the response-form zoom behavior on device
-- TAL is still landing/showcase only and remains the next untouched service track if UUS is accepted as-is
+- First real TAL deploy still needs one real Telegram visual pass on device
 - No local `php`, `composer`, or `docker` in this environment for full backend execution outside the VPS
 - RF legal closure is still blocked by unresolved personal-data localization and final operator disclosure details
 
@@ -85,13 +85,14 @@ Goal: ship a working AYAN MVP flow:
 
 ## Next Practical Step
 
-1. Run one fresh Telegram Mini App retest on the shipped UUS task detail page with focus on:
-   - owner responses counter alignment
-   - removed duplicate task meta in the detail card
-   - response-form zoom behavior while typing and on submit
+1. Run one fresh Telegram Mini App visual pass on the shipped TAL flow with focus on:
+   - role switching into `master`
+   - availability create slideover
+   - `/tal` tabs and filters
+   - `/tal/master/[id]` booking / accept / contact reveal / final status UX
 2. If green, choose between:
-   - more UUS polish from real usage feedback
-   - or TAL first real MVP slice
+   - TAL polish from real usage feedback
+   - or the next TAL feature: public fallback client requests
 3. Keep manual VPS deployment as the only target and keep Coolify paused
 
 ## Definition Of Progress For This Sprint
@@ -108,7 +109,7 @@ This sprint is complete only when:
 - AYAN MVP sprint can now be treated as complete for runtime/UI scope based on green live API smoke plus user-reported real-device Telegram Mini App verification
 - Remaining legal/compliance work is still important, but it is no longer blocking the AYAN MVP runtime handoff
 - AGAL remains the newest implemented service track and now has both shipped backend persistence and shipped frontend MVP UI on VPS: feed, filters, role switching, create flow, detail pages, respond flow, contact reveal, and lifecycle actions
-- Immediate next execution target is no longer deeper AGAL feature work; it is getting Telegram feedback on the shipped UUS task-detail follow-up and then deciding whether the next build track is more UUS polish or TAL
+- Immediate next execution target is no longer deeper AGAL feature work; it is getting Telegram feedback on the shipped TAL availability + booking slice
 - Root `DESIGN.md` now exists as the shared redesign baseline and lint passes cleanly
 - Commit `bc7bdc4` locks redesign variant 1, commit `b22f92c` locks redesign variant 2, and the current local working tree continues variant 3 as the active chosen direction
 - Variant 3 now covers home, service landing pages, feed screens, detail pages, and create slideovers and is deployed live on the frontend runtime
