@@ -1,4 +1,4 @@
-# Resume Plan - 2026-04-24 20:15
+# Resume Plan - 2026-05-02 07:46
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
 
@@ -124,10 +124,63 @@
 - Live root HTML now references current assets `entry.7LYcEUNC.css` and `DTyp_Z4D.js`
 - Real Telegram Mini App retest is now positive: user confirmed the create flow no longer shows the disruptive zoom after removing the calendar/popover layer and disabling Telegram slideover transition
 
+## Recovery Recheck - 2026-04-29 13:36
+
+- Resumed the paused Coolify recovery plan with read-only health checks first
+- DNS still resolves `iindiinda.duckdns.org` to `89.22.226.34`
+- Current production host is worse than the prior intermittent state:
+  1. repeated `curl` checks to `https://iindiinda.duckdns.org/` timed out
+  2. repeated `curl` checks to `https://iindiinda.duckdns.org/api/health` timed out
+  3. repeated SSH attempts to `iind-vps` timed out on port `22`
+- Because the VPS is unreachable, the planned inspection of `/data/coolify/source/*.log`, `systemctl`, Docker DNS, and daemon config could not be performed from this environment
+- Next mandatory move is now out-of-band recovery through the VPS/provider panel or console before any more Coolify work
+
+## Infrastructure Reset - 2026-05-02 07:46
+
+- The VPS reinstall path is now complete enough to treat the fresh host as the new live baseline again
+- SSH automation works again through `iind-vps`
+- The rebuilt host now runs the intended manual deployment topology:
+  1. host-managed `nginx + php8.3-fpm + mysql`
+  2. Laravel backend in `/var/www/iind-app/backend`
+  3. Nuxt static frontend in `/var/www/iind-app/frontend/public`
+  4. same-origin `/api` through Nginx
+  5. HTTPS restored for `iindiinda.duckdns.org`
+- Source branch on the rebuilt VPS is `front/ayan` at `f1d1f5d`
+- Restore scope now live again on the rebuilt host:
+  1. AYAN real backend + frontend
+  2. AGAL real backend + frontend
+  3. legal center/routes
+  4. UUS/TAL landing pages only
+- New Nginx baseline also includes static hardening:
+  - missing `/assets/*` returns `404`
+  - `index.html` is `no-store`
+  - hashed assets/fonts are cacheable
+- Telegram runtime secret is restored on the rebuilt host
+- Bot API verification is green again:
+  - `getMe` resolves to `@iind_app_bot`
+  - default menu button is `web_app`
+  - menu URL is `https://iindiinda.duckdns.org/`
+- Backend auth endpoint now follows the Telegram validation path again (`422 Telegram user data is invalid.` for an invalid payload)
+- Real Telegram Mini App login is still not yet revalidated on the fresh host
+
 ## Stop Point
 
 - Current branch: `front/ayan`
-- Local, GitHub, and VPS repository are now also aligned on Coolify prep commit `a333560` `feat(ops): add coolify deployment starter`; live frontend runtime remains on the previously deployed redesign bundle
+- Current local/origin/VPS repo tip for the manual rebuild is `f1d1f5d` `docs(vault): record unstable vps recheck`
+- Fresh VPS manual deployment baseline is restored and reachable on `https://iindiinda.duckdns.org`
+- Live route checks are green again for `/`, `/ayan`, `/agal`, `/legal`, and `/api/health`
+- Live guest auth gate is green again (`401` on protected API)
+- Live AYAN + AGAL API smoke is green again after rebuild:
+  - AYAN trip flow `accepted -> completed`
+  - AYAN request flow `accepted -> cancelled`
+  - AGAL route flow `accepted -> completed`
+  - AGAL request flow `accepted -> cancelled`
+- Synthetic smoke records/tokens were cleaned back out of MySQL after verification
+- Current production blocker is now only the missing human runtime retest:
+  - Telegram secret/config is restored
+  - bot menu/web-app URL is verified
+  - real Mini App login still needs one fresh end-to-end retest
+- Coolify remains paused and should stay paused while the manual baseline is now healthy again
 - Latest live AYAN runtime behavior remains green after the redesign deployment and the older `5e81817` create-form simplification still remains part of the stable baseline
 - AGAL backend persistence is shipped on VPS and the redesigned frontend slice is now live on `/agal` (feed, create, detail, respond, contact reveal, lifecycle actions)
 - User completed manual Telegram Mini App testing and reported AYAN works end-to-end well enough for MVP acceptance
@@ -159,7 +212,7 @@
 - Redesign variant 3 is now the active live frontend runtime direction: home, landing, feed, detail, and create surfaces follow the same calmer daily-use styling
 - `iind` remains the cyan brand anchor and the literal home `iindiinda` reminder was removed
 - Latest shipped runtime commit is `30b0f40` `feat(ui): extend redesign variant 3`
-- Live deployment baseline is HTTPS at `https://iindiinda.duckdns.org`
+- Live deployment baseline was HTTPS at `https://iindiinda.duckdns.org`, but as of `2026-04-29 13:36` both HTTPS and SSH checks time out from this environment
 - Verified live routes (`200`):
   - `/`
   - `/ayan`
@@ -221,20 +274,9 @@
 
 ## Next Action
 
-1. First use the VPS/provider panel for a clean reboot if the host is still unstable when work resumes
-2. Then perform VPS health/stability checks only:
-   - SSH responsiveness
-   - `systemctl` status for `nginx`, `php8.3-fpm`, `mysql`, `docker`
-   - live route checks for `/` and `/api/health`
-3. If the host is stable, inspect the partial Coolify attempt:
-   - `/data/coolify/source/*.log`
-   - `/etc/docker/daemon.json`
-   - Docker DNS/network behavior against `ghcr.io`
-4. Decide whether to continue on the same VPS or stop because the host is too small/noisy for Coolify:
-   - total disk is only about `10GB`
-   - even after cleanup free disk is only about `5.2GB`
-5. Do **not** reopen redesign during this recovery window
-6. Keep legal/compliance parked and patch runtime bugs only if they block live usage
+1. Run one real Telegram Mini App login on the rebuilt host now and confirm `/api/auth/telegram` succeeds with signed `initData`
+2. If Telegram auth is green, treat the rebuild as complete and keep Coolify paused
+3. Only after that, decide whether to add any deployment convenience hardening such as DuckDNS updater restoration or scripted deploy wrappers
 
 ## API Smoke Snapshot (Live)
 
@@ -255,12 +297,13 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: resume the paused production-VPS Coolify attempt carefully.
-1) first verify VPS is healthy before changing anything else
-2) inspect the partial Coolify install and Docker pull/DNS failure around `ghcr.io`
-3) treat current live AYAN/AGAL runtime as primary; recovery/stability comes before Coolify ambition
-4) do not reopen redesign unless real usage reveals concrete friction
-5) keep legal parked and patch runtime bugs only if they block live usage
+Current task: recover the production VPS enough to make a go/no-go decision on the paused Coolify attempt.
+1) assume the VPS is currently down/unreachable until proven otherwise
+2) use the provider panel or recovery console first; normal SSH and HTTPS checks timed out on 2026-04-29 13:36
+3) after reboot, verify only basic health (`ssh`, `systemctl`, `/`, `/api/health`, `df -h /`)
+4) only if the host is stable again, inspect the partial Coolify install and Docker pull/DNS failure around `ghcr.io`
+5) if the host is still too small/noisy, stop Coolify on this VPS instead of forcing it
+6) do not reopen redesign; keep legal parked; patch runtime bugs only if they block live usage
 ```
 
 ## Deployment Context
@@ -272,4 +315,4 @@ Current task: resume the paused production-VPS Coolify attempt carefully.
 
 ## One-Line Summary
 
-Live AYAN remains the intended baseline, AGAL stays stable in source, redesign variant 3 remains accepted, and the repository plus VPS repo now contain Coolify starter prep while the first real production-VPS Coolify install attempt is paused after Docker/DNS instability.
+Fresh VPS manual redeploy is green again for AYAN + AGAL + legal over HTTPS, Telegram bot config is restored and verified, and only one fresh real Mini App login retest remains before calling the rebuild complete.

@@ -312,6 +312,22 @@
 - Blockers: source changes are not deployed yet; final operator/requisites details are still missing; RF personal-data localization remains unresolved because current runtime history points to Sweden-hosted infrastructure; full repo lint still has unrelated pre-existing CRLF/prettier debt outside this slice
 - Next: decide RF localization/hosting plan, fill final operator details, then deploy the new legal center when approved
 
+## 2026-05-02 10:20 — Fresh VPS Redeploy Planning
+
+- Scope: re-evaluate deployment after operator-reported VPS reinstall and define the new restore path
+- Changes: re-read the mandatory vault docs plus deploy-relevant notes, checked local SSH alias/key state, probed the rebuilt host, captured the new SSH fingerprint, and reset the plan from "recover old VPS" to "manual redeploy on fresh VPS"
+- Verified: `git status --short --branch`; `git log -1 --oneline --decorate`; local `~/.ssh/config`; `ssh-keyscan`/SSH probe against `89.22.226.34`
+- Blockers: local SSH trust is stale because the host key changed after reinstall; key authorization on the rebuilt host is not yet revalidated after the trust reset
+- Next: verify the new fingerprint out-of-band, rotate `known_hosts`, retest SSH with the existing key, then bootstrap Nginx/PHP/MySQL + backend/frontend deploy on the fresh host
+
+## 2026-05-02 10:35 — SSH Trust Fixed Key Auth Blocked
+
+- Scope: clear the post-reinstall SSH host-key warning and test whether the old automation key still works
+- Changes: verified the new ED25519 host fingerprint, removed stale local `known_hosts` entries, added the rebuilt host back to local trust, and retried `ssh iind-vps`
+- Verified: host-key mismatch is resolved; SSH now fails with `Permission denied (publickey,password)`
+- Blockers: rebuilt VPS does not currently authorize `C:/Users/slavk/.ssh/iind_vps` for `root`
+- Next: add `C:/Users/slavk/.ssh/iind_vps.pub` to `/root/.ssh/authorized_keys` through the working PuTTY/root path, then retry SSH and continue bootstrap
+
 ## 2026-04-25 15:05 — Legal Rendering Fix + Navigation Simplify
 
 - Scope: fix broken legal text rendering and reduce repeated legal-entry surfaces to one place in the main menu
@@ -423,3 +439,19 @@
 - Verified: user direction is explicit — redesign now before deeper UI growth; prior live AYAN/AGAL baseline verification already exists in vault
 - Blockers: no redesign spec exists yet, so the next session must first define the visual/system direction before touching many pages
 - Next: start redesign in this order — shared shell/primitives, then home/service landing pages, then feed/detail/create flows
+
+## 2026-04-29 13:36 — Coolify Resume Attempt Blocked By Host Outage
+
+- Scope: resume the paused production-VPS Coolify recovery carefully, starting with read-only host health checks
+- Changes: re-read the mandatory vault/deploy docs, checked current live domain reachability, retried SSH access to `iind-vps`, and confirmed that the VPS is currently unreachable from this environment
+- Verified: DNS still resolves `iindiinda.duckdns.org` to `89.22.226.34`; repeated `curl` checks to `/` and `/api/health` timed out; repeated SSH attempts to port `22` timed out
+- Blockers: the VPS cannot currently be reached over HTTPS or SSH, so provider-panel reboot/console recovery is required before any Coolify log inspection or repair can continue
+- Next: perform an out-of-band VPS reboot, then rerun only basic health checks (`ssh`, `systemctl`, `/`, `/api/health`) before deciding whether to inspect or abandon the paused Coolify install
+
+## 2026-05-02 07:46 — Fresh VPS Manual Rebuild Restored
+
+- Scope: rebuild the app from scratch on the reinstalled VPS and recover the manual HTTPS deployment baseline
+- Changes: restored SSH key access, installed Nginx/MySQL/PHP/Composer/Certbot, cloned `front/ayan` into `/var/www/iind-app`, configured Laravel production env + database + migrations, rebuilt/deployed the Nuxt static frontend, restored HTTPS for `iindiinda.duckdns.org`, hardened Nginx asset handling, ran AYAN/AGAL live smoke flows with cleanup, restored `TELEGRAM_BOT_TOKEN`, refreshed Laravel caches, and verified the bot/menu configuration again
+- Verified: `ssh iind-vps`; `systemctl is-active nginx php8.3-fpm mysql`; `php artisan migrate --force`; `php artisan route:list --path=api`; live `301` HTTP -> HTTPS; live `200` for `/`, `/ayan`, `/agal`, `/legal`, `/api/health`; guest protected API `401`; root HTML contains `apiBase:"/api"`; missing `/assets/*` returns `404`; AYAN + AGAL smoke lifecycle flows green; invalid `/api/auth/telegram` payload now returns `422 Telegram user data is invalid.`; bot API `getMe` resolves to `@iind_app_bot`; default menu button is `web_app` -> `https://iindiinda.duckdns.org/`
+- Blockers: only one fresh real Telegram Mini App login retest is still missing on the rebuilt host
+- Next: open the Mini App now, confirm login succeeds, and only inspect `/api/auth/telegram` immediately if that real retest fails

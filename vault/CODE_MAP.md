@@ -257,7 +257,7 @@
 - `empty-template/`: new minimal starter template added inside the repository; contains starter `frontend/`, starter `backend/`, and its own full `vault/` workflow skeleton
 - `frontend/app/config/api.config.ts`: `USE_MOCK_API = false` — AYAN фронт переключён на real API
 - `frontend/app/composables/useAuth.ts`: browser auto-login не ходит в старый OAuth flow до появления backend support
-- `ops/nginx/iind-vps-default.conf`: repo-tracked VPS Nginx config for SPA at `/` + Laravel API at `/api/*`
+- `ops/nginx/iind-vps-default.conf`: repo-tracked VPS Nginx config for HTTPS SPA at `/` + Laravel API at `/api/*`, with same-origin `/api`, asset `404` hardening, immutable hashed-asset caching, and `index.html` no-store behavior
 - local frontend against VPS: задать `frontend/.env` с `NUXT_PUBLIC_API_BASE=http://89.22.226.34/api`; для browser-only smoke path можно добавить `NUXT_PUBLIC_DEV_INIT_DATA=test`
 - GitHub Pages deploy live: `https://iindev-solutions.github.io/iindiinda-app/` и `/ayan` отвечают `200`, rebased assets под `/iindiinda-app/assets/*` грузятся
 - direct VPS smoke подтверждён: два synthetic Telegram payload юзера прошли login → create trip/request → respond → accept → `my/*`

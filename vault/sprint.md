@@ -29,16 +29,22 @@ Goal: ship a working AYAN MVP flow:
 
 ## Current Reality
 
-- Frontend AYAN uses real API (`/api`) on the same VPS host
-- Backend AYAN runtime is live on VPS with Laravel + Sanctum + MySQL
-- HTTPS and HTTP -> HTTPS redirect are active for DuckDNS domain
-- `TELEGRAM_BOT_TOKEN` is present on VPS backend env (prior blocker fixed)
-- Role switch UI, detail back button, status cards, and Telegram-safe create form are deployed
-- Legal pages/links are now committed, pushed, and deployed
-- Lifecycle status expansion (`matched/completed/cancelled`) is now committed, pushed, migrated, and deployed
-- Production API behavior for lifecycle states is validated (`open -> matched -> completed/cancelled`)
-- Platform-wide legal-center expansion is now deployed live; do not treat it as final legal closure until operator details and RF data-localization posture are resolved
-- AGAL backend persistence slice is live on VPS, and the first real AGAL frontend create/feed/detail slice is now also deployed live
+- Fresh VPS manual rebuild is now live again on `https://iindiinda.duckdns.org`
+- Current live restore scope matches the intended shipped baseline:
+  - AYAN real backend + frontend
+  - AGAL real backend + frontend
+  - legal center/routes
+  - UUS/TAL landing pages only
+- The rebuilt host now runs the manual deployment baseline again:
+  - `nginx + php8.3-fpm + mysql`
+  - Laravel backend in `/var/www/iind-app/backend`
+  - Nuxt static frontend in `/var/www/iind-app/frontend/public`
+  - same-origin `/api`
+- SSH automation via `iind-vps` is restored
+- HTTPS is restored and live route checks are green again
+- Live AYAN + AGAL lifecycle smoke is green again after the rebuild
+- Nginx static handling is hardened so missing `/assets/*` returns `404`
+- Coolify remains explicitly paused
 
 ## Sprint Tasks
 
@@ -61,8 +67,8 @@ Goal: ship a working AYAN MVP flow:
 
 ## Active Blockers
 
-- VPS DB migration flow was recovered after a historical partial apply; monitor schema health in next deploy window
-- No local `php`, `composer`, or `docker` in this environment for full backend execution
+- Real Telegram Mini App end-to-end verification on the rebuilt host is still pending
+- No local `php`, `composer`, or `docker` in this environment for full backend execution outside the VPS
 - RF legal closure is still blocked by unresolved personal-data localization and final operator disclosure details
 
 ## Decisions Already Taken
@@ -74,17 +80,9 @@ Goal: ship a working AYAN MVP flow:
 
 ## Next Practical Step
 
-1. Shared redesign baseline now exists in root `DESIGN.md`
-2. Use `DESIGN.md` plus the current AYAN + AGAL runtime behavior as the implementation baseline
-3. Implement shared frontend shell and design-system primitives next:
-   - page shell
-   - service cards
-   - content cards
-   - buttons
-   - inputs
-   - tabs
-   - lifecycle/status badges
-4. After primitives land, redesign home + service landing pages, then feed/detail/create surfaces without unnecessary backend churn
+1. Run one real Telegram Mini App login pass on the rebuilt host
+2. If login is green, consider the rebuild complete and keep Coolify paused
+3. If login fails, inspect the first `/api/auth/telegram` request/response on the rebuilt host immediately while the timestamp is fresh
 
 ## Definition Of Progress For This Sprint
 
@@ -100,9 +98,9 @@ This sprint is complete only when:
 - AYAN MVP sprint can now be treated as complete for runtime/UI scope based on green live API smoke plus user-reported real-device Telegram Mini App verification
 - Remaining legal/compliance work is still important, but it is no longer blocking the AYAN MVP runtime handoff
 - AGAL remains the newest implemented service track and now has both shipped backend persistence and shipped frontend MVP UI on VPS: feed, filters, role switching, create flow, detail pages, respond flow, contact reveal, and lifecycle actions
-- Immediate next execution target is no longer deeper AGAL feature work; it is a project redesign started while the UI surface is still small enough to change safely
+- Immediate next execution target is no longer deeper AGAL feature work; it is validating one real Mini App login against the otherwise-green manual baseline
 - Root `DESIGN.md` now exists as the shared redesign baseline and lint passes cleanly
 - Commit `bc7bdc4` locks redesign variant 1, commit `b22f92c` locks redesign variant 2, and the current local working tree continues variant 3 as the active chosen direction
 - Variant 3 now covers home, service landing pages, feed screens, detail pages, and create slideovers and is deployed live on the frontend runtime
 - A first-pass Coolify deployment layout now exists in source as an alternative to the current manual VPS deployment flow, but it is not trial-verified yet
-- Remaining redesign work is now polish/regression-fix work rather than the original shell/feed/detail/create rollout sequence
+- Remaining redesign work is now lower priority than restoring VPS reachability and deciding whether this host should carry any Coolify ambition at all

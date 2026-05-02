@@ -2,6 +2,129 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-02 07:46 - Fresh VPS Manual Rebuild Restored
+
+### Done
+
+- Restored SSH automation after the VPS reinstall by reauthorizing the existing `iind_vps` key for `root`
+- Installed the fresh host baseline on Ubuntu 24.04: `git`, `nginx`, `mysql-server`, `php8.3-fpm`, required PHP extensions, `composer`, `certbot`
+- Cloned branch `front/ayan` into `/var/www/iind-app`
+- Rebuilt the backend runtime from scratch:
+  - created MySQL database/user
+  - wrote production backend `.env`
+  - ran `composer install --no-dev --optimize-autoloader`
+  - generated app key
+  - ran all migrations
+  - optimized Laravel caches
+- Rebuilt the frontend locally with `frontend: npm run build:static` and redeployed the generated static bundle to `/var/www/iind-app/frontend/public`
+- Recreated the VPS Nginx site for same-origin SPA + `/api` and reissued HTTPS for `iindiinda.duckdns.org`
+- Hardened Nginx static handling so missing `/assets/*` now returns `404` instead of SPA HTML fallback
+- Ran live HTTPS smoke flows for AYAN and AGAL, then cleaned the synthetic smoke data back out of MySQL
+
+### Verified
+
+- `ssh iind-vps` ✅
+- `systemctl is-active nginx php8.3-fpm mysql` ✅
+- `php -v` => `8.3.6` ✅
+- `composer --version` ✅
+- `mysql --version` ✅
+- `php artisan migrate --force` ✅
+- `php artisan route:list --path=api` ✅
+- `curl -I http://iindiinda.duckdns.org/` => `301` to HTTPS ✅
+- `curl -I https://iindiinda.duckdns.org/` => `200` ✅
+- `curl -I https://iindiinda.duckdns.org/ayan` => `200` ✅
+- `curl -I https://iindiinda.duckdns.org/agal` => `200` ✅
+- `curl -I https://iindiinda.duckdns.org/legal` => `200` ✅
+- `curl https://iindiinda.duckdns.org/api/health` => `{"status":"ok","version":"0.1.0"}` ✅
+- guest `https://iindiinda.duckdns.org/api/ayan/trips` => `401` ✅
+- live root HTML contains `apiBase:"/api"` ✅
+- missing asset probe under `/assets/*` => `404` ✅
+- live smoke lifecycle flows ✅
+  - AYAN trip: `accepted -> completed`
+  - AYAN request: `accepted -> cancelled`
+  - AGAL route: `accepted -> completed`
+  - AGAL request: `accepted -> cancelled`
+- smoke cleanup ✅ (`COUNT(users where telegram_id in 910001..910004) = 0`)
+
+### Important
+
+- Manual VPS deployment baseline is green again on the rebuilt host
+- Telegram runtime secret is now restored on the rebuilt backend host
+- Bot API verification is green again:
+  - `getMe` resolves to `@iind_app_bot`
+  - default menu button type is `web_app`
+  - menu URL is `https://iindiinda.duckdns.org/`
+- Backend auth endpoint now follows the Telegram validation path instead of missing-config failure:
+  - `POST /api/auth/telegram` with invalid payload returns `422 Telegram user data is invalid.`
+- Final remaining production check is one real Telegram Mini App login on the rebuilt host
+
+## 2026-05-02 10:35 - SSH Trust Restored But VPS Key Authorization Missing
+
+### Done
+
+- Verified the rebuilt VPS host fingerprint out-of-band against the server-side ED25519 host key
+- Rotated stale local `known_hosts` trust for `89.22.226.34` / `iind-vps`
+- Re-tested SSH access with the existing local `iind_vps` private key
+
+### Verified
+
+- Host-key warning is resolved as a trust issue, not a MITM suspicion
+- The next blocker is now explicit auth failure from the server:
+  - `Permission denied (publickey,password)`
+- This means the local private key file still exists, but the rebuilt VPS does not currently authorize it for `root`
+
+### Important
+
+- Next operator action is to add `C:/Users/slavk/.ssh/iind_vps.pub` into `/root/.ssh/authorized_keys` from the already-working PuTTY/root path
+- After that, retry `ssh iind-vps`; only then continue package/bootstrap work
+
+## 2026-05-02 10:20 - Post-Reinstall Recovery Plan And SSH Host-Key Diagnosis
+
+### Done
+
+- Recorded the new operator-reported infrastructure state: the VPS was reinstalled and the old runtime should be treated as gone
+- Re-read the mandatory vault docs plus deployment-relevant architecture/service notes before planning the rebuild
+- Audited local SSH configuration for `iind-vps` and probed the new host over SSH
+- Captured the first concrete access blocker for the rebuilt VPS
+- Defined the new recovery direction as a clean manual redeploy, not a resumed Coolify attempt
+
+### Verified
+
+- Local SSH alias `iind-vps` still targets `89.22.226.34` as `root` with identity file `C:/Users/slavk/.ssh/iind_vps`
+- The private key file still exists locally
+- SSH failure is currently a host-key trust mismatch after reinstall, not yet proven key-auth failure:
+  - remote ED25519 fingerprint: `SHA256:ogdcFFE/CY0R2wtwDbB2ZpUJUCxjpqf1nK96dzAStSY`
+  - `ssh-keyscan` returns `OpenSSH_9.6p1 Ubuntu-3ubuntu13.5`
+- Current local/origin branch tip is `f1d1f5d` on `front/ayan`
+- Repository source still contains the manual VPS deployment baseline (`ops/nginx/iind-vps-default.conf`) and current AYAN/AGAL runtime code
+
+### Important
+
+- The next infrastructure step is no longer "recover the old VPS state"; it is "bootstrap a fresh VPS and redeploy the current app state"
+- Do not assume UUS/TAL have real backend parity; the current restore target is the already shipped scope: AYAN + AGAL real backend/frontend, legal routes, and UUS/TAL landing pages
+- Before changing local `known_hosts`, verify the new SSH fingerprint in PuTTY or the provider console, then rotate the stale host key entry and retry SSH auth
+
+## 2026-04-29 13:36 - VPS Fully Unreachable On Coolify Resume Attempt
+
+### Done
+
+- Resumed the paused Coolify recovery plan with read-only checks only
+- Re-read the deployment handoff docs and Coolify setup files before touching anything
+- Probed the current production host with repeated HTTPS and SSH reachability checks
+
+### Verified
+
+- `iindiinda.duckdns.org` still resolves to `89.22.226.34`
+- Repeated HTTPS checks to both `/` and `/api/health` now time out completely instead of returning intermittent responses
+- Repeated SSH attempts to `iind-vps` also time out completely on port `22`
+- Because the host is unreachable, it was not possible to inspect `/data/coolify/source/*.log`, `systemctl` status, or Docker DNS settings from inside the VPS
+
+### Important
+
+- Current blocker is no longer "partial Coolify failure on a reachable host"; it is "host not reachable at all from the current environment"
+- The next action must be an out-of-band provider-panel reboot or equivalent console recovery before any more Coolify work
+- After reboot, continue with minimal health checks first and only then inspect the paused Coolify install state
+
 ## 2026-04-26 23:25 - VPS Health Recheck Still Unstable
 
 ### Done
