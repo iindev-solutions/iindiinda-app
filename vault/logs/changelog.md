@@ -2,6 +2,34 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-05 22:23 - Theme Variable Syntax Fix Deployed
+
+### Done
+
+- Investigated the remaining invalid frontend color declarations that still used `rgb(var(--color-...))`
+- Confirmed that the theme color variables are hex values, so the `rgb(var(...))` form was invalid
+- Replaced all remaining source occurrences in the shared frontend shell/components with direct `var(--color-...)` usage
+- Committed the follow-up frontend fix as `ae2b0a9` `fix(ui): use theme vars directly`
+- Pushed `front/ayan`, fast-forwarded the VPS checkout, rebuilt static output locally, and redeployed the frontend bundle to VPS
+
+### Verified
+
+- `rg -n "rgb\(var\(--color-[^)]+\)\)" frontend -S` ✅ (no source matches)
+- `cd frontend && npx eslint app/components/AppHeader.vue app/components/AppBottomNav.vue app/components/AppTitle.vue app/components/AppServiceAbout.vue app/components/ServiceCard.vue app/components/LoadingSpinner.vue app/components/EmptyState.vue app/components/ErrorMessage.vue` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`ae2b0a9` before later vault sync)
+- live route checks ✅
+  - `GET /` -> `200`
+  - `GET /roadmap` -> `200`
+  - `GET /api/health` -> `200`
+
+### Important
+
+- Current source and current shipped bundle are fixed
+- The manual VPS deploy flow still preserves older hashed assets for cache compatibility, so a recursive grep over the whole deployed `frontend/public/assets` directory can still hit older stale files even after the current active bundle is corrected
+
 ## 2026-05-05 22:17 - Public Packaging Slice Committed Pushed And Deployed
 
 ### Done

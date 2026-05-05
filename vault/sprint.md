@@ -49,6 +49,7 @@ Goal: ship a working AYAN MVP flow:
 - User already reported that the live UUS logic works in Telegram Mini App well enough to move on
 - User has now manually rechecked the live TAL flow too and reports that the broader current runtime works excellently in Telegram
 - Public roadmap packaging is now also shipped live: `/roadmap`, compact per-service roadmap preview cards, a refreshed root `README.md`, and one shared direct `AppAccessState` gate with unified copy
+- The shared frontend shell also had the remaining invalid `rgb(var(--color-...))` theme-variable syntax cleaned up and deployed in follow-up commit `ae2b0a9`
 - Nginx static handling is hardened so missing `/assets/*` returns `404`
 - Coolify remains explicitly paused
 

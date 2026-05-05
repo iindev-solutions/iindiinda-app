@@ -559,3 +559,11 @@
 - Verified: VPS head `ee4b71c`; live `200` for `/`, `/roadmap`, `/ayan`, and `/api/health`; live root HTML still contains `apiBase:"/api"`
 - Blockers: packaging/deploy blocker is closed; remaining blockers are legal/compliance facts and launch/distribution planning decisions
 - Next: use the shipped roadmap/README packaging for soft-launch conversations, then write go-to-market / buyer-profile / launch-checklist docs while context is still hot
+
+## 2026-05-05 22:23 — Theme Variable Syntax Fix Live
+
+- Scope: remove the remaining invalid `rgb(var(--color-...))` declarations from the shared frontend shell/components and ship the fix
+- Changes: replaced all remaining source occurrences with direct `var(--color-...)`, committed `ae2b0a9`, pushed `front/ayan`, fast-forwarded VPS repo, rebuilt the frontend, and redeployed the static bundle
+- Verified: no source matches remain for `rgb(var(--color-...))`; focused eslint on the changed shared components; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`; VPS head `ae2b0a9`; live `200` for `/`, `/roadmap`, and `/api/health`
+- Blockers: this UI syntax bug is closed; remaining blockers are legal/compliance facts and launch/distribution planning decisions
+- Next: move back to the higher-level launch/distribution docs while the now-shipped frontend baseline stays stable

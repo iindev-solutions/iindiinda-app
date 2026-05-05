@@ -1,6 +1,22 @@
-# Resume Plan - 2026-05-05 22:17
+# Resume Plan - 2026-05-05 22:23
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
+
+## Theme Variable Syntax Fix Deployed - 2026-05-05 22:23
+
+- User spotted invalid frontend color syntax like `rgb(var(--color-cyan-400))`
+- Root cause confirmed: these theme variables are hex values, not RGB channel triplets, so `rgb(var(--color-...))` is invalid
+- Fixed all remaining source occurrences under `frontend/` and replaced them with direct `var(--color-...)` usage
+- Shipped runtime/frontend commit for this follow-up: `ae2b0a9` `fix(ui): use theme vars directly`
+- Verification is green:
+  - `rg -n "rgb\\(var\\(--color-[^)]+\\)\\)" frontend -S` -> no source matches
+  - `cd frontend && npx eslint app/components/AppHeader.vue app/components/AppBottomNav.vue app/components/AppTitle.vue app/components/AppServiceAbout.vue app/components/ServiceCard.vue app/components/LoadingSpinner.vue app/components/EmptyState.vue app/components/ErrorMessage.vue`
+  - `cd frontend && npm run typecheck`
+  - `cd frontend && npm run build:static`
+  - `git push origin front/ayan`
+  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` -> `ae2b0a9`
+  - live `200` for `/`, `/roadmap`, and `/api/health`
+- Important deploy note: the manual VPS rollout still preserves older hashed assets in `frontend/public/assets` for cache compatibility, so recursive grep on the whole deployed assets directory can still hit older stale files even though the current source and current shipped bundle are fixed
 
 ## Public Packaging Slice Deployed - 2026-05-05 22:17
 
@@ -344,11 +360,11 @@
 - Current branch: `front/ayan`
 - User now reports that the current live runtime works excellently in Telegram Mini App, including the TAL flow
 - User-reported manual UUS Telegram validation is green for the core create/respond/accept/finalize flow
-- Current live frontend packaging/runtime commit is now `ee4b71c` `feat(app): add roadmap and unify access gate`
+- Current live frontend packaging/runtime commit is now `ae2b0a9` `fix(ui): use theme vars directly`
 - Current live UUS frontend still includes the dashboard split into tabs plus collapsible filters plus the task-detail counter/no-zoom follow-up
 - Current live TAL frontend now includes `/tal` feed tabs + filters + create status flow and `/tal/master/[id]` booking detail flow
 - Current local working tree is clean again at session close
-- Local, origin, and VPS are aligned again after committing, pushing, and deploying the packaging + DRY cleanup slice
+- Local, origin, and VPS are aligned again after the later theme-variable follow-up deploy
 - `main` now also includes the UUS slice plus the latest vault sync via merge commit `c12330c`
 - UUS first real MVP slice is now committed, pushed, deployed, and live-smoked:
   - real backend persistence for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
@@ -397,7 +413,7 @@
 - Commit `b22f92c` is the saved redesign variant 2 checkpoint
 - Redesign variant 3 is now the active live frontend runtime direction: home, landing, feed, detail, and create surfaces follow the same calmer daily-use styling
 - `iind` remains the cyan brand anchor and the literal home `iindiinda` reminder was removed
-- Latest shipped frontend runtime commit is `ee4b71c` `feat(app): add roadmap and unify access gate`
+- Latest shipped frontend runtime commit is `ae2b0a9` `fix(ui): use theme vars directly`
 - Live deployment baseline is again healthy at `https://iindiinda.duckdns.org` after the VPS rebuild, the UUS passes, and the TAL deploy
 - Verified live routes (`200`):
   - `/`
