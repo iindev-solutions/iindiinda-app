@@ -551,3 +551,11 @@
 - Verified: locale JSON parse; focused eslint on shared access-state/auth files plus affected service pages; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`
 - Blockers: this simplified DRY slice is still local/source-only and not deployed yet; launch-readiness/legal facts are still unresolved
 - Next: review and ship the whole local packaging + direct shared access-state slice before deeper product/launch work
+
+## 2026-05-05 22:17 — Packaging Slice Deployed Live
+
+- Scope: commit, push, and deploy the now-finished public packaging + DRY access-state slice
+- Changes: committed `ee4b71c`, pushed `front/ayan`, fast-forwarded VPS repo, deployed the rebuilt frontend bundle with `public_new -> public` swap, and restored repo/runtime alignment
+- Verified: VPS head `ee4b71c`; live `200` for `/`, `/roadmap`, `/ayan`, and `/api/health`; live root HTML still contains `apiBase:"/api"`
+- Blockers: packaging/deploy blocker is closed; remaining blockers are legal/compliance facts and launch/distribution planning decisions
+- Next: use the shipped roadmap/README packaging for soft-launch conversations, then write go-to-market / buyer-profile / launch-checklist docs while context is still hot

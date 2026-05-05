@@ -2,6 +2,36 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-05 22:17 - Public Packaging Slice Committed Pushed And Deployed
+
+### Done
+
+- Committed the current local package as `ee4b71c` `feat(app): add roadmap and unify access gate`
+- Pushed `front/ayan` to GitHub
+- Fast-forwarded the VPS checkout to the same commit
+- Deployed the rebuilt frontend static bundle to VPS using the safe `public_new -> public` swap flow and preserved `public_prev` for rollback/cache compatibility
+- Shipped live frontend scope now includes:
+  - `/roadmap`
+  - compact service-entry roadmap previews on AYAN/UUS/TAL/AGAL
+  - refreshed root repository packaging in source (`README.md`)
+  - one direct shared `AppAccessState` gate with unified generic copy
+
+### Verified
+
+- `git push origin front/ayan` ✅
+- `ssh iind-vps "git -C /var/www/iind-app pull --ff-only origin front/ayan && git -C /var/www/iind-app rev-parse --short HEAD"` ✅ (`ee4b71c`)
+- frontend static deploy via uploaded tarball + `public_new -> public` swap ✅
+- `curl -I https://iindiinda.duckdns.org/` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/roadmap` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/ayan` ✅ (`200`)
+- `curl -I https://iindiinda.duckdns.org/api/health` ✅ (`200`)
+- `curl -s https://iindiinda.duckdns.org/` contains `apiBase:"/api"` ✅
+
+### Important
+
+- Local, origin, and VPS are aligned again after this deploy
+- Highest-value next work is no longer shipping this packaging slice; it is using it for launch/distribution planning and then choosing the next strategic track deliberately
+
 ## 2026-05-05 22:00 - Shared Access-State Simplified Further
 
 ### Done

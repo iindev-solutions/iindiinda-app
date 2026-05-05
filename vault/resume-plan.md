@@ -1,6 +1,23 @@
-# Resume Plan - 2026-05-05 22:00
+# Resume Plan - 2026-05-05 22:17
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
+
+## Public Packaging Slice Deployed - 2026-05-05 22:17
+
+- Committed the local packaging + DRY cleanup slice as `ee4b71c` `feat(app): add roadmap and unify access gate`
+- Pushed `front/ayan` and fast-forwarded the VPS checkout to the same commit
+- Deployed the rebuilt frontend static bundle to VPS via the safe `public_new -> public` swap flow
+- Current live frontend now includes:
+  - `/roadmap`
+  - compact service-entry roadmap previews on AYAN/UUS/TAL/AGAL
+  - refreshed root `README.md` in source
+  - one direct shared `AppAccessState` gate with unified generic copy
+- Verification is green after the deploy:
+  - `ssh iind-vps "git -C /var/www/iind-app rev-parse --short HEAD"` -> `ee4b71c`
+  - live `200` for `/`, `/roadmap`, `/ayan`, and `/api/health`
+  - live root HTML still contains `apiBase:"/api"`
+- Local, origin, and VPS are aligned again at this stop point
+- Local working tree is clean again at this stop point
 
 ## Shared Access-State DRY Cleanup - 2026-05-05 22:00
 
@@ -327,18 +344,18 @@
 - Current branch: `front/ayan`
 - User now reports that the current live runtime works excellently in Telegram Mini App, including the TAL flow
 - User-reported manual UUS Telegram validation is green for the core create/respond/accept/finalize flow
-- Current deployed TAL runtime/code slice is now `ff0fedd` `feat(tal): add booking MVP slice`
+- Current live frontend packaging/runtime commit is now `ee4b71c` `feat(app): add roadmap and unify access gate`
 - Current live UUS frontend still includes the dashboard split into tabs plus collapsible filters plus the task-detail counter/no-zoom follow-up
 - Current live TAL frontend now includes `/tal` feed tabs + filters + create status flow and `/tal/master/[id]` booking detail flow
-- Current local working tree is not clean: it now contains the new public roadmap + README packaging pass, the shared direct `AppAccessState` DRY cleanup, and the matching vault updates
-- Local source is now ahead of origin/VPS because this packaging + DRY cleanup slice is not committed, pushed, or deployed yet
+- Current local working tree is clean again at session close
+- Local, origin, and VPS are aligned again after committing, pushing, and deploying the packaging + DRY cleanup slice
 - `main` now also includes the UUS slice plus the latest vault sync via merge commit `c12330c`
 - UUS first real MVP slice is now committed, pushed, deployed, and live-smoked:
   - real backend persistence for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
   - real frontend feed/create/detail/my-area under `frontend/services/uus/app/`
   - UUS page structure follows the mandatory wrapper + nested index pattern
 - Fresh VPS manual deployment baseline is restored and reachable on `https://iindiinda.duckdns.org`
-- Live route checks are green again for `/`, `/ayan`, `/agal`, `/tal`, `/legal`, and `/api/health`
+- Live route checks are green again for `/`, `/roadmap`, `/ayan`, `/agal`, `/tal`, `/legal`, and `/api/health`
 - Live guest auth gate is green again (`401` on protected API)
 - Live AYAN + AGAL API smoke is green again after rebuild:
   - AYAN trip flow `accepted -> completed`
@@ -380,7 +397,7 @@
 - Commit `b22f92c` is the saved redesign variant 2 checkpoint
 - Redesign variant 3 is now the active live frontend runtime direction: home, landing, feed, detail, and create surfaces follow the same calmer daily-use styling
 - `iind` remains the cyan brand anchor and the literal home `iindiinda` reminder was removed
-- Latest shipped frontend runtime commit is `ff0fedd` `feat(tal): add booking MVP slice`
+- Latest shipped frontend runtime commit is `ee4b71c` `feat(app): add roadmap and unify access gate`
 - Live deployment baseline is again healthy at `https://iindiinda.duckdns.org` after the VPS rebuild, the UUS passes, and the TAL deploy
 - Verified live routes (`200`):
   - `/`
@@ -454,9 +471,12 @@
 
 ## Next Action
 
-1. Review and, if accepted, ship the current local slice as one package: public roadmap + refreshed README + shared direct `AppAccessState` DRY cleanup
-2. After that ship, use the new roadmap surface for soft-launch conversations, user expectation-setting, and partner outreach
-3. Then choose the next main track deliberately:
+1. Use the newly shipped roadmap surface for soft-launch conversations, user expectation-setting, and partner outreach
+2. Capture the next high-value non-code layer while context is still hot:
+   - go-to-market / distribution plan
+   - ideal user and buyer profiles
+   - launch checklist
+3. Then keep the next main strategic choice explicit:
    - launch-readiness / legal / compliance closure
    - or one intentionally small post-MVP feature slice
 4. If launch-readiness comes first, gather and lock the missing factual inputs before touching legal texts again:
@@ -485,11 +505,11 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: review and ship the public roadmap + README packaging slice.
-1) start from local source that already includes `/roadmap`, compact per-service roadmap preview cards, denser future/improvement items, and the refreshed root README
-2) verify again with locale JSON parse, focused eslint, npm run typecheck, and npm run build:static before any deploy
-3) if accepted, commit/push/deploy this packaging slice first
-4) only after that choose between launch-readiness/legal closure and one intentionally small post-MVP feature slice
+Current task: turn the now-shipped MVP into a clearer launch/distribution plan.
+1) treat commit ee4b71c on front/ayan as the live baseline with the roadmap/README/access-gate packaging already deployed
+2) do not reopen speculative UI rewrites or infra experiments first
+3) write the next non-code docs while context is still hot: go-to-market, ideal user/buyer profiles, and launch checklist
+4) keep the legal-readiness path explicit by listing the still-missing operator/support/hosting/retention facts
 5) keep manual VPS deployment as the baseline and keep Coolify paused
 ```
 
@@ -502,4 +522,4 @@ Current task: review and ship the public roadmap + README packaging slice.
 
 ## One-Line Summary
 
-Current live AYAN/AGAL/UUS/TAL runtime is user-validated, and local source now adds a denser compact public roadmap, a refreshed README, and one direct shared `AppAccessState` gate with unified copy; next step is to review/ship that slice, then continue launch-readiness or one deliberate post-MVP feature slice.
+Current live AYAN/AGAL/UUS/TAL runtime is user-validated and now also ships the public roadmap/README/access-gate packaging on commit `ee4b71c`; next step is launch/distribution planning plus legal-readiness decisions, not more speculative runtime churn.
