@@ -58,7 +58,7 @@ function handleClick() {
 	background: rgb(94 218 198 / 0.1);
 	border: 1px solid rgb(94 218 198 / 0.14);
 	font-size: 20px;
-	color: rgb(var(--color-cyan-300));
+	color: var(--color-cyan-300);
 	flex-shrink: 0;
 }
 
@@ -85,7 +85,7 @@ function handleClick() {
 .service-card__stats {
 	display: block;
 	font-size: 12px;
-	color: rgb(var(--color-cyan-400));
+	color: var(--color-cyan-400);
 	margin-top: 6px;
 }
 

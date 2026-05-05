@@ -38,7 +38,7 @@ const defaultIcon = 'i-carbon-search'
 	border-radius: 14px;
 	background: rgb(94 218 198 / 0.08);
 	font-size: 24px;
-	color: rgb(var(--color-cyan-300));
+	color: var(--color-cyan-300);
 	margin-bottom: 12px;
 }
 

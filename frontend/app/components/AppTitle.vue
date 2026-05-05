@@ -17,7 +17,7 @@
 
 .app-title__mark {
 	font-size: clamp(40px, 11vw, 68px);
-	color: rgb(var(--color-cyan-500));
+	color: var(--color-cyan-500);
 }
 
 .app-title__suffix {

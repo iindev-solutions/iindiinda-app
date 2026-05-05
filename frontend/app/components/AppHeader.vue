@@ -63,8 +63,8 @@ const currentService = computed(() => {
 
 <style scoped>
 .app-header {
-	background: rgb(var(--color-gray-900));
-	border-bottom: 1px solid rgb(var(--color-gray-800));
+	background: var(--color-gray-900);
+	border-bottom: 1px solid var(--color-gray-800);
 	padding: 12px 16px;
 	position: sticky;
 	top: 0;
@@ -86,7 +86,7 @@ const currentService = computed(() => {
 .app-header__logo-icon {
 	font-size: 18px;
 	font-weight: 700;
-	color: rgb(var(--color-cyan-400));
+	color: var(--color-cyan-400);
 }
 
 .app-header__nav {
@@ -100,8 +100,8 @@ const currentService = computed(() => {
 	gap: 6px;
 	font-size: 14px;
 	font-weight: 600;
-	color: rgb(var(--color-gray-100));
-	background: rgb(var(--color-gray-800));
+	color: var(--color-gray-100);
+	background: var(--color-gray-800);
 	padding: 4px 12px;
 	border-radius: 16px;
 }
@@ -113,6 +113,6 @@ const currentService = computed(() => {
 .app-header__title h1 {
 	font-size: 14px;
 	font-weight: 500;
-	color: rgb(var(--color-gray-400));
+	color: var(--color-gray-400);
 }
 </style>

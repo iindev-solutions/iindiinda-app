@@ -220,7 +220,7 @@ select {
 	height: 42px;
 	border-radius: 14px;
 	background: rgb(94 218 198 / 0.1);
-	color: rgb(var(--color-cyan-400));
+	color: var(--color-cyan-400);
 	border: 1px solid rgb(94 218 198 / 0.14);
 	flex-shrink: 0;
 }
@@ -344,7 +344,7 @@ select {
 	font-size: 14px;
 	font-weight: 700;
 	line-height: 1.2;
-	color: rgb(var(--color-cyan-400));
+	color: var(--color-cyan-400);
 	white-space: nowrap;
 }
 
@@ -439,12 +439,12 @@ select {
 	font-size: 13px;
 	font-weight: 500;
 	line-height: 1.4;
-	color: rgb(var(--color-cyan-400));
+	color: var(--color-cyan-400);
 	text-decoration: none;
 }
 
 .app-inline-link:hover {
-	color: rgb(var(--color-cyan-300));
+	color: var(--color-cyan-300);
 }
 
 .app-form-card {

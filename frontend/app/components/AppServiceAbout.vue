@@ -90,7 +90,7 @@ const items = computed(() => [
 	height: 8px;
 	margin-top: 6px;
 	border-radius: 999px;
-	background: rgb(var(--color-cyan-400));
+	background: var(--color-cyan-400);
 	flex-shrink: 0;
 }
 

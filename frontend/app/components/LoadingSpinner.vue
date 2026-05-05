@@ -31,7 +31,7 @@ defineProps<{
 
 .loading-spinner__icon {
 	font-size: 24px;
-	color: rgb(var(--color-cyan-400));
+	color: var(--color-cyan-400);
 	animation: spin 1s linear infinite;
 }
 

@@ -28,13 +28,13 @@ defineProps<{
 
 .error-message__icon {
 	font-size: 32px;
-	color: rgb(var(--color-red-400));
+	color: var(--color-red-400);
 	margin-bottom: 12px;
 }
 
 .error-message__text {
 	font-size: 14px;
-	color: rgb(var(--color-gray-300));
+	color: var(--color-gray-300);
 	margin: 0 0 16px;
 }
 </style>

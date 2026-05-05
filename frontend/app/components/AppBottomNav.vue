@@ -97,7 +97,7 @@ async function handleNavigate(path: string) {
 
 .bottom-nav__item--active {
 	background: rgb(94 218 198 / 0.08);
-	color: rgb(var(--color-cyan-400));
+	color: var(--color-cyan-400);
 }
 
 .bottom-nav__icon-wrap {
