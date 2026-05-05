@@ -2,7 +2,7 @@
 import type { AgalResponse } from '../../../types/agal'
 
 import { getApiErrorMessage } from '~/utils/api-error'
-import { getAyanAccessState } from '~/utils/auth'
+import { getServiceAccessState } from '~/utils/auth'
 import { findTargetResponse } from '../../../utils/responses'
 
 definePageMeta({ lazy: true })
@@ -19,7 +19,7 @@ const { fetchMyResponses } = useAgalMy()
 const routeId = computed(() => Number(route.params.id))
 
 const accessState = computed(() =>
-	getAyanAccessState({
+	getServiceAccessState({
 		isAuthenticated: isAuthenticated.value,
 		isLoading: authLoading.value,
 		isInTelegram: isInTelegram.value,
@@ -44,7 +44,9 @@ const myResponses = ref<AgalResponse[]>([])
 const responding = ref(false)
 const responseMessage = ref('')
 
-const isPastRoute = computed(() => (routeItem.value ? isPastAyanDateTime(routeItem.value.date, routeItem.value.time) : false))
+const isPastRoute = computed(() =>
+	routeItem.value ? isPastAyanDateTime(routeItem.value.date, routeItem.value.time) : false
+)
 
 const isOwner = computed(() => {
 	if (!routeItem.value || !authUser.value) return false
@@ -212,7 +214,7 @@ watch(
 	<div class="app-page">
 		<BackButton force-ui />
 
-		<AgalAccessState v-if="accessState !== 'ready'" :state="accessState" />
+		<AppAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
 		<div v-else-if="loading" class="flex justify-center py-12">
 			<LoadingSpinner />
@@ -297,7 +299,11 @@ watch(
 				</div>
 				<div v-if="myResponse.message" class="app-detail-copy">{{ myResponse.message }}</div>
 				<div v-if="myResponse.status === 'accepted' && routeItem.carrier.username">
-					<a :href="`https://t.me/${routeItem.carrier.username.replace('@', '')}`" target="_blank" class="app-inline-link">
+					<a
+						:href="`https://t.me/${routeItem.carrier.username.replace('@', '')}`"
+						target="_blank"
+						class="app-inline-link"
+					>
 						<UIcon name="i-lucide-send" class="size-4" />
 						{{ routeItem.carrier.username }}
 					</a>
@@ -337,15 +343,34 @@ watch(
 								</div>
 								<div v-if="response.message" class="app-detail-muted mt-2">{{ response.message }}</div>
 								<div v-if="response.status === 'accepted' && response.user.username" class="mt-3">
-									<a :href="`https://t.me/${response.user.username.replace('@', '')}`" target="_blank" class="app-inline-link">
+									<a
+										:href="`https://t.me/${response.user.username.replace('@', '')}`"
+										target="_blank"
+										class="app-inline-link"
+									>
 										<UIcon name="i-lucide-send" class="size-3" />
 										{{ response.user.username }}
 									</a>
 								</div>
 							</div>
-							<div v-if="isOwner && !isPastRoute && response.status === 'pending' && !hasAcceptedResponse" class="flex shrink-0 gap-1">
-								<UButton size="xs" color="success" variant="soft" icon="i-lucide-check" @click="handleAccept(response)" />
-								<UButton size="xs" color="error" variant="soft" icon="i-lucide-x" @click="handleReject(response)" />
+							<div
+								v-if="isOwner && !isPastRoute && response.status === 'pending' && !hasAcceptedResponse"
+								class="flex shrink-0 gap-1"
+							>
+								<UButton
+									size="xs"
+									color="success"
+									variant="soft"
+									icon="i-lucide-check"
+									@click="handleAccept(response)"
+								/>
+								<UButton
+									size="xs"
+									color="error"
+									variant="soft"
+									icon="i-lucide-x"
+									@click="handleReject(response)"
+								/>
 							</div>
 						</div>
 					</div>

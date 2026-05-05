@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { AyanAccessState } from '~/utils/auth'
+import type { ServiceAccessState } from '~/utils/auth'
 
 const props = defineProps<{
-	state: AyanAccessState
+	state: ServiceAccessState
 }>()
 
 const { t } = useI18n()
@@ -14,15 +14,15 @@ const icon = computed(() => {
 })
 
 const title = computed(() => {
-	if (props.state === 'auth-error') return t('ayan.access.authFailedTitle')
-	if (props.state === 'telegram-required') return t('ayan.access.telegramOnlyTitle')
-	return t('ayan.access.loadingTitle')
+	if (props.state === 'auth-error') return t('accessState.authFailedTitle')
+	if (props.state === 'telegram-required') return t('accessState.telegramOnlyTitle')
+	return t('accessState.loadingTitle')
 })
 
 const description = computed(() => {
-	if (props.state === 'auth-error') return t('ayan.access.authFailedDesc')
-	if (props.state === 'telegram-required') return t('ayan.access.telegramOnlyDesc')
-	return t('ayan.access.loadingDesc')
+	if (props.state === 'auth-error') return t('accessState.authFailedDesc')
+	if (props.state === 'telegram-required') return t('accessState.telegramOnlyDesc')
+	return t('accessState.loadingDesc')
 })
 
 function reloadPage() {
@@ -66,7 +66,7 @@ function reloadPage() {
 	border-radius: 20px;
 	background: rgb(94 218 198 / 0.12);
 	border: 1px solid rgb(94 218 198 / 0.16);
-	color: rgb(var(--color-cyan-300));
+	color: var(--color-cyan-300);
 }
 
 .access-state__title {

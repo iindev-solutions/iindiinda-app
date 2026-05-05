@@ -47,7 +47,9 @@ Goal: ship a working AYAN MVP flow:
 - Live UUS smoke is now also green after the first deploy
 - User reported that the rebuilt Telegram Mini App runtime works again
 - User already reported that the live UUS logic works in Telegram Mini App well enough to move on
-- Newly shipped TAL flow now becomes the next service needing real Telegram visual feedback
+- User has now manually rechecked the live TAL flow too and reports that the broader current runtime works excellently in Telegram
+- Source now also contains a public roadmap packaging pass: `/roadmap`, per-service roadmap preview cards, and a refreshed root `README.md`
+- That roadmap slice has now been refined further in source so it shows more future/improvement items while keeping service-page previews compact
 - Nginx static handling is hardened so missing `/assets/*` returns `404`
 - Coolify remains explicitly paused
 
@@ -72,7 +74,6 @@ Goal: ship a working AYAN MVP flow:
 
 ## Active Blockers
 
-- First real TAL deploy still needs one real Telegram visual pass on device
 - No local `php`, `composer`, or `docker` in this environment for full backend execution outside the VPS
 - RF legal closure is still blocked by unresolved personal-data localization and final operator disclosure details
 
@@ -85,15 +86,13 @@ Goal: ship a working AYAN MVP flow:
 
 ## Next Practical Step
 
-1. Run one fresh Telegram Mini App visual pass on the shipped TAL flow with focus on:
-   - role switching into `master`
-   - availability create slideover
-   - `/tal` tabs and filters
-   - `/tal/master/[id]` booking / accept / contact reveal / final status UX
-2. If green, choose between:
-   - TAL polish from real usage feedback
-   - or the next TAL feature: public fallback client requests
-3. Keep manual VPS deployment as the only target and keep Coolify paused
+1. Review and, if accepted, ship the refined public packaging slice: public roadmap + refreshed README + one direct shared `AppAccessState` gate with unified copy
+2. Use that packaging to support soft-launch conversations, partner outreach, and early-user onboarding
+3. In parallel, choose the next main track deliberately:
+   - launch-readiness / legal / compliance closure
+   - or one intentionally small post-MVP feature slice driven by real demand
+4. If launch-readiness comes first, gather the missing operator/support/hosting/retention facts before editing legal copy further
+5. Keep manual VPS deployment as the only target and keep Coolify paused
 
 ## Definition Of Progress For This Sprint
 
@@ -109,7 +108,8 @@ This sprint is complete only when:
 - AYAN MVP sprint can now be treated as complete for runtime/UI scope based on green live API smoke plus user-reported real-device Telegram Mini App verification
 - Remaining legal/compliance work is still important, but it is no longer blocking the AYAN MVP runtime handoff
 - AGAL remains the newest implemented service track and now has both shipped backend persistence and shipped frontend MVP UI on VPS: feed, filters, role switching, create flow, detail pages, respond flow, contact reveal, and lifecycle actions
-- Immediate next execution target is no longer deeper AGAL feature work; it is getting Telegram feedback on the shipped TAL availability + booking slice
+- User has now also manually validated the shipped TAL availability + booking slice, so all four current service tracks are green in real Telegram use
+- Immediate next execution target is no longer service-by-service runtime validation; it is shipping clearer public packaging for the validated MVP plus one direct shared `AppAccessState` gate with unified copy, then deciding between launch-readiness/legal closure and one intentionally chosen post-MVP product slice
 - Root `DESIGN.md` now exists as the shared redesign baseline and lint passes cleanly
 - Commit `bc7bdc4` locks redesign variant 1, commit `b22f92c` locks redesign variant 2, and the current local working tree continues variant 3 as the active chosen direction
 - Variant 3 now covers home, service landing pages, feed screens, detail pages, and create slideovers and is deployed live on the frontend runtime

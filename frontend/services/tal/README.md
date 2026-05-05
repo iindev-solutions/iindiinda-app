@@ -31,7 +31,7 @@ This slice does **not** implement:
 - `app/pages/tal.vue` — wrapper-only parent route
 - `app/pages/tal/index.vue` — live TAL entry/feed page
 - `app/pages/tal/master/[id].vue` — TAL detail page
-- `app/components/TalAccessState.vue` — Telegram/auth access states
+- shared `~/app/components/AppAccessState.vue` — Telegram/auth access states used directly in TAL pages
 - `app/components/TalRoleSwitch.vue` — TAL helper to enter/leave master mode
 - `app/components/TalCreateSlideover.vue` — create availability card form
 - `app/types/tal.ts` — TAL DTOs and enums

@@ -1,6 +1,66 @@
-# Resume Plan - 2026-05-02 18:00
+# Resume Plan - 2026-05-05 22:00
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
+
+## Shared Access-State DRY Cleanup - 2026-05-05 22:00
+
+- Removed the duplicated Telegram/auth access-state UI logic across AYAN, UUS, TAL, and AGAL source
+- Added shared `frontend/app/components/AppAccessState.vue` as the single main access gate component
+- Removed the service-specific access-state wrapper components entirely and switched all affected pages to call `AppAccessState` directly
+- Unified the copy too: the access gate now uses one shared generic i18n block instead of four different service-specific text variants for the same behavior
+- Renamed the shared auth helper naming from AYAN-specific to generic source-of-truth naming:
+  - `AyanAccessState` -> `ServiceAccessState`
+  - `getAyanAccessState()` -> `getServiceAccessState()`
+- Updated all affected service pages, `frontend/services/tal/README.md`, and the auth unit test to the new shared helper/component shape
+- Verification is green after the DRY cleanup:
+  - locale JSON parse for `frontend/i18n/locales/{ru,sah}.json`
+  - `cd frontend && npx eslint app/components/AppAccessState.vue app/utils/auth.ts tests/unit/auth.test.ts services/ayan/app/pages/ayan/index.vue services/ayan/app/pages/ayan/trip/[id].vue services/ayan/app/pages/ayan/request/[id].vue services/uus/app/pages/uus/index.vue services/uus/app/pages/uus/task/[id].vue services/tal/app/pages/tal/index.vue services/tal/app/pages/tal/master/[id].vue services/agal/app/pages/agal/index.vue services/agal/app/pages/agal/route/[id].vue services/agal/app/pages/agal/request/[id].vue`
+  - `cd frontend && npm run typecheck`
+  - `cd frontend && npm run build:static`
+- This cleanup is still local/source-only together with the broader roadmap/README packaging slice: not committed, not pushed, and not deployed yet
+
+## Roadmap Densified And Compacted - 2026-05-05 21:22
+
+- The new public roadmap slice is no longer only a first pass; it was refined to carry more future signal while staying compact on mobile
+- Each service now has richer `improving now` + `planned next` coverage in source
+- Shared roadmap cards now show dense title-first lists with per-section counts
+- Service entry previews are intentionally limited to one visible item per section so the service pages stay compact
+- The shared `/roadmap` page keeps the fuller multi-item view across AYAN, UUS, TAL, and AGAL
+- Verification is green again after this refinement:
+  - locale JSON parse for `frontend/i18n/locales/{ru,sah}.json`
+  - `cd frontend && npx eslint app/pages/index.vue app/pages/roadmap.vue app/components/AppRoadmapCard.vue app/composables/usePublicRoadmap.ts services/ayan/app/pages/ayan/index.vue services/uus/app/pages/uus/index.vue services/tal/app/pages/tal/index.vue services/agal/app/pages/agal/index.vue`
+  - `cd frontend && npm run typecheck`
+  - `cd frontend && npm run build:static`
+- This refined roadmap slice is still local/source-only at this stop point: not committed, not pushed, and not deployed yet
+
+## Public Roadmap Packaging Pass - 2026-05-05 21:04
+
+- Source now includes a public-facing packaging slice so users can see what is live, what is being improved, and what is planned next
+- Added a new public `/roadmap` route in the shared Nuxt app shell
+- Added shared roadmap preview cards to the AYAN, UUS, TAL, and AGAL entry screens
+- Refreshed the root `README.md` so the repository front page reflects the real current product state instead of the older scaffold-era framing
+- Corrected TAL user-facing copy so it no longer implies that public fallback client requests already exist in live scope
+- Verification is green in local source:
+  - locale JSON parse for `frontend/i18n/locales/{ru,sah}.json`
+  - `cd frontend && npx eslint app/pages/index.vue app/pages/roadmap.vue app/components/AppRoadmapCard.vue app/composables/usePublicRoadmap.ts services/ayan/app/pages/ayan/index.vue services/uus/app/pages/uus/index.vue services/tal/app/pages/tal/index.vue services/agal/app/pages/agal/index.vue`
+  - `cd frontend && npm run typecheck`
+  - `cd frontend && npm run build:static`
+- This packaging pass is still local/source-only at this stop point: not committed, not pushed, and not deployed yet
+
+## Full Runtime Validation Green - 2026-05-05 14:37
+
+- User manually rechecked the live Telegram Mini App and reported that the current project works excellently
+- This closes the previously pending TAL real-device visual-pass blocker
+- Current live runtime can now be treated as validated across the implemented service tracks:
+  1. AYAN
+  2. AGAL
+  3. UUS
+  4. TAL
+- Current product state is now effectively MVP-complete for runtime/UI behavior on the implemented scope
+- Next decision is now strategic rather than defect-driven:
+  1. launch-readiness / legal / compliance closure
+  2. a small polish pass only if new real usage feedback appears
+  3. one intentionally chosen post-MVP feature slice
 
 ## TAL First MVP Deploy - 2026-05-02 18:00
 
@@ -265,12 +325,13 @@
 ## Stop Point
 
 - Current branch: `front/ayan`
+- User now reports that the current live runtime works excellently in Telegram Mini App, including the TAL flow
 - User-reported manual UUS Telegram validation is green for the core create/respond/accept/finalize flow
 - Current deployed TAL runtime/code slice is now `ff0fedd` `feat(tal): add booking MVP slice`
 - Current live UUS frontend still includes the dashboard split into tabs plus collapsible filters plus the task-detail counter/no-zoom follow-up
 - Current live TAL frontend now includes `/tal` feed tabs + filters + create status flow and `/tal/master/[id]` booking detail flow
-- Current local working tree is clean at session close
-- Local, origin, and VPS repositories are aligned on the latest branch tip after the TAL deploy plus vault sync
+- Current local working tree is not clean: it now contains the new public roadmap + README packaging pass, the shared direct `AppAccessState` DRY cleanup, and the matching vault updates
+- Local source is now ahead of origin/VPS because this packaging + DRY cleanup slice is not committed, pushed, or deployed yet
 - `main` now also includes the UUS slice plus the latest vault sync via merge commit `c12330c`
 - UUS first real MVP slice is now committed, pushed, deployed, and live-smoked:
   - real backend persistence for `tasks`, `responses`, `my/*`, serializer, models, migrations, and PHPUnit coverage
@@ -393,15 +454,17 @@
 
 ## Next Action
 
-1. Run one fresh Telegram Mini App visual pass on the shipped TAL flow with focus on:
-   - role switching into `master`
-   - create availability slideover stability
-   - `/tal` feed tabs + filters
-   - `/tal/master/[id]` booking / accept / contact reveal / final status UX
-2. If green, choose between:
-   - TAL polish from real usage feedback
-   - or the next TAL feature: public fallback client requests
-3. Keep Coolify paused; do not reopen infra experiments during this product pass
+1. Review and, if accepted, ship the current local slice as one package: public roadmap + refreshed README + shared direct `AppAccessState` DRY cleanup
+2. After that ship, use the new roadmap surface for soft-launch conversations, user expectation-setting, and partner outreach
+3. Then choose the next main track deliberately:
+   - launch-readiness / legal / compliance closure
+   - or one intentionally small post-MVP feature slice
+4. If launch-readiness comes first, gather and lock the missing factual inputs before touching legal texts again:
+   - operator identity and requisites
+   - support email/address
+   - hosting / localization facts
+   - retention periods
+5. Keep manual VPS deployment as the baseline and keep Coolify paused
 
 ## API Smoke Snapshot (Live)
 
@@ -422,13 +485,12 @@
 
 ```text
 Read vault/master_index.md, vault/WORKFLOW.md, vault/sprint.md, and vault/resume-plan.md.
-Current task: evaluate the shipped TAL availability + booking slice after deploy.
-1) start from deployed runtime commit ff0fedd on front/ayan
-2) collect real Telegram feedback on /tal and /tal/master/[id]
-3) patch only issues found in that real use pass
-4) keep TAL scope limited to availability cards + booking requests; do not add fallback public requests yet unless explicitly chosen next
-5) verify with locale JSON parse, focused eslint, npm run typecheck, and npm run build:static before any next deploy
-6) keep Coolify paused and do not reopen infra experiments during this product pass
+Current task: review and ship the public roadmap + README packaging slice.
+1) start from local source that already includes `/roadmap`, compact per-service roadmap preview cards, denser future/improvement items, and the refreshed root README
+2) verify again with locale JSON parse, focused eslint, npm run typecheck, and npm run build:static before any deploy
+3) if accepted, commit/push/deploy this packaging slice first
+4) only after that choose between launch-readiness/legal closure and one intentionally small post-MVP feature slice
+5) keep manual VPS deployment as the baseline and keep Coolify paused
 ```
 
 ## Deployment Context
@@ -440,4 +502,4 @@ Current task: evaluate the shipped TAL availability + booking slice after deploy
 
 ## One-Line Summary
 
-UUS is accepted well enough to move on, TAL now has its first real deployed availability + booking MVP slice on live runtime, and the next step is one real Telegram visual pass.
+Current live AYAN/AGAL/UUS/TAL runtime is user-validated, and local source now adds a denser compact public roadmap, a refreshed README, and one direct shared `AppAccessState` gate with unified copy; next step is to review/ship that slice, then continue launch-readiness or one deliberate post-MVP feature slice.

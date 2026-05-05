@@ -2,7 +2,7 @@
 import type { AyanResponse } from '../../../types/ayan'
 
 import { getApiErrorMessage } from '~/utils/api-error'
-import { getAyanAccessState } from '~/utils/auth'
+import { getServiceAccessState } from '~/utils/auth'
 import { findTargetResponse } from '../../../utils/responses'
 
 definePageMeta({ lazy: true })
@@ -19,7 +19,7 @@ const { fetchMyResponses } = useAyanMy()
 const tripId = computed(() => Number(route.params.id))
 
 const accessState = computed(() =>
-	getAyanAccessState({
+	getServiceAccessState({
 		isAuthenticated: isAuthenticated.value,
 		isLoading: authLoading.value,
 		isInTelegram: isInTelegram.value,
@@ -203,7 +203,7 @@ watch(
 	<div class="app-page">
 		<BackButton force-ui />
 
-		<AyanAccessState v-if="accessState !== 'ready'" :state="accessState" />
+		<AppAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
 		<div v-else-if="loading" class="flex justify-center py-12">
 			<LoadingSpinner />
@@ -279,7 +279,11 @@ watch(
 				</div>
 				<div v-if="myResponse.message" class="app-detail-copy">{{ myResponse.message }}</div>
 				<div v-if="myResponse.status === 'accepted' && trip.driver.username">
-					<a :href="`https://t.me/${trip.driver.username.replace('@', '')}`" target="_blank" class="app-inline-link">
+					<a
+						:href="`https://t.me/${trip.driver.username.replace('@', '')}`"
+						target="_blank"
+						class="app-inline-link"
+					>
 						<UIcon name="i-lucide-send" class="size-4" />
 						{{ trip.driver.username }}
 					</a>
@@ -304,7 +308,11 @@ watch(
 			<section v-if="responses.length > 0">
 				<h2 class="app-section-title">{{ t('ayan.responses') }}</h2>
 				<div class="app-detail-stack">
-					<div v-for="r in responses" :key="r.id" class="app-panel app-panel--soft app-detail-card app-detail-card--compact">
+					<div
+						v-for="r in responses"
+						:key="r.id"
+						class="app-panel app-panel--soft app-detail-card app-detail-card--compact"
+					>
 						<div class="flex items-start justify-between gap-3">
 							<div class="min-w-0 flex-1">
 								<div class="flex items-center gap-2">
@@ -315,15 +323,34 @@ watch(
 								</div>
 								<div v-if="r.message" class="app-detail-muted mt-2">{{ r.message }}</div>
 								<div v-if="r.status === 'accepted' && r.user.username" class="mt-3">
-									<a :href="`https://t.me/${r.user.username.replace('@', '')}`" target="_blank" class="app-inline-link">
+									<a
+										:href="`https://t.me/${r.user.username.replace('@', '')}`"
+										target="_blank"
+										class="app-inline-link"
+									>
 										<UIcon name="i-lucide-send" class="size-3" />
 										{{ r.user.username }}
 									</a>
 								</div>
 							</div>
-							<div v-if="isOwner && !isPastTrip && r.status === 'pending' && !hasAcceptedResponse" class="flex shrink-0 gap-1">
-								<UButton size="xs" color="success" variant="soft" icon="i-lucide-check" @click="handleAccept(r)" />
-								<UButton size="xs" color="error" variant="soft" icon="i-lucide-x" @click="handleReject(r)" />
+							<div
+								v-if="isOwner && !isPastTrip && r.status === 'pending' && !hasAcceptedResponse"
+								class="flex shrink-0 gap-1"
+							>
+								<UButton
+									size="xs"
+									color="success"
+									variant="soft"
+									icon="i-lucide-check"
+									@click="handleAccept(r)"
+								/>
+								<UButton
+									size="xs"
+									color="error"
+									variant="soft"
+									icon="i-lucide-x"
+									@click="handleReject(r)"
+								/>
 							</div>
 						</div>
 					</div>

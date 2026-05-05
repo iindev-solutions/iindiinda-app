@@ -1,132 +1,211 @@
-<img src="sakha-flag.svg" width="48" alt="Флаг Саха" />  iind.app
+<img src="sakha-flag.svg" width="48" alt="Sakha flag" />
 
-> iindiinda — делаем сложные вещи просто. Modern solutions. Simply.
-> **made for .**
+# iind.app
 
-iind.app — платформа из 4 сервисов, где саха люди решают повседневные задачи через других людей.
+> iindiinda — make hard things simple.
 
-**Принцип:** заявка → отклик → договор. Без посредников. Бесплатно для заказчиков.
+**iind.app** is a Telegram Mini App platform for everyday coordination in Sakha / regional communities.
 
----
+Core pattern across every service:
 
-## Сервисы
+**request → response → agreement**
 
-| Сервис | Yakut | Что решает | Описание |
-|--------|-------|------------|----------|
-| **AYAN** | Бардыбыт | Передвижение | Попутки между городами и улусами |
-| **UUS** | Уус | Бытовые задачи | Поиск исполнителей под конкретную работу |
-| **TAL** | Тал | Запись к мастеру | Быстрая запись к свободным мастерам |
-| **AGAL** | Аҕал | Отправка посылок | Доставка через людей, которые уже едут |
-
-**Один паттерн для всех:** создать заявку → получить отклики → договориться напрямую.
+People already solve these problems in chats. iind.app makes the same flows clearer, faster, and easier to trust.
 
 ---
 
-## Структура
+## Current status
 
-```
+- **Live MVP runtime** on a real VPS
+- **4 working service tracks**: AYAN, UUS, TAL, AGAL
+- **User-validated in Telegram Mini App**
+- **Same-origin Nuxt + Laravel deployment** is stable again
+- **Current priority**: launch-readiness, legal/compliance closure, and early traction
+
+Live domain: `https://iindiinda.duckdns.org`  
+Bot: `https://t.me/iindapp_bot`
+
+---
+
+## Services
+
+| Service | What it does now | Main user value |
+|---|---|---|
+| **AYAN** | Rides, ride requests, responses, contact reveal, final status flow | Find rides and coordinate directly |
+| **UUS** | Task feed, task creation, limited responses, executor selection | Solve small everyday jobs through Telegram |
+| **TAL** | Master availability cards, booking requests, accept/reject, contact reveal | Book a free master without long chat chaos |
+| **AGAL** | Carrier routes, sender requests, responses, contact reveal, final status flow | Send parcels through people already traveling |
+
+---
+
+## Who this is for
+
+- people already coordinating rides in chat groups
+- households looking for fast local help
+- masters who need lightweight availability, not full CRM overhead
+- travelers and senders who already pass parcels through personal networks
+- small regional communities where trust and direct communication matter more than heavyweight platforms
+
+---
+
+## Product principle
+
+iind.app does **not** try to replace people with marketplace machinery.
+
+It keeps the platform layer intentionally thin:
+
+1. create a request / route / availability card
+2. get responses
+3. choose a person
+4. reveal contact
+5. agree directly
+
+That principle stays the same across all services.
+
+---
+
+## What works now
+
+### AYAN
+- create trip or passenger request
+- browse feed with filters
+- respond to trip/request
+- accept response and reveal Telegram contact
+- mark result as completed or cancelled
+
+### UUS
+- create household/work task
+- browse open tasks with filters
+- respond to tasks
+- choose performer and reveal contact
+- track task/result state
+
+### TAL
+- switch into master role
+- publish availability card
+- browse masters by category / location / availability
+- send booking request
+- accept/reject booking and reveal contact after acceptance
+
+### AGAL
+- publish route or sender request
+- browse matching directions with filters
+- respond to route/request
+- accept response and reveal contact
+- mark handoff result
+
+---
+
+## What comes next
+
+The project is now past basic MVP bring-up.
+
+Next decisions are product and launch decisions, not foundation work:
+
+- launch-readiness and legal/compliance closure
+- public-facing roadmap visibility inside the app
+- early-user feedback loops
+- one deliberately chosen post-MVP feature slice instead of broad speculative expansion
+
+---
+
+## Repo structure
+
+```text
 iindiinda-app/
-├── backend/                    # Laravel API (scaffold-only)
-├── frontend/                   # Nuxt 4 Telegram Mini App
-│   ├── app/                    # Базовое приложение
-│   │   ├── composables/        # useTg, useAPI, useAuth, useBackButton
-│   │   ├── components/         # Общие компоненты
-│   │   ├── pages/              # index.vue (хаб), ui.vue
-│   │   └── assets/css/         # Дизайн-система (cyan theme)
-│   └── services/               # Сервисные слои (Nuxt layers)
-│       ├── ayan/               # AYAN — попутки
-│       ├── uus/                # UUS — услуги
-│       ├── agal/               # AGAL — доставка
-│       └── tal/                # TAL — запись
-├── vault/                      # Документация и vision
-│   └── wiki/architecture/      # Vision документы
-│       ├── iind-app-vision.md  # Главный vision платформы
-│       ├── ayan-vision.md      # AYAN: попутки
-│       ├── uus-vision.md       # UUS: услуги
-│       ├── tal-vision.md       # TAL: запись
-│       └── agal-vision.md      # AGAL: доставка
-├── docker-compose.yml          # Local dev compose (legacy/simple)
-├── docker-compose.coolify.yml  # Coolify deployment stack
-└── .env.example
+├── backend/                     # Laravel API
+├── frontend/                    # Nuxt 4 Telegram Mini App
+│   ├── app/                     # shared app shell, pages, composables, components
+│   └── services/                # service layers: ayan, uus, tal, agal
+├── ops/                         # deployment and infrastructure notes
+├── vault/                       # canonical project memory / docs / handoff state
+├── docker-compose.coolify.yml   # paused alternative deployment track
+└── README.md
 ```
 
 ---
 
-## Vision документы
+## Stack
 
-Прежде чем смотреть код — читай vision:
-
-- 📄 **[iind-app-vision.md](vault/wiki/architecture/iind-app-vision.md)** — главный vision платформы
-- 🚗 **[ayan-vision.md](vault/wiki/architecture/ayan-vision.md)** — попутки (Бардыбыт)
-- 🔧 **[uus-vision.md](vault/wiki/architecture/uus-vision.md)** — услуги (Уус)
-- 📅 **[tal-vision.md](vault/wiki/architecture/tal-vision.md)** — запись (Тал)
-- 📦 **[agal-vision.md](vault/wiki/architecture/agal-vision.md)** — доставка (Аҕал)
-
-**Принцип работы:** сначала vision → потом implementation (код).
+- **Frontend:** Nuxt 4, Vue 3, TypeScript, @nuxt/ui v4, Tailwind CSS
+- **Backend:** Laravel, PHP, MySQL
+- **Platform:** Telegram Mini App
+- **Design:** dark-only, cyan primary, Geist / Inter
+- **i18n:** Russian + Sakha
 
 ---
 
-## Быстрый старт
+## Local development
+
+### Frontend
 
 ```bash
-# Клонируем
-git clone https://github.com/iindev-solutions/iindiinda-app.git
-cd iindiinda-app
-
-# Переменные окружения
-cp .env.example .env
-
-# Frontend (Nuxt 4)
 cd frontend
 npm install
 npm run dev
-# → http://localhost:3000
-
-# Backend (Docker, scaffold-only)
-docker-compose up -d
-# → http://localhost:8000
 ```
 
-### Coolify start
+### Frontend checks
 
-Starter Coolify files now live in:
+```bash
+cd frontend
+npm run typecheck
+npm run lint
+npm run build:static
+```
 
-- `docker-compose.coolify.yml`
-- `frontend/Dockerfile.coolify`
-- `backend/Dockerfile.coolify`
-- `ops/coolify/README.md`
+### Backend
 
-Use `.env.coolify.example` as the env baseline and expose only the `frontend` service publicly.
-
----
-
-## Технологии
-
-- **Frontend**: Nuxt 4, @nuxt/ui v4, Tailwind CSS, TypeScript
-- **Backend**: Laravel, PHP 8.2, MySQL 8.0 (scaffold-only)
-- **Platform**: Telegram Mini App (WebApp SDK)
-- **Design**: Cyan theme (#5edac6), dark mode only, Geist font
-- **i18n**: Русский + саха (Yakut)
+See:
+- `backend/README.md`
+- `vault/wiki/services/ayan/backend-bringup.md`
 
 ---
 
-## Архитектурные решения
+## Deployment reality
 
-Из [iind-app-vision.md](vault/wiki/architecture/iind-app-vision.md):
+Current live baseline is intentionally simple:
 
-1. **Простота или смерть** — понятно за 3 секунды
-2. **Поток прежде монетизации** — 100 заявок/день, потом деньги
-3. **Люди договариваются сами** — платформа только соединяет
-4. **Один паттерн для всех** — заявка/доступность/отклик
-5. **Своё > чужое** — не копируем Яндекс, делаем как у нас
+- `nginx + php-fpm + mysql`
+- Laravel backend in `/var/www/iind-app/backend`
+- Nuxt static frontend in `/var/www/iind-app/frontend/public`
+- same-origin `/api`
 
----
-
-## Ссылки
-
-- Telegram: [@iindapp_bot](https://t.me/iindapp_bot)
-- GitHub: [iindev-solutions](https://github.com/iindev-solutions)
+**Coolify exists in source only as a paused alternative track.** Manual VPS deployment is the current real baseline.
 
 ---
 
-> **iindiinda** — делаем сложные вещи просто. Modern solutions. Simply.
+## Documentation / source of truth
+
+If you work on this repo, start with the vault.
+
+Read first:
+1. `vault/master_index.md`
+2. `vault/WORKFLOW.md`
+3. `vault/sprint.md`
+4. `vault/resume-plan.md`
+
+Useful docs:
+- `vault/CODE_MAP.md`
+- `vault/wiki/architecture/iind-app-vision.md`
+- `vault/wiki/architecture/system-design.md`
+- `vault/wiki/services/ayan/api-contract.md`
+- `vault/wiki/services/uus/api-contract.md`
+- `vault/wiki/services/tal/api-contract.md`
+- `vault/wiki/services/agal/api-contract.md`
+
+---
+
+## Why this project matters
+
+This is not “yet another super app” pitch.
+
+It is a focused coordination layer for problems people already solve manually every day:
+- rides
+- small jobs
+- booking a free master
+- sending parcels through existing travel routes
+
+The bet is simple:
+
+**if direct coordination already exists, better flow beats more complexity.**

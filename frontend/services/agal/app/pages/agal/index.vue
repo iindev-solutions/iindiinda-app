@@ -3,7 +3,7 @@ import type { AgalResponse, AgalSizeLabel, AgalStatus } from '../../types/agal'
 
 import { getAgalCreateMode } from '../../utils/role'
 import { getResponseTargetPath } from '../../utils/responses'
-import { getAyanAccessState } from '~/utils/auth'
+import { getServiceAccessState } from '~/utils/auth'
 
 definePageMeta({ lazy: true })
 
@@ -28,7 +28,7 @@ const tabs = computed(() => [
 const createMode = computed<'route' | 'request' | null>(() => getAgalCreateMode(authUser.value?.role))
 
 const accessState = computed(() =>
-	getAyanAccessState({
+	getServiceAccessState({
 		isAuthenticated: isAuthenticated.value,
 		isLoading: authLoading.value,
 		isInTelegram: isInTelegram.value,
@@ -115,6 +115,10 @@ const aboutExamples = computed(() => [
 	}
 ])
 
+const { services } = usePublicRoadmap()
+
+const roadmap = computed(() => services.value.find((item) => item.id === 'agal'))
+
 const hasFilters = computed(() => filterFrom.value || filterTo.value || filterDate.value)
 
 const activeFilterCount = computed(() => {
@@ -131,7 +135,10 @@ const loading = computed(() => {
 	return myRoutesLoading.value || myRequestsLoading.value || myResponsesLoading.value
 })
 
-function formatMoney(value: number | null | undefined, fallbackKey: 'agal.route.priceNegotiable' | 'agal.request.budgetNegotiable') {
+function formatMoney(
+	value: number | null | undefined,
+	fallbackKey: 'agal.route.priceNegotiable' | 'agal.request.budgetNegotiable'
+) {
 	if (value === null || value === undefined) return t(fallbackKey)
 	return formatPrice(value, '₽')
 }
@@ -264,7 +271,7 @@ function handleResponseClick(response: AgalResponse) {
 
 <template>
 	<div class="app-page">
-		<AgalAccessState v-if="accessState !== 'ready'" :state="accessState" />
+		<AppAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
 		<template v-else>
 			<AppHero
@@ -280,6 +287,23 @@ function handleResponseClick(response: AgalResponse) {
 					:examples="aboutExamples"
 				/>
 				<AgalRoleSwitch @changed="handleRoleChanged" />
+				<AppRoadmapCard
+					v-if="roadmap"
+					:label="t('roadmap.previewLabel')"
+					:title="t('roadmap.previewTitle')"
+					:description="roadmap.summary"
+					:live-label="t('roadmap.sections.live')"
+					:building-label="t('roadmap.sections.building')"
+					:planned-label="t('roadmap.sections.planned')"
+					:live="roadmap.live"
+					:building="roadmap.building"
+					:planned="roadmap.planned"
+					compact
+					:limit-per-section="1"
+					:action-label="t('roadmap.openFull')"
+					action-route="/roadmap"
+					icon="i-lucide-map"
+				/>
 			</AppHero>
 
 			<div class="app-panel app-panel--soft agal-tabs-panel">
@@ -390,13 +414,19 @@ function handleResponseClick(response: AgalResponse) {
 								</div>
 								<div class="app-feed-card__meta">
 									<span class="app-feed-card__meta-item">{{ routeItem.date }}</span>
-									<span v-if="routeItem.time" class="app-feed-card__meta-item">{{ routeItem.time }}</span>
+									<span v-if="routeItem.time" class="app-feed-card__meta-item">
+										{{ routeItem.time }}
+									</span>
 									<span class="app-feed-card__meta-item">{{ sizeLabel(routeItem.size_label) }}</span>
-									<span v-if="routeItem.weight_kg_max" class="app-feed-card__meta-item">{{ routeItem.weight_kg_max }} кг</span>
+									<span v-if="routeItem.weight_kg_max" class="app-feed-card__meta-item">
+										{{ routeItem.weight_kg_max }} кг
+									</span>
 								</div>
 								<div class="app-feed-card__subtext">{{ routeItem.carrier.name }}</div>
 							</div>
-							<div class="app-feed-card__price">{{ formatMoney(routeItem.price, 'agal.route.priceNegotiable') }}</div>
+							<div class="app-feed-card__price">
+								{{ formatMoney(routeItem.price, 'agal.route.priceNegotiable') }}
+							</div>
 						</div>
 					</button>
 				</div>
@@ -426,9 +456,15 @@ function handleResponseClick(response: AgalResponse) {
 								</div>
 								<div class="app-feed-card__meta">
 									<span class="app-feed-card__meta-item">{{ requestItem.date }}</span>
-									<span v-if="requestItem.time" class="app-feed-card__meta-item">{{ requestItem.time }}</span>
-									<span class="app-feed-card__meta-item">{{ sizeLabel(requestItem.size_label) }}</span>
-									<span v-if="requestItem.weight_kg" class="app-feed-card__meta-item">{{ requestItem.weight_kg }} кг</span>
+									<span v-if="requestItem.time" class="app-feed-card__meta-item">
+										{{ requestItem.time }}
+									</span>
+									<span class="app-feed-card__meta-item">
+										{{ sizeLabel(requestItem.size_label) }}
+									</span>
+									<span v-if="requestItem.weight_kg" class="app-feed-card__meta-item">
+										{{ requestItem.weight_kg }} кг
+									</span>
 								</div>
 								<div class="app-feed-card__subtext">{{ requestItem.sender.name }}</div>
 								<div class="app-feed-card__subtext app-feed-card__subtext--bright">
@@ -472,14 +508,23 @@ function handleResponseClick(response: AgalResponse) {
 								</div>
 								<div class="app-feed-card__meta">
 									<span class="app-feed-card__meta-item">{{ routeItem.date }}</span>
-									<span v-if="routeItem.time" class="app-feed-card__meta-item">{{ routeItem.time }}</span>
+									<span v-if="routeItem.time" class="app-feed-card__meta-item">
+										{{ routeItem.time }}
+									</span>
 									<span class="app-feed-card__meta-item">{{ sizeLabel(routeItem.size_label) }}</span>
-									<UBadge v-if="isPastTarget(routeItem.date, routeItem.time)" color="neutral" variant="subtle" size="xs">
+									<UBadge
+										v-if="isPastTarget(routeItem.date, routeItem.time)"
+										color="neutral"
+										variant="subtle"
+										size="xs"
+									>
 										{{ t('agal.status.past') }}
 									</UBadge>
 								</div>
 							</div>
-							<div class="app-feed-card__price">{{ formatMoney(routeItem.price, 'agal.route.priceNegotiable') }}</div>
+							<div class="app-feed-card__price">
+								{{ formatMoney(routeItem.price, 'agal.route.priceNegotiable') }}
+							</div>
 						</div>
 					</button>
 
@@ -505,9 +550,18 @@ function handleResponseClick(response: AgalResponse) {
 								</div>
 								<div class="app-feed-card__meta">
 									<span class="app-feed-card__meta-item">{{ requestItem.date }}</span>
-									<span v-if="requestItem.time" class="app-feed-card__meta-item">{{ requestItem.time }}</span>
-									<span class="app-feed-card__meta-item">{{ sizeLabel(requestItem.size_label) }}</span>
-									<UBadge v-if="isPastTarget(requestItem.date, requestItem.time)" color="neutral" variant="subtle" size="xs">
+									<span v-if="requestItem.time" class="app-feed-card__meta-item">
+										{{ requestItem.time }}
+									</span>
+									<span class="app-feed-card__meta-item">
+										{{ sizeLabel(requestItem.size_label) }}
+									</span>
+									<UBadge
+										v-if="isPastTarget(requestItem.date, requestItem.time)"
+										color="neutral"
+										variant="subtle"
+										size="xs"
+									>
 										{{ t('agal.status.past') }}
 									</UBadge>
 								</div>
@@ -550,16 +604,29 @@ function handleResponseClick(response: AgalResponse) {
 								<UBadge :color="responseStatusColor(response.status)" variant="subtle" size="xs">
 									{{ t(`agal.respond.status.${response.status}`) }}
 								</UBadge>
-								<UBadge v-if="response.route?.status || response.request?.status" color="primary" variant="outline" size="xs">
+								<UBadge
+									v-if="response.route?.status || response.request?.status"
+									color="primary"
+									variant="outline"
+									size="xs"
+								>
 									{{ t(`agal.status.${response.route?.status || response.request?.status}`) }}
 								</UBadge>
 							</div>
 							<div class="app-feed-card__meta">
-								<span class="app-feed-card__meta-item">#{{ response.route_id ?? response.request_id }}</span>
-								<span v-if="response.route?.date || response.request?.date" class="app-feed-card__meta-item">
+								<span class="app-feed-card__meta-item">
+									#{{ response.route_id ?? response.request_id }}
+								</span>
+								<span
+									v-if="response.route?.date || response.request?.date"
+									class="app-feed-card__meta-item"
+								>
 									{{ response.route?.date || response.request?.date }}
 								</span>
-								<span v-if="response.route?.time || response.request?.time" class="app-feed-card__meta-item">
+								<span
+									v-if="response.route?.time || response.request?.time"
+									class="app-feed-card__meta-item"
+								>
 									{{ response.route?.time || response.request?.time }}
 								</span>
 							</div>

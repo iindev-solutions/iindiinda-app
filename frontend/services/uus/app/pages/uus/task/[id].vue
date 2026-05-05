@@ -2,7 +2,7 @@
 import type { UusCategory, UusResponse, UusTaskStatus } from '../../../types/uus'
 
 import { getApiErrorMessage } from '~/utils/api-error'
-import { getAyanAccessState } from '~/utils/auth'
+import { getServiceAccessState } from '~/utils/auth'
 
 definePageMeta({ lazy: true })
 
@@ -18,7 +18,7 @@ const { fetchMyResponses } = useUusMy()
 const taskId = computed(() => Number(route.params.id))
 
 const accessState = computed(() =>
-	getAyanAccessState({
+	getServiceAccessState({
 		isAuthenticated: isAuthenticated.value,
 		isLoading: authLoading.value,
 		isInTelegram: isInTelegram.value,
@@ -273,7 +273,7 @@ watch(
 	<div class="app-page">
 		<BackButton force-ui />
 
-		<UusAccessState v-if="accessState !== 'ready'" :state="accessState" />
+		<AppAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
 		<div v-else-if="loading" class="flex justify-center py-12">
 			<LoadingSpinner />
@@ -489,7 +489,7 @@ watch(
 	border-radius: 16px;
 	border: 1px solid rgb(94 218 198 / 0.16);
 	background: rgb(94 218 198 / 0.1);
-	color: rgb(var(--color-cyan-300));
+	color: var(--color-cyan-300);
 	flex-shrink: 0;
 }
 

@@ -3,7 +3,7 @@ import type { AyanResponse } from '../../types/ayan'
 
 import { getAyanCreateMode } from '../../utils/role'
 import { getResponseTargetPath } from '../../utils/responses'
-import { getAyanAccessState } from '~/utils/auth'
+import { getServiceAccessState } from '~/utils/auth'
 
 definePageMeta({ lazy: true })
 
@@ -30,7 +30,7 @@ const createMode = computed<'trip' | 'request' | null>(() => {
 })
 
 const accessState = computed(() =>
-	getAyanAccessState({
+	getServiceAccessState({
 		isAuthenticated: isAuthenticated.value,
 		isLoading: authLoading.value,
 		isInTelegram: isInTelegram.value,
@@ -127,6 +127,10 @@ const aboutExamples = computed(() => [
 		description: t('serviceAbout.ayan.examples.passenger.description')
 	}
 ])
+
+const { services } = usePublicRoadmap()
+
+const roadmap = computed(() => services.value.find((item) => item.id === 'ayan'))
 
 const hasFilters = computed(() => filterFrom.value || filterTo.value || filterDate.value)
 
@@ -256,7 +260,7 @@ function handleResponseClick(response: AyanResponse) {
 
 <template>
 	<div class="app-page">
-		<AyanAccessState v-if="accessState !== 'ready'" :state="accessState" />
+		<AppAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
 		<template v-else>
 			<AppHero
@@ -272,6 +276,23 @@ function handleResponseClick(response: AyanResponse) {
 					:examples="aboutExamples"
 				/>
 				<AyanRoleSwitch @changed="handleRoleChanged" />
+				<AppRoadmapCard
+					v-if="roadmap"
+					:label="t('roadmap.previewLabel')"
+					:title="t('roadmap.previewTitle')"
+					:description="roadmap.summary"
+					:live-label="t('roadmap.sections.live')"
+					:building-label="t('roadmap.sections.building')"
+					:planned-label="t('roadmap.sections.planned')"
+					:live="roadmap.live"
+					:building="roadmap.building"
+					:planned="roadmap.planned"
+					compact
+					:limit-per-section="1"
+					:action-label="t('roadmap.openFull')"
+					action-route="/roadmap"
+					icon="i-lucide-map"
+				/>
 			</AppHero>
 
 			<div class="app-panel app-panel--soft ayan-tabs-panel">

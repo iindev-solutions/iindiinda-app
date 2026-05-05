@@ -511,3 +511,43 @@
 - Verified: VPS HEAD `ff0fedd`; `php artisan optimize:clear`; `php artisan migrate --force`; `php artisan route:list --path=api/tal`; `php -l` on changed TAL backend files; temp-copy `./vendor/bin/phpunit tests/Feature/TalPersistenceTest.php` (`3 tests, 36 assertions`); live `200` for `/tal`, `/tal/master/1`, `/api/health`; guest `401` for `/api/tal/masters`; accepted-booking delete guard returns `422`
 - Blockers: one real Telegram visual pass is still needed on the shipped TAL flow
 - Next: open TAL in Telegram, test create/book/accept UX, then decide whether more TAL polish is needed or fallback public requests should be the next TAL feature
+
+## 2026-05-05 14:37 — Full Runtime Validation Green
+
+- Scope: capture the user's new end-to-end Telegram validation result and shift the project stop point beyond MVP runtime bring-up
+- Changes: recorded that the current AYAN/AGAL/UUS/TAL live runtime works excellently in Telegram, cleared the pending TAL visual-pass blocker, and updated sprint/resume/changelog planning toward launch-readiness or one deliberate post-MVP slice
+- Verified: user-reported real Telegram Mini App validation on the current live runtime
+- Blockers: runtime validation blocker is closed; remaining blockers are legal/compliance closure and limited local backend/container tooling
+- Next: decide whether to enter launch-readiness/legal closure first or pick one intentionally small post-MVP product slice
+
+## 2026-05-05 21:04 — Public Roadmap Packaging Pass
+
+- Scope: package the validated MVP better for users and external viewers by exposing public roadmap state and refreshing the repository front page
+- Changes: added `/roadmap`, added shared roadmap preview cards on AYAN/UUS/TAL/AGAL entry screens, added `usePublicRoadmap.ts`, refreshed root `README.md`, corrected TAL copy that implied an unshipped fallback flow, and updated vault docs/code map for the new slice
+- Verified: locale JSON parse; focused eslint on changed frontend files; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`
+- Blockers: this slice is still local/source-only and not deployed yet; launch-readiness/legal facts are still unresolved
+- Next: review the packaging slice, then commit/push/deploy it if accepted before moving deeper into launch or post-MVP feature work
+
+## 2026-05-05 21:22 — Roadmap Densified And Compacted
+
+- Scope: add more future/improvement roadmap signal without turning the new roadmap surfaces into long text walls
+- Changes: expanded roadmap items per service, changed shared roadmap cards to denser compact rendering with per-section counts, and limited service-entry previews to one visible item per section while keeping the full roadmap richer
+- Verified: locale JSON parse; focused eslint on roadmap-related frontend files; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`
+- Blockers: refined roadmap slice is still local/source-only and not deployed yet; launch-readiness/legal facts are still unresolved
+- Next: review the refined roadmap slice, then commit/push/deploy it if accepted before moving deeper into launch or post-MVP feature work
+
+## 2026-05-05 21:40 — Shared Access-State DRY Cleanup
+
+- Scope: remove the duplicated Telegram/auth gate UI across service layers and replace it with one real shared component
+- Changes: added shared `AppAccessState.vue`, converted AYAN/UUS/TAL/AGAL access-state components into thin wrappers, renamed the shared auth helper from AYAN-specific naming to generic naming, and updated all affected service pages/tests
+- Verified: focused eslint on the shared access-state/auth files plus affected service pages; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`
+- Blockers: this DRY cleanup is still local/source-only and not deployed yet; launch-readiness/legal facts are still unresolved
+- Next: ship the current local packaging + DRY cleanup slice first, then continue launch-readiness or one deliberate post-MVP feature slice
+
+## 2026-05-05 22:00 — Direct AppAccessState + Unified Copy
+
+- Scope: finish the access-state cleanup properly by removing even the thin wrappers and unifying the copy for the identical Telegram/auth gate behavior
+- Changes: switched all service pages to direct `AppAccessState`, deleted the service wrapper components, moved the text to one shared generic i18n block, removed the old per-service access-copy blocks, and updated docs accordingly
+- Verified: locale JSON parse; focused eslint on shared access-state/auth files plus affected service pages; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`
+- Blockers: this simplified DRY slice is still local/source-only and not deployed yet; launch-readiness/legal facts are still unresolved
+- Next: review and ship the whole local packaging + direct shared access-state slice before deeper product/launch work

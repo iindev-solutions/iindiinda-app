@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UusCategory, UusResponse, UusTask } from '../../types/uus'
 
-import { getAyanAccessState } from '~/utils/auth'
+import { getServiceAccessState } from '~/utils/auth'
 
 definePageMeta({ lazy: true })
 
@@ -19,7 +19,7 @@ const filterUrgency = ref('')
 const filterDesiredWhen = ref('')
 
 const accessState = computed(() =>
-	getAyanAccessState({
+	getServiceAccessState({
 		isAuthenticated: isAuthenticated.value,
 		isLoading: authLoading.value,
 		isInTelegram: isInTelegram.value,
@@ -100,6 +100,10 @@ const aboutExamples = computed(() => [
 		description: t('serviceAbout.uus.examples.repair.description')
 	}
 ])
+
+const { services } = usePublicRoadmap()
+
+const roadmap = computed(() => services.value.find((item) => item.id === 'uus'))
 
 const hasFilters = computed(
 	() => !!filterCategory.value || !!filterLocation.value || !!filterUrgency.value || !!filterDesiredWhen.value
@@ -236,7 +240,7 @@ watch(
 
 <template>
 	<div class="app-page">
-		<UusAccessState v-if="accessState !== 'ready'" :state="accessState" />
+		<AppAccessState v-if="accessState !== 'ready'" :state="accessState" />
 
 		<template v-else>
 			<AppHero
@@ -250,6 +254,23 @@ watch(
 					:description="t('serviceAbout.uus.description')"
 					:examples-title="t('serviceAbout.examplesTitle')"
 					:examples="aboutExamples"
+				/>
+				<AppRoadmapCard
+					v-if="roadmap"
+					:label="t('roadmap.previewLabel')"
+					:title="t('roadmap.previewTitle')"
+					:description="roadmap.summary"
+					:live-label="t('roadmap.sections.live')"
+					:building-label="t('roadmap.sections.building')"
+					:planned-label="t('roadmap.sections.planned')"
+					:live="roadmap.live"
+					:building="roadmap.building"
+					:planned="roadmap.planned"
+					compact
+					:limit-per-section="1"
+					:action-label="t('roadmap.openFull')"
+					action-route="/roadmap"
+					icon="i-lucide-map"
 				/>
 			</AppHero>
 

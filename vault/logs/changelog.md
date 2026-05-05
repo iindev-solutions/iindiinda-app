@@ -2,6 +2,113 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-05 22:00 - Shared Access-State Simplified Further
+
+### Done
+
+- Simplified the DRY access-state cleanup one step further by removing the service wrapper components completely
+- Switched all AYAN/UUS/TAL/AGAL pages to call shared `AppAccessState` directly
+- Unified the access-gate copy into one shared generic i18n block because the behavior is identical across services
+- Removed the now-unused service-specific access copy blocks from `frontend/i18n/locales/ru.json` and `frontend/i18n/locales/sah.json`
+- Updated `frontend/services/tal/README.md` and vault docs to reflect the direct shared-component usage
+
+### Verified
+
+- `node -e "const fs=require('fs'); JSON.parse(fs.readFileSync('frontend/i18n/locales/ru.json','utf8')); JSON.parse(fs.readFileSync('frontend/i18n/locales/sah.json','utf8')); console.log('LOCALES_OK')"` ✅
+- `cd frontend && npx eslint app/components/AppAccessState.vue app/utils/auth.ts tests/unit/auth.test.ts services/ayan/app/pages/ayan/index.vue services/ayan/app/pages/ayan/trip/[id].vue services/ayan/app/pages/ayan/request/[id].vue services/uus/app/pages/uus/index.vue services/uus/app/pages/uus/task/[id].vue services/tal/app/pages/tal/index.vue services/tal/app/pages/tal/master/[id].vue services/agal/app/pages/agal/index.vue services/agal/app/pages/agal/route/[id].vue services/agal/app/pages/agal/request/[id].vue` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- The Telegram/auth gate is now truly one shared block in both logic and text, with no service wrappers left in source
+- This simplification is still local/source-only together with the broader roadmap/README packaging slice
+
+## 2026-05-05 21:40 - Shared Access-State DRY Cleanup
+
+### Done
+
+- Added a new shared `frontend/app/components/AppAccessState.vue` as the single main Telegram/auth access-state component
+- Replaced the duplicated logic/styles in AYAN/UUS/TAL/AGAL access-state components with thin wrappers around the new shared base
+- Renamed the shared auth helper naming to generic cross-service naming:
+  - `AyanAccessState` -> `ServiceAccessState`
+  - `getAyanAccessState()` -> `getServiceAccessState()`
+- Updated all affected service pages and the frontend auth unit test to the new shared helper name
+- Updated `vault/CODE_MAP.md`, `vault/resume-plan.md`, and `vault/SESSION_LEDGER.md` so the DRY cleanup is preserved in project memory
+
+### Verified
+
+- `cd frontend && npx eslint app/components/AppAccessState.vue app/utils/auth.ts tests/unit/auth.test.ts services/ayan/app/components/AyanAccessState.vue services/uus/app/components/UusAccessState.vue services/tal/app/components/TalAccessState.vue services/agal/app/components/AgalAccessState.vue services/ayan/app/pages/ayan/index.vue services/ayan/app/pages/ayan/trip/[id].vue services/ayan/app/pages/ayan/request/[id].vue services/uus/app/pages/uus/index.vue services/uus/app/pages/uus/task/[id].vue services/tal/app/pages/tal/index.vue services/tal/app/pages/tal/master/[id].vue services/agal/app/pages/agal/index.vue services/agal/app/pages/agal/route/[id].vue services/agal/app/pages/agal/request/[id].vue` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- The access-state gate is now truly shared instead of copy-pasted four times with only i18n key differences
+- This DRY cleanup is still local/source-only together with the broader roadmap/README packaging slice
+
+## 2026-05-05 21:22 - Roadmap Densified And Compacted
+
+### Done
+
+- Expanded the public roadmap so each service now shows more concrete future/improvement items instead of only one thin next-step line
+- Compacted roadmap rendering by switching the shared roadmap cards to title-first dense lists with per-section counts
+- Limited service-entry roadmap previews to one visible item per section while keeping the full `/roadmap` page richer than before
+- Kept TAL public copy aligned with real shipped scope while extending the roadmap detail depth
+
+### Verified
+
+- `node -e "const fs=require('fs'); JSON.parse(fs.readFileSync('frontend/i18n/locales/ru.json','utf8')); JSON.parse(fs.readFileSync('frontend/i18n/locales/sah.json','utf8')); console.log('LOCALES_OK')"` ✅
+- `cd frontend && npx eslint app/pages/index.vue app/pages/roadmap.vue app/components/AppRoadmapCard.vue app/composables/usePublicRoadmap.ts services/ayan/app/pages/ayan/index.vue services/uus/app/pages/uus/index.vue services/tal/app/pages/tal/index.vue services/agal/app/pages/agal/index.vue` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- The roadmap now carries more future signal without turning service entry screens into long text walls
+- This refinement is still local/source-only together with the broader public-roadmap packaging slice
+
+## 2026-05-05 21:04 - Public Roadmap Packaging Pass
+
+### Done
+
+- Added a new public `/roadmap` route in the shared frontend app shell
+- Added shared roadmap preview cards to AYAN, UUS, TAL, and AGAL entry screens so users can see live / improving / planned scope without leaving the service context
+- Added shared public-roadmap data through `frontend/app/composables/usePublicRoadmap.ts`
+- Refreshed the root `README.md` so the repository front page reflects the real product state instead of the older scaffold-era description
+- Corrected TAL user-facing copy so it no longer implies that public fallback client requests already exist in the current live scope
+- Updated `vault/CODE_MAP.md`, `vault/sprint.md`, `vault/resume-plan.md`, and `vault/SESSION_LEDGER.md` to capture the new packaging slice and stop point
+
+### Verified
+
+- `node -e "const fs=require('fs'); JSON.parse(fs.readFileSync('frontend/i18n/locales/ru.json','utf8')); JSON.parse(fs.readFileSync('frontend/i18n/locales/sah.json','utf8')); console.log('LOCALES_OK')"` ✅
+- `cd frontend && npx eslint app/pages/index.vue app/pages/roadmap.vue app/components/AppRoadmapCard.vue app/composables/usePublicRoadmap.ts services/ayan/app/pages/ayan/index.vue services/uus/app/pages/uus/index.vue services/tal/app/pages/tal/index.vue services/agal/app/pages/agal/index.vue` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+
+### Important
+
+- This packaging slice is still local/source-only at this stop point: not committed, not pushed, and not deployed yet
+- Highest-value next move is to review and, if accepted, ship this roadmap/README slice before reopening broader product or launch-readiness work
+
+## 2026-05-05 14:37 - Full Runtime Validation Green And Post-MVP Pivot
+
+### Done
+
+- Recorded the user's fresh Telegram Mini App validation that the current live runtime across AYAN, AGAL, UUS, and TAL works excellently
+- Closed the pending TAL real-device visual-pass blocker from the previous stop point
+- Reframed the next execution target from service-by-service MVP bring-up to post-MVP launch preparation and prioritization
+- Updated `vault/sprint.md`, `vault/resume-plan.md`, and `vault/SESSION_LEDGER.md` so this state does not live only in chat
+
+### Verified
+
+- User-reported real Telegram Mini App validation on the current live runtime ✅
+
+### Important
+
+- Current product status is now effectively MVP-complete for the implemented runtime scope
+- Highest-value next work is no longer speculative feature shipping; it is legal/compliance closure, launch readiness, and choosing the next roadmap slice deliberately
+
 ## 2026-05-02 18:00 - TAL First MVP Slice Deployed Live
 
 ### Done

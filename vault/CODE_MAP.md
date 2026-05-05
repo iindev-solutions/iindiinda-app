@@ -14,6 +14,7 @@
 | `useNetwork.ts` | `useNetwork()` | Online/offline статус. isOnline |
 | `useStorage.ts` | `useStorage()` | localStorage wrapper. JSON serialize. get/set/remove/clear |
 | `useTg.ts` | `useTg()` | Telegram SDK: isInTelegram, webApp, initData, BackButton, MainButton, hapticFeedback, supportsVersion |
+| `usePublicRoadmap.ts` | `usePublicRoadmap()` | Public product-roadmap data for AYAN/UUS/TAL/AGAL: live / building / planned copy for the new roadmap surfaces |
 
 ### Components (`frontend/app/components/`)
 
@@ -29,12 +30,15 @@
 | `ServiceCard.vue` | Redesigned home service card with shared shell styling and direct service CTA |
 | `AppServiceAbout.vue` | Redesigned collapsible "what this service is + examples" block for service screens |
 | `AppHero.vue` | Shared redesign hero/header block for home-adjacent and service entry screens |
+| `AppAccessState.vue` | Shared Telegram/auth access-state gate used directly by all service pages (`loading`, `telegram-required`, `auth-error`) with one unified generic copy block |
+| `AppRoadmapCard.vue` | Shared roadmap card for the new public roadmap page and per-service roadmap preview blocks |
 
 ### Pages (`frontend/app/pages/`)
 
 | Роут | Файл | Назначение |
 |------|------|------------|
-| `/` | `index.vue` | Главная — выбор сервиса |
+| `/` | `index.vue` | Главная — выбор сервиса + public roadmap CTA |
+| `/roadmap` | `roadmap.vue` | Public roadmap page: current live scope, active polish, and planned next slice for each service |
 | `/auth/callback` | `auth/callback.vue` | OAuth callback |
 | `/ui` | `ui.vue` | UI-шоукейс (dev) |
 
@@ -52,7 +56,7 @@
 | Файл | Функции |
 |------|---------|
 | `formatters.ts` | formatPrice, formatDate, formatDateFull, formatTime, formatRelativeTime, getInitials, formatDriverName, randomId, debounce |
-| `auth.ts` | frontend auth helpers: `canUseDevInitData`, `getAyanAccessState` |
+| `auth.ts` | frontend auth helpers: `canUseDevInitData`, `getServiceAccessState`, `ServiceAccessState` |
 | `validators.ts` | isValidPhone, isValidPrice, isValidAddress, isValidDate, isValidTime, isValidSeats, isValidComment, isValidTelegramUsername |
 
 ### Config (`frontend/app/`)
@@ -108,7 +112,6 @@
 | `app/pages/ayan.vue` | Parent wrapper → /ayan (только <NuxtPage />) |
 | `app/pages/ayan/index.vue` | Лента поездок/запросов + табы + кнопка создания + role switcher |
 | `app/components/AyanRoleSwitch.vue` | Переключатель `passenger/driver` через `/api/user/switch-role` |
-| `app/components/AyanAccessState.vue` | Экран доступа для guest browser / failed Telegram auth в AYAN |
 | `app/components/AyanCreateSlideover.vue` | Единый slideover создания поездки/запроса (pill-табы, side=bottom) |
 | `app/pages/ayan/trip/[id].vue` | Детали поездки + отклик |
 | `app/pages/ayan/request/[id].vue` | Детали запроса + отклик |
@@ -126,7 +129,6 @@
 | `app/pages/tal.vue` | Wrapper-only parent route for `/tal` |
 | `app/pages/tal/index.vue` | Real TAL source feed page: tabs, filters, role helper, create CTA, my-area cards |
 | `app/pages/tal/master/[id].vue` | TAL detail page: book, accept/reject, contact reveal, final status actions |
-| `app/components/TalAccessState.vue` | TAL access-state screen for loading / Telegram-required / auth-failed states |
 | `app/components/TalRoleSwitch.vue` | TAL helper to enter or leave master mode (`passenger <-> master`) |
 | `app/components/TalCreateSlideover.vue` | TAL master availability create form with Telegram-safe bottom slideover UX |
 | `app/types/tal.ts` | TAL master/booking DTOs and enums |
@@ -149,7 +151,6 @@
 | `app/pages/agal/index.vue` | AGAL real feed page: tabs, filters, role switcher, create CTA, my-area cards |
 | `app/pages/agal/route/[id].vue` | AGAL route detail: respond, accept/reject, contact reveal, final status actions |
 | `app/pages/agal/request/[id].vue` | AGAL request detail: respond, accept/reject, contact reveal, final status actions |
-| `app/components/AgalAccessState.vue` | AGAL access-state screen for loading / Telegram-required / auth-failed states |
 | `app/components/AgalRoleSwitch.vue` | AGAL role switcher for `carrier <-> sender` |
 | `app/components/AgalCreateSlideover.vue` | AGAL create form for route/request with Telegram-safe bottom slideover UX |
 | `app/types/agal.ts` | AGAL route/request/response DTOs and status enums |
@@ -172,7 +173,6 @@
 | `app/pages/uus.vue` | Parent wrapper → /uus |
 | `app/pages/uus/index.vue` | Real UUS source feed/my-area/create entry page |
 | `app/pages/uus/task/[id].vue` | UUS task detail: respond, accept/reject, contact reveal, final status actions |
-| `app/components/UusAccessState.vue` | UUS access-state screen for loading / Telegram-required / auth-failed states |
 | `app/components/UusCreateSlideover.vue` | UUS create form for task creation with Telegram-safe bottom slideover UX |
 | `app/types/uus.ts` | UUS task/response DTOs and enums |
 | `app/composables/useUusTasks.ts` | UUS task feed/detail/create/update API layer |

@@ -1,4 +1,4 @@
-export type AyanAccessState = 'ready' | 'loading' | 'telegram-required' | 'auth-error'
+export type ServiceAccessState = 'ready' | 'loading' | 'telegram-required' | 'auth-error'
 
 export function canUseDevInitData(hostname: string, devInitData?: string | null, isDev = false): boolean {
 	if (!devInitData) return false
@@ -7,12 +7,12 @@ export function canUseDevInitData(hostname: string, devInitData?: string | null,
 	return hostname === 'localhost' || hostname === '127.0.0.1'
 }
 
-export function getAyanAccessState(options: {
+export function getServiceAccessState(options: {
 	isAuthenticated: boolean
 	isLoading: boolean
 	isInTelegram: boolean
 	hasAuthError: boolean
-}): AyanAccessState {
+}): ServiceAccessState {
 	if (options.isAuthenticated) return 'ready'
 	if (options.isLoading) return 'loading'
 	if (options.isInTelegram) return options.hasAuthError ? 'auth-error' : 'loading'

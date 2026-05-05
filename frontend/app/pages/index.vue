@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const { hapticFeedback } = useTg()
 
 const services = [
 	{
@@ -31,6 +32,11 @@ const services = [
 		route: '/agal'
 	}
 ]
+
+async function openRoadmap() {
+	hapticFeedback('impact')
+	await navigateTo('/roadmap')
+}
 </script>
 
 <template>
@@ -46,6 +52,25 @@ const services = [
 		<section class="app-section-stack">
 			<ServiceCard v-for="service in services" :key="service.id" :service="service" />
 		</section>
+
+		<UCard class="index-page__roadmap" variant="outline">
+			<div class="space-y-4">
+				<div class="space-y-2">
+					<p class="app-kicker">{{ t('home.roadmap.badge') }}</p>
+					<h2 class="text-sm font-semibold text-cyan-50">{{ t('home.roadmap.title') }}</h2>
+					<p class="app-copy">{{ t('home.roadmap.description') }}</p>
+				</div>
+				<UButton
+					size="sm"
+					variant="ghost"
+					color="primary"
+					trailing-icon="i-lucide-arrow-right"
+					@click="openRoadmap"
+				>
+					{{ t('home.roadmap.cta') }}
+				</UButton>
+			</div>
+		</UCard>
 
 		<UCard class="index-page__legal" variant="outline">
 			<div class="space-y-4">
@@ -81,6 +106,7 @@ const services = [
 	margin: 0;
 }
 
+.index-page__roadmap,
 .index-page__legal {
 	margin-top: 14px;
 	border-radius: 20px;
