@@ -1,6 +1,33 @@
-# Resume Plan - 2026-05-05 22:23
+# Resume Plan - 2026-05-06 13:20
 
 > Goal: restart fast with exact stop point and no hidden chat memory.
+
+## Frontend Cleanup Phase 1 Completed - 2026-05-06 13:20
+
+- Executed the first cleanup phase from the frontend audit plan (hygiene + dead-path removal)
+- Removed stale TAL legacy paths from runtime source:
+  - `frontend/services/tal/app/pages/tal-showcase.vue`
+  - `frontend/services/tal/app/composables/useTalAPI.ts`
+  - `frontend/services/tal/app/composables/useTalStore.ts`
+- Removed currently unused shared frontend files:
+  - `frontend/app/components/AppHeader.vue`
+  - `frontend/app/components/ErrorMessage.vue`
+  - `frontend/app/composables/useNetwork.ts`
+  - `frontend/app/composables/useStorage.ts`
+  - `frontend/app/types/forms.ts`
+  - `frontend/app/types/ui.ts`
+  - `frontend/app/middleware/auth.ts`
+- Removed deprecated npm config file `frontend/.npmrc` that produced repeated npm warnings
+- Declared directly used missing deps in `frontend/package.json`:
+  - `@internationalized/date`
+  - `@nuxt/fonts`
+- Synced lock metadata with `cd frontend && npm install --package-lock-only`
+- Updated docs for this cleanup (`frontend/services/tal/README.md`, `vault/CODE_MAP.md`)
+- Verification is green for this phase:
+  - `cd frontend && npm run lint`
+  - `cd frontend && npm run typecheck`
+  - `cd frontend && npm run test`
+  - `cd frontend && npm run build:static` (`STATIC_API_BASE_OK`)
 
 ## Theme Variable Syntax Fix Deployed - 2026-05-05 22:23
 

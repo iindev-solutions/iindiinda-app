@@ -567,3 +567,19 @@
 - Verified: no source matches remain for `rgb(var(--color-...))`; focused eslint on the changed shared components; `cd frontend && npm run typecheck`; `cd frontend && npm run build:static`; VPS head `ae2b0a9`; live `200` for `/`, `/roadmap`, and `/api/health`
 - Blockers: this UI syntax bug is closed; remaining blockers are legal/compliance facts and launch/distribution planning decisions
 - Next: move back to the higher-level launch/distribution docs while the now-shipped frontend baseline stays stable
+
+## 2026-05-06 12:35 — Frontend Audit
+
+- Scope: audit the whole `frontend/` tree for architecture, logic, duplication, dead code, tests, and tooling hygiene
+- Changes: reviewed shared app shell plus all service layers, ran frontend typecheck/lint/tests, mapped repeated page/detail/form patterns, and captured the main structural/runtime debt in the vault changelog
+- Verified: `cd frontend && npm run typecheck`; `cd frontend && npm run test`; `cd frontend && npm run lint` (currently red on formatting drift in a few files); targeted `rg` checks for banned patterns, unused helpers, and repeated API body casts
+- Blockers: frontend still has high duplication, hidden async-error states, dead demo/auth files, manifest drift for some dependencies, and non-green lint
+- Next: if a frontend cleanup slice is chosen, do it in this order: restore lint + dependency hygiene -> remove dead/demo paths -> extract shared service-shell/list/detail/form primitives -> wire explicit async error UI
+
+## 2026-05-06 13:20 — Frontend Cleanup Phase 1
+
+- Scope: execute the first frontend cleanup phase (hygiene + dead-path removal) from the audit plan
+- Changes: removed TAL legacy showcase/store/api files, removed unused shared frontend files (`AppHeader`, `ErrorMessage`, `useNetwork`, `useStorage`, old form/ui type files, unused auth middleware), removed deprecated npm config file `.npmrc`, declared missing direct dependencies in `frontend/package.json`, synchronized lock metadata, and updated TAL/CODE_MAP docs
+- Verified: `cd frontend && npm run lint`; `cd frontend && npm run typecheck`; `cd frontend && npm run test`; `cd frontend && npm run build:static`; targeted `rg` checks confirm removed legacy file names are no longer referenced in runtime source
+- Blockers: structural duplication and async error-state UX issues still remain (planned for next cleanup phase)
+- Next: continue with phase 2 (shared extraction + explicit async error UI) on a fresh session after this push

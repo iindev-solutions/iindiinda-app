@@ -2,6 +2,90 @@
 
 > Format: `YYYY-MM-DD HH:MM`. New entries must be written in English.
 
+## 2026-05-06 13:20 - Frontend Cleanup Phase 1 Completed
+
+### Done
+
+- Executed frontend cleanup phase 1 (hygiene + dead-path removal) after the full `frontend/` audit
+- Removed stale frontend files that were no longer referenced by runtime code:
+  - `frontend/services/tal/app/pages/tal-showcase.vue`
+  - `frontend/services/tal/app/composables/useTalAPI.ts`
+  - `frontend/services/tal/app/composables/useTalStore.ts`
+  - `frontend/app/components/AppHeader.vue`
+  - `frontend/app/components/ErrorMessage.vue`
+  - `frontend/app/composables/useNetwork.ts`
+  - `frontend/app/composables/useStorage.ts`
+  - `frontend/app/types/forms.ts`
+  - `frontend/app/types/ui.ts`
+  - `frontend/app/middleware/auth.ts`
+- Removed outdated npm config warnings source by deleting `frontend/.npmrc` (deprecated npm-only keys)
+- Fixed dependency manifest drift by declaring directly used frontend deps in `frontend/package.json`:
+  - `@internationalized/date`
+  - `@nuxt/fonts`
+- Synchronized lock metadata with current manifest via `npm install --package-lock-only`
+- Updated TAL service docs and code inventory to reflect removed legacy runtime paths
+- Restored green lint status with `npm run lint:fix` and verified clean lint afterwards
+
+### Verified
+
+- `cd frontend && npm run lint` ✅
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run test` ✅ (`11 files`, `30 tests`)
+- `cd frontend && npm run build:static` ✅ (`STATIC_API_BASE_OK`)
+- `rg -n "tal-showcase|useTalStore|useTalAPI|AppHeader|ErrorMessage|useNetwork\(|useStorage\(" frontend -S` ✅ (no runtime-source hits left)
+
+### Important
+
+- This phase intentionally targeted only hygiene and dead-code removal; no service business logic was changed
+- Next recommended phase remains the structural/runtime quality slice:
+  1. explicit async error states in list/detail pages
+  2. shared service-shell extraction to reduce cross-service duplication
+  3. form/role-switch error message unification via `getApiErrorMessage`
+
+## 2026-05-06 12:35 - Frontend Audit Findings Captured
+
+### Done
+
+- Ran a repository-wide audit of `frontend/` focused on architecture, duplication, runtime logic, test coverage, and dependency hygiene
+- Confirmed the main structural pattern drift:
+  - service index pages repeat the same access gate + tabs + filters + create CTA + list shell across AYAN, AGAL, UUS, and TAL
+  - service detail pages repeat the same owner/non-owner response workflow across AYAN, AGAL, UUS, and TAL
+  - create slideovers and role-switch cards repeat the same form/toast/haptic structure with service-local copies
+- Confirmed the main runtime UX debt:
+  - `useLazyAsyncData` error states are generally ignored in list/detail pages, so backend failures can degrade into empty or generic states instead of explicit error UI
+  - detail response loaders swallow errors into empty arrays and only log to console
+  - create forms and role-switch flows still use generic `catch {}` branches, so backend error messages are lost there
+  - frontend pages currently filter lists client-side even though several service composables already support server-side filter params
+- Confirmed dead or stale frontend surface area still exists:
+  - legacy TAL showcase path and helpers remain in source (`tal-showcase.vue`, `useTalAPI.ts`, `useTalStore.ts`)
+  - unused shared files remain in source (`AppHeader.vue`, `ErrorMessage.vue`, `useNetwork.ts`, `useStorage.ts`, `forms.ts`, `ui.ts`, auth middleware, browser OAuth callback path)
+  - global error plugin writes into shared state, but no visible consumer renders that state to users
+- Confirmed package/tooling hygiene debt:
+  - `frontend/package.json` does not declare some directly used frontend dependencies even though they are present in `package-lock.json` / local install (`@internationalized/date`, `@nuxt/fonts`)
+  - npm scripts currently emit `.npmrc` config warnings on every run
+  - frontend lint is currently red on formatting drift in committed source
+- Confirmed frontend test coverage is still mostly helper-level and does not yet cover AGAL/UUS/TAL page-level behavior or shared service-shell abstractions
+
+### Verified
+
+- `cd frontend && npm run typecheck` ✅
+- `cd frontend && npm run test` ✅ (`11 files`, `30 tests`)
+- `cd frontend && npm run lint` ❌
+  - current reported files: `app/composables/useAuth.ts`, `app/utils/telegram.ts`, `services/uus/app/composables/useUusTasks.ts`, `tests/unit/apiBase.test.ts`
+- `rg -n "router\.push|new URL\(|rgb\(var\(--color-|bg-\$\{" frontend/app frontend/services frontend/tests -S` ✅ (no hits for those banned patterns)
+- `rg -n "useStorage\(|useNetwork\(|useGlobalError\(" frontend/app frontend/services -S` ✅ (confirmed unused/shared-state-only helpers)
+- `rg -n "as unknown as Record<string, unknown>|as Record<string, unknown>" frontend/app frontend/services -S` ✅ (confirmed repeated API typing workaround)
+
+### Important
+
+- This was an audit-only pass; no frontend source was changed in this session
+- Highest-value frontend engineering follow-up is structural consolidation, not more surface-level page duplication
+- If a cleanup slice is chosen, the safest order is:
+  1. restore green lint + manifest hygiene
+  2. remove dead/demo paths
+  3. extract shared service-shell/list/detail/form patterns
+  4. wire real error states before adding more features
+
 ## 2026-05-05 22:23 - Theme Variable Syntax Fix Deployed
 
 ### Done

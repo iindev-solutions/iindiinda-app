@@ -21,12 +21,18 @@ export const useUusTasks = () => {
 	}
 
 	const createTask = async (data: UusTaskCreate): Promise<UusTask> => {
-		const res = await api.post<{ success: boolean; data: UusTask }>('/uus/tasks', data as unknown as Record<string, unknown>)
+		const res = await api.post<{ success: boolean; data: UusTask }>(
+			'/uus/tasks',
+			data as unknown as Record<string, unknown>
+		)
 		return res.data!
 	}
 
 	const updateTask = async (id: number, data: UusTaskUpdate): Promise<UusTask> => {
-		const res = await api.patch<{ success: boolean; data: UusTask }>(`/uus/tasks/${id}`, data as unknown as Record<string, unknown>)
+		const res = await api.patch<{ success: boolean; data: UusTask }>(
+			`/uus/tasks/${id}`,
+			data as unknown as Record<string, unknown>
+		)
 		return res.data!
 	}
 

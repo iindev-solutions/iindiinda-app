@@ -19,6 +19,8 @@
 		"typecheck": "nuxt typecheck"
 	},
 	"dependencies": {
+		"@internationalized/date": "^3.10.1",
+		"@nuxt/fonts": "^0.12.1",
 		"@nuxt/ui": "^4.3.0",
 		"@nuxtjs/i18n": "^10.2.1",
 		"nuxt": "^4.2.2",

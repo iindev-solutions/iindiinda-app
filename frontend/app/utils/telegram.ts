@@ -8,7 +8,9 @@ export function getTelegramWebApp(): TelegramWebApp | null {
 	return window.Telegram?.WebApp ?? null
 }
 
-export async function waitForTelegramWebApp(options: WaitForTelegramInitDataOptions = {}): Promise<TelegramWebApp | null> {
+export async function waitForTelegramWebApp(
+	options: WaitForTelegramInitDataOptions = {}
+): Promise<TelegramWebApp | null> {
 	const { timeoutMs = 10000, intervalMs = 50 } = options
 	const startedAt = Date.now()
 

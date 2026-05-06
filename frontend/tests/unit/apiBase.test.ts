@@ -16,7 +16,9 @@ describe('api base guards', () => {
 	})
 
 	it('accepts generated html with same-origin api base', () => {
-		expect(() => assertStaticApiBase('<script>window.__NUXT__.config={public:{apiBase:"/api"}}</script>')).not.toThrow()
+		expect(() =>
+			assertStaticApiBase('<script>window.__NUXT__.config={public:{apiBase:"/api"}}</script>')
+		).not.toThrow()
 	})
 
 	it('rejects generated html with insecure absolute api base', () => {

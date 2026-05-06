@@ -11,8 +11,6 @@
 | `useAPI.ts` | `useAPI()` | HTTP клиент (mock/real). Методы: get, post, put, del. Токен + initData в заголовках |
 | `useAuth.ts` | `useAuth()` | Auth: login (TMA init_data), logout, switchRole. Browser OAuth auto-login сейчас intentionally disabled до real backend support; для local dev можно дать `public.devInitData` fallback |
 | `useError.ts` | `useGlobalError()` | Глобальные ошибки. showError/clearError. Автоскрытие через 5с |
-| `useNetwork.ts` | `useNetwork()` | Online/offline статус. isOnline |
-| `useStorage.ts` | `useStorage()` | localStorage wrapper. JSON serialize. get/set/remove/clear |
 | `useTg.ts` | `useTg()` | Telegram SDK: isInTelegram, webApp, initData, BackButton, MainButton, hapticFeedback, supportsVersion |
 | `usePublicRoadmap.ts` | `usePublicRoadmap()` | Public product-roadmap data for AYAN/UUS/TAL/AGAL: live / building / planned copy for the new roadmap surfaces |
 
@@ -20,12 +18,10 @@
 
 | Файл | Назначение |
 |------|------------|
-| `AppHeader.vue` | Шапка приложения |
 | `AppTitle.vue` | Заголовок страницы |
 | `BackButton.vue` | Универсальная кнопка назад (TMA + browser) |
 | `AppBottomNav.vue` | Нижняя навигация приложения |
 | `EmptyState.vue` | Пустое состояние списка |
-| `ErrorMessage.vue` | Отображение ошибки |
 | `LoadingSpinner.vue` | Спиннер загрузки |
 | `ServiceCard.vue` | Redesigned home service card with shared shell styling and direct service CTA |
 | `AppServiceAbout.vue` | Redesigned collapsible "what this service is + examples" block for service screens |
@@ -47,9 +43,7 @@
 | Файл | Содержание |
 |------|-----------|
 | `api.ts` | ApiResponse, ApiError, PaginatedResponse, User, Role, AuthResponse |
-| `forms.ts` | FormField, FormState, ValidationRule, FormConfig |
 | `telegram.d.ts` | Telegram WebApp типы |
-| `ui.ts` | ButtonVariant, ButtonSize, Toast, ModalProps |
 
 ### Utils (`frontend/app/utils/`)
 
@@ -80,12 +74,6 @@
 |------|-----------|
 | `init.ts` | Telegram SDK ready + auto-login при старте |
 | `error-handler.ts` | Глобальный перехват Vue errors + unhandled rejections |
-
-### Middleware (`frontend/app/middleware/`)
-
-| Файл | Назначение |
-|------|-----------|
-| `auth.ts` | Редирект на `/` если не авторизован. Usage: `definePageMeta({ middleware: 'auth' })` |
 
 ### Layouts (`frontend/app/layouts/`)
 
@@ -135,9 +123,6 @@
 | `app/composables/useTalMasters.ts` | TAL feed/detail/create/update API layer |
 | `app/composables/useTalBookings.ts` | TAL booking list/create/update/delete API layer |
 | `app/composables/useTalMy.ts` | TAL my-master-cards / my-bookings API layer |
-| `app/pages/tal-showcase.vue` | Legacy visual sandbox route; no longer the main TAL runtime path |
-| `app/composables/useTalAPI.ts` | Legacy showcase helper |
-| `app/composables/useTalStore.ts` | Legacy showcase state |
 
 **API contract**: `vault/wiki/services/tal/api-contract.md`
 ### AGAL (`frontend/services/agal/`) — Доставка
@@ -503,3 +488,21 @@
 - Root `DESIGN.md` added as the first redesign artifact for the frontend-first restyling track
 - Current token baseline covers colors, typography, spacing, rounding, and shared components for shell/cards/buttons/inputs/tabs/status badges
 - Validate future edits with `node .tmp-designmd/package/dist/index.js lint DESIGN.md` until the package is installed or wrapped differently in project tooling
+
+## Audit Notes - 2026-05-06 13:20
+
+- Frontend cleanup phase 1 removed stale/dead files from source:
+  - `frontend/services/tal/app/pages/tal-showcase.vue`
+  - `frontend/services/tal/app/composables/useTalAPI.ts`
+  - `frontend/services/tal/app/composables/useTalStore.ts`
+  - `frontend/app/components/AppHeader.vue`
+  - `frontend/app/components/ErrorMessage.vue`
+  - `frontend/app/composables/useNetwork.ts`
+  - `frontend/app/composables/useStorage.ts`
+  - `frontend/app/types/forms.ts`
+  - `frontend/app/types/ui.ts`
+  - `frontend/app/middleware/auth.ts`
+- Frontend manifest hygiene was corrected by declaring direct deps in `frontend/package.json`:
+  - `@internationalized/date`
+  - `@nuxt/fonts`
+- Deprecated npm config file `frontend/.npmrc` was removed; npm command warnings for unknown project config keys are gone

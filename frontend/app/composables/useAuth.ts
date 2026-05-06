@@ -30,18 +30,18 @@ export const useAuth = () => {
 			const response = USE_MOCK_API
 				? await api.post<AuthResponse>('/auth/telegram', { init_data: payload })
 				: await (() => {
-					const formData = new URLSearchParams()
-					formData.set('init_data', payload)
+						const formData = new URLSearchParams()
+						formData.set('init_data', payload)
 
-					return $fetch<AuthResponse>(`${api.baseURL.value}/auth/telegram`, {
-						method: 'POST',
-						headers: {
-							...api.headers.value,
-							'Content-Type': 'application/x-www-form-urlencoded'
-						},
-						body: formData.toString()
-					})
-				})()
+						return $fetch<AuthResponse>(`${api.baseURL.value}/auth/telegram`, {
+							method: 'POST',
+							headers: {
+								...api.headers.value,
+								'Content-Type': 'application/x-www-form-urlencoded'
+							},
+							body: formData.toString()
+						})
+					})()
 			token.value = response.token
 			user.value = response.user
 			authStatus.value = 'authenticated'

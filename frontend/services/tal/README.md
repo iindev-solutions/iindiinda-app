@@ -24,7 +24,6 @@ This slice does **not** implement:
 
 - `/tal` — TAL feed, filters, role helper, create CTA, my-area tabs
 - `/tal/master/[id]` — TAL master detail, booking form, owner-side bookings, final actions
-- `/tal-showcase` — old visual sandbox, no longer the main TAL runtime path
 
 ## Frontend files
 
